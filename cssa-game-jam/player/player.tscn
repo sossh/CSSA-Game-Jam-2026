@@ -7,7 +7,10 @@
 [sub_resource type="CapsuleShape3D" id="CapsuleShape3D_il73l"]
 height = 1.2
 
-[node name="CharacterBody3D" type="CharacterBody3D" unique_id=1743761909]
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_enyv7"]
+albedo_color = Color(1, 0, 1, 1)
+
+[node name="Player" type="CharacterBody3D" unique_id=1743761909]
 script = ExtResource("1_rkbax")
 
 [node name="CollisionShape3D" type="CollisionShape3D" parent="." unique_id=806897035]
@@ -16,6 +19,7 @@ shape = SubResource("CapsuleShape3D_il73l")
 
 [node name="BaseCharacter" type="MeshInstance3D" parent="." unique_id=2003692391]
 transform = Transform3D(1.08, 0, 0, 0, 1.08, 0, 0, 0, 1.08, 0, -1, 0)
+material_override = SubResource("StandardMaterial3D_enyv7")
 mesh = ExtResource("1_oul6g")
 
 [node name="PlayerCamera" parent="." unique_id=605439346 instance=ExtResource("3_g1dw6")]
