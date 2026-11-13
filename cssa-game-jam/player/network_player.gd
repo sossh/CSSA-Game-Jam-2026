@@ -143,8 +143,41 @@ func carry_position() -> Vector3:
 
 func held_transform(big: bool = false) -> Transform3D:
 	var transform_out := head.global_transform
-	transform_out.origin += head.global_basis * Vector3(0.35, -0.3, -0.85)
 	if big:
 		transform_out.origin = carry_position()
 		transform_out.basis = global_basis.rotated(global_basis.z, PI / 2)
+		return transform_out
+
+	var p: Dictionary = Game.players.get(peer_id, {})
+	var eat_until: float = float(p.get("eat_until", 0.0))
+	if eat_until > Game.elapsed:
+		var time_left: float = eat_until - Game.elapsed
+		var time_in: float = 1.5 - time_left
+		var blend: float = clampf(time_in / 0.12, 0.0, 1.0) * clampf(time_left / 0.12, 0.0, 1.0)
+
+		# Minecraft-style eating chomp & bobbing:
+		var t := time_in * 24.0
+		var chomp := absf(sin(t))
+		var shake := sin(t * 1.5) * 0.012
+
+		# Move from bottom-right (0.35, -0.3, -0.85) to center in front of mouth (0.08, -0.15, -0.48)
+		var base_offset := Vector3(0.35, -0.3, -0.85)
+		var eat_offset := Vector3(
+			0.08 + shake,
+			-0.15 - chomp * 0.035,
+			-0.48 + chomp * 0.04
+		)
+		var final_offset: Vector3 = base_offset.lerp(eat_offset, blend)
+		transform_out.origin = head.global_position + head.global_basis * final_offset
+
+		# Tilt towards mouth with biting angle
+		var tilt_x := deg_to_rad(-22.0 + chomp * 12.0) * blend
+		var tilt_y := deg_to_rad(-20.0) * blend
+		var tilt_z := deg_to_rad(12.0 + sin(t * 1.2) * 5.0) * blend
+		transform_out.basis = transform_out.basis.rotated(head.global_basis.x, tilt_x)
+		transform_out.basis = transform_out.basis.rotated(head.global_basis.y, tilt_y)
+		transform_out.basis = transform_out.basis.rotated(head.global_basis.z, tilt_z)
+		return transform_out
+
+	transform_out.origin += head.global_basis * Vector3(0.35, -0.3, -0.85)
 	return transform_out

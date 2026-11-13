@@ -199,10 +199,10 @@ func handle_action(id: int, action_name: String, data: Dictionary) -> void:
 		"interact":
 			if allowed(id, "interact", 0.15): world.interact(id, str(data.get("target", "")))
 		"throw", "drop":
-			if p.eat_until <= 0 and allowed(id, "throw", 0.2):
+			if p.eat_until <= elapsed and allowed(id, "throw", 0.2):
 				world.release_hand(id, clampf(float(data.get("charge", 0.0)), 0, 1) if action_name == "throw" else -1.0)
 		"use":
-			if p.eat_until <= 0 and allowed(id, "use", 0.5): world.use_held(id)
+			if p.eat_until <= elapsed and allowed(id, "use", 0.5): world.use_held(id)
 		"punch":
 			if p.held == "" and allowed(id, "punch", 0.6): world.punch(id)
 		"stand":
