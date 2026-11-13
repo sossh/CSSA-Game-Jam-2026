@@ -1,0 +1,14 @@
+[gd_resource type="Resource" script_class="ItemData" load_steps=2 format=3]
+[ext_resource type="Script" path="res://items/item_data.gd" id="1"]
+[resource]
+script = ExtResource("1")
+id = "rocket"
+display_name = "Rocket part"
+description = "Carry to the hallway launch pad. Adds to shared endless score."
+price = 75
+minimum_grade = 2
+effect = "rocket"
+mass = 3.0
+spawn_weight = 0.1
+size = Vector3(0.4, 0.5, 0.4)
+color = Color(0.3, 0.8, 1, 1)

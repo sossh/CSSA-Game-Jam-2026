@@ -1,0 +1,13 @@
+[gd_resource type="Resource" script_class="ItemData" load_steps=2 format=3]
+[ext_resource type="Script" path="res://items/item_data.gd" id="1"]
+[resource]
+script = ExtResource("1")
+id = "slurpee"
+display_name = "Slurpee (10% remaining)"
+price = 2
+food = 10.0
+eating_noise = 70.0
+spawn_weight = 5.0
+size = Vector3(0.16, 0.27, 0.16)
+color = Color(0.2, 0.6, 1, 1)
+sound = "slurp"

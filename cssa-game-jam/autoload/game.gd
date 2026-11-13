@@ -1,0 +1,353 @@
+extends Node
+
+signal announcement(text: String)
+signal state_changed
+signal effect(kind: String, data: Dictionary)
+
+var config: GameConfig = preload("res://config/game_config.tres")
+var world: Node3D
+var players: Dictionary = {}
+var phase: String = "menu"
+var remaining: float = 0.0
+var grade: int = 1
+var survived: int = 0
+var rocket_parts: int = 0
+var ui_open: bool = true
+var elapsed: float = 0.0
+var sync_time: float = 0.0
+var epoch: int = 0
+var cooldowns: Dictionary = {}
+var snapshot_sequence: int = 0
+var receiving_sequence: int = -1
+var received_chunks: Dictionary = {}
+
+func is_host() -> bool:
+	return Net.active and multiplayer.is_server()
+
+func reset() -> void:
+	players.clear()
+	phase = "menu"
+	remaining = 0
+	grade = 1
+	survived = 0
+	rocket_parts = 0
+	cooldowns.clear()
+	epoch = 0
+	receiving_sequence = -1
+	received_chunks.clear()
+	ui_open = true
+
+func _physics_process(delta: float) -> void:
+	if not is_host() or not is_instance_valid(world): return
+	elapsed += delta
+	if phase in ["preparation", "class", "break"]:
+		remaining = maxf(0.0, remaining - delta)
+		if remaining <= 0:
+			match phase:
+				"preparation": start_class()
+				"class": start_break()
+				"break": start_preparation()
+	for id in players.keys():
+		var p: Dictionary = players[id]
+		if not p.alive: continue
+		if phase == "class":
+			p.stomach = maxf(0, p.stomach - config.hunger_per_second * delta * (1.0 + (grade - 1) * 0.06))
+			if p.stomach <= 0:
+				kill(id, "starved during alien calculus")
+				continue
+			if p.stomach < 25 and elapsed >= p.growl_at:
+				p.growl_at = elapsed + randf_range(10, 18)
+				NoiseBus.emit_noise(p.position, 32, str(id), "stomach_growl")
+		if p.mode == "ragdoll" and elapsed >= p.recover_at:
+			p.mode = "walk"
+			p.limbs = []
+		if p.eat_until > 0 and elapsed >= p.eat_until:
+			finish_eating(id)
+		if p.burp_at > 0 and elapsed >= p.burp_at:
+			p.burp_at = 0.0
+			NoiseBus.emit_noise(p.position, 45, str(id), "burp")
+		if p.pop_until > elapsed and allowed(id, "pop", 0.7):
+			NoiseBus.emit_noise(p.position, 20, str(id), "pop_rocks")
+		if p.position.y < -15:
+			kill(id, "fell out of the curriculum")
+	sync_time += delta
+	if sync_time >= 0.0667:
+		sync_time = 0
+		broadcast_snapshot()
+
+func make_snapshot() -> Dictionary:
+	return {"epoch": epoch, "players": players, "phase": phase, "remaining": remaining,
+		"grade": grade, "survived": survived, "rocket_parts": rocket_parts, "elapsed": elapsed,
+		"world": world.serialize()}
+
+func broadcast_snapshot() -> void:
+	# Full snapshots repair lost updates and make late joins simple. Compress and
+	# split below the ENet MTU; never send a giant unreliable fragmented packet.
+	var packed := var_to_bytes(make_snapshot()).compress(FileAccess.COMPRESSION_DEFLATE)
+	snapshot_sequence += 1
+	var count := ceili(packed.size() / 1000.0)
+	for index in range(count):
+		snapshot_chunk.rpc(snapshot_sequence, index, count, packed.slice(index * 1000, (index + 1) * 1000))
+
+@rpc("authority", "call_remote", "unreliable_ordered", 1)
+func snapshot_chunk(sequence: int, index: int, count: int, chunk: PackedByteArray) -> void:
+	if sequence < receiving_sequence or count < 1 or count > 256 or index < 0 or index >= count: return
+	if sequence > receiving_sequence:
+		receiving_sequence = sequence
+		received_chunks.clear()
+	received_chunks[index] = chunk
+	if received_chunks.size() != count: return
+	var packed := PackedByteArray()
+	for i in range(count): packed.append_array(received_chunks[i])
+	var decoded = bytes_to_var(packed.decompress_dynamic(2 * 1024 * 1024, FileAccess.COMPRESSION_DEFLATE))
+	if decoded is Dictionary: apply_snapshot(decoded)
+	received_chunks.clear()
+
+@rpc("authority", "call_remote", "reliable", 0)
+func initial_state(data: Dictionary) -> void:
+	apply_snapshot(data)
+
+func apply_snapshot(data: Dictionary) -> void:
+	if not Net.active or not is_instance_valid(world): return
+	if int(data.epoch) < epoch: return
+	epoch = data.epoch
+	players = data.players
+	phase = data.phase
+	remaining = data.remaining
+	grade = data.grade
+	survived = data.survived
+	rocket_parts = data.rocket_parts
+	elapsed = data.elapsed
+	world.reconcile(data.world)
+	state_changed.emit()
+
+@rpc("any_peer", "call_remote", "reliable", 0)
+func register(display_name: String) -> void:
+	if not is_host(): return
+	var id := multiplayer.get_remote_sender_id()
+	if id == 0: id = 1
+	if players.has(id) or players.size() >= config.maximum_players: return
+	if phase == "menu": phase = "lobby"
+	var alive := phase != "class"
+	players[id] = {"name": Net.clean_name(display_name), "stomach": config.stomach_max,
+		"money": config.starting_bitcoin, "food": 0.0, "alive": alive,
+		"position": world.chute_position(players.size()), "yaw": 0.0, "pitch": 0.0,
+		"mode": "walk" if alive else "dead", "seat": -1, "held": "", "carrier": 0,
+		"eat_until": 0.0, "violation_until": 0.0, "speed_until": 0.0, "recover_at": 0.0,
+		"burp_at": 0.0, "growl_at": elapsed + 15, "pop_until": 0.0,
+		"epoch": 0, "limbs": [], "launch": Vector3.ZERO}
+	world.ensure_players()
+	if id != 1: initial_state.rpc_id(id, make_snapshot())
+	event.rpc("banner", {"text": "%s fell down the transfer chute." % players[id].name})
+	print("PLAYER_JOINED ", id, " ", players[id].name)
+
+func remove_player(id: int) -> void:
+	if not players.has(id): return
+	world.release_hand(id)
+	for other in players:
+		if players[other].carrier == id: launch_player(other, Vector3.UP * 2)
+	players.erase(id)
+	world.ensure_players()
+	check_wipe()
+
+@rpc("any_peer", "call_remote", "reliable", 0)
+func leave_server() -> void:
+	if is_host(): remove_player(multiplayer.get_remote_sender_id())
+
+func request(action_name: String, data: Dictionary = {}) -> void:
+	if not Net.active: return
+	if is_host(): handle_action(1, action_name, data)
+	else: action.rpc_id(1, action_name, data)
+
+@rpc("any_peer", "call_remote", "reliable", 0)
+func action(action_name: String, data: Dictionary) -> void:
+	if is_host(): handle_action(multiplayer.get_remote_sender_id(), action_name, data)
+
+func handle_action(id: int, action_name: String, data: Dictionary) -> void:
+	if not players.has(id): return
+	if action_name == "start" and id == 1 and phase in ["lobby", "game_over"]:
+		start_run()
+		return
+	var p: Dictionary = players[id]
+	if not p.alive or phase == "game_over": return
+	if action_name == "wiggle" and p.mode == "carried" and allowed(id, "wiggle", 0.4):
+		p.recover_at += 1
+		if p.recover_at >= 3:
+			if players.has(p.carrier): players[p.carrier].held = ""
+			launch_player(id, Vector3.UP * 4)
+		return
+	if p.mode in ["carried", "ragdoll"]: return
+	match action_name:
+		"interact":
+			if allowed(id, "interact", 0.15): world.interact(id, str(data.get("target", "")))
+		"throw", "drop":
+			if p.eat_until <= 0 and allowed(id, "throw", 0.2):
+				world.release_hand(id, clampf(float(data.get("charge", 0.0)), 0, 1) if action_name == "throw" else -1.0)
+		"use":
+			if p.eat_until <= 0 and allowed(id, "use", 0.5): world.use_held(id)
+		"punch":
+			if p.held == "" and allowed(id, "punch", 0.6): world.punch(id)
+		"stand":
+			if p.mode == "seated":
+				p.position = world.seat_positions[p.seat] + Vector3(0.95, 0, 0)
+				p.mode = "walk"
+				p.seat = -1
+				p.epoch += 1
+		"fart":
+			if allowed(id, "fart", 4.0): NoiseBus.emit_noise(p.position, 50, str(id), "fart")
+		"step":
+			if p.mode == "walk" and allowed(id, "step", 0.25):
+				NoiseBus.emit_noise(p.position, 16 if data.get("sprint", false) else 4, str(id), "footstep")
+		"buy":
+			if allowed(id, "buy", 0.2): world.buy(id, str(data.get("item", "")))
+
+func allowed(id: int, key: String, interval: float) -> bool:
+	var token := str(id) + ":" + key
+	if elapsed < float(cooldowns.get(token, 0.0)): return false
+	cooldowns[token] = elapsed + interval
+	return true
+
+@rpc("any_peer", "call_remote", "unreliable_ordered", 2)
+func pose(position: Vector3, yaw: float, pitch: float, limbs: Array, pose_epoch: int) -> void:
+	if is_host(): accept_pose(multiplayer.get_remote_sender_id(), position, yaw, pitch, limbs, pose_epoch)
+
+func accept_pose(id: int, position: Vector3, yaw: float, pitch: float, limbs: Array, pose_epoch: int) -> void:
+	if not players.has(id) or not position.is_finite() or not is_finite(yaw) or not is_finite(pitch): return
+	var p: Dictionary = players[id]
+	if p.epoch != pose_epoch: return
+	if p.mode in ["walk", "ragdoll", "dead"]: p.position = position
+	p.yaw = yaw
+	p.pitch = clampf(pitch, -1.5, 1.5)
+	if p.mode == "ragdoll" and limbs.size() == 6: p.limbs = limbs
+
+func start_run() -> void:
+	epoch += 1
+	grade = 1
+	survived = 0
+	rocket_parts = 0
+	world.clear_items()
+	world.teacher.drugs = 0
+	for id in players:
+		players[id].money = config.starting_bitcoin
+		respawn(id)
+	start_preparation()
+
+func start_preparation() -> void:
+	phase = "preparation"
+	remaining = config.preparation_seconds
+	world.prepare_class()
+	for id in players: players[id].food = 0.0
+	event.rpc("banner", {"text": "GRADE %d • Drug the coffee. Find food. Take a seat." % grade})
+	print("PHASE preparation grade=", grade)
+
+func start_class() -> void:
+	phase = "class"
+	remaining = config.class_seconds
+	world.teacher.start_class()
+	event.rpc("sound", {"position": Vector3(0, 3, -8), "key": "bell", "loudness": 100.0})
+	event.rpc("banner", {"text": "CLASS STARTED • Sit down. Eat quietly. Blame your friends."})
+	for id in players:
+		if players[id].alive and players[id].position.z > 8.0:
+			kill(id, "was absent at roll call")
+	print("PHASE class")
+
+func start_break() -> void:
+	if phase == "game_over": return
+	survived += 1
+	phase = "break"
+	remaining = config.break_seconds
+	world.teacher.leave()
+	world.teacher.drugs = 0
+	for id in players:
+		var p: Dictionary = players[id]
+		p.money += config.attendance_allowance + int(p.food * config.bitcoin_per_food)
+		if not p.alive:
+			p.money -= config.cloning_fee
+			respawn(id)
+	grade += 1
+	event.rpc("sound", {"position": Vector3(0, 3, -8), "key": "bell", "loudness": 100.0})
+	event.rpc("banner", {"text": "RECESS • Allowances paid. Clones cost ₿%d. Vending is open!" % config.cloning_fee})
+	print("PHASE break survived=", survived)
+
+func respawn(id: int) -> void:
+	world.release_hand(id)
+	var p: Dictionary = players[id]
+	p.alive = true
+	p.stomach = config.stomach_max
+	p.mode = "walk"
+	p.position = world.chute_position(players.keys().find(id))
+	p.seat = -1
+	p.carrier = 0
+	p.eat_until = 0.0
+	p.burp_at = 0.0
+	p.pop_until = 0.0
+	p.speed_until = 0.0
+	p.violation_until = 0.0
+	p.limbs = []
+	p.epoch += 1
+
+func damage(id: int, amount: float, reason: String, impulse: Vector3 = Vector3.ZERO) -> void:
+	if not players.has(id) or not players[id].alive: return
+	players[id].stomach = maxf(0, players[id].stomach - amount)
+	event.rpc("hurt", {"id": id})
+	if players[id].stomach <= 0: kill(id, reason, impulse)
+	elif impulse.length() > 0: launch_player(id, impulse)
+
+func kill(id: int, reason: String, impulse: Vector3 = Vector3.ZERO) -> void:
+	if not players[id].alive: return
+	var p: Dictionary = players[id]
+	world.release_hand(id)
+	if p.carrier and players.has(p.carrier): players[p.carrier].held = ""
+	p.alive = false
+	p.mode = "dead"
+	p.seat = -1
+	p.carrier = 0
+	p.eat_until = 0.0
+	p.epoch += 1
+	world.spawn_corpse(id, impulse)
+	event.rpc("banner", {"text": "%s %s." % [p.name, reason]})
+	check_wipe()
+
+func check_wipe() -> void:
+	if not phase in ["class", "preparation"]: return
+	for p in players.values():
+		if p.alive: return
+	phase = "game_over"
+	world.teacher.leave()
+	event.rpc("banner", {"text": "CLASS DISMISSED FOREVER • %d classes • %d rocket parts" % [survived, rocket_parts]})
+	print("PHASE game_over")
+
+func launch_player(id: int, impulse: Vector3) -> void:
+	if not players.has(id) or not players[id].alive: return
+	world.release_hand(id)
+	var p: Dictionary = players[id]
+	if p.carrier and players.has(p.carrier): players[p.carrier].held = ""
+	p.carrier = 0
+	p.seat = -1
+	p.mode = "ragdoll"
+	p.launch = impulse
+	p.recover_at = elapsed + config.ragdoll_seconds
+	p.eat_until = 0.0
+	p.limbs = []
+	p.epoch += 1
+
+func finish_eating(id: int) -> void:
+	var p: Dictionary = players[id]
+	p.eat_until = 0.0
+	var item = world.items.get(p.held)
+	if not is_instance_valid(item): return
+	var data: ItemData = item.data
+	p.stomach = minf(config.stomach_max, p.stomach + data.food)
+	if phase == "class": p.food += data.food
+	if data.effect == "speed": p.speed_until = elapsed + 12
+	if data.effect == "pop_rocks": p.pop_until = elapsed + 8
+	p.burp_at = elapsed + randf_range(1, 5)
+	p.held = ""
+	world.remove_item(item.entity_id)
+
+@rpc("authority", "call_local", "reliable", 0)
+func event(kind: String, data: Dictionary) -> void:
+	match kind:
+		"banner": announcement.emit(str(data.text))
+		"sound": Sfx.play_at(str(data.key), data.position, float(data.get("loudness", 40)))
+	effect.emit(kind, data)

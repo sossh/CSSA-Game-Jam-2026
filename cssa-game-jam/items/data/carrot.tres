@@ -1,0 +1,13 @@
+[gd_resource type="Resource" script_class="ItemData" load_steps=2 format=3]
+[ext_resource type="Script" path="res://items/item_data.gd" id="1"]
+[resource]
+script = ExtResource("1")
+id = "carrot"
+display_name = "Suspiciously crunchy carrot"
+price = 4
+food = 22.0
+eating_noise = 55.0
+spawn_weight = 7.0
+size = Vector3(0.09, 0.3, 0.09)
+color = Color(1, 0.4, 0.05, 1)
+sound = "crunch"

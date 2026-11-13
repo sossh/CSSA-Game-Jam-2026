@@ -1,0 +1,13 @@
+[gd_resource type="Resource" script_class="ItemData" load_steps=2 format=3]
+[ext_resource type="Script" path="res://items/item_data.gd" id="1"]
+[resource]
+script = ExtResource("1")
+id = "knife"
+display_name = "Karambit"
+description = "A really inappropriate school supply."
+price = 30
+minimum_grade = 3
+effect = "knife"
+spawn_weight = 0.2
+size = Vector3(0.04, 0.08, 0.3)
+color = Color(0.8, 0.8, 0.9, 1)

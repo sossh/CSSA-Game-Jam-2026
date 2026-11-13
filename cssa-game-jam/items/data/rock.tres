@@ -1,0 +1,13 @@
+[gd_resource type="Resource" script_class="ItemData" load_steps=2 format=3]
+[ext_resource type="Script" path="res://items/item_data.gd" id="1"]
+[resource]
+script = ExtResource("1")
+id = "rock"
+display_name = "Moon rock"
+description = "Heavy. Throwable. Not food, despite the packaging."
+price = 3
+effect = "rock"
+mass = 2.0
+impact_noise = 65.0
+spawn_weight = 4.0
+color = Color(0.4, 0.42, 0.5, 1)

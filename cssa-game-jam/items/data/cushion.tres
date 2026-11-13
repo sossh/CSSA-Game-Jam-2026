@@ -1,0 +1,13 @@
+[gd_resource type="Resource" script_class="ItemData" load_steps=2 format=3]
+[ext_resource type="Script" path="res://items/item_data.gd" id="1"]
+[resource]
+script = ExtResource("1")
+id = "cushion"
+display_name = "Whoopee cushion"
+description = "Squeeze it or leave it on somebody's chair."
+price = 8
+effect = "cushion"
+spawn_weight = 2.0
+impact_noise = 8.0
+size = Vector3(0.3, 0.06, 0.3)
+color = Color(1, 0.5, 0.6, 1)

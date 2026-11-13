@@ -1,0 +1,13 @@
+[gd_resource type="Resource" script_class="ItemData" load_steps=2 format=3]
+[ext_resource type="Script" path="res://items/item_data.gd" id="1"]
+[resource]
+script = ExtResource("1")
+id = "loot_box"
+display_name = "Mystery lunchbox"
+description = "Use to reveal one random item, possibly from next grade."
+price = 15
+minimum_grade = 2
+effect = "loot_box"
+spawn_weight = 0.5
+size = Vector3(0.4, 0.3, 0.3)
+color = Color(0.9, 0.7, 0.1, 1)
