@@ -4,3 +4,9 @@ Put links in here to assets we are using
 https://moltenmaps.itch.io/molten-maps-scifi-pack - world assets
 https://somasnacks.itch.io/stylized-low-poly-character-template - player model
 https://comp3interactive.itch.io/low-poly-human-mesh/download/eyJpZCI6MTIwNjc2NywiZXhwaXJlcyI6MTc5NDU4ODUyN30%3D.6RSu1Yz1Y08VEHOHNIN7di0XwJo%3D - teacher model(edited)
+Falcon 9 - SpaceX by Stanley Creative, adapted by Uchusen Rockets (reduced, unbranded, rescaled and split into stages). Local copies convert vertex attributes to floats for Godot. CC BY 4.0.
+https://sketchfab.com/3d-models/falcon-9-spacex-394f7cf52d124bbd9db69f24d1ff2f08
+https://github.com/johnmorrisdotca/uchusen-rockets/blob/main/NOTICE.md
+SpaceX Falcon 9 Strongback by Thor's Hammer, CC BY 4.0.
+https://sketchfab.com/3d-models/spacex-falcon-9-strongback-854921c608784624ad2af042a24fded4
+https://creativecommons.org/licenses/by/4.0/

@@ -1,0 +1,80 @@
+[gd_scene load_steps=9 format=3]
+
+[ext_resource type="PackedScene" path="res://world/props/planets/falcon-9-block-5-first-stage-godot.glb" id="1_booster"]
+[ext_resource type="PackedScene" path="res://world/props/planets/falcon-9-block-5-second-stage-godot.glb" id="2_upper_stage"]
+[ext_resource type="PackedScene" path="res://world/props/planets/falcon-9-block-5-fairing-godot.glb" id="3_fairing"]
+[ext_resource type="PackedScene" path="res://world/props/planets/spacex_falcon_9_strongback.glb" id="4_strongback"]
+
+[sub_resource type="StandardMaterial3D" id="PadMaterial"]
+albedo_color = Color(0.23, 0.26, 0.29, 1)
+roughness = 0.9
+
+[sub_resource type="BoxMesh" id="PadMesh"]
+material = SubResource("PadMaterial")
+size = Vector3(25, 10, 20)
+
+[sub_resource type="BoxShape3D" id="PadShape"]
+size = Vector3(25, 10, 20)
+
+[sub_resource type="CylinderMesh" id="MountMesh"]
+material = SubResource("PadMaterial")
+top_radius = 2.35
+bottom_radius = 2.95
+height = 0.9
+
+[node name="LunarLaunchSite" type="Node3D"]
+
+[node name="Platform" type="StaticBody3D" parent="."]
+position = Vector3(0, -5, -4)
+
+[node name="Mesh" type="MeshInstance3D" parent="Platform"]
+mesh = SubResource("PadMesh")
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="Platform"]
+shape = SubResource("PadShape")
+
+[node name="LaunchMount" type="MeshInstance3D" parent="."]
+position = Vector3(0, 0.45, 0)
+mesh = SubResource("MountMesh")
+
+[node name="Strongback" parent="." instance=ExtResource("4_strongback")]
+position = Vector3(0, 1.668, -6.6)
+rotation = Vector3(0, 1.5707963, 0)
+
+[node name="Falcon9" type="Node3D" parent="."]
+editor_description = "Full-size preview. The upper-stage nozzle nests inside the booster's interstage."
+position = Vector3(0, 0.9, 0)
+
+[node name="Booster" parent="Falcon9" instance=ExtResource("1_booster")]
+
+[node name="UpperStage" parent="Falcon9" instance=ExtResource("2_upper_stage")]
+position = Vector3(0, 41.54, 0)
+
+[node name="Fairing" parent="Falcon9" instance=ExtResource("3_fairing")]
+position = Vector3(0, 56.7, 0)
+
+[node name="Lighting" type="Node3D" parent="."]
+
+[node name="PadFill" type="OmniLight3D" parent="Lighting"]
+position = Vector3(-7, 8, 9)
+light_color = Color(1, 0.96, 0.91, 1)
+light_energy = 1.7
+light_specular = 0.2
+omni_range = 23.0
+omni_attenuation = 1.3
+
+[node name="BoosterFill" type="OmniLight3D" parent="Lighting"]
+position = Vector3(-9, 31, 10)
+light_color = Color(1, 0.97, 0.93, 1)
+light_energy = 2.0
+light_specular = 0.2
+omni_range = 25.0
+omni_attenuation = 1.3
+
+[node name="UpperStageFill" type="OmniLight3D" parent="Lighting"]
+position = Vector3(-9, 56, 10)
+light_color = Color(1, 0.97, 0.93, 1)
+light_energy = 2.0
+light_specular = 0.2
+omni_range = 26.0
+omni_attenuation = 1.3
