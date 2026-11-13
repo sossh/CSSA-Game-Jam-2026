@@ -2,9 +2,9 @@
 
 ## Run
 
-Open `cssa-game-jam/project.godot` in **Godot 4.7.x** and press F6 on `main/main.tscn` or F5 for the project. One player hosts; up to five others join the displayed code on the same LAN. Host presses **Enter** after skipping the intro to start. `127.0.0.1` works for two local instances.
+Open `cssa-game-jam/project.godot` in **Godot 4.7.x** and press F6 on `main/main.tscn` or F5 for the project. One player selects **Host Classroom**. Up to five others select **Find LAN Games**, choose the host, and select **Join LAN Game**, or enter the host's Wi-Fi IP or join code. Host presses **Enter** after skipping the intro to start. `127.0.0.1` works for two local instances.
 
-Host codes encode IPv4 only; normal play uses UDP port **7777**. Test runners pass a separate `--port=` to both peers so they can run alongside a live game. If the automatic interface choice picks a VPN/virtual interface, enter the host's LAN IPv4 in the host address field. No dedicated service, Steam, relay, account, or voice dependency.
+Host codes encode IPv4 only. Normal play uses UDP **7777** for gameplay and UDP **7778** for LAN discovery. Discovery uses the source address of the host's reply. Test runners pass a separate `--port=` to both peers so they can run alongside a live game. If the automatic interface choice picks a VPN/virtual interface, enter the host's LAN IPv4 in the host address field. No dedicated service, Steam, relay, account, or voice dependency.
 
 ## Controls
 

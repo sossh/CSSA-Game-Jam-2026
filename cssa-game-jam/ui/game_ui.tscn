@@ -59,18 +59,36 @@ max_length = 20
 [node name="AddressField" type="LineEdit" parent="Root/Menu/Content"]
 unique_name_in_owner = true
 layout_mode = 2
-placeholder_text = "Host LAN IPv4 (optional; auto-detected otherwise)"
+placeholder_text = "Host Wi-Fi IP (optional, for sharing a code)"
 [node name="Host" type="Button" parent="Root/Menu/Content"]
 layout_mode = 2
 custom_minimum_size = Vector2(0, 42)
 text = "HOST CLASSROOM"
+[node name="LANRow" type="HBoxContainer" parent="Root/Menu/Content"]
+layout_mode = 2
+[node name="FindLAN" type="Button" parent="Root/Menu/Content/LANRow"]
+layout_mode = 2
+custom_minimum_size = Vector2(0, 42)
+text = "FIND LAN GAMES"
+[node name="LANGames" type="OptionButton" parent="Root/Menu/Content/LANRow"]
+unique_name_in_owner = true
+visible = false
+layout_mode = 2
+size_flags_horizontal = 3
+fit_to_longest_item = false
+[node name="JoinLAN" type="Button" parent="Root/Menu/Content/LANRow"]
+unique_name_in_owner = true
+visible = false
+layout_mode = 2
+custom_minimum_size = Vector2(0, 42)
+text = "JOIN LAN GAME"
 [node name="JoinRow" type="HBoxContainer" parent="Root/Menu/Content"]
 layout_mode = 2
 [node name="CodeField" type="LineEdit" parent="Root/Menu/Content/JoinRow"]
 unique_name_in_owner = true
 layout_mode = 2
 size_flags_horizontal = 3
-placeholder_text = "Join code, e.g. C0A8-012A"
+placeholder_text = "Host IP or join code"
 [node name="Join" type="Button" parent="Root/Menu/Content/JoinRow"]
 layout_mode = 2
 custom_minimum_size = Vector2(0, 42)
@@ -390,6 +408,8 @@ grow_horizontal = 2
 grow_vertical = 0
 text = "SKIP INTRO [Space / Esc]"
 [connection signal="pressed" from="Root/Menu/Content/Host" to="." method="host_pressed"]
+[connection signal="pressed" from="Root/Menu/Content/LANRow/FindLAN" to="." method="find_lan_pressed"]
+[connection signal="pressed" from="Root/Menu/Content/LANRow/JoinLAN" to="." method="join_lan_pressed"]
 [connection signal="pressed" from="Root/Menu/Content/JoinRow/Join" to="." method="join_pressed"]
 [connection signal="text_submitted" from="Root/Menu/Content/JoinRow/CodeField" to="." method="join_pressed"]
 [connection signal="pressed" from="Root/Menu/Content/Quit" to="." method="quit_pressed"]
