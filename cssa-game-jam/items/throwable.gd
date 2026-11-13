@@ -97,6 +97,12 @@ func resolve_impact(body: Node, speed: float, hit_velocity: Vector3) -> void:
 	var loudness := minf(110, (45 if kid else data.impact_noise) * clampf(speed / 7, 0.3, 1.8))
 	var sound := "splat" if data.effect == "tomato" and not kid else "impact"
 	NoiseBus.emit_noise(global_position, loudness, thrower, sound)
+	if thrower != "" and speed > 4 and Game.allowed(0, entity_id + ":impact_log", 1.5):
+		var hit_name := "the classroom"
+		if body is StudentPlayer: hit_name = Game.actor_name(str(body.peer_id))
+		elif body is ClassroomTeacher: hit_name = "the teacher"
+		elif body is ClassroomItem: hit_name = body.display_name()
+		Game.log_activity("%s's %s hits %s." % [Game.actor_name(thrower), display_name(), hit_name])
 	if body is StudentPlayer and str(body.peer_id) != thrower:
 		var impulse := hit_velocity.normalized() * minf(12, speed * 0.7) + Vector3.UP * 3
 		if not kid and data.effect == "tomato":

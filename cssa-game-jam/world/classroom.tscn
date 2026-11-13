@@ -27,7 +27,7 @@ size = Vector3(9, 2.8, 0.1)
 
 [sub_resource type="Environment" id="Environment"]
 background_mode = 1
-background_color = Color(0.015, 0.02, 0.055, 1)
+background_color = Color(0.004, 0.005, 0.012, 1)
 ambient_light_source = 3
 ambient_light_color = Color(0.7, 0.8, 1, 1)
 ambient_light_energy = 0.75
@@ -212,4 +212,5 @@ transform = Transform3D(1, 0, 0, 0, -0.0007670362, 0.9999997, 0, -0.9999997, -0.
 transform = Transform3D(0.999958, 0.009004256, -0.0017469665, -0.009047927, 0.99959856, -0.026850035, 0.0015045006, 0.026864711, 0.99963796, -1.5157814, -12.36757, 1.2813778)
 
 [editable path="Room/Floor"]
+[editable path="Room/LeftWall"]
 [editable path="Room/Door"]

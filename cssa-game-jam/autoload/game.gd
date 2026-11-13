@@ -3,6 +3,10 @@ extends Node
 signal announcement(text: String)
 signal state_changed
 signal effect(kind: String, data: Dictionary)
+signal activity_added(line: String)
+
+const ACTIVITY_LIMIT := 60
+var activity_history: PackedStringArray = []
 
 var config: GameConfig = preload("res://config/game_config.tres")
 var world: Node3D
@@ -25,6 +29,7 @@ func is_host() -> bool:
 	return Net.active and multiplayer.is_server()
 
 func reset() -> void:
+	activity_history.clear()
 	players.clear()
 	phase = "menu"
 	remaining = 0
@@ -106,6 +111,8 @@ func snapshot_chunk(sequence: int, index: int, count: int, chunk: PackedByteArra
 @rpc("authority", "call_remote", "reliable", 0)
 func initial_state(data: Dictionary) -> void:
 	apply_snapshot(data)
+	activity_history = data.get("activity", PackedStringArray())
+	activity_added.emit("")
 
 func apply_snapshot(data: Dictionary) -> void:
 	if not Net.active or not is_instance_valid(world): return
@@ -137,7 +144,10 @@ func register(display_name: String) -> void:
 		"burp_at": 0.0, "growl_at": elapsed + 15, "pop_until": 0.0,
 		"epoch": 0, "limbs": [], "launch": Vector3.ZERO}
 	world.ensure_players()
-	if id != 1: initial_state.rpc_id(id, make_snapshot())
+	if id != 1:
+		var initial := make_snapshot()
+		initial["activity"] = activity_history
+		initial_state.rpc_id(id, initial)
 	event.rpc("banner", {"text": "%s fell down the transfer chute." % players[id].name})
 	print("PLAYER_JOINED ", id, " ", players[id].name)
 
@@ -344,10 +354,28 @@ func finish_eating(id: int) -> void:
 	p.burp_at = elapsed + randf_range(1, 5)
 	p.held = ""
 	world.remove_item(item.entity_id)
+	log_activity("%s finished %s (+%d stomach)." % [p.name, data.display_name, int(data.food)])
+
+func actor_name(source: String) -> String:
+	if source.is_valid_int() and players.has(int(source)): return players[int(source)].name
+	if is_instance_valid(world) and world.items.has(source): return world.items[source].display_name()
+	return "Something" if source.is_empty() else "A student"
+
+func log_activity(text: String) -> void:
+	if is_host(): event.rpc("activity", {"text": text, "time": elapsed})
+
+func append_activity(text: String, time: float) -> void:
+	var line := "[%02d:%02d] %s" % [int(time) / 60, int(time) % 60, text]
+	activity_history.append(line)
+	while activity_history.size() > ACTIVITY_LIMIT: activity_history.remove_at(0)
+	activity_added.emit(line)
 
 @rpc("authority", "call_local", "reliable", 0)
 func event(kind: String, data: Dictionary) -> void:
 	match kind:
-		"banner": announcement.emit(str(data.text))
+		"banner":
+			announcement.emit(str(data.text))
+			append_activity(str(data.text), float(data.get("time", elapsed)))
+		"activity": append_activity(str(data.text), float(data.get("time", elapsed)))
 		"sound": Sfx.play_at(str(data.key), data.position, float(data.get("loudness", 40)))
 	effect.emit(kind, data)

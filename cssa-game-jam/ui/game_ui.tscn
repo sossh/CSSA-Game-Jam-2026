@@ -1,6 +1,7 @@
-[gd_scene load_steps=5 format=3]
+[gd_scene load_steps=6 format=3]
 [ext_resource type="Script" path="res://ui/game_ui.gd" id="1"]
 [ext_resource type="PackedScene" path="res://ui/vending_entry.tscn" id="2"]
+[ext_resource type="PackedScene" path="res://ui/event_feed.tscn" id="3"]
 [sub_resource type="StyleBoxFlat" id="PanelStyle"]
 bg_color = Color(0.025, 0.04, 0.09, 0.96)
 border_width_left = 2
@@ -227,6 +228,7 @@ offset_top = 125.0
 offset_right = 800.0
 offset_bottom = 145.0
 theme_override_font_sizes/font_size = 16
+[node name="EventFeed" parent="Root/HUD" instance=ExtResource("3")]
 [node name="DamageTint" type="ColorRect" parent="Root"]
 unique_name_in_owner = true
 layout_mode = 1
@@ -394,7 +396,7 @@ modulate = Color(1, 0.85, 0.2, 1)
 theme_override_font_sizes/font_size = 31
 autowrap_mode = 3
 horizontal_alignment = 1
-text = "EPISODE I\nA NEW CURRICULUM\n\nIt is a period of intergalactic confusion. Having raided Earth, curious extraterrestrials have become obsessed with human culture, snacks, and questionable television broadcasts.\n\nTheir researchers cloned one human specimen. Fresh subjects now tumble down a cold metal chute into an orbiting academy. You are its latest transfer student.\n\nThe syllabus is simple: attend class, or be vaporized. Eat to survive. Spend your allowance. Build a starship, one suspicious purchase at a time.\n\nAnd whatever you do…\n\nDO NOT DISTURB THE TEACHER."
+text = "EPISODE I\nA NEW CURRICULUM\n\nIt is a period of intergalactic confusion. Having raided Earth, curious extraterrestrials have become obsessed with human culture, snacks, and questionable television broadcasts.\n\nTheir researchers cloned one human specimen. Fresh subjects now tumble down a cold metal chute into an alien academy on the Moon. Earth hangs above the horizon. You are the academy's latest transfer student.\n\nThe syllabus is simple: attend class, or be vaporized. Eat to survive. Spend your allowance. Build a starship, one suspicious purchase at a time.\n\nAnd whatever you do…\n\nDO NOT DISTURB THE TEACHER."
 [node name="Skip" type="Button" parent="Root/Crawl"]
 anchor_left = 0.5
 anchor_top = 1.0

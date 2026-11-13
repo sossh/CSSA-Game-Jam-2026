@@ -37,6 +37,7 @@ func run_host() -> void:
 	var client: int = Game.players.keys().filter(func(id): return id != 1)[0]
 	Game.start_run()
 	Game.remaining = 60
+	await verify_presentation()
 	teleport(1, Vector3(0, 0.1, 5.7))
 	teleport(client, Vector3(0.6, 0.1, 5.7))
 	await wait(0.4)
@@ -47,6 +48,7 @@ func run_host() -> void:
 	Game.world.interact(client, tomato.entity_id)
 	verify(tomato.holder == 1 and Game.players[client].held == "", "Only one peer wins a contested pickup")
 	Game.world.release_hand(1, 0.8)
+	verify("throws Suspicious tomato" in "\n".join(Game.activity_history), "Throw appears in timestamped incident feed")
 	verify(tomato.holder == 0 and tomato.linear_velocity.length() > 10, "Host launches item with charged velocity")
 	Game.world.interact(1, "player:" + str(client))
 	verify(Game.players[client].mode == "carried", "Friend can be carried")
@@ -142,6 +144,24 @@ func verify_scene_nodes() -> void:
 	ui.open_vending()
 	verify(ui.vending_rows.get_child_count() == 17 and ui.vending_panel.visible, "Scene-authored vending controls open and refresh")
 	ui.close_vending()
+	verify(ui.has_node("Root/HUD/EventFeed/Content/Entries"), "Incident feed is authored in the HUD scene")
+	for file in ["impact_burst", "eating", "fart", "burp", "footstep", "tomato_splat", "shot", "pop_rocks"]:
+		var scene = load("res://effects/" + file + ".tscn").instantiate()
+		verify(scene.get_node("Particles") is CPUParticles3D and scene.has_node("Cleanup"), file + " uses scene-authored Godot particles and cleanup")
+		scene.free()
+
+func verify_presentation() -> void:
+	Game.log_activity("NETWORK_PRESENTATION_MARKER")
+	var effects := Game.world.get_node("Effects")
+	for key in ["chew", "impact", "burp", "fart", "footstep", "splat", "pop_rocks"]:
+		NoiseBus.emit_noise(Vector3(0, 0, 5), 0, "1", key)
+	verify(effects.get_child_count() >= 7, "Gameplay events spawn particle scene instances")
+	var spawned: Array = effects.get_children()
+	verify("NETWORK_PRESENTATION_MARKER" in get_tree().current_scene.get_node("UI/Root/HUD/EventFeed/Content/Entries").text, "Incident feed updates from authoritative events")
+	await wait(2.7)
+	verify(spawned.all(func(instance): return not is_instance_valid(instance)), "One-shot particle instances clean themselves up")
+	for i in range(65): Game.append_activity("Bounded history test", Game.elapsed)
+	verify(Game.activity_history.size() == Game.ACTIVITY_LIMIT, "Incident history is bounded")
 
 func run_client() -> void:
 	for attempt in range(150):
@@ -151,6 +171,7 @@ func run_client() -> void:
 	await wait(1)
 	verify(Game.world.player_nodes.size() >= 2, "Client creates both player bodies")
 	verify(Game.world.items.size() > 0, "Client receives classroom objects")
+	verify("NETWORK_PRESENTATION_MARKER" in "\n".join(Game.activity_history), "Client receives shared incident feed")
 	await wait(2)
 	var id := multiplayer.get_unique_id()
 	verify(Game.players.has(id), "Client retains its assigned identity")

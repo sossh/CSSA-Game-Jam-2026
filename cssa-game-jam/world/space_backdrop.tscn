@@ -1,18 +1,28 @@
-[gd_scene load_steps=5 format=3]
+[gd_scene load_steps=4 format=3]
+
+[ext_resource type="PackedScene" path="res://world/props/planets/EarthClouds_1_12756.glb" id="1_earth"]
+
 [sub_resource type="BoxMesh" id="StarMesh"]
-size = Vector3(0.3, 0.3, 0.3)
+size = Vector3(0.15, 0.15, 0.15)
+
 [sub_resource type="StandardMaterial3D" id="StarMaterial"]
-albedo_color = Color(1, 1, 1, 1)
-[sub_resource type="BoxMesh" id="PlanetMesh"]
-size = Vector3(12, 12, 12)
-[sub_resource type="StandardMaterial3D" id="PlanetMaterial"]
-albedo_color = Color(0.2, 0.4, 0.9, 1)
-roughness = 0.85
+shading_mode = 0
+albedo_color = Color(0.58, 0.63, 0.74, 1)
+
 [node name="SpaceBackdrop" type="Node3D"]
-[node name="Planet" type="MeshInstance3D" parent="."]
-position = Vector3(30, 30, -45)
-mesh = SubResource("PlanetMesh")
-material_override = SubResource("PlanetMaterial")
+
+[node name="Earth" parent="." instance=ExtResource("1_earth")]
+position = Vector3(-310, 83, -8)
+rotation = Vector3(0, 0.55, -0.23)
+scale = Vector3(0.056, 0.056, 0.056)
+
+[node name="EarthLight" type="OmniLight3D" parent="."]
+position = Vector3(-225, 110, 32)
+light_color = Color(0.89, 0.94, 1, 1)
+light_energy = 4.0
+omni_range = 160.0
+omni_attenuation = 0.35
+
 [node name="Stars" type="Node3D" parent="."]
 [node name="Star01" type="MeshInstance3D" parent="Stars"]
 position = Vector3(65, 15, 0)

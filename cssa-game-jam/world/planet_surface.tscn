@@ -1,0 +1,42 @@
+[gd_scene load_steps=5 format=3]
+
+[ext_resource type="PackedScene" path="res://world/props/planets/Moon_NASA_LRO_8k_Topo_Small.glb" id="1_moon"]
+
+[sub_resource type="SphereShape3D" id="GroundShape"]
+radius = 100.8
+
+[sub_resource type="BoxShape3D" id="SideBoundary"]
+size = Vector3(1, 100, 101)
+
+[sub_resource type="BoxShape3D" id="EndBoundary"]
+size = Vector3(101, 100, 1)
+
+[node name="PlanetSurface" type="Node3D"]
+
+[node name="Ground" type="StaticBody3D" parent="."]
+position = Vector3(0, -101.19, 3)
+
+[node name="Moon" parent="Ground" instance=ExtResource("1_moon")]
+scale = Vector3(102, 102, 102)
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="Ground"]
+shape = SubResource("GroundShape")
+
+[node name="SurfaceBoundary" type="StaticBody3D" parent="."]
+editor_description = "Keeps players and items within the walkable patch of terrain."
+
+[node name="West" type="CollisionShape3D" parent="SurfaceBoundary"]
+position = Vector3(-50, 49, 10)
+shape = SubResource("SideBoundary")
+
+[node name="East" type="CollisionShape3D" parent="SurfaceBoundary"]
+position = Vector3(50, 49, 10)
+shape = SubResource("SideBoundary")
+
+[node name="North" type="CollisionShape3D" parent="SurfaceBoundary"]
+position = Vector3(0, 49, -40)
+shape = SubResource("EndBoundary")
+
+[node name="South" type="CollisionShape3D" parent="SurfaceBoundary"]
+position = Vector3(0, 49, 60)
+shape = SubResource("EndBoundary")

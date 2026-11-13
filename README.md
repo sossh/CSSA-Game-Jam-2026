@@ -6,7 +6,11 @@ snacks and friends, survive, spend Bitcoin, and add to the shared escape rocket.
 
 ## Play
 
-1. Open `cssa-game-jam/project.godot` with Godot **4.7.x** and press **F5**.
+1. Open `cssa-game-jam/project.godot` with Godot **4.7.x**, wait for the editor
+   to finish importing assets, and press **F5**. For a terminal launch from the
+   repository root, run `python3 cssa-game-jam/run_game.py` (use `py` on Windows).
+   The launcher imports new and changed assets before starting the game. It uses
+   `godot` from your PATH, or the executable set in `GODOT_BIN`.
 2. One player selects **Host Classroom**. Friends select **Find LAN Games**, choose the host, and select **Join LAN Game**. They can also enter the host's Wi-Fi IP or join code.
 3. Skip the intro; host presses **Enter** to start. Default rounds: 30s preparation,
    5min class, 90s break. Edit `cssa-game-jam/config/game_config.tres` to tune.
