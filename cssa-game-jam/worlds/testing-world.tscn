@@ -2,6 +2,10 @@
 
 [node name="Node3D" type="Node3D" unique_id=914777325]
 
+[node name="DirectionalLight3D" type="DirectionalLight3D" parent="." unique_id=1840982885]
+transform = Transform3D(-0.8660254, -0.43301278, 0.25, 0, 0.49999997, 0.86602545, -0.50000006, 0.75, -0.43301266, 0.7628484, 4.7782936, -2.6357114)
+shadow_enabled = true
+
 [node name="CSGBox3D" type="CSGBox3D" parent="." unique_id=995994517]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.11262512, -0.0376333, -1.3187561)
 use_collision = true
