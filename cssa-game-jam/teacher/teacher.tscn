@@ -12,6 +12,7 @@
 [ext_resource type="Script" uid="uid://bsm7bjvvmfgg8" path="res://teacher/states/TeacherLeavingState.gd" id="10_wce6b"]
 [ext_resource type="Script" uid="uid://3p21d1p2fpbf" path="res://teacher/states/TeacherShootState.gd" id="11_hd72k"]
 [ext_resource type="Script" uid="uid://drquffukfl6hh" path="res://teacher/states/TeacherWarningState.gd" id="12_3j074"]
+[ext_resource type="AudioStream" uid="uid://cujjxk1wej3ym" path="res://assets/audio/lecture/chalkboard_40seconds.wav" id="13_chalk"]
 
 [sub_resource type="CapsuleShape3D" id="TeacherShape"]
 radius = 0.38
@@ -116,3 +117,10 @@ is_alert_state = true
 script = ExtResource("12_3j074")
 display_name = "CCHALK STOPPED…"
 is_alert_state = true
+
+[node name="ChalkAudio" type="AudioStreamPlayer3D" parent="." unique_id=1982736411]
+unique_name_in_owner = true
+stream = ExtResource("13_chalk")
+volume_db = 4.0
+unit_size = 8.0
+max_distance = 35.0

@@ -11,6 +11,7 @@
 [ext_resource type="PackedScene" path="res://world/space_backdrop.tscn" id="9"]
 [ext_resource type="PackedScene" path="res://world/planet_surface.tscn" id="10"]
 [ext_resource type="PackedScene" path="res://world/props/lunar_launch_site.tscn" id="11_launch_site"]
+[ext_resource type="AudioStream" uid="uid://8s6q7oh8m81p" path="res://assets/audio/ambiance/classroom_ambiance.wav" id="12_ambiance"]
 
 [sub_resource type="StandardMaterial3D" id="FloorMaterial"]
 albedo_color = Color(0.18, 0.22, 0.3, 1)
@@ -329,6 +330,11 @@ shadow_enabled = true
 [node name="MenuCamera" type="Camera3D" parent="." unique_id=18181629]
 transform = Transform3D(0.8192468, -0.21737903, 0.5306421, 0, 0.9253646, 0.37907824, -0.5734411, -0.31055865, 0.758102, 7, 6, 7)
 current = true
+
+[node name="AmbiancePlayer" type="AudioStreamPlayer" parent="." unique_id=1849182041]
+stream = ExtResource("12_ambiance")
+volume_db = -26.0
+autoplay = true
 
 [editable path="Room/Floor"]
 [editable path="Room/LeftWall"]

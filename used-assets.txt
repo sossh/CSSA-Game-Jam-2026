@@ -10,3 +10,6 @@ https://github.com/johnmorrisdotca/uchusen-rockets/blob/main/NOTICE.md
 SpaceX Falcon 9 Strongback by Thor's Hammer, CC BY 4.0.
 https://sketchfab.com/3d-models/spacex-falcon-9-strongback-854921c608784624ad2af042a24fded4
 https://creativecommons.org/licenses/by/4.0/
+
+Audio effects (bell, footsteps, chewing, crunch, burps, farts, sneezes, shotgun, impacts, slurps, teacher warning/yawns, classroom ambiance, chute, door, clone, vending):
+Sourced under CC0 / Freesound community contributions.

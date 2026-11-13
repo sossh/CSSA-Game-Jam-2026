@@ -35,6 +35,8 @@ var current_anim: String = "idle"
 @onready var laser: Node3D = $AimLaser
 @onready var fsm: TeacherFiniteStateMachine = %FSM
 @onready var anim: AnimationPlayer = $Visual.animation_player
+@onready var chalk_audio: AudioStreamPlayer3D = %ChalkAudio
+var step_timer: float = 0.0
 
 func _ready() -> void:
 	global_position = lounge
@@ -112,7 +114,9 @@ func get_current_state_name() -> String:
 		return fsm.current_state.name.to_lower()
 	return ""
 
-func hear(at: Vector3, loudness: float, source: String, _kind: String) -> void:
+func hear(at: Vector3, loudness: float, source: String, kind: String) -> void:
+	if kind == "throw":
+		return
 	var current = get_current_state_name()
 	var ignore_states = ["awaystate", "enteringstate", "leavingstate", "shootstate"]
 	
@@ -251,6 +255,11 @@ func follow_path(delta: float) -> void:
 	velocity = (point - global_position).normalized() * 2.5
 	velocity.y = -1
 	move_and_slide()
+	step_timer -= delta
+	if step_timer <= 0.0:
+		step_timer = 0.55
+		if Game.is_host():
+			Game.event.rpc("sound", {"position": global_position, "key": "teacher_step", "loudness": 55.0})
 
 func walk_to_board(delta: float) -> void:
 	if global_position.distance_to(board) > 0.3:

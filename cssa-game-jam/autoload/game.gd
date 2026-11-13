@@ -149,6 +149,7 @@ func register(display_name: String) -> void:
 		initial["activity"] = activity_history
 		initial_state.rpc_id(id, initial)
 	event.rpc("banner", {"text": "%s fell down the transfer chute." % players[id].name})
+	event.rpc("sound", {"position": players[id].position, "key": "chute", "loudness": 60.0})
 	print("PLAYER_JOINED ", id, " ", players[id].name)
 
 func remove_player(id: int) -> void:
@@ -295,6 +296,7 @@ func respawn(id: int) -> void:
 	p.violation_until = 0.0
 	p.limbs = []
 	p.epoch += 1
+	event.rpc("sound", {"position": p.position, "key": "clone", "loudness": 55.0})
 
 func damage(id: int, amount: float, reason: String, impulse: Vector3 = Vector3.ZERO) -> void:
 	if not players.has(id) or not players[id].alive: return
@@ -351,6 +353,8 @@ func finish_eating(id: int) -> void:
 	if phase == "class": p.food += data.food
 	if data.effect == "speed": p.speed_until = elapsed + 12
 	if data.effect == "pop_rocks": p.pop_until = elapsed + 8
+	if data.sound == "can_open" or data.effect == "speed":
+		NoiseBus.emit_noise(p.position, 35, str(id), "crush_can")
 	p.burp_at = elapsed + randf_range(1, 5)
 	p.held = ""
 	world.remove_item(item.entity_id)

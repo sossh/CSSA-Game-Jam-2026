@@ -5,14 +5,21 @@ func enter() -> void:
 	var cooldown := randf_range(Game.config.check_min_seconds, Game.config.check_max_seconds)
 	var urgency_modifier := 1.0 + (teacher.alertness * 0.5) + ((Game.grade - 1) * 0.08)
 	teacher.next_check = Game.elapsed + (cooldown / urgency_modifier)
+	if teacher.chalk_audio and not teacher.chalk_audio.playing:
+		teacher.chalk_audio.play()
+
+func exit() -> void:
+	super()
+	if teacher.chalk_audio and teacher.chalk_audio.playing:
+		teacher.chalk_audio.stop()
+
+func close() -> void:
+	super()
+	if teacher.chalk_audio and teacher.chalk_audio.playing:
+		teacher.chalk_audio.stop()
 
 func physics_update(delta: float) -> void:
 	super(delta)
-	
-	if Game.elapsed >= teacher.lecture_sound_at:
-		teacher.lecture_sound_at = Game.elapsed + 8.0
-		Game.event.rpc("sound", {"position": teacher.global_position, "key": "lecture"})
-		
 	teacher.walk_to_board(delta)
 	teacher.turn(0, delta, 4)
 	
