@@ -1,0 +1,16 @@
+[gd_scene load_steps=3 format=3]
+[ext_resource type="PackedScene" path="res://effects/impact_burst.tscn" id="1"]
+[sub_resource type="Gradient" id="Crumbs"]
+offsets = PackedFloat32Array(0, 0.75, 1)
+colors = PackedColorArray(1, 0.8, 0.35, 1, 0.8, 0.4, 0.1, 1, 0.8, 0.4, 0.1, 0)
+[node name="Eating" instance=ExtResource("1")]
+[node name="Particles" parent="." index="0"]
+amount = 32
+lifetime = 1.1
+explosiveness = 0.0
+direction = Vector3(0, -0.2, -1)
+spread = 50.0
+initial_velocity_min = 0.5
+initial_velocity_max = 1.6
+gravity = Vector3(0, -3, 0)
+color_ramp = SubResource("Crumbs")

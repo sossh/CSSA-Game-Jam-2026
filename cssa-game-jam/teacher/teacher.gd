@@ -32,6 +32,10 @@ func _ready() -> void:
 	NoiseBus.noise_made.connect(hear)
 
 func set_state(next: State) -> void:
+	if next != state:
+		var message := "Teacher → %s." % NAMES[next]
+		if next == State.SHOOT and target != "": message = "Teacher blames %s. Shotgun paperwork incoming." % Game.actor_name(target)
+		Game.log_activity(message)
 	state = next
 	state_time = 0
 	scan_time = 0

@@ -1,0 +1,29 @@
+[gd_scene load_steps=5 format=3]
+[ext_resource type="PackedScene" path="res://effects/impact_burst.tscn" id="1"]
+[sub_resource type="StandardMaterial3D" id="GasMaterial"]
+vertex_color_use_as_albedo = true
+shading_mode = 0
+transparency = 1
+[sub_resource type="SphereMesh" id="GasBubble"]
+material = SubResource("GasMaterial")
+radius = 0.13
+height = 0.26
+radial_segments = 8
+rings = 4
+[sub_resource type="Gradient" id="Stink"]
+offsets = PackedFloat32Array(0, 0.4, 1)
+colors = PackedColorArray(0.55, 0.9, 0.1, 0.65, 0.3, 0.65, 0.08, 0.4, 0.3, 0.65, 0.08, 0)
+[node name="ForbiddenAtmosphere" instance=ExtResource("1")]
+[node name="Particles" parent="." index="0"]
+amount = 16
+lifetime = 1.8
+explosiveness = 0.8
+mesh = SubResource("GasBubble")
+direction = Vector3(0, 0.1, 1)
+spread = 40.0
+gravity = Vector3(0, 0.65, 0)
+initial_velocity_min = 0.4
+initial_velocity_max = 1.5
+scale_amount_min = 0.8
+scale_amount_max = 2.2
+color_ramp = SubResource("Stink")

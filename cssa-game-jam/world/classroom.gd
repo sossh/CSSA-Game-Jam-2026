@@ -4,6 +4,24 @@ extends Node3D
 const PLAYER_SCENE := preload("res://player/network_player.tscn")
 const KID_SCENE := preload("res://npc/kid.tscn")
 const BURST_SCENE := preload("res://effects/impact_burst.tscn")
+const PARTICLE_SCENES := {
+	"chew": preload("res://effects/eating.tscn"),
+	"crunch": preload("res://effects/eating.tscn"),
+	"slurp": preload("res://effects/eating.tscn"),
+	"can_open": preload("res://effects/burp.tscn"),
+	"burp": preload("res://effects/burp.tscn"),
+	"sneeze": preload("res://effects/burp.tscn"),
+	"fart": preload("res://effects/fart.tscn"),
+	"footstep": preload("res://effects/footstep.tscn"),
+	"pop_rocks": preload("res://effects/pop_rocks.tscn"),
+	"impact": BURST_SCENE,
+	"splat": preload("res://effects/tomato_splat.tscn"),
+	"punch": BURST_SCENE,
+	"firework": preload("res://effects/pop_rocks.tscn"),
+	"vending_dispense": BURST_SCENE,
+}
+const SHOT_SCENE := preload("res://effects/shot.tscn")
+const SPLAT_SCENE := preload("res://effects/tomato_splat.tscn")
 
 var player_nodes: Dictionary = {}
 var items: Dictionary = {}
@@ -196,12 +214,14 @@ func interact(id: int, target: String) -> void:
 	if target == "coffee":
 		if Game.phase not in ["lobby", "preparation", "break"]: return
 		if items.has(p.held) and items[p.held].data.effect == "drug":
+			Game.log_activity("%s adds extra 'decaf' to the teacher's coffee." % p.name)
 			remove_item(p.held)
 			teacher.drugs = mini(3, teacher.drugs + 1)
 			Game.event.rpc("banner", {"text": "Coffee enhanced. Professor X-PEL will be very sleepy."})
 		return
 	if target == "rocket":
 		if items.has(p.held) and items[p.held].data.effect == "rocket":
+			Game.log_activity("%s donates a rocket part to the escape fund." % p.name)
 			remove_item(p.held)
 			Game.rocket_parts += 1
 			Game.event.rpc("banner", {"text": "One step closer to Earth! Shared rocket parts: %d" % Game.rocket_parts})
@@ -220,6 +240,7 @@ func interact(id: int, target: String) -> void:
 		p.seat = seat
 		p.position = seat_positions[seat]
 		p.epoch += 1
+		Game.log_activity("%s sits down. Suspiciously innocent." % p.name)
 		return
 	if p.held != "": return
 	if items.has(target):
@@ -227,6 +248,7 @@ func interact(id: int, target: String) -> void:
 		if item.holder != 0: return
 		item.pickup(id)
 		p.held = target
+		Game.log_activity("%s grabs %s." % [p.name, item.display_name()])
 	elif target.begins_with("player:"):
 		var other_id := int(target.get_slice(":", 1))
 		var other: Dictionary = Game.players[other_id]
@@ -238,6 +260,7 @@ func interact(id: int, target: String) -> void:
 		other.recover_at = 0.0
 		other.epoch += 1
 		p.held = target
+		Game.log_activity("%s picks up %s. Friendship is now luggage." % [p.name, other.name])
 	p.violation_until = Game.elapsed + 1.5
 	NoiseBus.emit_noise(p.position, 10, str(id), "pickup")
 
@@ -249,6 +272,9 @@ func release_hand(id: int, charge: float = -1) -> void:
 	if not Game.players.has(id): return
 	var p: Dictionary = Game.players[id]
 	var held: String = p.held
+	var held_name := ""
+	if items.has(held): held_name = items[held].display_name()
+	elif held.begins_with("player:"): held_name = Game.actor_name(held.get_slice(":", 1))
 	p.held = ""
 	p.eat_until = 0.0
 	if held == "": return
@@ -265,6 +291,7 @@ func release_hand(id: int, charge: float = -1) -> void:
 			Game.players[other].position = at - Vector3(0, 0.6, 0)
 			Game.launch_player(other, impulse)
 	if charge >= 0:
+		Game.log_activity("%s throws %s!" % [p.name, held_name])
 		p.violation_until = Game.elapsed + 2
 		NoiseBus.emit_noise(p.position, 12, str(id), "throw")
 
@@ -276,6 +303,7 @@ func use_held(id: int) -> void:
 	var data := item.data
 	p.violation_until = Game.elapsed + 2
 	if data.food > 0:
+		Game.log_activity("%s starts eating %s. Subtlety not included." % [p.name, data.display_name])
 		p.eat_until = Game.elapsed + 1.5
 		NoiseBus.emit_noise(p.position, data.eating_noise, str(id), data.sound)
 		return
@@ -283,6 +311,7 @@ func use_held(id: int) -> void:
 		"cushion": NoiseBus.emit_noise(p.position, 80, str(id), "fart")
 		"gun", "nerf", "knife":
 			if item.uses <= 0: return
+			Game.log_activity("%s uses %s!" % [p.name, data.display_name])
 			if data.effect != "knife": item.uses -= 1
 			var origin: Vector3 = p.position + Vector3(0, 1.5, 0)
 			var direction := aim_direction(id)
@@ -292,10 +321,12 @@ func use_held(id: int) -> void:
 			Game.event.rpc("shot", {"position": origin, "end": origin + direction * distance if hit.is_empty() else hit.position})
 			if not hit.is_empty(): hit_body(hit.collider, 30 if data.effect != "nerf" else 0, direction * 5 + Vector3.UP * 2, "became a group project casualty")
 		"loot_box":
+			Game.log_activity("%s opens a mystery lunchbox." % p.name)
 			remove_item(item.entity_id)
 			spawn_item(ItemDB.random_item(Game.grade + 1), p.position + Vector3.UP)
 		"firework":
 			if item.fuse_at > 0: return
+			Game.log_activity("%s lights an INDOOR firework. Excellent judgement." % p.name)
 			item.fuse_at = Game.elapsed + 3
 			item.thrower = str(id)
 			Game.event.rpc("banner", {"text": "Firework lit. Three seconds. Throw it!"})
@@ -308,6 +339,7 @@ func punch(id: int) -> void:
 	var p: Dictionary = Game.players[id]
 	var origin: Vector3 = p.position + Vector3(0, 1.4, 0)
 	var direction := aim_direction(id)
+	Game.log_activity("%s throws hands." % p.name)
 	var hit := get_world_3d().direct_space_state.intersect_ray(PhysicsRayQueryParameters3D.create(origin, origin + direction * 2.2, 15, [player_nodes[id].get_rid()]))
 	p.violation_until = Game.elapsed + 1.5
 	NoiseBus.emit_noise(origin, 35, str(id), "punch")
@@ -327,6 +359,7 @@ func buy(id: int, item_id: String) -> void:
 	if p.position.distance_to(vending_position) > 4.5 or data.minimum_grade > Game.grade or p.money < data.price: return
 	if items.size() >= Game.config.max_loose_items: return
 	p.money -= data.price
+	Game.log_activity("%s buys %s for ₿%d." % [p.name, data.display_name, data.price])
 	var item := spawn_item(item_id, $Hallway/VendingMachine/DispensePoint.global_position)
 	item.linear_velocity = Vector3(0, 0.5, -2)
 	NoiseBus.emit_noise(item.global_position, 25, str(id), "vending_dispense")
@@ -357,8 +390,29 @@ func is_violating(id: String) -> bool:
 	return items.has(id) and not items[id].seated
 
 func on_effect(kind: String, data: Dictionary) -> void:
-	if kind not in ["burst", "shot"]: return
-	var burst := BURST_SCENE.instantiate()
-	burst.position = data.position
-	burst.color = data.get("color", Color(1, 0.75, 0.1))
+	var scene: PackedScene
+	var at: Vector3 = data.get("position", Vector3.ZERO)
+	var direction: Vector3 = data.get("direction", Vector3.FORWARD)
+	if kind == "sound":
+		var key: String = data.key
+		scene = PARTICLE_SCENES.get(key)
+		if scene == null: return
+		if key in ["chew", "crunch", "slurp", "can_open", "burp", "sneeze", "pop_rocks"]:
+			at += Vector3.UP * (1.15 if data.get("seated", false) else 1.55) + direction * 0.35
+		elif key == "fart": at += Vector3.UP * 0.65 - direction * 0.25
+		elif key == "footstep": at += Vector3.UP * 0.08
+	elif kind == "shot":
+		scene = SHOT_SCENE
+		direction = (data.end - at).normalized()
+	elif kind == "burst":
+		scene = SPLAT_SCENE if data.get("color", Color.WHITE) == Color.TOMATO else BURST_SCENE
+	else: return
+	# Effects are purely local presentation of a host-authoritative event.
+	# Bound their count during physics pile-ups; never add noise from particles.
+	if $Effects.get_child_count() >= 100: return
+	var burst: Node3D = scene.instantiate()
 	$Effects.add_child(burst)
+	burst.global_position = at
+	if direction.length_squared() > 0.01:
+		var up := Vector3.RIGHT if absf(direction.normalized().dot(Vector3.UP)) > 0.98 else Vector3.UP
+		burst.look_at(at + direction, up)

@@ -1,0 +1,15 @@
+[gd_scene load_steps=3 format=3]
+[ext_resource type="PackedScene" path="res://effects/impact_burst.tscn" id="1"]
+[sub_resource type="Gradient" id="Flash"]
+offsets = PackedFloat32Array(0, 0.25, 1)
+colors = PackedColorArray(1, 1, 0.6, 1, 1, 0.5, 0.05, 1, 0.4, 0.2, 0.05, 0)
+[node name="ExpulsionFlash" instance=ExtResource("1")]
+[node name="Particles" parent="." index="0"]
+amount = 20
+lifetime = 0.22
+direction = Vector3(0, 0, -1)
+spread = 18.0
+initial_velocity_min = 3.0
+initial_velocity_max = 7.0
+gravity = Vector3(0, 0, 0)
+color_ramp = SubResource("Flash")
