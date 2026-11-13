@@ -26,7 +26,7 @@ material = SubResource("ObservationWallMaterial")
 [sub_resource type="StandardMaterial3D" id="ObservationGlass"]
 transparency = 1
 shading_mode = 0
-albedo_color = Color(0.46, 0.76, 0.9, 0.075)
+albedo_color = Color(1, 1, 1, 0)
 
 [sub_resource type="StandardMaterial3D" id="DoorMaterial"]
 albedo_color = Color(0.55, 0.2, 0.2, 1)
@@ -56,6 +56,63 @@ transform = Transform3D(1.7169118, 0, 0, 0, 1.7169118, 0, 0, 0, 1.7169118, 0, -1
 transform = Transform3D(-0.44936123, 0, 0.034460206, 0, 0.4506805, 0, -0.034460206, 0, -0.44936123, -7.443264, -8.662841, 55.50866)
 
 [node name="Room" type="Node3D" parent="." unique_id=1281839070]
+
+[node name="SchoolLighting" type="Node3D" parent="Room"]
+
+[node name="FrontLeft" type="SpotLight3D" parent="Room/SchoolLighting"]
+position = Vector3(-4.5, 4.65, -5.5)
+rotation = Vector3(-1.5707963, 0, 0)
+light_color = Color(1, 0.96, 0.89, 1)
+light_energy = 1.35
+light_specular = 0.2
+spot_range = 8.5
+spot_attenuation = 1.25
+spot_angle = 57.0
+spot_angle_attenuation = 0.65
+
+[node name="FrontRight" type="SpotLight3D" parent="Room/SchoolLighting"]
+position = Vector3(4.5, 4.65, -5.5)
+rotation = Vector3(-1.5707963, 0, 0)
+light_color = Color(1, 0.96, 0.89, 1)
+light_energy = 1.35
+light_specular = 0.2
+spot_range = 8.5
+spot_attenuation = 1.25
+spot_angle = 57.0
+spot_angle_attenuation = 0.65
+
+[node name="RearLeft" type="SpotLight3D" parent="Room/SchoolLighting"]
+position = Vector3(-4.5, 4.65, 3.0)
+rotation = Vector3(-1.5707963, 0, 0)
+light_color = Color(1, 0.96, 0.89, 1)
+light_energy = 1.35
+light_specular = 0.2
+spot_range = 8.5
+spot_attenuation = 1.25
+spot_angle = 57.0
+spot_angle_attenuation = 0.65
+
+[node name="RearRight" type="SpotLight3D" parent="Room/SchoolLighting"]
+position = Vector3(4.5, 4.65, 3.0)
+rotation = Vector3(-1.5707963, 0, 0)
+light_color = Color(1, 0.96, 0.89, 1)
+light_energy = 1.35
+light_specular = 0.2
+spot_range = 8.5
+spot_attenuation = 1.25
+spot_angle = 57.0
+spot_angle_attenuation = 0.65
+
+[node name="Hallway" type="SpotLight3D" parent="Room/SchoolLighting"]
+position = Vector3(0, 4.65, 12.0)
+rotation = Vector3(-1.5707963, 0, 0)
+light_color = Color(1, 0.96, 0.89, 1)
+light_energy = 1.35
+light_specular = 0.2
+spot_range = 8.5
+spot_attenuation = 1.25
+spot_angle = 57.0
+spot_angle_attenuation = 0.65
 
 [node name="Floor" parent="Room" unique_id=308099022 instance=ExtResource("2")]
 transform = Transform3D(18, 0, 0, 0, 0.4, 0, 0, 0, 26, 0, -0.2, 3)
@@ -272,12 +329,6 @@ shadow_enabled = true
 [node name="MenuCamera" type="Camera3D" parent="." unique_id=18181629]
 transform = Transform3D(0.8192468, -0.21737903, 0.5306421, 0, 0.9253646, 0.37907824, -0.5734411, -0.31055865, 0.758102, 7, 6, 7)
 current = true
-
-[node name="DirectionalLight3D" type="DirectionalLight3D" parent="." unique_id=394567221]
-transform = Transform3D(1, 0, 0, 0, -0.0007670362, 0.9999997, 0, -0.9999997, -0.0007670362, 0, 10.517308, -0.31686974)
-
-[node name="DirectionalLight3D" type="DirectionalLight3D" parent="DirectionalLight3D" unique_id=577567100]
-transform = Transform3D(0.999958, 0.009004256, -0.0017469665, -0.009047927, 0.99959856, -0.026850035, 0.0015045006, 0.026864711, 0.99963796, -1.5157814, -12.36757, 1.2813778)
 
 [editable path="Room/Floor"]
 [editable path="Room/LeftWall"]
