@@ -14,6 +14,8 @@ extends CanvasLayer
 @onready var held_label: Label = %HeldLabel
 @onready var banner: Label = %Banner
 @onready var stomach: ProgressBar = %Stomach
+@onready var gas_bar: ProgressBar = %Gas
+@onready var gas_label: Label = %GasLabel
 @onready var charge: ProgressBar = %ThrowCharge
 @onready var scoreboard: Label = %Scoreboard
 @onready var debug: Label = %Debug
@@ -30,6 +32,7 @@ var debug_visible: bool = false
 
 func _ready() -> void:
 	stomach.max_value = Game.config.stomach_max
+	gas_bar.max_value = 100.0
 	Game.announcement.connect(show_banner)
 	Game.effect.connect(on_effect)
 	Net.status_changed.connect(func(message): menu_status.text = message)
@@ -153,6 +156,12 @@ func _process(delta: float) -> void:
 	var p: Dictionary = Game.players[id]
 	stats.text = "₿%d   •   STOMACH / HEALTH\n%s" % [p.money, p.name]
 	stomach.value = p.stomach
+	var current_gas: float = float(p.get("gas", 0.0))
+	gas_bar.value = current_gas
+	if current_gas >= 85.0:
+		gas_label.text = "GAS: %d%% • ABOUT TO POP! [F] VENT" % int(current_gas)
+	else:
+		gas_label.text = "GAS: %d%% • [F] VENT" % int(current_gas)
 	var minutes := int(ceil(Game.remaining)) / 60
 	var seconds := int(ceil(Game.remaining)) % 60
 	phase_label.text = "%s • GRADE %d • %02d:%02d\nJOIN %s • %d classes / %d parts" % [Game.phase.to_upper(), Game.grade, minutes, seconds, Net.join_code, Game.survived, Game.rocket_parts]

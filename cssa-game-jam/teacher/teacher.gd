@@ -126,6 +126,8 @@ func hear(at: Vector3, loudness: float, source: String, kind: String) -> void:
 	var multiplier := 1.0
 	if current == "coffeestate":
 		multiplier = 0.28
+	elif current == "lecturestate":
+		multiplier = 0.35
 	elif current in ["checkstate", "investigatestate"]:
 		multiplier = 1.5
 		
@@ -140,8 +142,16 @@ func hear(at: Vector3, loudness: float, source: String, kind: String) -> void:
 	
 	var check_cooldown_met := (Game.elapsed - last_check >= Game.config.check_cooldown)
 	
-	if perceived >= Game.config.hearing_threshold or suspicion >= 100.0:
-		if target != "" and clear_sight(Game.world.target_position(target) + Vector3.UP):
+	# If in lecture with back turned, don't blind snap-shoot behind back unless catastrophic explosion
+	if current == "lecturestate":
+		if (kind in ["gunshot", "firework"] or loudness >= 120.0) and perceived >= Game.config.hearing_threshold:
+			fsm.force_change_state("InvestigateState")
+		elif suspicion >= 25.0 and check_cooldown_met:
+			fsm.force_change_state("WarningState")
+		elif suspicion >= 70.0 or perceived >= 60.0:
+			fsm.force_change_state("InvestigateState")
+	elif perceived >= Game.config.hearing_threshold or suspicion >= 100.0:
+		if target != "" and can_see(target):
 			catch_target(target)
 		else: 
 			fsm.force_change_state("InvestigateState")
@@ -197,14 +207,14 @@ func scan(delta: float) -> void:
 func catch_target(id: String) -> void:
 	target = id
 	fsm.force_change_state("ShootState")
-	Game.event.rpc("sound", {"position": global_position, "key": "shotgun_pump"})
+	Game.event.rpc("sound", {"position": global_position, "key": "shotgun_pump", "loudness": 85.0})
 
 func fire() -> void:
 	var origin := global_position + Vector3(0, 1.55, 0)
 	var direction := (aim_point - origin).normalized()
 	
 	Game.event.rpc("shot", {"position": origin, "end": aim_point})
-	Game.event.rpc("sound", {"position": origin, "key": "shotgun", "loudness": 100.0})
+	Game.event.rpc("sound", {"position": origin, "key": "shotgun", "loudness": 150.0})
 	
 	# Host raycast prevents shots through walls
 	var collision_mask := 1 | 2 | 8

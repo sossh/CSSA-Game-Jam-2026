@@ -134,6 +134,22 @@ offset_right = 294.0
 offset_bottom = 109.0
 value = 100.0
 mouse_filter = 2
+[node name="GasLabel" type="Label" parent="Root/HUD"]
+unique_name_in_owner = true
+offset_left = 24.0
+offset_top = 114.0
+offset_right = 294.0
+offset_bottom = 134.0
+theme_override_font_sizes/font_size = 14
+text = "GAS: 0% • [F] TO VENT"
+[node name="Gas" type="ProgressBar" parent="Root/HUD"]
+unique_name_in_owner = true
+offset_left = 24.0
+offset_top = 136.0
+offset_right = 294.0
+offset_bottom = 154.0
+value = 0.0
+mouse_filter = 2
 [node name="PhaseLabel" type="Label" parent="Root/HUD"]
 unique_name_in_owner = true
 anchor_left = 1.0

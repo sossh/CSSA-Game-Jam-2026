@@ -15,8 +15,8 @@ extends Resource
 @export var bitcoin_per_food: float = 0.5
 @export var cloning_fee: int = 10
 @export_group("Teacher")
-@export var check_min_seconds: float = 10.0
-@export var check_max_seconds: float = 22.0
+@export var check_min_seconds: float = 30.0
+@export var check_max_seconds: float = 70.0
 @export var check_cooldown: float = 6.0
 @export var turn_warning_seconds: float = 0.75
 @export var hearing_threshold: float = 65.0

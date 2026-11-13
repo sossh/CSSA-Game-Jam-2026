@@ -21,7 +21,7 @@ func disconnected(message: String) -> void:
 	get_tree().reload_current_scene.call_deferred()
 
 func install_inputs() -> void:
-	var keys := {"interact": KEY_E, "drop_item": KEY_Q, "fart": KEY_G,
+	var keys := {"interact": KEY_E, "drop_item": KEY_Q, "fart": KEY_F,
 		"sprint": KEY_SHIFT, "crouch": KEY_CTRL, "start_run": KEY_ENTER,
 		"scoreboard": KEY_TAB, "debug_hud": KEY_F3}
 	for action_name in keys:

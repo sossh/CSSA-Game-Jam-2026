@@ -19,8 +19,12 @@ func play_at(key: String, position: Vector3, loudness: float = 40.0) -> void:
 	if options.is_empty(): return
 	var speaker: AudioStreamPlayer3D = SOUND_SCENE.instantiate()
 	speaker.stream = options.pick_random()
-	speaker.volume_db = clampf(linear_to_db(maxf(loudness, 1.0) / 60.0), -24.0, 2.0)
-	speaker.pitch_scale = randf_range(0.94, 1.06)
+	var max_db := 8.0 if key in ["shotgun", "shotgun_pump", "bell"] else 3.0
+	speaker.volume_db = clampf(linear_to_db(maxf(loudness, 1.0) / 60.0), -24.0, max_db)
+	if key in ["shotgun", "shotgun_pump"]:
+		speaker.unit_size = 10.0
+		speaker.max_distance = 55.0
+	speaker.pitch_scale = randf_range(0.95, 1.05)
 	add_child(speaker)
 	speaker.global_position = position
 	speaker.play()

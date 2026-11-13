@@ -58,22 +58,6 @@ func _physics_process(delta: float) -> void:
 		Game.world.remove_item(entity_id)
 		return
 	if not kid or dead: return
-	if seated and Game.phase == "class" and Game.elapsed >= noise_at:
-		noise_at = Game.elapsed + randf_range(45, 90)
-		var sound := "chew"
-		var roll := randf()
-		if roll < 0.08:
-			sound = "fart"
-		elif roll < 0.16:
-			sound = "sneeze"
-		elif roll < 0.35:
-			sound = "crunch"
-		NoiseBus.emit_noise(global_position, randf_range(18, 35), entity_id, sound)
-		if randf() < 0.12:
-			seated = false
-			freeze = false
-			linear_velocity = Vector3(randf_range(-1, 1), 2, 1)
-			return_at = Game.elapsed + 5
 	if not seated and Game.elapsed >= return_at and linear_velocity.length() < 1.5:
 		var seat: int = Game.world.free_seat(home_seat)
 		if seat >= 0:

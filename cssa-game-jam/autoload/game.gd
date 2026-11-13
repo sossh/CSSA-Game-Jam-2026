@@ -24,6 +24,7 @@ var cooldowns: Dictionary = {}
 var snapshot_sequence: int = 0
 var receiving_sequence: int = -1
 var received_chunks: Dictionary = {}
+var next_npc_noise_at: float = 0.0
 
 func is_host() -> bool:
 	return Net.active and multiplayer.is_server()
@@ -37,6 +38,7 @@ func reset() -> void:
 	survived = 0
 	rocket_parts = 0
 	cooldowns.clear()
+	next_npc_noise_at = 0.0
 	epoch = 0
 	receiving_sequence = -1
 	received_chunks.clear()
@@ -68,6 +70,8 @@ func _physics_process(delta: float) -> void:
 			p.limbs = []
 		if p.eat_until > 0 and elapsed >= p.eat_until:
 			finish_eating(id)
+		if p.get("gas", 0.0) >= 100.0 and allowed(id, "auto_gas", 0.8):
+			relieve_gas(id)
 		if p.burp_at > 0 and elapsed >= p.burp_at:
 			p.burp_at = 0.0
 			NoiseBus.emit_noise(p.position, 45, str(id), "burp")
@@ -75,6 +79,9 @@ func _physics_process(delta: float) -> void:
 			NoiseBus.emit_noise(p.position, 20, str(id), "pop_rocks")
 		if p.position.y < -15:
 			kill(id, "fell out of the curriculum")
+	if is_host() and phase == "class" and next_npc_noise_at > 0.0 and elapsed >= next_npc_noise_at:
+		next_npc_noise_at = elapsed + randf_range(130.0, 180.0)
+		trigger_npc_noise()
 	sync_time += delta
 	if sync_time >= 0.0667:
 		sync_time = 0
@@ -141,7 +148,7 @@ func register(display_name: String) -> void:
 		"position": world.chute_position(players.size()), "yaw": 0.0, "pitch": 0.0,
 		"mode": "walk" if alive else "dead", "seat": -1, "held": "", "carrier": 0,
 		"eat_until": 0.0, "violation_until": 0.0, "speed_until": 0.0, "recover_at": 0.0,
-		"burp_at": 0.0, "growl_at": elapsed + 15, "pop_until": 0.0,
+		"burp_at": 0.0, "growl_at": elapsed + 15, "pop_until": 0.0, "gas": 0.0,
 		"epoch": 0, "limbs": [], "launch": Vector3.ZERO}
 	world.ensure_players()
 	if id != 1:
@@ -205,7 +212,7 @@ func handle_action(id: int, action_name: String, data: Dictionary) -> void:
 				p.seat = -1
 				p.epoch += 1
 		"fart":
-			if allowed(id, "fart", 4.0): NoiseBus.emit_noise(p.position, 50, str(id), "fart")
+			if allowed(id, "fart", 0.5): relieve_gas(id)
 		"step":
 			if p.mode == "walk" and allowed(id, "step", 0.25):
 				NoiseBus.emit_noise(p.position, 16 if data.get("sprint", false) else 4, str(id), "footstep")
@@ -254,6 +261,7 @@ func start_preparation() -> void:
 func start_class() -> void:
 	phase = "class"
 	remaining = config.class_seconds
+	next_npc_noise_at = elapsed + randf_range(80.0, 150.0)
 	world.teacher.start_class()
 	event.rpc("sound", {"position": Vector3(0, 3, -8), "key": "bell", "loudness": 100.0})
 	event.rpc("banner", {"text": "CLASS STARTED • Sit down. Eat quietly. Blame your friends."})
@@ -267,6 +275,7 @@ func start_break() -> void:
 	survived += 1
 	phase = "break"
 	remaining = config.break_seconds
+	next_npc_noise_at = 0.0
 	world.teacher.leave()
 	world.teacher.drugs = 0
 	for id in players:
@@ -294,6 +303,7 @@ func respawn(id: int) -> void:
 	p.pop_until = 0.0
 	p.speed_until = 0.0
 	p.violation_until = 0.0
+	p.gas = 0.0
 	p.limbs = []
 	p.epoch += 1
 	event.rpc("sound", {"position": p.position, "key": "clone", "loudness": 55.0})
@@ -355,10 +365,30 @@ func finish_eating(id: int) -> void:
 	if data.effect == "pop_rocks": p.pop_until = elapsed + 8
 	if data.sound == "can_open" or data.effect == "speed":
 		NoiseBus.emit_noise(p.position, 35, str(id), "crush_can")
-	p.burp_at = elapsed + randf_range(1, 5)
+	p.gas = clampf(float(p.get("gas", 0.0)) + data.food, 0.0, 100.0)
 	p.held = ""
 	world.remove_item(item.entity_id)
 	log_activity("%s finished %s (+%d stomach)." % [p.name, data.display_name, int(data.food)])
+
+func relieve_gas(id: int) -> void:
+	if not players.has(id): return
+	var p: Dictionary = players[id]
+	if not p.alive: return
+	var kind: String = "fart" if randf() < 0.5 else "burp"
+	var loudness: float = 45.0 if kind == "burp" else 50.0
+	p.gas = maxf(0.0, float(p.get("gas", 0.0)) - randf_range(40.0, 50.0))
+	NoiseBus.emit_noise(p.position, loudness, str(id), kind)
+
+func trigger_npc_noise() -> void:
+	if not is_instance_valid(world): return
+	var seated_kids: Array = []
+	for item in world.items.values():
+		if item.kid and not item.dead and item.seated:
+			seated_kids.append(item)
+	if seated_kids.is_empty(): return
+	var kid = seated_kids.pick_random()
+	var sound: String = ["chew", "crunch", "sneeze", "fart"].pick_random()
+	NoiseBus.emit_noise(kid.global_position, randf_range(18, 30), kid.entity_id, sound)
 
 func actor_name(source: String) -> String:
 	if source.is_valid_int() and players.has(int(source)): return players[int(source)].name
