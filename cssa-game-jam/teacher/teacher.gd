@@ -27,7 +27,7 @@ var lounge := Vector3(-7, 0, -8.8)
 var shot_fired: bool = false
 
 # --- Animation Tracking ---
-var last_frame_position := Vector3.ZERO
+var current_anim: String = "idle"
 
 # --- Node References ---
 @onready var label: Label3D = $StateLabel
@@ -57,11 +57,22 @@ func _physics_process(delta: float) -> void:
 		# Global stat decay
 		suspicion = maxf(0.0, suspicion - delta * 4)
 		alertness = maxf(0.0, alertness - delta * 0.008)
+		
+		# Host explicitly sets the animation based on its AI intent
+		var state_name = get_current_state_name()
+		match state_name:
+			"investigatestate":
+				current_anim = "run-mad" if not path.is_empty() else "idle"
+			"lecturestate":
+				current_anim = "walk" if global_position.distance_to(board) > 0.3 else "pointing-teaching"
+			"enteringstate", "leavingstate":
+				current_anim = "walk"
+			_:
+				current_anim = "idle"
 	else:
 		_process_client_interpolation(delta)
 		
 	_update_visuals()
-	last_frame_position = global_position # Save position for next frame's movement check
 
 func _process_client_interpolation(delta: float) -> void:
 	var lerp_speed := minf(1.0, delta * 15.0)
@@ -87,26 +98,8 @@ func _update_visuals() -> void:
 			laser.look_at(aim_point)
 			laser.scale.z = origin.distance_to(aim_point)
 
-	# --- Animation Logic ---
-	var current_name:String = current.name.to_lower()
-	var is_moving := global_position.distance_to(destination) > 0.1
-
-	match current_name:
-		"investigatestate":
-			if is_moving:
-				play_anim("run-mad") # Angry run to the noise
-			else:
-				play_anim("idle") # Looking around
-		"lecturestate":
-			if is_moving:
-				play_anim("walk") # Walking to the board
-			else:
-				play_anim("pointing-teaching") # Standing at board teaching
-		"enteringstate", "leavingstate":
-			play_anim("walk")
-		_:
-			# Default for Warning, Check, Coffee, and Shoot states
-			play_anim("idle")
+	# Play exactly what the string says
+	play_anim(current_anim)
 
 func play_anim(anim_name: String) -> void:
 	if anim and anim.current_animation != anim_name:
