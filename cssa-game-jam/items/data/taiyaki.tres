@@ -1,0 +1,17 @@
+[gd_resource type="Resource" script_class="ItemData" load_steps=3 format=3]
+
+[ext_resource type="Script" path="res://items/item_data.gd" id="1"]
+[ext_resource type="PackedScene" path="res://items/scenes/taiyaki.tscn" id="2"]
+
+[resource]
+script = ExtResource("1")
+id = "taiyaki"
+display_name = "Taiyaki"
+description = "Fish-shaped cake. 20 stomach."
+price = 4
+minimum_grade = 2
+food = 20.0
+eating_noise = 30.0
+spawn_weight = 5.0
+scene = ExtResource("2")
+sound = "chew"

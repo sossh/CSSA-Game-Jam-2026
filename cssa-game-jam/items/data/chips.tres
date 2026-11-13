@@ -1,12 +1,15 @@
 [gd_resource type="Resource" script_class="ItemData" load_steps=3 format=3]
+
 [ext_resource type="Script" path="res://items/item_data.gd" id="1"]
 [ext_resource type="PackedScene" path="res://items/scenes/chips.tscn" id="2"]
+
 [resource]
 script = ExtResource("1")
 id = "chips"
 display_name = "Extremely loud chips"
 description = "35 stomach. The bag is almost as loud as the chewing."
 price = 7
+minimum_grade = 1
 food = 35.0
 eating_noise = 60.0
 spawn_weight = 8.0

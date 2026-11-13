@@ -1,0 +1,17 @@
+[gd_resource type="Resource" script_class="ItemData" load_steps=3 format=3]
+
+[ext_resource type="Script" path="res://items/item_data.gd" id="1"]
+[ext_resource type="PackedScene" path="res://items/scenes/cheese.tscn" id="2"]
+
+[resource]
+script = ExtResource("1")
+id = "cheese"
+display_name = "Moon cheese"
+description = "Allegedly the moon is made of it. 30 stomach."
+price = 7
+minimum_grade = 2
+food = 30.0
+eating_noise = 35.0
+spawn_weight = 5.0
+scene = ExtResource("2")
+sound = "chew"

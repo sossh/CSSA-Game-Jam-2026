@@ -1,0 +1,18 @@
+[gd_resource type="Resource" script_class="ItemData" load_steps=3 format=3]
+
+[ext_resource type="Script" path="res://items/item_data.gd" id="1"]
+[ext_resource type="PackedScene" path="res://items/scenes/energy_green.tscn" id="2"]
+
+[resource]
+script = ExtResource("1")
+id = "energy_green"
+display_name = "Green Monster"
+description = "15 stomach. Double speed for 12 seconds."
+price = 12
+minimum_grade = 2
+food = 15.0
+eating_noise = 50.0
+spawn_weight = 3.0
+effect = "speed"
+scene = ExtResource("2")
+sound = "can_open"

@@ -1,0 +1,17 @@
+[gd_resource type="Resource" script_class="ItemData" load_steps=3 format=3]
+
+[ext_resource type="Script" path="res://items/item_data.gd" id="1"]
+[ext_resource type="PackedScene" path="res://items/scenes/egg.tscn" id="2"]
+
+[resource]
+script = ExtResource("1")
+id = "egg"
+display_name = "Egg"
+description = "10 stomach. Also a fine projectile."
+price = 3
+minimum_grade = 1
+food = 10.0
+eating_noise = 30.0
+spawn_weight = 6.0
+scene = ExtResource("2")
+sound = "splat"

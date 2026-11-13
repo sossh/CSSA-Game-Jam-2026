@@ -1,0 +1,20 @@
+[gd_scene load_steps=4 format=3]
+
+[ext_resource type="PackedScene" path="res://items/throwable.tscn" id="1"]
+[ext_resource type="PackedScene" path="res://assets/edible/cheese.glb" id="2"]
+
+[sub_resource type="BoxShape3D" id="Shape"]
+size = Vector3(0.213, 0.113, 0.198)
+
+[node name="Cheese" instance=ExtResource("1")]
+item_id = "cheese"
+
+[node name="CollisionShape3D" parent="." index="0"]
+shape = SubResource("Shape")
+
+[node name="Visual" parent="." index="1"]
+mesh = null
+material_override = null
+
+[node name="Model" parent="Visual" index="0" instance=ExtResource("2")]
+transform = Transform3D(0.5, 0, 0, 0, 0.5, 0, 0, 0, 0.5, 0.000, -0.056, 0.008)

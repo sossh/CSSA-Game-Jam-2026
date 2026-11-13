@@ -467,6 +467,94 @@ layout_mode = 2
 text = "A17 • ₿75 • Rocket part"
 item_id = "rocket"
 
+[node name="EnergyGreen" parent="Root/Vending/Content/Scroll/VendingRows" instance=ExtResource("2")]
+item_id = "energy_green"
+text = "EnergyGreen"
+
+[node name="Banana" parent="Root/Vending/Content/Scroll/VendingRows" instance=ExtResource("2")]
+item_id = "banana"
+text = "Banana"
+
+[node name="BubbleTea" parent="Root/Vending/Content/Scroll/VendingRows" instance=ExtResource("2")]
+item_id = "bubble_tea"
+text = "BubbleTea"
+
+[node name="Burrito" parent="Root/Vending/Content/Scroll/VendingRows" instance=ExtResource("2")]
+item_id = "burrito"
+text = "Burrito"
+
+[node name="CerealBowl" parent="Root/Vending/Content/Scroll/VendingRows" instance=ExtResource("2")]
+item_id = "cereal_bowl"
+text = "CerealBowl"
+
+[node name="Cheese" parent="Root/Vending/Content/Scroll/VendingRows" instance=ExtResource("2")]
+item_id = "cheese"
+text = "Cheese"
+
+[node name="Nuggets" parent="Root/Vending/Content/Scroll/VendingRows" instance=ExtResource("2")]
+item_id = "nuggets"
+text = "Nuggets"
+
+[node name="Chili" parent="Root/Vending/Content/Scroll/VendingRows" instance=ExtResource("2")]
+item_id = "chili"
+text = "Chili"
+
+[node name="CornDog" parent="Root/Vending/Content/Scroll/VendingRows" instance=ExtResource("2")]
+item_id = "corn_dog"
+text = "CornDog"
+
+[node name="Egg" parent="Root/Vending/Content/Scroll/VendingRows" instance=ExtResource("2")]
+item_id = "egg"
+text = "Egg"
+
+[node name="FrenchFries" parent="Root/Vending/Content/Scroll/VendingRows" instance=ExtResource("2")]
+item_id = "french_fries"
+text = "FrenchFries"
+
+[node name="Matcha" parent="Root/Vending/Content/Scroll/VendingRows" instance=ExtResource("2")]
+item_id = "matcha"
+text = "Matcha"
+
+[node name="Meat" parent="Root/Vending/Content/Scroll/VendingRows" instance=ExtResource("2")]
+item_id = "meat"
+text = "Meat"
+
+[node name="Pizza" parent="Root/Vending/Content/Scroll/VendingRows" instance=ExtResource("2")]
+item_id = "pizza"
+text = "Pizza"
+
+[node name="Popsicle" parent="Root/Vending/Content/Scroll/VendingRows" instance=ExtResource("2")]
+item_id = "popsicle"
+text = "Popsicle"
+
+[node name="Pudding" parent="Root/Vending/Content/Scroll/VendingRows" instance=ExtResource("2")]
+item_id = "pudding"
+text = "Pudding"
+
+[node name="Ramen" parent="Root/Vending/Content/Scroll/VendingRows" instance=ExtResource("2")]
+item_id = "ramen"
+text = "Ramen"
+
+[node name="Soda" parent="Root/Vending/Content/Scroll/VendingRows" instance=ExtResource("2")]
+item_id = "soda"
+text = "Soda"
+
+[node name="Taco" parent="Root/Vending/Content/Scroll/VendingRows" instance=ExtResource("2")]
+item_id = "taco"
+text = "Taco"
+
+[node name="Taiyaki" parent="Root/Vending/Content/Scroll/VendingRows" instance=ExtResource("2")]
+item_id = "taiyaki"
+text = "Taiyaki"
+
+[node name="Waffle" parent="Root/Vending/Content/Scroll/VendingRows" instance=ExtResource("2")]
+item_id = "waffle"
+text = "Waffle"
+
+[node name="Sandwich" parent="Root/Vending/Content/Scroll/VendingRows" instance=ExtResource("2")]
+item_id = "sandwich"
+text = "Sandwich"
+
 [node name="Keypad" type="LineEdit" parent="Root/Vending/Content" unique_id=361534554]
 unique_name_in_owner = true
 layout_mode = 2

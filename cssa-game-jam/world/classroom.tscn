@@ -446,6 +446,35 @@ transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -7, 0, -8.8)
 [node name="Desk" type="Marker3D" parent="TeacherWaypoints" unique_id=214833648]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 1.3, 0, -6.5)
 
+[node name="FoodDrops" type="Node3D" parent="."]
+
+[node name="Drop01" type="Marker3D" parent="FoodDrops"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -3.6, 2.5, -2.45)
+
+[node name="Drop02" type="Marker3D" parent="FoodDrops"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -3.6, 2.5, 0.25)
+
+[node name="Drop03" type="Marker3D" parent="FoodDrops"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -3.6, 2.5, 2.95)
+
+[node name="Drop04" type="Marker3D" parent="FoodDrops"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 2.5, -2.45)
+
+[node name="Drop05" type="Marker3D" parent="FoodDrops"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 2.5, 0.25)
+
+[node name="Drop06" type="Marker3D" parent="FoodDrops"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 2.5, 2.95)
+
+[node name="Drop07" type="Marker3D" parent="FoodDrops"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 3.6, 2.5, -2.45)
+
+[node name="Drop08" type="Marker3D" parent="FoodDrops"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 3.6, 2.5, 0.25)
+
+[node name="Drop09" type="Marker3D" parent="FoodDrops"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 3.6, 2.5, 2.95)
+
 [node name="Players" type="Node3D" parent="." unique_id=2106170529]
 
 [node name="Items" type="Node3D" parent="." unique_id=1478594696]

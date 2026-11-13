@@ -34,6 +34,7 @@ var spawn_positions: Array[Vector3] = []
 @onready var menu_camera: Camera3D = $MenuCamera
 var grid: AStarGrid2D
 var serial: int = 0
+var next_food_drop: float = 0.0
 @onready var vending_position: Vector3 = $Hallway/VendingMachine.global_position
 @onready var coffee_position: Vector3 = $TeacherDesk/Coffee.global_position
 
@@ -96,9 +97,26 @@ func chute_position(index: int) -> Vector3:
 
 func _physics_process(_delta: float) -> void:
 	if Net.active: ensure_players()
+	if Game.is_host(): update_food_drops()
 	var closed := Game.phase == "class"
 	door.global_position = $Room/DoorClosedPoint.global_position if closed else $Room/DoorOpenPoint.global_position
 	clock.text = "%02d:%02d" % [int(Game.remaining) / 60, int(Game.remaining) % 60]
+
+func update_food_drops() -> void:
+	if Game.phase != "class":
+		next_food_drop = 0.0
+		return
+	if next_food_drop == 0.0:
+		next_food_drop = Game.elapsed + randf_range(Game.config.food_drop_min_seconds, Game.config.food_drop_max_seconds)
+	if Game.elapsed < next_food_drop: return
+	next_food_drop = Game.elapsed + randf_range(Game.config.food_drop_min_seconds, Game.config.food_drop_max_seconds)
+	if items.size() >= Game.config.max_loose_items: return
+	var points := $FoodDrops.get_children()
+	var point: Vector3 = points[randi() % points.size()].global_position
+	point += Vector3(randf_range(-0.4, 0.4), 0, randf_range(-0.4, 0.4))
+	var item := spawn_item(ItemDB.random_item(Game.grade, true), point)
+	Game.event.rpc("burst", {"position": point, "color": Color.WHITE})
+	Game.log_activity("Food dropped from the ceiling: %s." % item.display_name())
 
 func ensure_players() -> void:
 	for id in Game.players:
