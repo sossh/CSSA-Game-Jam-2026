@@ -26,11 +26,15 @@ var lounge := Vector3(-7, 0, -8.8)
 # --- Combat ---
 var shot_fired: bool = false
 
+# --- Animation Tracking ---
+var last_frame_position := Vector3.ZERO
+
 # --- Node References ---
 @onready var label: Label3D = $StateLabel
 @onready var gun: Node3D = $Shotgun
 @onready var laser: Node3D = $AimLaser
 @onready var fsm: TeacherFiniteStateMachine = %FSM
+@onready var anim: AnimationPlayer = $Visual.animation_player
 
 func _ready() -> void:
 	global_position = lounge
@@ -57,6 +61,7 @@ func _physics_process(delta: float) -> void:
 		_process_client_interpolation(delta)
 		
 	_update_visuals()
+	last_frame_position = global_position # Save position for next frame's movement check
 
 func _process_client_interpolation(delta: float) -> void:
 	var lerp_speed := minf(1.0, delta * 15.0)
@@ -81,6 +86,31 @@ func _update_visuals() -> void:
 		if origin.distance_to(aim_point) > 0.1:
 			laser.look_at(aim_point)
 			laser.scale.z = origin.distance_to(aim_point)
+
+	# --- Animation Logic ---
+	var current_name:String = current.name.to_lower()
+	var is_moving := global_position.distance_to(destination) > 0.1
+
+	match current_name:
+		"investigatestate":
+			if is_moving:
+				play_anim("run-mad") # Angry run to the noise
+			else:
+				play_anim("idle") # Looking around
+		"lecturestate":
+			if is_moving:
+				play_anim("walk") # Walking to the board
+			else:
+				play_anim("pointing-teaching") # Standing at board teaching
+		"enteringstate", "leavingstate":
+			play_anim("walk")
+		_:
+			# Default for Warning, Check, Coffee, and Shoot states
+			play_anim("idle")
+
+func play_anim(anim_name: String) -> void:
+	if anim and anim.current_animation != anim_name:
+		anim.play(anim_name)
 
 # --- Senses & Interaction ---
 

@@ -9,7 +9,6 @@
 [ext_resource type="PackedScene" path="res://world/props/transfer_chute.tscn" id="7"]
 [ext_resource type="PackedScene" uid="uid://df0mru1uqre67" path="res://teacher/teacher.tscn" id="8"]
 [ext_resource type="PackedScene" path="res://world/space_backdrop.tscn" id="9"]
-[ext_resource type="PackedScene" path="res://core/student_visual.tscn" id="9_xkrev"]
 
 [sub_resource type="StandardMaterial3D" id="FloorMaterial"]
 albedo_color = Color(0.18, 0.22, 0.3, 1)
@@ -177,10 +176,6 @@ transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.5, 0.3, 11)
 
 [node name="Teacher" parent="." unique_id=706253511 instance=ExtResource("8")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -7, 0, -8.8)
-
-[node name="Visual2" parent="Teacher" unique_id=1921993039 instance=ExtResource("9_xkrev")]
-transform = Transform3D(1.3, 0, 0, 0, 1.3, 0, 0, 0, 1.3, 0, 0, 0)
-tint = Color(0.32, 0.8, 0.5, 1)
 
 [node name="TeacherWaypoints" type="Node3D" parent="." unique_id=545098422]
 
