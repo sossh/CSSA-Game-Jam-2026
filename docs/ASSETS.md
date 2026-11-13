@@ -14,7 +14,7 @@ The current build uses primitive greybox geometry and **no generated audio or fi
 | 6 | **Classroom shell** | Sci-fi floor/wall/ceiling modules, doorway/door, board, giant clock, lights, teacher desk. Existing Molten Maps pack is a candidate. |
 | 7 | **Transfer chute and hallway** | Tube, landing zone, classroom signage, cloning station dressing. |
 | 8 | **Sleeping tablets + whoopee cushion** | Distinct silhouettes so players identify them immediately. |
-| 9 | **Rocket parts + build pad** | Three or four reusable chunks and a recognizable assembled silhouette. Shared score accumulates in the hallway. |
+| 9 | **Rocket parts + build pad** | Three or four reusable chunks and a recognizable assembled silhouette. The assembled rocket preview is on the lunar surface. |
 | 10 | **Later-grade items** | Toy/nerf gun, player gun, karambit, firework, mystery box, Pop Rocks packet, moon rock. |
 | 11 | **Classroom dressing** | Backpacks (loot spots), posters, notebooks, meter stick, laptop/monitor. |
 | 12 | **Stretch-only gambling assets** | Roulette table, chips, wheel, gambling-kid variant. Roulette is not in the playable core. |

@@ -31,15 +31,11 @@ var spawn_positions: Array[Vector3] = []
 @onready var teacher: ClassroomTeacher = $Teacher
 @onready var door: Node3D = $Room/Door
 @onready var clock: Label3D = $Room/Clock
-@onready var rocket_label: Label3D = $Hallway/RocketPad/ScoreLabel
-@onready var rocket_visual: Node3D = $Hallway/RocketPad/Parts
 @onready var menu_camera: Camera3D = $MenuCamera
 var grid: AStarGrid2D
 var serial: int = 0
-var last_rocket_count: int = -1
 @onready var vending_position: Vector3 = $Hallway/VendingMachine.global_position
 @onready var coffee_position: Vector3 = $TeacherDesk/Coffee.global_position
-@onready var rocket_position: Vector3 = $Hallway/RocketPad.global_position
 
 func _enter_tree() -> void:
 	Game.world = self
@@ -102,11 +98,6 @@ func _physics_process(_delta: float) -> void:
 	var closed := Game.phase == "class"
 	door.global_position = $Room/DoorClosedPoint.global_position if closed else $Room/DoorOpenPoint.global_position
 	clock.text = "%02d:%02d" % [int(Game.remaining) / 60, int(Game.remaining) % 60]
-	rocket_label.text = "CLASS ESCAPE FUND\n%d ROCKET PARTS" % Game.rocket_parts
-	if last_rocket_count != Game.rocket_parts:
-		last_rocket_count = Game.rocket_parts
-		for i in range(rocket_visual.get_child_count()):
-			rocket_visual.get_child(i).visible = i < Game.rocket_parts
 
 func ensure_players() -> void:
 	for id in Game.players:
@@ -218,13 +209,6 @@ func interact(id: int, target: String) -> void:
 			remove_item(p.held)
 			teacher.drugs = mini(3, teacher.drugs + 1)
 			Game.event.rpc("banner", {"text": "Coffee enhanced. Professor X-PEL will be very sleepy."})
-		return
-	if target == "rocket":
-		if items.has(p.held) and items[p.held].data.effect == "rocket":
-			Game.log_activity("%s donates a rocket part to the escape fund." % p.name)
-			remove_item(p.held)
-			Game.rocket_parts += 1
-			Game.event.rpc("banner", {"text": "One step closer to Earth! Shared rocket parts: %d" % Game.rocket_parts})
 		return
 	if target.begins_with("seat:"):
 		var seat := int(target.get_slice(":", 1))

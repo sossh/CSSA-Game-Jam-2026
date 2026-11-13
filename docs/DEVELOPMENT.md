@@ -12,7 +12,7 @@ Host codes encode IPv4 only. Normal play uses UDP **7777** for gameplay and UDP 
 |---|---|
 | WASD / mouse | Move / look |
 | Shift / Space | Sprint / jump |
-| E | Grab, sit, coffee, vending, rocket pad |
+| E | Grab, sit, coffee, vending |
 | LMB with empty hand | Punch |
 | Hold/release LMB with object/friend | Charge and throw |
 | RMB | Eat / use held object |
@@ -35,7 +35,7 @@ Host codes encode IPv4 only. Normal play uses UDP **7777** for gameplay and UDP 
 - **Lecturing can catch students:** severe noise or accumulated suspicion can trigger a shot/investigation even with the teacher's back turned. Sound draws attention to its physical origin. A seen violation identifies its actor; otherwise nearby position, suspicious behavior and a small random component choose the culprit. The teacher does not magically know an unseen thrower's identity.
 - Ten simple NPC clones; weighted, grade-gated classroom loot; sixteen seats. Players can evict seated NPCs. Out-of-seat / eating / recent stealing or throwing can be seen during checks.
 - Allowance is ₿5 attendance + half the food value eaten during class, rounded down. Death waits until the class ends. Re-cloning costs ₿10; a negative balance is debt, **not** elimination. All humans dead simultaneously ends the run. New run resets progression.
-- Endless shared score: classes survived and rocket parts delivered. Increasing grades unlock stock and raise hunger/check pressure. Rocket parts visibly accumulate in the hall.
+- Endless shared score: classes survived. Increasing grades unlock stock and raise hunger/check pressure. The assembled rocket on the lunar surface is a visual preview.
 - Physical vending purchases with keypad codes. Seventeen resource-defined items, including the requested foods, energy drink, drugs, cushion, weapons, mystery box, firework and rocket part.
 - Menu, LAN code, skippable opening crawl, HUD, scoreboard, pause/quit and restart. Late join during class spectates until the next bell.
 - Human art/audio replacement hooks; silent missing audio. Geometry is a replaceable greybox. Roulette/gambling table remains stretch scope.
@@ -77,7 +77,7 @@ Host codes encode IPv4 only. Normal play uses UDP **7777** for gameplay and UDP 
 Open `world/classroom.tscn`: the room, sixteen desk instances, teacher, hallway props, environment, lights and camera already exist in the **Scene dock** and 3D viewport. Open an instanced scene with its scene icon, or enable **Editable Children** for per-instance overrides.
 
 - `world/props/desk.tscn`: desk/chair meshes, colliders, seat interaction, `SitPoint`, two `LootSpawns`, and a `NavigationObstacle` marker. Moving a desk moves all its gameplay markers. The world reads those marker transforms at startup, so layouts no longer need coordinates edited in GDScript.
-- `TeacherDesk`, `VendingMachine`, `RocketPad`, and `TransferChute` are reusable scenes with their interaction volumes and spawn/dispense markers visible in the editor. Rocket parts are preplaced and revealed as score increases.
+- `TeacherDesk`, `VendingMachine`, and `TransferChute` are reusable scenes with their interaction volumes and spawn/dispense markers visible in the editor. The outdoor rocket and stand are in `world/props/lunar_launch_site.tscn`.
 - `TeacherWaypoints` contains the board/lounge positions; `Room` contains open/closed door markers.
 - Grid-pathfinding builds its data from the furniture's `NavigationObstacle` markers. Their Inspector `half_extents` include teacher clearance around each desk.
 - `ui/game_ui.tscn` contains the menu, HUD, pause, vending entries and crawl. Layout is defined by anchors/containers; button connections are saved in the scene. Labels, theme and positions can be edited without changing code.

@@ -5,7 +5,6 @@
 [ext_resource type="PackedScene" path="res://world/props/desk.tscn" id="3"]
 [ext_resource type="PackedScene" path="res://world/props/teacher_desk.tscn" id="4"]
 [ext_resource type="PackedScene" path="res://world/props/vending_machine.tscn" id="5"]
-[ext_resource type="PackedScene" path="res://world/props/rocket_pad.tscn" id="6"]
 [ext_resource type="PackedScene" path="res://world/props/transfer_chute.tscn" id="7"]
 [ext_resource type="PackedScene" path="res://teacher/teacher.tscn" id="8"]
 [ext_resource type="PackedScene" path="res://world/space_backdrop.tscn" id="9"]
@@ -39,6 +38,31 @@ roughness = 0.85
 
 [sub_resource type="BoxMesh" id="BoardMesh"]
 size = Vector3(9, 2.8, 0.1)
+
+[sub_resource type="StandardMaterial3D" id="LobbyFixtureMaterial"]
+albedo_color = Color(0.17, 0.24, 0.29, 1)
+metallic = 0.5
+roughness = 0.45
+
+[sub_resource type="BoxMesh" id="LobbyFixtureMesh"]
+material = SubResource("LobbyFixtureMaterial")
+size = Vector3(4.5, 0.16, 0.62)
+
+[sub_resource type="StandardMaterial3D" id="LobbyDiffuserMaterial"]
+shading_mode = 0
+albedo_color = Color(1, 0.92, 0.78, 1)
+
+[sub_resource type="BoxMesh" id="LobbyDiffuserMesh"]
+material = SubResource("LobbyDiffuserMaterial")
+size = Vector3(4.25, 0.04, 0.42)
+
+[sub_resource type="StandardMaterial3D" id="CafeCeilingMaterial"]
+albedo_color = Color(0.38, 0.43, 0.48, 1)
+roughness = 0.85
+
+[sub_resource type="BoxMesh" id="CafeFixtureSupportMesh"]
+material = SubResource("LobbyFixtureMaterial")
+size = Vector3(0.16, 1.6, 0.16)
 
 [sub_resource type="Environment" id="Environment"]
 background_mode = 1
@@ -95,17 +119,6 @@ spot_angle_attenuation = 0.65
 
 [node name="RearRight" type="SpotLight3D" parent="Room/SchoolLighting"]
 position = Vector3(4.5, 4.65, 3.0)
-rotation = Vector3(-1.5707963, 0, 0)
-light_color = Color(1, 0.96, 0.89, 1)
-light_energy = 1.35
-light_specular = 0.2
-spot_range = 8.5
-spot_attenuation = 1.25
-spot_angle = 57.0
-spot_angle_attenuation = 0.65
-
-[node name="Hallway" type="SpotLight3D" parent="Room/SchoolLighting"]
-position = Vector3(0, 4.65, 12.0)
 rotation = Vector3(-1.5707963, 0, 0)
 light_color = Color(1, 0.96, 0.89, 1)
 light_energy = 1.35
@@ -283,11 +296,133 @@ transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 3, 0, -6.5)
 
 [node name="Hallway" type="Node3D" parent="." unique_id=713640567]
 
+[node name="CafeCeiling" parent="Hallway" instance=ExtResource("2")]
+transform = Transform3D(18, 0, 0, 0, 0.25, 0, 0, 0, 8.3, 0, 6.575, 12)
+
+[node name="Mesh" parent="Hallway/CafeCeiling" index="0"]
+material_override = SubResource("CafeCeilingMaterial")
+
+[node name="CeilingFront" parent="Hallway" instance=ExtResource("2")]
+transform = Transform3D(18, 0, 0, 0, 1.45, 0, 0, 0, 0.3, 0, 5.725, 8)
+
+[node name="CeilingBack" parent="Hallway" instance=ExtResource("2")]
+transform = Transform3D(18, 0, 0, 0, 1.45, 0, 0, 0, 0.3, 0, 5.725, 16)
+
+[node name="CeilingWest" parent="Hallway" instance=ExtResource("2")]
+transform = Transform3D(0.3, 0, 0, 0, 1.45, 0, 0, 0, 7.7, -9, 5.725, 12)
+
+[node name="CeilingEast" parent="Hallway" instance=ExtResource("2")]
+transform = Transform3D(0.3, 0, 0, 0, 1.45, 0, 0, 0, 7.7, 9, 5.725, 12)
+
+[node name="CafeLighting" type="Node3D" parent="Hallway"]
+
+[node name="WestFixture" type="MeshInstance3D" parent="Hallway/CafeLighting"]
+position = Vector3(-5.25, 4.8, 11.7)
+mesh = SubResource("LobbyFixtureMesh")
+cast_shadow = 0
+
+[node name="Support" type="MeshInstance3D" parent="Hallway/CafeLighting/WestFixture"]
+position = Vector3(0, 0.87, 0)
+mesh = SubResource("CafeFixtureSupportMesh")
+cast_shadow = 0
+
+[node name="RoomFill" type="OmniLight3D" parent="Hallway/CafeLighting/WestFixture"]
+position = Vector3(0, -1.65, 0)
+light_color = Color(1, 0.95, 0.88, 1)
+light_energy = 1.9
+light_specular = 0.15
+omni_range = 6.5
+omni_attenuation = 0.8
+shadow_enabled = true
+
+[node name="Diffuser" type="MeshInstance3D" parent="Hallway/CafeLighting/WestFixture"]
+position = Vector3(0, -0.085, 0)
+mesh = SubResource("LobbyDiffuserMesh")
+cast_shadow = 0
+
+[node name="Downlight" type="SpotLight3D" parent="Hallway/CafeLighting/WestFixture"]
+position = Vector3(0, -0.13, 0)
+rotation = Vector3(-1.5707963, 0, 0)
+light_color = Color(1, 0.94, 0.84, 1)
+light_energy = 2.35
+light_specular = 0.2
+spot_range = 6.1
+spot_attenuation = 1.0
+spot_angle = 52.0
+spot_angle_attenuation = 0.55
+
+[node name="CenterFixture" type="MeshInstance3D" parent="Hallway/CafeLighting"]
+position = Vector3(0, 4.8, 11.7)
+mesh = SubResource("LobbyFixtureMesh")
+cast_shadow = 0
+
+[node name="Support" type="MeshInstance3D" parent="Hallway/CafeLighting/CenterFixture"]
+position = Vector3(0, 0.87, 0)
+mesh = SubResource("CafeFixtureSupportMesh")
+cast_shadow = 0
+
+[node name="RoomFill" type="OmniLight3D" parent="Hallway/CafeLighting/CenterFixture"]
+position = Vector3(0, -1.65, 0)
+light_color = Color(1, 0.95, 0.88, 1)
+light_energy = 1.9
+light_specular = 0.15
+omni_range = 6.5
+omni_attenuation = 0.8
+shadow_enabled = true
+
+[node name="Diffuser" type="MeshInstance3D" parent="Hallway/CafeLighting/CenterFixture"]
+position = Vector3(0, -0.085, 0)
+mesh = SubResource("LobbyDiffuserMesh")
+cast_shadow = 0
+
+[node name="Downlight" type="SpotLight3D" parent="Hallway/CafeLighting/CenterFixture"]
+position = Vector3(0, -0.13, 0)
+rotation = Vector3(-1.5707963, 0, 0)
+light_color = Color(1, 0.94, 0.84, 1)
+light_energy = 2.35
+light_specular = 0.2
+spot_range = 6.1
+spot_attenuation = 1.0
+spot_angle = 52.0
+spot_angle_attenuation = 0.55
+
+[node name="EastFixture" type="MeshInstance3D" parent="Hallway/CafeLighting"]
+position = Vector3(5.25, 4.8, 11.7)
+mesh = SubResource("LobbyFixtureMesh")
+cast_shadow = 0
+
+[node name="Support" type="MeshInstance3D" parent="Hallway/CafeLighting/EastFixture"]
+position = Vector3(0, 0.87, 0)
+mesh = SubResource("CafeFixtureSupportMesh")
+cast_shadow = 0
+
+[node name="RoomFill" type="OmniLight3D" parent="Hallway/CafeLighting/EastFixture"]
+position = Vector3(0, -1.65, 0)
+light_color = Color(1, 0.95, 0.88, 1)
+light_energy = 1.9
+light_specular = 0.15
+omni_range = 6.5
+omni_attenuation = 0.8
+shadow_enabled = true
+
+[node name="Diffuser" type="MeshInstance3D" parent="Hallway/CafeLighting/EastFixture"]
+position = Vector3(0, -0.085, 0)
+mesh = SubResource("LobbyDiffuserMesh")
+cast_shadow = 0
+
+[node name="Downlight" type="SpotLight3D" parent="Hallway/CafeLighting/EastFixture"]
+position = Vector3(0, -0.13, 0)
+rotation = Vector3(-1.5707963, 0, 0)
+light_color = Color(1, 0.94, 0.84, 1)
+light_energy = 2.35
+light_specular = 0.2
+spot_range = 6.1
+spot_attenuation = 1.0
+spot_angle = 52.0
+spot_angle_attenuation = 0.55
+
 [node name="VendingMachine" parent="Hallway" unique_id=869019490 instance=ExtResource("5")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 5, 0, 13)
-
-[node name="RocketPad" parent="Hallway" unique_id=1276357834 instance=ExtResource("6")]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -5, 0, 13)
 
 [node name="TransferChute" parent="Hallway" unique_id=1288543665 instance=ExtResource("7")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 13.8)
@@ -336,6 +471,7 @@ stream = ExtResource("12_ambiance")
 volume_db = -26.0
 autoplay = true
 
+[editable path="Hallway/CafeCeiling"]
 [editable path="Room/Floor"]
 [editable path="Room/LeftWall"]
 [editable path="Room/Door"]
