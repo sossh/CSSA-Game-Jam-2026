@@ -28,7 +28,7 @@ func _ready() -> void:
 	if kid:
 		$CloneVisual.set_color(Color(0.62, 0.65, 0.8) if not dead else Color(0.5, 0.3, 0.4))
 	label.text = display_name()
-	noise_at = Game.elapsed + randf_range(8, 28)
+	noise_at = Game.elapsed + randf_range(25, 60)
 	destination = global_transform
 
 func display_name() -> String:
@@ -59,9 +59,17 @@ func _physics_process(delta: float) -> void:
 		return
 	if not kid or dead: return
 	if seated and Game.phase == "class" and Game.elapsed >= noise_at:
-		noise_at = Game.elapsed + randf_range(15, 40)
-		NoiseBus.emit_noise(global_position, randf_range(18, 35), entity_id, ["sneeze", "chew", "fart"].pick_random())
-		if randf() < 0.2:
+		noise_at = Game.elapsed + randf_range(45, 90)
+		var sound := "chew"
+		var roll := randf()
+		if roll < 0.08:
+			sound = "fart"
+		elif roll < 0.16:
+			sound = "sneeze"
+		elif roll < 0.35:
+			sound = "crunch"
+		NoiseBus.emit_noise(global_position, randf_range(18, 35), entity_id, sound)
+		if randf() < 0.12:
 			seated = false
 			freeze = false
 			linear_velocity = Vector3(randf_range(-1, 1), 2, 1)
