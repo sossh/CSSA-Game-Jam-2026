@@ -176,7 +176,10 @@ func _process(delta: float) -> void:
 		scoreboard.text = "CLASS REGISTER\n"
 		for other in Game.players.values(): scoreboard.text += "%s   ₿%d   %s\n" % [other.name, other.money, "%d stomach" % other.stomach if other.alive else "DEAD"]
 	debug.visible = debug_visible
-	debug.text = "FPS %d | Teacher %s | Suspicion %.1f | Items %d" % [Engine.get_frames_per_second(), ClassroomTeacher.NAMES[Game.world.teacher.state], Game.world.teacher.suspicion, Game.world.items.size()]
+	var teacher_state_name := "Unknown"
+	if Game.world.teacher.fsm and Game.world.teacher.fsm.current_state:
+		teacher_state_name = Game.world.teacher.fsm.current_state.display_name
+	debug.text = "FPS %d | Teacher %s | Suspicion %.1f | Items %d" % [Engine.get_frames_per_second(), teacher_state_name, Game.world.teacher.suspicion, Game.world.items.size()]
 	if vending_panel.visible:
 		vending_status.text = "Balance: ₿%d • Grade %d • Purchases fall into the tray" % [p.money, Game.grade]
 		if not p.alive or Game.phase == "class": close_vending()

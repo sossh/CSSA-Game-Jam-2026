@@ -1,49 +1,118 @@
-[gd_scene load_steps=10 format=3]
-[ext_resource type="Script" path="res://teacher/teacher.gd" id="1"]
+[gd_scene format=3 uid="uid://df0mru1uqre67"]
+
+[ext_resource type="Script" uid="uid://bxghekxaw132j" path="res://teacher/teacher.gd" id="1"]
 [ext_resource type="PackedScene" path="res://core/student_visual.tscn" id="2"]
+[ext_resource type="Script" uid="uid://cq3xj3vb2jj87" path="res://teacher/TeacherFSM/TeacherFiniteStateMachine.gd" id="3_cnmjx"]
+[ext_resource type="Script" uid="uid://cgr2jx360y0jy" path="res://teacher/states/TeacherLectureState.gd" id="4_exfjm"]
+[ext_resource type="Script" uid="uid://g6v6uiv0fovf" path="res://teacher/states/TeacherInvestigateState.gd" id="5_6uywe"]
+[ext_resource type="Script" uid="uid://dke028maivbag" path="res://teacher/states/TeacherAwayState.gd" id="6_3m3ja"]
+[ext_resource type="Script" uid="uid://dtssmb8736h3g" path="res://teacher/states/TeacherCheckState.gd" id="7_jt8ss"]
+[ext_resource type="Script" uid="uid://cd4i7mtopym4" path="res://teacher/states/TeacherCoffeeState.gd" id="8_5nouy"]
+[ext_resource type="Script" uid="uid://4fr0pm0j7fl7" path="res://teacher/states/TeacherEnteringState.gd" id="9_ydxg2"]
+[ext_resource type="Script" uid="uid://bsm7bjvvmfgg8" path="res://teacher/states/TeacherLeavingState.gd" id="10_wce6b"]
+[ext_resource type="Script" uid="uid://3p21d1p2fpbf" path="res://teacher/states/TeacherShootState.gd" id="11_hd72k"]
+[ext_resource type="Script" uid="uid://drquffukfl6hh" path="res://teacher/states/TeacherWarningState.gd" id="12_3j074"]
+
 [sub_resource type="CapsuleShape3D" id="TeacherShape"]
 radius = 0.38
-height = 2.0
+
 [sub_resource type="StandardMaterial3D" id="GunMaterial"]
 albedo_color = Color(0.15, 0.16, 0.18, 1)
 roughness = 0.85
+
+[sub_resource type="BoxMesh" id="GunMesh"]
+size = Vector3(0.18, 0.2, 0.95)
+
 [sub_resource type="StandardMaterial3D" id="BarrelMaterial"]
 albedo_color = Color(0.4, 0.42, 0.45, 1)
 roughness = 0.85
-[sub_resource type="StandardMaterial3D" id="LaserMaterial"]
-albedo_color = Color(1, 0, 0, 1)
-[sub_resource type="BoxMesh" id="GunMesh"]
-size = Vector3(0.18, 0.2, 0.95)
+
 [sub_resource type="BoxMesh" id="BarrelMesh"]
 size = Vector3(0.22, 0.12, 0.5)
+
+[sub_resource type="StandardMaterial3D" id="LaserMaterial"]
+albedo_color = Color(1, 0, 0, 1)
+
 [sub_resource type="BoxMesh" id="LaserMesh"]
 size = Vector3(0.018, 0.018, 1)
-[node name="Teacher" type="CharacterBody3D"]
+
+[node name="Teacher" type="CharacterBody3D" unique_id=1990169825]
 collision_layer = 8
-collision_mask = 1
 script = ExtResource("1")
-[node name="CollisionShape3D" type="CollisionShape3D" parent="."]
-position = Vector3(0, 1, 0)
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="." unique_id=1442156386]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1, 0)
 shape = SubResource("TeacherShape")
-[node name="Visual" parent="." instance=ExtResource("2")]
-scale = Vector3(1.3, 1.3, 1.3)
+
+[node name="Visual" parent="." unique_id=1751627757 instance=ExtResource("2")]
+transform = Transform3D(1.3, 0, 0, 0, 1.3, 0, 0, 0, 1.3, 0, 0, 0)
 tint = Color(0.32, 0.8, 0.5, 1)
-[node name="Shotgun" type="MeshInstance3D" parent="."]
-position = Vector3(0.45, 1.3, -0.55)
-mesh = SubResource("GunMesh")
+
+[node name="Shotgun" type="MeshInstance3D" parent="." unique_id=469463160]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.45, 1.3, -0.55)
 material_override = SubResource("GunMaterial")
-[node name="Barrel" type="MeshInstance3D" parent="Shotgun"]
-position = Vector3(0, 0, -0.35)
-mesh = SubResource("BarrelMesh")
+mesh = SubResource("GunMesh")
+
+[node name="Barrel" type="MeshInstance3D" parent="Shotgun" unique_id=71433034]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, -0.35)
 material_override = SubResource("BarrelMaterial")
-[node name="StateLabel" type="Label3D" parent="."]
-position = Vector3(0, 2.7, 0)
+mesh = SubResource("BarrelMesh")
+
+[node name="StateLabel" type="Label3D" parent="." unique_id=913480042]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 2.7, 0)
 billboard = 1
 text = "Professor X-PEL"
 font_size = 30
 outline_size = 5
-[node name="AimLaser" type="MeshInstance3D" parent="."]
+
+[node name="AimLaser" type="MeshInstance3D" parent="." unique_id=1460530011]
 top_level = true
 visible = false
-mesh = SubResource("LaserMesh")
 material_override = SubResource("LaserMaterial")
+mesh = SubResource("LaserMesh")
+
+[node name="FSM" type="Node3D" parent="." unique_id=315110924 node_paths=PackedStringArray("teacher", "initial_state")]
+unique_name_in_owner = true
+script = ExtResource("3_cnmjx")
+teacher = NodePath("..")
+initial_state = NodePath("AwayState")
+
+[node name="LectureState" type="Node3D" parent="FSM" unique_id=897604287]
+script = ExtResource("4_exfjm")
+display_name = "Lecturing"
+
+[node name="InvestigateState" type="Node3D" parent="FSM" unique_id=1453312611]
+script = ExtResource("5_6uywe")
+display_name = "Investigating"
+is_alert_state = true
+
+[node name="AwayState" type="Node3D" parent="FSM" unique_id=1906890562]
+script = ExtResource("6_3m3ja")
+display_name = "Away"
+
+[node name="CheckState" type="Node3D" parent="FSM" unique_id=2142987414]
+script = ExtResource("7_jt8ss")
+display_name = "Checking"
+is_alert_state = true
+
+[node name="CoffeeState" type="Node3D" parent="FSM" unique_id=478388191]
+script = ExtResource("8_5nouy")
+display_name = "LLOUD COFFEE SIP"
+
+[node name="EnteringState" type="Node3D" parent="FSM" unique_id=1838383491]
+script = ExtResource("9_ydxg2")
+display_name = "Entering"
+
+[node name="LeavingState" type="Node3D" parent="FSM" unique_id=1277636641]
+script = ExtResource("10_wce6b")
+display_name = "Leaving"
+
+[node name="ShootState" type="Node3D" parent="FSM" unique_id=1456266442]
+script = ExtResource("11_hd72k")
+display_name = "CAUGHT"
+is_alert_state = true
+
+[node name="WarningState" type="Node3D" parent="FSM" unique_id=2135453619]
+script = ExtResource("12_3j074")
+display_name = "CCHALK STOPPED…"
+is_alert_state = true

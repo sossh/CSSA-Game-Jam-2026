@@ -1,154 +1,220 @@
-[gd_scene load_steps=15 format=3]
-[ext_resource type="Script" path="res://world/classroom.gd" id="1"]
+[gd_scene format=3 uid="uid://d0k2vo7nk0d3m"]
+
+[ext_resource type="Script" uid="uid://bv7jieaa4e0qe" path="res://world/classroom.gd" id="1"]
 [ext_resource type="PackedScene" path="res://world/props/static_box.tscn" id="2"]
 [ext_resource type="PackedScene" path="res://world/props/desk.tscn" id="3"]
 [ext_resource type="PackedScene" path="res://world/props/teacher_desk.tscn" id="4"]
 [ext_resource type="PackedScene" path="res://world/props/vending_machine.tscn" id="5"]
 [ext_resource type="PackedScene" path="res://world/props/rocket_pad.tscn" id="6"]
 [ext_resource type="PackedScene" path="res://world/props/transfer_chute.tscn" id="7"]
-[ext_resource type="PackedScene" path="res://teacher/teacher.tscn" id="8"]
+[ext_resource type="PackedScene" uid="uid://df0mru1uqre67" path="res://teacher/teacher.tscn" id="8"]
 [ext_resource type="PackedScene" path="res://world/space_backdrop.tscn" id="9"]
+[ext_resource type="PackedScene" path="res://core/student_visual.tscn" id="9_xkrev"]
+
 [sub_resource type="StandardMaterial3D" id="FloorMaterial"]
 albedo_color = Color(0.18, 0.22, 0.3, 1)
 roughness = 0.85
+
 [sub_resource type="StandardMaterial3D" id="DoorMaterial"]
 albedo_color = Color(0.55, 0.2, 0.2, 1)
 roughness = 0.85
+
 [sub_resource type="StandardMaterial3D" id="BoardMaterial"]
 albedo_color = Color(0.05, 0.2, 0.18, 1)
 roughness = 0.85
+
 [sub_resource type="BoxMesh" id="BoardMesh"]
 size = Vector3(9, 2.8, 0.1)
+
 [sub_resource type="Environment" id="Environment"]
 background_mode = 1
 background_color = Color(0.015, 0.02, 0.055, 1)
 ambient_light_source = 3
 ambient_light_color = Color(0.7, 0.8, 1, 1)
 ambient_light_energy = 0.75
-[node name="Classroom" type="Node3D"]
+
+[node name="Classroom" type="Node3D" unique_id=909629896]
 script = ExtResource("1")
-[node name="Room" type="Node3D" parent="."]
-[node name="Floor" parent="Room" instance=ExtResource("2")]
-position = Vector3(0, -0.2, 3)
-scale = Vector3(18, 0.4, 26)
+
+[node name="Room" type="Node3D" parent="." unique_id=1829526444]
+
+[node name="Floor" parent="Room" unique_id=854188834 instance=ExtResource("2")]
+transform = Transform3D(18, 0, 0, 0, 0.4, 0, 0, 0, 26, 0, -0.2, 3)
+
 [node name="Mesh" parent="Room/Floor" index="0"]
 material_override = SubResource("FloorMaterial")
-[node name="FrontWall" parent="Room" instance=ExtResource("2")]
-position = Vector3(0, 2.5, -10)
-scale = Vector3(18, 5, 0.3)
-[node name="LeftWall" parent="Room" instance=ExtResource("2")]
-position = Vector3(-9, 2.5, 3)
-scale = Vector3(0.3, 5, 26)
-[node name="RightWall" parent="Room" instance=ExtResource("2")]
-position = Vector3(9, 2.5, 3)
-scale = Vector3(0.3, 5, 26)
-[node name="HallBackWall" parent="Room" instance=ExtResource("2")]
-position = Vector3(0, 2.5, 16)
-scale = Vector3(18, 5, 0.3)
-[node name="HallPartitionLeft" parent="Room" instance=ExtResource("2")]
-position = Vector3(-5, 2.5, 8)
-scale = Vector3(8, 5, 0.3)
-[node name="HallPartitionRight" parent="Room" instance=ExtResource("2")]
-position = Vector3(5, 2.5, 8)
-scale = Vector3(8, 5, 0.3)
-[node name="DoorLintel" parent="Room" instance=ExtResource("2")]
-position = Vector3(0, 4.25, 8)
-scale = Vector3(2, 1.5, 0.3)
-[node name="Door" parent="Room" instance=ExtResource("2")]
-position = Vector3(0, 1.75, 8)
-scale = Vector3(2, 3.5, 0.25)
+
+[node name="FrontWall" parent="Room" unique_id=737157190 instance=ExtResource("2")]
+transform = Transform3D(18, 0, 0, 0, 5, 0, 0, 0, 0.3, 0, 2.5, -10)
+
+[node name="LeftWall" parent="Room" unique_id=230237768 instance=ExtResource("2")]
+transform = Transform3D(0.3, 0, 0, 0, 5, 0, 0, 0, 26, -9, 2.5, 3)
+
+[node name="RightWall" parent="Room" unique_id=2056092058 instance=ExtResource("2")]
+transform = Transform3D(0.3, 0, 0, 0, 5, 0, 0, 0, 26, 9, 2.5, 3)
+
+[node name="HallBackWall" parent="Room" unique_id=1009386803 instance=ExtResource("2")]
+transform = Transform3D(18, 0, 0, 0, 5, 0, 0, 0, 0.3, 0, 2.5, 16)
+
+[node name="HallPartitionLeft" parent="Room" unique_id=1253119781 instance=ExtResource("2")]
+transform = Transform3D(8, 0, 0, 0, 5, 0, 0, 0, 0.3, -5, 2.5, 8)
+
+[node name="HallPartitionRight" parent="Room" unique_id=560790210 instance=ExtResource("2")]
+transform = Transform3D(8, 0, 0, 0, 5, 0, 0, 0, 0.3, 5, 2.5, 8)
+
+[node name="DoorLintel" parent="Room" unique_id=69472203 instance=ExtResource("2")]
+transform = Transform3D(2, 0, 0, 0, 1.5, 0, 0, 0, 0.3, 0, 4.25, 8)
+
+[node name="Door" parent="Room" unique_id=739518178 instance=ExtResource("2")]
+transform = Transform3D(2, 0, 0, 0, 3.5, 0, 0, 0, 0.25, 0, 1.75, 8)
+
 [node name="Mesh" parent="Room/Door" index="0"]
 material_override = SubResource("DoorMaterial")
-[node name="DoorOpenPoint" type="Marker3D" parent="Room"]
-position = Vector3(0, 5.5, 8)
-[node name="DoorClosedPoint" type="Marker3D" parent="Room"]
-position = Vector3(0, 1.75, 8)
-[node name="ClassroomSign" type="Label3D" parent="Room"]
-position = Vector3(0, 3.9, 8.2)
-text = "CLASSROOM 0xC05\nNO FOOD. NO FUN. NO EARTH."
+
+[node name="DoorOpenPoint" type="Marker3D" parent="Room" unique_id=363830292]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 5.5, 8)
+
+[node name="DoorClosedPoint" type="Marker3D" parent="Room" unique_id=138288282]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.75, 8)
+
+[node name="ClassroomSign" type="Label3D" parent="Room" unique_id=793785448]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 3.9, 8.2)
+text = "CLASSROOM 0xC05
+NO FOOD. NO FUN. NO EARTH."
 font_size = 30
 outline_size = 5
-[node name="Board" type="MeshInstance3D" parent="Room"]
-position = Vector3(0, 2.5, -9.75)
-mesh = SubResource("BoardMesh")
+
+[node name="Board" type="MeshInstance3D" parent="Room" unique_id=844689452]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 2.5, -9.75)
 material_override = SubResource("BoardMaterial")
-[node name="Lesson" type="Label3D" parent="Room"]
-position = Vector3(0, 2.7, -9.62)
-text = "ALIEN CALCULUS\ncos(mos) = detention²\nToday's lesson: SURVIVE"
+mesh = SubResource("BoardMesh")
+
+[node name="Lesson" type="Label3D" parent="Room" unique_id=2042271871]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 2.7, -9.62)
+text = "ALIEN CALCULUS
+cos(mos) = detention²
+Today's lesson: SURVIVE"
 font_size = 42
 outline_size = 5
-[node name="Clock" type="Label3D" parent="Room"]
-position = Vector3(6, 3.8, -9.6)
+
+[node name="Clock" type="Label3D" parent="Room" unique_id=208120606]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 6, 3.8, -9.6)
 text = "05:00"
 font_size = 64
 outline_size = 5
-[node name="Desks" type="Node3D" parent="."]
-[node name="Desk01" parent="Desks" instance=ExtResource("3")]
-position = Vector3(-5.4, 0, -3.8)
-[node name="Desk02" parent="Desks" instance=ExtResource("3")]
-position = Vector3(-1.8, 0, -3.8)
-[node name="Desk03" parent="Desks" instance=ExtResource("3")]
-position = Vector3(1.8, 0, -3.8)
-[node name="Desk04" parent="Desks" instance=ExtResource("3")]
-position = Vector3(5.4, 0, -3.8)
-[node name="Desk05" parent="Desks" instance=ExtResource("3")]
-position = Vector3(-5.4, 0, -1.1)
-[node name="Desk06" parent="Desks" instance=ExtResource("3")]
-position = Vector3(-1.8, 0, -1.1)
-[node name="Desk07" parent="Desks" instance=ExtResource("3")]
-position = Vector3(1.8, 0, -1.1)
-[node name="Desk08" parent="Desks" instance=ExtResource("3")]
-position = Vector3(5.4, 0, -1.1)
-[node name="Desk09" parent="Desks" instance=ExtResource("3")]
-position = Vector3(-5.4, 0, 1.6)
-[node name="Desk10" parent="Desks" instance=ExtResource("3")]
-position = Vector3(-1.8, 0, 1.6)
-[node name="Desk11" parent="Desks" instance=ExtResource("3")]
-position = Vector3(1.8, 0, 1.6)
-[node name="Desk12" parent="Desks" instance=ExtResource("3")]
-position = Vector3(5.4, 0, 1.6)
-[node name="Desk13" parent="Desks" instance=ExtResource("3")]
-position = Vector3(-5.4, 0, 4.3)
-[node name="Desk14" parent="Desks" instance=ExtResource("3")]
-position = Vector3(-1.8, 0, 4.3)
-[node name="Desk15" parent="Desks" instance=ExtResource("3")]
-position = Vector3(1.8, 0, 4.3)
-[node name="Desk16" parent="Desks" instance=ExtResource("3")]
-position = Vector3(5.4, 0, 4.3)
-[node name="TeacherDesk" parent="." instance=ExtResource("4")]
-position = Vector3(3, 0, -6.5)
-[node name="Hallway" type="Node3D" parent="."]
-[node name="VendingMachine" parent="Hallway" instance=ExtResource("5")]
-position = Vector3(5, 0, 13)
-[node name="RocketPad" parent="Hallway" instance=ExtResource("6")]
-position = Vector3(-5, 0, 13)
-[node name="TransferChute" parent="Hallway" instance=ExtResource("7")]
-position = Vector3(0, 0, 13.8)
-[node name="StarterSpawns" type="Node3D" parent="Hallway"]
-[node name="Drug" type="Marker3D" parent="Hallway/StarterSpawns"]
-position = Vector3(0.5, 0.3, 11)
-[node name="Tomato" type="Marker3D" parent="Hallway/StarterSpawns"]
-position = Vector3(-0.5, 0.3, 11)
-[node name="Teacher" parent="." instance=ExtResource("8")]
-position = Vector3(-7, 0, -8.8)
-[node name="TeacherWaypoints" type="Node3D" parent="."]
-[node name="Board" type="Marker3D" parent="TeacherWaypoints"]
-position = Vector3(0, 0, -7)
-[node name="Lounge" type="Marker3D" parent="TeacherWaypoints"]
-position = Vector3(-7, 0, -8.8)
-[node name="Players" type="Node3D" parent="."]
-[node name="Items" type="Node3D" parent="."]
-[node name="Effects" type="Node3D" parent="."]
-[node name="SpaceBackdrop" parent="." instance=ExtResource("9")]
-[node name="WorldEnvironment" type="WorldEnvironment" parent="."]
+
+[node name="Desks" type="Node3D" parent="." unique_id=663146542]
+
+[node name="Desk01" parent="Desks" unique_id=94965550 instance=ExtResource("3")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -5.4, 0, -3.8)
+
+[node name="Desk02" parent="Desks" unique_id=1319697260 instance=ExtResource("3")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -1.8, 0, -3.8)
+
+[node name="Desk03" parent="Desks" unique_id=1100423100 instance=ExtResource("3")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 1.8, 0, -3.8)
+
+[node name="Desk04" parent="Desks" unique_id=2069787820 instance=ExtResource("3")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 5.4, 0, -3.8)
+
+[node name="Desk05" parent="Desks" unique_id=1655570240 instance=ExtResource("3")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -5.4, 0, -1.1)
+
+[node name="Desk06" parent="Desks" unique_id=1141002019 instance=ExtResource("3")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -1.8, 0, -1.1)
+
+[node name="Desk07" parent="Desks" unique_id=1687116564 instance=ExtResource("3")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 1.8, 0, -1.1)
+
+[node name="Desk08" parent="Desks" unique_id=37639816 instance=ExtResource("3")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 5.4, 0, -1.1)
+
+[node name="Desk09" parent="Desks" unique_id=743181623 instance=ExtResource("3")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -5.4, 0, 1.6)
+
+[node name="Desk10" parent="Desks" unique_id=590762443 instance=ExtResource("3")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -1.8, 0, 1.6)
+
+[node name="Desk11" parent="Desks" unique_id=487115242 instance=ExtResource("3")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 1.8, 0, 1.6)
+
+[node name="Desk12" parent="Desks" unique_id=492216238 instance=ExtResource("3")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 5.4, 0, 1.6)
+
+[node name="Desk13" parent="Desks" unique_id=308731554 instance=ExtResource("3")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -5.4, 0, 4.3)
+
+[node name="Desk14" parent="Desks" unique_id=800647669 instance=ExtResource("3")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -1.8, 0, 4.3)
+
+[node name="Desk15" parent="Desks" unique_id=1444297173 instance=ExtResource("3")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 1.8, 0, 4.3)
+
+[node name="Desk16" parent="Desks" unique_id=339700794 instance=ExtResource("3")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 5.4, 0, 4.3)
+
+[node name="TeacherDesk" parent="." unique_id=1662294524 instance=ExtResource("4")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 3, 0, -6.5)
+
+[node name="Hallway" type="Node3D" parent="." unique_id=967572967]
+
+[node name="VendingMachine" parent="Hallway" unique_id=1635662858 instance=ExtResource("5")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 5, 0, 13)
+
+[node name="RocketPad" parent="Hallway" unique_id=406595523 instance=ExtResource("6")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -5, 0, 13)
+
+[node name="TransferChute" parent="Hallway" unique_id=684056697 instance=ExtResource("7")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 13.8)
+
+[node name="StarterSpawns" type="Node3D" parent="Hallway" unique_id=471590814]
+
+[node name="Drug" type="Marker3D" parent="Hallway/StarterSpawns" unique_id=1051617700]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.5, 0.3, 11)
+
+[node name="Tomato" type="Marker3D" parent="Hallway/StarterSpawns" unique_id=1113403397]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.5, 0.3, 11)
+
+[node name="Teacher" parent="." unique_id=706253511 instance=ExtResource("8")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -7, 0, -8.8)
+
+[node name="Visual2" parent="Teacher" unique_id=1921993039 instance=ExtResource("9_xkrev")]
+transform = Transform3D(1.3, 0, 0, 0, 1.3, 0, 0, 0, 1.3, 0, 0, 0)
+tint = Color(0.32, 0.8, 0.5, 1)
+
+[node name="TeacherWaypoints" type="Node3D" parent="." unique_id=545098422]
+
+[node name="Board" type="Marker3D" parent="TeacherWaypoints" unique_id=1529522771]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, -7)
+
+[node name="Lounge" type="Marker3D" parent="TeacherWaypoints" unique_id=1519817275]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -7, 0, -8.8)
+
+[node name="Players" type="Node3D" parent="." unique_id=1280319648]
+
+[node name="Items" type="Node3D" parent="." unique_id=19822562]
+
+[node name="Effects" type="Node3D" parent="." unique_id=681858762]
+
+[node name="SpaceBackdrop" parent="." unique_id=501051054 instance=ExtResource("9")]
+
+[node name="WorldEnvironment" type="WorldEnvironment" parent="." unique_id=1351203204]
 environment = SubResource("Environment")
-[node name="Sun" type="DirectionalLight3D" parent="."]
-rotation = Vector3(-1.134464, -0.436332, 0)
+
+[node name="Sun" type="DirectionalLight3D" parent="." unique_id=81257841]
+transform = Transform3D(0.90630794, 0.38302198, -0.17860606, 0, 0.42261824, 0.9063078, 0.42261797, -0.82139397, 0.38302228, 0, 0, 0)
 light_energy = 1.1
 shadow_enabled = true
-[node name="MenuCamera" type="Camera3D" parent="."]
-position = Vector3(7, 6, 7)
-rotation = Vector3(-0.3888, 0.6107, 0)
+
+[node name="MenuCamera" type="Camera3D" parent="." unique_id=1044357386]
+transform = Transform3D(0.8192468, -0.21737903, 0.5306421, 0, 0.9253646, 0.37907824, -0.5734411, -0.31055865, 0.758102, 7, 6, 7)
 current = true
+
+[node name="DirectionalLight3D" type="DirectionalLight3D" parent="." unique_id=394567221]
+transform = Transform3D(1, 0, 0, 0, -0.0007670362, 0.9999997, 0, -0.9999997, -0.0007670362, 0, 10.517308, -0.31686974)
+
+[node name="DirectionalLight3D" type="DirectionalLight3D" parent="DirectionalLight3D" unique_id=577567100]
+transform = Transform3D(0.999958, 0.009004256, -0.0017469665, -0.009047927, 0.99959856, -0.026850035, 0.0015045006, 0.026864711, 0.99963796, -1.5157814, -12.36757, 1.2813778)
+
 [editable path="Room/Floor"]
 [editable path="Room/Door"]
