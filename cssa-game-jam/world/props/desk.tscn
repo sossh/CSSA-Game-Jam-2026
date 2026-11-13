@@ -1,0 +1,61 @@
+[gd_scene load_steps=10 format=3]
+[ext_resource type="PackedScene" path="res://world/props/static_box.tscn" id="1"]
+[ext_resource type="PackedScene" path="res://core/interact/interactable.tscn" id="2"]
+[ext_resource type="Script" path="res://world/navigation_obstacle.gd" id="3"]
+[sub_resource type="StandardMaterial3D" id="Wood"]
+albedo_color = Color(0.5, 0.39, 0.28, 1)
+roughness = 0.85
+[sub_resource type="StandardMaterial3D" id="Metal"]
+albedo_color = Color(0.23, 0.27, 0.3, 1)
+roughness = 0.85
+[sub_resource type="StandardMaterial3D" id="Chair"]
+albedo_color = Color(0.26, 0.4, 0.55, 1)
+roughness = 0.85
+[sub_resource type="BoxMesh" id="SeatMesh"]
+size = Vector3(0.65, 0.12, 0.65)
+[sub_resource type="BoxMesh" id="BackMesh"]
+size = Vector3(0.65, 0.65, 0.1)
+[sub_resource type="BoxShape3D" id="InteractionShape"]
+size = Vector3(0.8, 1.1, 0.8)
+[node name="Desk" type="Node3D"]
+[node name="Desktop" parent="." instance=ExtResource("1")]
+position = Vector3(0, 0.87, 0)
+scale = Vector3(1.6, 0.16, 0.8)
+[node name="Mesh" parent="Desktop" index="0"]
+material_override = SubResource("Wood")
+[node name="LeftLeg" parent="." instance=ExtResource("1")]
+position = Vector3(-0.65, 0.42, 0)
+scale = Vector3(0.1, 0.84, 0.6)
+[node name="Mesh" parent="LeftLeg" index="0"]
+material_override = SubResource("Metal")
+[node name="RightLeg" parent="." instance=ExtResource("1")]
+position = Vector3(0.65, 0.42, 0)
+scale = Vector3(0.1, 0.84, 0.6)
+[node name="Mesh" parent="RightLeg" index="0"]
+material_override = SubResource("Metal")
+[node name="ChairSeat" type="MeshInstance3D" parent="."]
+position = Vector3(0, 0.45, 0.8)
+mesh = SubResource("SeatMesh")
+material_override = SubResource("Chair")
+[node name="ChairBack" type="MeshInstance3D" parent="."]
+position = Vector3(0, 0.8, 1.08)
+mesh = SubResource("BackMesh")
+material_override = SubResource("Chair")
+[node name="Seat" parent="." instance=ExtResource("2")]
+position = Vector3(0, 0.55, 0.8)
+prompt = "Sit / evict clone"
+[node name="CollisionShape3D" parent="Seat" index="0"]
+shape = SubResource("InteractionShape")
+[node name="SitPoint" type="Marker3D" parent="."]
+position = Vector3(0, 0, 0.8)
+[node name="LootSpawns" type="Node3D" parent="."]
+[node name="Desktop" type="Marker3D" parent="LootSpawns"]
+position = Vector3(0, 1.15, 0)
+[node name="Backpack" type="Marker3D" parent="LootSpawns"]
+position = Vector3(0.8, 0.3, 0.7)
+[node name="NavigationObstacle" type="Marker3D" parent="."]
+script = ExtResource("3")
+[editable path="Desktop"]
+[editable path="LeftLeg"]
+[editable path="RightLeg"]
+[editable path="Seat"]

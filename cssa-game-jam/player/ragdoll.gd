@@ -5,41 +5,43 @@ extends Node3D
 ## peers render the transmitted limb transforms. No skeleton asset required.
 var bodies: Array[RigidBody3D] = []
 var simulating: bool = false
+var active: bool = false
+var rest_poses: Array[Transform3D] = []
 
-func build(color: Color, origin: Vector3, yaw: float, simulate: bool, impulse: Vector3) -> void:
+func _ready() -> void:
+	for body: RigidBody3D in $Bodies.get_children():
+		bodies.append(body)
+		rest_poses.append(body.transform)
+	deactivate()
+
+func activate(color: Color, origin: Vector3, yaw: float, simulate: bool, impulse: Vector3) -> void:
 	simulating = simulate
-	var sizes := [Vector3(0.46, 0.6, 0.28), Vector3(0.34, 0.36, 0.32),
-		Vector3(0.18, 0.6, 0.2), Vector3(0.18, 0.6, 0.2), Vector3(0.2, 0.65, 0.23), Vector3(0.2, 0.65, 0.23)]
-	var offsets := [Vector3(0, 1.05, 0), Vector3(0, 1.57, 0), Vector3(-0.36, 1.02, 0),
-		Vector3(0.36, 1.02, 0), Vector3(-0.15, 0.36, 0), Vector3(0.15, 0.36, 0)]
-	var basis := Basis(Vector3.UP, yaw)
-	for i in range(6):
-		var body := RigidBody3D.new()
-		body.name = "Limb%d" % i
-		body.collision_layer = 0
-		body.collision_mask = 1
-		body.mass = 4.0 if i == 0 else 1.0
-		body.freeze = not simulate
-		body.continuous_cd = true
-		body.angular_damp = 0.6
-		var collider := CollisionShape3D.new()
-		var shape := BoxShape3D.new()
-		shape.size = sizes[i]
-		collider.shape = shape
-		body.add_child(collider)
-		Greybox.box(body, Vector3.ZERO, sizes[i], color.lightened(0.2) if i == 1 else color, false)
-		add_child(body)
-		body.global_transform = Transform3D(basis, origin + basis * offsets[i])
+	active = true
+	show()
+	global_transform = Transform3D(Basis(Vector3.UP, yaw), origin)
+	for i in range(bodies.size()):
+		var body := bodies[i]
+		body.transform = rest_poses[i]
+		var material: StandardMaterial3D = body.get_node("Mesh").material_override
+		material.albedo_color = color.lightened(0.2) if i == 1 else color
 		body.linear_velocity = impulse
 		body.angular_velocity = Vector3(2, 1, -3) if simulate else Vector3.ZERO
-		bodies.append(body)
-	var anchors := [Vector3(0, 1.38, 0), Vector3(-0.28, 1.25, 0), Vector3(0.28, 1.25, 0), Vector3(-0.15, 0.72, 0), Vector3(0.15, 0.72, 0)]
-	for i in range(1, 6):
-		var joint := PinJoint3D.new()
-		add_child(joint)
-		joint.global_position = origin + basis * anchors[i - 1]
-		joint.node_a = joint.get_path_to(bodies[0])
-		joint.node_b = joint.get_path_to(bodies[i])
+		body.collision_mask = 1 if simulate else 0
+		body.freeze = not simulate
+	# Reset each joint's rest attachment after repositioning the pooled bodies.
+	for joint: PinJoint3D in $Joints.get_children():
+		var path_a := joint.node_a
+		joint.node_a = NodePath()
+		joint.node_a = path_a
+
+func deactivate() -> void:
+	active = false
+	hide()
+	for body in bodies:
+		body.freeze = true
+		body.collision_mask = 0
+		body.linear_velocity = Vector3.ZERO
+		body.angular_velocity = Vector3.ZERO
 
 func poses() -> Array:
 	var result: Array = []

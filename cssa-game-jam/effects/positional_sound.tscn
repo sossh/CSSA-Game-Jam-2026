@@ -1,0 +1,5 @@
+[gd_scene format=3]
+[node name="PositionalSound" type="AudioStreamPlayer3D"]
+max_distance = 35.0
+unit_size = 4.0
+[connection signal="finished" from="." to="." method="queue_free"]

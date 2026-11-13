@@ -1,5 +1,6 @@
-[gd_resource type="Resource" script_class="ItemData" load_steps=2 format=3]
+[gd_resource type="Resource" script_class="ItemData" load_steps=3 format=3]
 [ext_resource type="Script" path="res://items/item_data.gd" id="1"]
+[ext_resource type="PackedScene" path="res://items/scenes/drug.tscn" id="2"]
 [resource]
 script = ExtResource("1")
 id = "drug"
@@ -8,5 +9,4 @@ description = "Hold these and interact with the teacher's coffee before class."
 price = 10
 effect = "drug"
 spawn_weight = 1.5
-size = Vector3(0.12, 0.2, 0.12)
-color = Color(0.8, 0.4, 1, 1)
+scene = ExtResource("2")

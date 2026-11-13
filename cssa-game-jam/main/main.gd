@@ -40,6 +40,7 @@ func command_line() -> void:
 	Net.command_line_used = true
 	var args := OS.get_cmdline_user_args()
 	for arg in args:
+		if arg.begins_with("--port="): Net.port = int(arg.trim_prefix("--port="))
 		if arg.begins_with("--prep="): Game.config.preparation_seconds = float(arg.trim_prefix("--prep="))
 		if arg.begins_with("--class="): Game.config.class_seconds = float(arg.trim_prefix("--class="))
 		if arg.begins_with("--break="): Game.config.break_seconds = float(arg.trim_prefix("--break="))
@@ -51,8 +52,8 @@ func command_line() -> void:
 	if "--autostart" in args:
 		get_tree().create_timer(2).timeout.connect(func(): Game.request("start"))
 	if "--smoke" in args:
-		var smoke = load("res://tests/smoke_runner.gd").new()
+		var smoke = load("res://tests/smoke_runner.tscn").instantiate()
 		add_child(smoke)
 	if "--network-test" in args:
-		var test = load("res://tests/network_runner.gd").new()
+		var test = load("res://tests/network_runner.tscn").instantiate()
 		add_child(test)

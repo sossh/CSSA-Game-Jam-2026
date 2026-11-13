@@ -23,6 +23,7 @@ func teleport(id: int, at: Vector3, mode: String = "walk") -> void:
 	Game.players[id].epoch += 1
 
 func run_host() -> void:
+	verify_scene_nodes()
 	verify(Net.decode_code(Net.encode_ip("192.168.1.42")) == "192.168.1.42", "LAN code round trip")
 	verify(Net.decode_code("zzzz-zzzz") == "", "Malformed code rejected")
 	verify(ItemDB.items.size() == 17, "All item resources loaded")
@@ -55,6 +56,11 @@ func run_host() -> void:
 	verify(Game.players[client].limbs.size() == 6, "Owner transmits six physical ragdoll limb poses")
 	await wait(Game.config.ragdoll_seconds + 0.2)
 	verify(Game.players[client].mode == "walk", "Ragdoll recovers")
+	var ragdoll_id: int = Game.world.player_nodes[client].ragdoll.get_instance_id()
+	Game.launch_player(client, Vector3(0, 4, 3))
+	await wait(0.4)
+	verify(Game.world.player_nodes[client].ragdoll.get_instance_id() == ragdoll_id and Game.players[client].limbs.size() == 6, "Existing scene ragdoll resets for another launch")
+	await wait(Game.config.ragdoll_seconds + 0.1)
 	teleport(1, Game.world.vending_position + Vector3(0, 0, -2))
 	Game.players[1].money = 100
 	await wait(0.15)
@@ -118,6 +124,24 @@ func run_host() -> void:
 	print("SMOKE_HOST_", "FAILED" if failed else "PASSED")
 	await wait(1)
 	get_tree().quit(1 if failed else 0)
+
+func verify_scene_nodes() -> void:
+	# Detached scenes have not run _ready: these nodes must be authored in .tscn.
+	var room = load("res://world/classroom.tscn").instantiate()
+	verify(room.get_node("Desks").get_child_count() == 16 and room.has_node("Teacher/Shotgun/Barrel"), "Classroom and teacher are editable before running scripts")
+	verify(room.has_node("Desks/Desk01/SitPoint") and room.has_node("Hallway/VendingMachine/DispensePoint"), "Interaction and spawn markers exist in scene files")
+	room.free()
+	var player = load("res://player/network_player.tscn").instantiate()
+	verify(player.has_node("Head/Camera") and player.get_node("Ragdoll/Bodies").get_child_count() == 6 and player.get_node("Ragdoll/Joints").get_child_count() == 5, "Player camera, ragdoll bodies and joints are prebuilt")
+	player.free()
+	for data: ItemData in ItemDB.items.values():
+		var item = data.scene.instantiate()
+		verify(item.has_node("Visual") and item.has_node("CollisionShape3D"), data.id + " has an authored visual and collider")
+		item.free()
+	var ui = get_tree().current_scene.get_node("UI")
+	ui.open_vending()
+	verify(ui.vending_rows.get_child_count() == 17 and ui.vending_panel.visible, "Scene-authored vending controls open and refresh")
+	ui.close_vending()
 
 func run_client() -> void:
 	for attempt in range(150):

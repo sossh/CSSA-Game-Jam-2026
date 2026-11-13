@@ -2,12 +2,12 @@ class_name ClassroomItem
 extends RigidBody3D
 
 var entity_id: String
-var item_id: String = "apple"
+@export var item_id: String = "apple"
 var data: ItemData
 var holder: int = 0
 var thrower: String = ""
 var uses: int = 1
-var kid: bool = false
+@export var kid: bool = false
 var dead: bool = false
 var home_seat: int = -1
 var seated: bool = false
@@ -17,47 +17,17 @@ var fuse_at: float = 0
 var last_impact: float = -10
 var old_velocity := Vector3.ZERO
 var destination := Transform3D.IDENTITY
-var label: Label3D
-var visual: Node3D
+@onready var label: Label3D = $NameLabel
+@onready var visual: Node3D = $Visual
 
 func _ready() -> void:
 	data = ItemDB.get_item(item_id)
 	uses = data.uses
 	mass = 12.0 if kid else data.mass
-	collision_layer = 8 if kid else 4
-	collision_mask = 1 | 2 | 4 | 8
-	continuous_cd = true
-	contact_monitor = true
-	max_contacts_reported = 6
-	freeze_mode = RigidBody3D.FREEZE_MODE_KINEMATIC
 	freeze = not Game.is_host() or seated
-	var collision := CollisionShape3D.new()
 	if kid:
-		var shape := CapsuleShape3D.new()
-		shape.radius = 0.3
-		shape.height = 1.6
-		collision.shape = shape
-		visual = Greybox.mannequin(self, Color(0.62, 0.65, 0.8) if not dead else Color(0.5, 0.3, 0.4))
-		visual.position.y = -0.8
-	else:
-		var shape := BoxShape3D.new()
-		shape.size = data.size
-		collision.shape = shape
-		if data.model:
-			visual = data.model.instantiate()
-			add_child(visual)
-		else: visual = Greybox.box(self, Vector3.ZERO, data.size, data.color, false)
-	add_child(collision)
-	label = Greybox.label(self, display_name(), Vector3(0, 0.6 if not kid else 1.1, 0), 19)
-	label.billboard = BaseMaterial3D.BILLBOARD_ENABLED
-	label.modulate.a = 0.8
-	label.no_depth_test = false
-	label.visible = false # The interactor supplies a readable focused-object prompt.
-	var material := PhysicsMaterial.new()
-	material.bounce = 0.22
-	material.friction = 0.7
-	physics_material_override = material
-	body_entered.connect(_impact)
+		$CloneVisual.set_color(Color(0.62, 0.65, 0.8) if not dead else Color(0.5, 0.3, 0.4))
+	label.text = display_name()
 	noise_at = Game.elapsed + randf_range(8, 28)
 	destination = global_transform
 

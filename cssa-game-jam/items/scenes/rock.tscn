@@ -1,0 +1,9 @@
+[gd_scene load_steps=3 format=3]
+[ext_resource type="PackedScene" path="res://items/throwable.tscn" id="1"]
+[sub_resource type="StandardMaterial3D" id="Material"]
+albedo_color = Color(0.4, 0.42, 0.5, 1)
+roughness = 0.85
+[node name="Rock" instance=ExtResource("1")]
+item_id = "rock"
+[node name="Visual" parent="." index="1"]
+material_override = SubResource("Material")

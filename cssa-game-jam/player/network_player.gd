@@ -2,11 +2,11 @@ class_name StudentPlayer
 extends CharacterBody3D
 
 var peer_id: int
-var head: Node3D
-var camera: Camera3D
-var visual: Node3D
-var name_label: Label3D
-var ragdoll: StudentRagdoll
+@onready var head: Node3D = $Head
+@onready var camera: Camera3D = $Head/Camera
+@onready var visual: StudentVisual = $Visual
+@onready var name_label: Label3D = $NameLabel
+@onready var ragdoll: StudentRagdoll = $Ragdoll
 var color: Color
 var local: bool = false
 var applied_epoch: int = -1
@@ -21,26 +21,10 @@ var interaction_text: String = ""
 func _ready() -> void:
 	local = peer_id == multiplayer.get_unique_id()
 	color = Color.from_hsv(fmod(peer_id * 0.173, 1.0), 0.55, 0.95)
-	collision_layer = 2
-	collision_mask = 1
-	var collider := CollisionShape3D.new()
-	var capsule := CapsuleShape3D.new()
-	capsule.radius = 0.3
-	capsule.height = 1.75
-	collider.shape = capsule
-	collider.position.y = 0.88
-	add_child(collider)
-	visual = Greybox.mannequin(self, color)
+	visual.set_color(color)
 	visual.visible = not local
-	head = Node3D.new()
-	head.position.y = 1.55
-	add_child(head)
-	camera = Camera3D.new()
-	camera.fov = 82
-	head.add_child(camera)
 	camera.current = local
-	name_label = Greybox.label(self, str(Game.players[peer_id].name), Vector3(0, 2.05, 0), 26)
-	name_label.billboard = BaseMaterial3D.BILLBOARD_ENABLED
+	name_label.text = str(Game.players[peer_id].name)
 	name_label.visible = not local
 	global_position = Game.players[peer_id].position
 
@@ -72,17 +56,14 @@ func _physics_process(delta: float) -> void:
 		applied_epoch = p.epoch
 		global_position = p.position
 		velocity = Vector3.ZERO
-		if is_instance_valid(ragdoll): ragdoll.queue_free(); ragdoll = null
-	if mode == "ragdoll" and not is_instance_valid(ragdoll):
-		ragdoll = StudentRagdoll.new()
-		Game.world.add_child(ragdoll)
-		ragdoll.build(color, p.position, p.yaw, local, p.launch)
-	if mode != "ragdoll" and is_instance_valid(ragdoll):
+		ragdoll.deactivate()
+	if mode == "ragdoll" and not ragdoll.active:
+		ragdoll.activate(color, p.position, p.yaw, local, p.launch)
+	if mode != "ragdoll" and ragdoll.active:
 		if local:
 			global_position = ragdoll.bodies[0].global_position
 			global_position.y = maxf(0.2, global_position.y)
-		ragdoll.queue_free()
-		ragdoll = null
+		ragdoll.deactivate()
 	visual.visible = not local and mode not in ["dead", "ragdoll"]
 	name_label.visible = not local and mode != "dead"
 	collision_layer = 0 if mode == "dead" else 2
@@ -134,7 +115,7 @@ func _physics_process(delta: float) -> void:
 		send_timer += delta
 		if send_timer >= 0.033:
 			send_timer = 0
-			var limbs: Array = ragdoll.poses() if is_instance_valid(ragdoll) else []
+			var limbs: Array = ragdoll.poses() if ragdoll.active else []
 			if Game.is_host(): Game.accept_pose(peer_id, global_position, rotation.y, pitch, limbs, applied_epoch)
 			else: Game.pose.rpc_id(1, global_position, rotation.y, pitch, limbs, applied_epoch)
 	last_mode = mode
@@ -167,6 +148,3 @@ func held_transform(big: bool = false) -> Transform3D:
 		transform_out.origin = carry_position()
 		transform_out.basis = global_basis.rotated(global_basis.z, PI / 2)
 	return transform_out
-
-func _exit_tree() -> void:
-	if is_instance_valid(ragdoll): ragdoll.queue_free()

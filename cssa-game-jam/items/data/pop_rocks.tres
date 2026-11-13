@@ -1,5 +1,6 @@
-[gd_resource type="Resource" script_class="ItemData" load_steps=2 format=3]
+[gd_resource type="Resource" script_class="ItemData" load_steps=3 format=3]
 [ext_resource type="Script" path="res://items/item_data.gd" id="1"]
+[ext_resource type="PackedScene" path="res://items/scenes/pop_rocks.tscn" id="2"]
 [resource]
 script = ExtResource("1")
 id = "pop_rocks"
@@ -9,6 +10,5 @@ price = 8
 food = 20.0
 effect = "pop_rocks"
 spawn_weight = 2.0
-size = Vector3(0.15, 0.18, 0.04)
-color = Color(1, 0.2, 0.8, 1)
+scene = ExtResource("2")
 sound = "pop_rocks"

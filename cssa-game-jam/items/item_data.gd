@@ -11,9 +11,8 @@ extends Resource
 @export var eating_noise: float = 40.0
 @export var impact_noise: float = 25.0
 @export var mass: float = 0.5
-@export var color: Color = Color.GREEN
-@export var size: Vector3 = Vector3(0.22, 0.22, 0.22)
 @export_enum("food", "speed", "tomato", "rock", "drug", "cushion", "gun", "rocket", "pop_rocks", "loot_box", "firework", "knife", "nerf") var effect: String = "food"
 @export var uses: int = 1
 @export var sound: String = "chew"
-@export var model: PackedScene
+## The complete editable throwable scene (mesh, collider, and behaviour).
+@export var scene: PackedScene

@@ -1,0 +1,8 @@
+[gd_scene load_steps=2 format=3]
+[ext_resource type="Script" path="res://ui/vending_entry.gd" id="1"]
+[node name="VendingEntry" type="Button"]
+custom_minimum_size = Vector2(0, 42)
+size_flags_horizontal = 3
+text = "A01 • Item"
+script = ExtResource("1")
+[connection signal="pressed" from="." to="." method="purchase"]

@@ -18,6 +18,10 @@ snacks and friends, survive, spend Bitcoin, and add to the shared escape rocket.
 - [Prioritized 3D, sound, and miscellaneous asset lists](docs/ASSETS.md)
 - [Five-dev handoff, architecture, controls, and tests](docs/DEVELOPMENT.md)
 
+Edit the level in `cssa-game-jam/world/classroom.tscn` and menus/HUD in
+`cssa-game-jam/ui/game_ui.tscn`. Players, ragdolls, teacher, props and all items
+have editable scene trees; gameplay scripts reference those existing nodes.
+
 Greybox models and visual cues are included. Human-made/licensed audio and art
 are ready to integrate; missing audio is silent. No microphone/proximity chat.
 

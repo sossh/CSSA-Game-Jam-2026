@@ -23,8 +23,8 @@ The current build uses primitive greybox geometry and **no generated audio or fi
 
 - Prefer `.glb`, meters, Y up, character forward **-Z**, applied transforms. Character origin at feet; item origins at their center of mass.
 - Keep visual meshes separate from gameplay colliders and interaction markers. Low-poly, strong silhouette beats detail at this scale.
-- Item models go into `cssa-game-jam/assets/models/items/`. Create a wrapper scene if scale/orientation needs adjustment; assign it to `model` in the corresponding `items/data/*.tres`.
-- Characters currently use `Greybox.mannequin()` in `core/greybox.gd`; player ragdolls are in `player/ragdoll.gd`. Teacher visual hooks are in `teacher/teacher.gd`. Room visuals are built by `world/classroom.gd`.
+- Item models go into `cssa-game-jam/assets/models/items/`. Open the corresponding `items/scenes/*.tscn`, hide/replace its `Visual` mesh, and instance the imported model there. Adjust its collider in the same scene. The resource's `scene` field references the complete throwable scene.
+- Characters share `core/student_visual.tscn`; edit `player/network_player.tscn`, `player/ragdoll.tscn`, `npc/kid.tscn` and `teacher/teacher.tscn` for their bodies, cameras, joints and props. Room geometry and lighting live in `world/classroom.tscn` with reusable furniture in `world/props/`.
 
 ## Sounds
 

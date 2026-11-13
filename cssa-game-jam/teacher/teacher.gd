@@ -17,9 +17,9 @@ var path: PackedVector3Array = []
 var shot_fired: bool = false
 var scan_time: float = 0
 var lecture_sound_at: float = 0
-var label: Label3D
-var gun: Node3D
-var laser: Node3D
+@onready var label: Label3D = $StateLabel
+@onready var gun: Node3D = $Shotgun
+@onready var laser: Node3D = $AimLaser
 var destination := Vector3.ZERO
 var desired_yaw: float = 0
 var aim_point := Vector3.ZERO
@@ -27,23 +27,6 @@ var board := Vector3(0, 0, -7.0)
 var lounge := Vector3(-7, 0, -8.8)
 
 func _ready() -> void:
-	collision_layer = 8
-	collision_mask = 1
-	var shape := CollisionShape3D.new()
-	var capsule := CapsuleShape3D.new()
-	capsule.radius = 0.38
-	capsule.height = 2
-	shape.shape = capsule
-	shape.position.y = 1
-	add_child(shape)
-	var visual := Greybox.mannequin(self, Color(0.32, 0.8, 0.5))
-	visual.scale = Vector3.ONE * 1.3
-	gun = Greybox.box(self, Vector3(0.45, 1.3, -0.55), Vector3(0.18, 0.2, 0.95), Color(0.15, 0.16, 0.18), false)
-	Greybox.box(gun, Vector3(0, 0, -0.35), Vector3(0.22, 0.12, 0.5), Color(0.4, 0.42, 0.45), false)
-	label = Greybox.label(self, "Professor X-PEL", Vector3(0, 2.7, 0), 30)
-	label.billboard = BaseMaterial3D.BILLBOARD_ENABLED
-	laser = Greybox.box(Game.world, Vector3.ZERO, Vector3(0.018, 0.018, 1), Color.RED, false)
-	laser.visible = false
 	global_position = lounge
 	destination = lounge
 	NoiseBus.noise_made.connect(hear)

@@ -4,7 +4,7 @@
 
 Open `cssa-game-jam/project.godot` in **Godot 4.7.x** and press F6 on `main/main.tscn` or F5 for the project. One player hosts; up to five others join the displayed code on the same LAN. Host presses **Enter** after skipping the intro to start. `127.0.0.1` works for two local instances.
 
-Host codes encode IPv4 only; UDP port is fixed at **7777**. If the automatic interface choice picks a VPN/virtual interface, enter the host's LAN IPv4 in the host address field. No dedicated service, Steam, relay, account, or voice dependency.
+Host codes encode IPv4 only; normal play uses UDP port **7777**. Test runners pass a separate `--port=` to both peers so they can run alongside a live game. If the automatic interface choice picks a VPN/virtual interface, enter the host's LAN IPv4 in the host address field. No dedicated service, Steam, relay, account, or voice dependency.
 
 ## Controls
 
@@ -45,10 +45,10 @@ Host codes encode IPv4 only; UDP port is fixed at **7777**. If the automatic int
 | Dev | Area | Files |
 |---|---|---|
 | 1 | Network, connection UX, robustness | `autoload/net.gd`, snapshot/RPC section in `autoload/game.gd`, `tests/` |
-| 2 | Player feel, carrying, character art, ragdoll tuning | `player/network_player.gd`, `player/ragdoll.gd`, `core/greybox.gd` |
-| 3 | Teacher timing, readability, blame and sound | `teacher/teacher.gd`, `autoload/noise_bus.gd`, `autoload/sfx.gd` |
+| 2 | Player feel, carrying, character art, ragdoll tuning | `player/network_player.{tscn,gd}`, `player/ragdoll.{tscn,gd}`, `core/student_visual.tscn` |
+| 3 | Teacher timing, readability, blame and sound | `teacher/teacher.{tscn,gd}`, `autoload/noise_bus.gd`, `autoload/sfx.gd` |
 | 4 | Items, economy, vending | `items/`, interaction/economy helpers in `world/classroom.gd` |
-| 5 | Room art, HUD/menus, round playtests | `world/classroom.gd`, `ui/game_ui.gd`, `config/`, `assets/` |
+| 5 | Room art, HUD/menus, round playtests | `world/classroom.tscn`, `world/props/`, `ui/game_ui.{tscn,gd}`, `config/`, `assets/` |
 
 `world/classroom.gd` and `autoload/game.gd` are integration points: coordinate edits with their owners. The old `main/testing.tscn`, `worlds/testing-world.tscn`, `player/player.tscn` and outside-project `copy-paste/` remain as prototype reference; the main scene uses the new networked player and classroom.
 
@@ -70,11 +70,19 @@ Host codes encode IPv4 only; UDP port is fixed at **7777**. If the automatic int
 - `Game.damage(peer_id, amount, reason, impulse)` — host damage and optional ragdoll.
 - `Game.launch_player(peer_id, velocity)` — host orders physical tumble.
 - `Game.event.rpc(kind, data)` — reliable visual/audio/UI event; game state belongs in snapshots.
-- Item additions: duplicate a resource in `items/data/`, set a unique `id`, price/rarity/grade and effect. ItemDB discovers `.tres` resources through Godot's resource-aware listing, including exported builds.
+- Item additions: duplicate a resource in `items/data/` and an inherited throwable scene in `items/scenes/`. Set a unique `id`, price/rarity/grade/effect, and assign the complete scene to the resource's `scene` field. Set that scene's `item_id` to match. ItemDB discovers `.tres` resources through Godot's resource-aware listing, including exported builds. Add a `vending_entry.tscn` instance under `VendingRows` in the UI scene and set its `item_id` to expose a new button; keypad codes follow the sorted stock.
 
 ## Level editing
 
-The current room is built deterministically by `world/classroom.gd` at runtime. Grid-pathfinding routes investigations through the aisles without runtime navmesh baking. If desk positions change, update the same function's obstacle extents (`mark_obstacle`) and seat/spawn positions. The root scene is `world/classroom.tscn`; replacing runtime boxes with authored scene instances is the next art integration step.
+Open `world/classroom.tscn`: the room, sixteen desk instances, teacher, hallway props, environment, lights and camera already exist in the **Scene dock** and 3D viewport. Open an instanced scene with its scene icon, or enable **Editable Children** for per-instance overrides.
+
+- `world/props/desk.tscn`: desk/chair meshes, colliders, seat interaction, `SitPoint`, two `LootSpawns`, and a `NavigationObstacle` marker. Moving a desk moves all its gameplay markers. The world reads those marker transforms at startup, so layouts no longer need coordinates edited in GDScript.
+- `TeacherDesk`, `VendingMachine`, `RocketPad`, and `TransferChute` are reusable scenes with their interaction volumes and spawn/dispense markers visible in the editor. Rocket parts are preplaced and revealed as score increases.
+- `TeacherWaypoints` contains the board/lounge positions; `Room` contains open/closed door markers.
+- Grid-pathfinding builds its data from the furniture's `NavigationObstacle` markers. Their Inspector `half_extents` include teacher clearance around each desk.
+- `ui/game_ui.tscn` contains the menu, HUD, pause, vending entries and crawl. Layout is defined by anchors/containers; button connections are saved in the scene. Labels, theme and positions can be edited without changing code.
+- `player/ragdoll.tscn` contains six rigid bodies and five joints, pre-instanced under every network player. The script activates/resets them rather than constructing bodies. Its root is top-level so the player controller can follow the simulated body without moving it.
+- Dynamic players, items, NPCs, sound emitters and effect bursts instantiate their complete `.tscn` prefabs. Gameplay scripts update state and reference existing children using `$`/`%`/`@onready`; they do not construct node hierarchies.
 
 Layers: **1 world, 2 players, 4 objects, 8 teacher/NPCs, 16 interactables** (bit values). Player movement collides with world geometry; host object physics detects player bodies. Seats are explicit interactions, not automatic collision triggers.
 

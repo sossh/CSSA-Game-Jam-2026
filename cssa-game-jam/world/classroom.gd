@@ -1,118 +1,55 @@
 class_name ClassroomWorld
 extends Node3D
 
+const PLAYER_SCENE := preload("res://player/network_player.tscn")
+const KID_SCENE := preload("res://npc/kid.tscn")
+const BURST_SCENE := preload("res://effects/impact_burst.tscn")
+
 var player_nodes: Dictionary = {}
 var items: Dictionary = {}
 var interactions: Dictionary = {}
 var seat_positions: Array[Vector3] = []
 var spawn_positions: Array[Vector3] = []
-var teacher: ClassroomTeacher
-var door: Node3D
-var clock: Label3D
-var rocket_label: Label3D
-var rocket_visual: Node3D
-var menu_camera: Camera3D
+@onready var teacher: ClassroomTeacher = $Teacher
+@onready var door: Node3D = $Room/Door
+@onready var clock: Label3D = $Room/Clock
+@onready var rocket_label: Label3D = $Hallway/RocketPad/ScoreLabel
+@onready var rocket_visual: Node3D = $Hallway/RocketPad/Parts
+@onready var menu_camera: Camera3D = $MenuCamera
 var grid: AStarGrid2D
 var serial: int = 0
 var last_rocket_count: int = -1
-var vending_position := Vector3(5, 0, 13)
-var coffee_position := Vector3(3, 1.2, -6.5)
-var rocket_position := Vector3(-5, 0, 13)
+@onready var vending_position: Vector3 = $Hallway/VendingMachine.global_position
+@onready var coffee_position: Vector3 = $TeacherDesk/Coffee.global_position
+@onready var rocket_position: Vector3 = $Hallway/RocketPad.global_position
+
+func _enter_tree() -> void:
+	Game.world = self
 
 func _ready() -> void:
-	Game.world = self
-	build_room()
-	teacher = ClassroomTeacher.new()
-	teacher.name = "Teacher"
-	add_child(teacher)
-	Game.effect.connect(on_effect)
-
-func build_room() -> void:
-	var floor_color := Color(0.18, 0.22, 0.3)
-	var wall_color := Color(0.3, 0.36, 0.44)
-	Greybox.box(self, Vector3(0, -0.2, 3), Vector3(18, 0.4, 26), floor_color)
-	Greybox.box(self, Vector3(0, 2.5, -10), Vector3(18, 5, 0.3), wall_color)
-	Greybox.box(self, Vector3(-9, 2.5, 3), Vector3(0.3, 5, 26), wall_color)
-	Greybox.box(self, Vector3(9, 2.5, 3), Vector3(0.3, 5, 26), wall_color)
-	Greybox.box(self, Vector3(0, 2.5, 16), Vector3(18, 5, 0.3), wall_color)
-	Greybox.box(self, Vector3(-5, 2.5, 8), Vector3(8, 5, 0.3), wall_color)
-	Greybox.box(self, Vector3(5, 2.5, 8), Vector3(8, 5, 0.3), wall_color)
-	Greybox.box(self, Vector3(0, 4.25, 8), Vector3(2, 1.5, 0.3), wall_color)
-	door = Greybox.box(self, Vector3(0, 1.75, 8), Vector3(2, 3.5, 0.25), Color(0.55, 0.2, 0.2))
-	Greybox.label(self, "CLASSROOM 0xC05\nNO FOOD. NO FUN. NO EARTH.", Vector3(0, 3.9, 8.2), 30)
-	Greybox.box(self, Vector3(0, 2.5, -9.75), Vector3(9, 2.8, 0.1), Color(0.05, 0.2, 0.18), false)
-	Greybox.label(self, "ALIEN CALCULUS\ncos(mos) = detention²\nToday's lesson: SURVIVE", Vector3(0, 2.7, -9.62), 42)
-	clock = Greybox.label(self, "05:00", Vector3(6, 3.8, -9.6), 64)
 	grid = AStarGrid2D.new()
 	grid.region = Rect2i(-16, -18, 33, 34)
 	grid.cell_size = Vector2(0.5, 0.5)
 	grid.diagonal_mode = AStarGrid2D.DIAGONAL_MODE_NEVER
 	grid.update()
-	for row in range(4):
-		for column in range(4):
-			var pos := Vector3(-5.4 + column * 3.6, 0, -3.8 + row * 2.7)
-			var seat := pos + Vector3(0, 0, 0.8)
-			var index := seat_positions.size()
-			seat_positions.append(seat)
-			Greybox.box(self, pos + Vector3(0, 0.87, 0), Vector3(1.6, 0.16, 0.8), Color(0.5, 0.39, 0.28))
-			for x in [-0.65, 0.65]:
-				Greybox.box(self, pos + Vector3(x, 0.42, 0), Vector3(0.1, 0.84, 0.6), Color(0.23, 0.27, 0.3))
-			Greybox.box(self, seat + Vector3(0, 0.45, 0), Vector3(0.65, 0.12, 0.65), Color(0.26, 0.4, 0.55), false)
-			Greybox.box(self, seat + Vector3(0, 0.8, 0.28), Vector3(0.65, 0.65, 0.1), Color(0.26, 0.4, 0.55), false)
-			add_interaction("seat:" + str(index), "Sit / evict clone", seat + Vector3(0, 0.55, 0), Vector3(0.8, 1.1, 0.8))
-			spawn_positions.append(pos + Vector3(0, 1.15, 0))
-			spawn_positions.append(pos + Vector3(0.8, 0.3, 0.7))
-			mark_obstacle(pos, Vector2(1.25, 0.85))
-	Greybox.box(self, Vector3(3, 0.55, -6.5), Vector3(2.5, 1.1, 1), Color(0.45, 0.3, 0.23))
-	mark_obstacle(Vector3(3, 0, -6.5), Vector2(1.65, 0.9))
-	Greybox.box(self, coffee_position, Vector3(0.22, 0.28, 0.22), Color.BROWN, false)
-	add_interaction("coffee", "Drug coffee (hold sleeping tablets)", coffee_position, Vector3(0.5, 0.5, 0.5))
-	spawn_positions.append(Vector3(3.7, 1.3, -6.5))
-	Greybox.box(self, vending_position + Vector3(0, 1.4, 0), Vector3(1.8, 2.8, 1.2), Color(0.25, 0.2, 0.6))
-	Greybox.box(self, vending_position + Vector3(0, 1.5, -0.66), Vector3(1.4, 1.8, 0.05), Color(0.06, 0.09, 0.13), false)
-	Greybox.label(self, "COSMIC CRUNCH\n[ E ] KEYPAD\nBITCOIN ONLY", vending_position + Vector3(0, 2.25, -0.72), 32).rotation.y = PI
-	add_interaction("vending", "Vending keypad", vending_position + Vector3(0, 1.3, -0.75), Vector3(1.8, 2.6, 0.3))
-	Greybox.box(self, rocket_position, Vector3(3, 0.2, 3), Color(0.25, 0.65, 0.7))
-	rocket_label = Greybox.label(self, "", rocket_position + Vector3(0, 3, 0), 38)
-	rocket_label.billboard = BaseMaterial3D.BILLBOARD_ENABLED
-	add_interaction("rocket", "Contribute rocket part", rocket_position + Vector3(0, 0.6, 0), Vector3(2.5, 1, 2.5))
-	rocket_visual = Node3D.new()
-	add_child(rocket_visual)
-	rocket_visual.position = rocket_position
-	for x in [-0.9, 0.9]:
-		Greybox.box(self, Vector3(x, 5.4, 13.8), Vector3(0.2, 3.6, 2), Color(0.4, 0.45, 0.5))
-	Greybox.label(self, "TRANSFER CHUTE\nCloning fee: ₿10", Vector3(0, 3.8, 15.7), 32).rotation.y = PI
-	# Geometric greybox cosmos: replace with human-made sky/planet assets later.
-	var environment := WorldEnvironment.new()
-	var env := Environment.new()
-	env.background_mode = Environment.BG_COLOR
-	env.background_color = Color(0.015, 0.02, 0.055)
-	env.ambient_light_source = Environment.AMBIENT_SOURCE_COLOR
-	env.ambient_light_color = Color(0.7, 0.8, 1)
-	env.ambient_light_energy = 0.75
-	environment.environment = env
-	add_child(environment)
-	var sun := DirectionalLight3D.new()
-	sun.rotation_degrees = Vector3(-65, -25, 0)
-	sun.light_energy = 1.1
-	sun.shadow_enabled = true
-	add_child(sun)
-	for i in range(35):
-		var angle := i * 2.39996
-		Greybox.box(self, Vector3(cos(angle) * 65, 15 + (i % 8) * 5, sin(angle) * 65), Vector3.ONE * 0.3, Color.WHITE, false)
-	Greybox.box(self, Vector3(30, 30, -45), Vector3(12, 12, 12), Color(0.2, 0.4, 0.9), false)
-	menu_camera = Camera3D.new()
-	add_child(menu_camera)
-	menu_camera.position = Vector3(7, 6, 7)
-	menu_camera.look_at(Vector3(0, 1, -3))
-	menu_camera.current = true
-
-func add_interaction(id: String, text: String, at: Vector3, size: Vector3) -> void:
-	var interactable := Interactable.new()
-	add_child(interactable)
-	interactable.position = at
-	interactable.configure(id, text, size)
-	interactions[id] = interactable
+	for desk in $Desks.get_children():
+		var seat: Interactable = desk.get_node("Seat")
+		seat.interaction_id = "seat:" + str(seat_positions.size())
+		seat_positions.append(desk.get_node("SitPoint").global_position)
+		for marker: Marker3D in desk.get_node("LootSpawns").get_children():
+			spawn_positions.append(marker.global_position)
+		var obstacle = desk.get_node("NavigationObstacle")
+		mark_obstacle(obstacle.global_position, obstacle.half_extents)
+	var obstacle = $TeacherDesk/NavigationObstacle
+	mark_obstacle(obstacle.global_position, obstacle.half_extents)
+	spawn_positions.append($TeacherDesk/LootSpawn.global_position)
+	for node in find_children("*", "StaticBody3D", true, false):
+		if node is Interactable: interactions[node.interaction_id] = node
+	teacher.board = $TeacherWaypoints/Board.global_position
+	teacher.lounge = $TeacherWaypoints/Lounge.global_position
+	teacher.global_position = teacher.lounge
+	teacher.destination = teacher.lounge
+	Game.effect.connect(on_effect)
 
 func mark_obstacle(pos: Vector3, half_size: Vector2) -> void:
 	for cell in grid.region.size.x * grid.region.size.y:
@@ -139,27 +76,27 @@ func nearest_walkable(point: Vector3) -> Vector2i:
 	return Vector2i.ZERO
 
 func chute_position(index: int) -> Vector3:
-	return Vector3(-0.5 + (index % 2), 3.5 + (index / 2) * 0.5, 13.4)
+	var points := $Hallway/TransferChute/SpawnPoints.get_children()
+	return points[posmod(index, points.size())].global_position
 
 func _physics_process(_delta: float) -> void:
 	if Net.active: ensure_players()
 	var closed := Game.phase == "class"
-	door.position.y = 1.75 if closed else 5.5
+	door.global_position = $Room/DoorClosedPoint.global_position if closed else $Room/DoorOpenPoint.global_position
 	clock.text = "%02d:%02d" % [int(Game.remaining) / 60, int(Game.remaining) % 60]
 	rocket_label.text = "CLASS ESCAPE FUND\n%d ROCKET PARTS" % Game.rocket_parts
 	if last_rocket_count != Game.rocket_parts:
 		last_rocket_count = Game.rocket_parts
-		for child in rocket_visual.get_children(): child.queue_free()
-		for i in range(mini(20, Game.rocket_parts)):
-			Greybox.box(rocket_visual, Vector3((i % 3 - 1) * 0.5, 0.4 + (i / 3) * 0.45, 0), Vector3.ONE * 0.45, Color(0.6, 0.8, 0.9), false)
+		for i in range(rocket_visual.get_child_count()):
+			rocket_visual.get_child(i).visible = i < Game.rocket_parts
 
 func ensure_players() -> void:
 	for id in Game.players:
 		if not player_nodes.has(id):
-			var player := StudentPlayer.new()
+			var player: StudentPlayer = PLAYER_SCENE.instantiate()
 			player.peer_id = id
 			player.name = "Player%d" % id
-			add_child(player)
+			$Players.add_child(player)
 			player_nodes[id] = player
 	for id in player_nodes.keys():
 		if not Game.players.has(id):
@@ -172,7 +109,8 @@ func spawn_item(id: String, at: Vector3, kid: bool = false, dead: bool = false, 
 		"kid": kid, "dead": dead, "seated": kid and not dead and seat >= 0, "home": seat, "uses": ItemDB.get_item(id).uses})
 
 func create_item(entity_id: String, state: Dictionary) -> ClassroomItem:
-	var item := ClassroomItem.new()
+	var scene: PackedScene = KID_SCENE if state.kid else ItemDB.get_item(state.item).scene
+	var item: ClassroomItem = scene.instantiate()
 	item.entity_id = entity_id
 	item.name = entity_id.replace(":", "_")
 	item.item_id = state.item
@@ -181,7 +119,7 @@ func create_item(entity_id: String, state: Dictionary) -> ClassroomItem:
 	item.seated = state.seated
 	item.home_seat = state.home
 	item.transform = state.transform
-	add_child(item)
+	$Items.add_child(item)
 	item.receive(state)
 	items[entity_id] = item
 	return item
@@ -227,8 +165,8 @@ func prepare_class() -> void:
 		var point: Vector3 = spawn_positions[i % spawn_positions.size()]
 		point += Vector3(randf_range(-0.25, 0.25), 0.1 + (i / spawn_positions.size()) * 0.3, randf_range(-0.12, 0.12))
 		spawn_item(ItemDB.random_item(Game.grade, i < count - 4), point)
-	spawn_item("drug", Vector3(0.5, 0.3, 11))
-	spawn_item("tomato", Vector3(-0.5, 0.3, 11))
+	spawn_item("drug", $Hallway/StarterSpawns/Drug.global_position)
+	spawn_item("tomato", $Hallway/StarterSpawns/Tomato.global_position)
 
 func free_seat(preferred: int = -1) -> int:
 	var available: Array[int] = []
@@ -389,7 +327,7 @@ func buy(id: int, item_id: String) -> void:
 	if p.position.distance_to(vending_position) > 4.5 or data.minimum_grade > Game.grade or p.money < data.price: return
 	if items.size() >= Game.config.max_loose_items: return
 	p.money -= data.price
-	var item := spawn_item(item_id, vending_position + Vector3(0, 0.55, -1))
+	var item := spawn_item(item_id, $Hallway/VendingMachine/DispensePoint.global_position)
 	item.linear_velocity = Vector3(0, 0.5, -2)
 	NoiseBus.emit_noise(item.global_position, 25, str(id), "vending_dispense")
 
@@ -420,11 +358,7 @@ func is_violating(id: String) -> bool:
 
 func on_effect(kind: String, data: Dictionary) -> void:
 	if kind not in ["burst", "shot"]: return
-	var at: Vector3 = data.position
-	var color: Color = data.get("color", Color(1, 0.75, 0.1))
-	for i in range(10):
-		var particle := Greybox.box(self, at, Vector3.ONE * 0.08, color, false)
-		var tween := create_tween().set_parallel(true)
-		tween.tween_property(particle, "position", at + Vector3(randf_range(-1, 1), randf_range(0, 1.4), randf_range(-1, 1)), 0.4)
-		tween.tween_property(particle, "scale", Vector3.ZERO, 0.4)
-		tween.chain().tween_callback(particle.queue_free)
+	var burst := BURST_SCENE.instantiate()
+	burst.position = data.position
+	burst.color = data.get("color", Color(1, 0.75, 0.1))
+	$Effects.add_child(burst)

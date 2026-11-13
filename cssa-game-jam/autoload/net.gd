@@ -5,6 +5,7 @@ signal joined
 signal disconnected(message: String)
 
 const PORT := 7777
+var port: int = PORT
 var active: bool = false
 var player_name: String = "Transfer student"
 var join_code: String = ""
@@ -21,7 +22,7 @@ func _ready() -> void:
 
 func host(display_name: String, address: String = "") -> Error:
 	var peer := ENetMultiplayerPeer.new()
-	var error := peer.create_server(PORT, Game.config.maximum_players - 1, 3)
+	var error := peer.create_server(port, Game.config.maximum_players - 1, 3)
 	if error != OK:
 		status_changed.emit("Cannot host: " + error_string(error))
 		return error
@@ -45,7 +46,7 @@ func join(display_name: String, code: String) -> Error:
 		status_changed.emit("Enter eight hex digits (C0A8-012A), or a LAN IPv4 address.")
 		return ERR_INVALID_PARAMETER
 	var peer := ENetMultiplayerPeer.new()
-	var error := peer.create_client(address, PORT, 3)
+	var error := peer.create_client(address, port, 3)
 	if error != OK:
 		status_changed.emit(error_string(error))
 		return error

@@ -1,0 +1,402 @@
+[gd_scene load_steps=5 format=3]
+[ext_resource type="Script" path="res://ui/game_ui.gd" id="1"]
+[ext_resource type="PackedScene" path="res://ui/vending_entry.tscn" id="2"]
+[sub_resource type="StyleBoxFlat" id="PanelStyle"]
+bg_color = Color(0.025, 0.04, 0.09, 0.96)
+border_width_left = 2
+border_width_top = 2
+border_width_right = 2
+border_width_bottom = 2
+border_color = Color(0.3, 0.7, 0.8, 1)
+content_margin_left = 24.0
+content_margin_right = 24.0
+content_margin_top = 20.0
+content_margin_bottom = 20.0
+[sub_resource type="Theme" id="UITheme"]
+default_font_size = 20
+PanelContainer/styles/panel = SubResource("PanelStyle")
+[node name="UI" type="CanvasLayer"]
+script = ExtResource("1")
+[node name="Root" type="Control" parent="."]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 2
+theme = SubResource("UITheme")
+[node name="Menu" type="PanelContainer" parent="Root"]
+unique_name_in_owner = true
+layout_mode = 0
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -315.0
+offset_top = -285.0
+offset_right = 315.0
+offset_bottom = 285.0
+grow_horizontal = 2
+grow_vertical = 2
+[node name="Content" type="VBoxContainer" parent="Root/Menu"]
+layout_mode = 2
+theme_override_constants/separation = 10
+[node name="Title" type="Label" parent="Root/Menu/Content"]
+layout_mode = 2
+modulate = Color(0.5, 0.95, 1, 1)
+theme_override_font_sizes/font_size = 42
+text = "COSMIC DETENTION"
+[node name="Subtitle" type="Label" parent="Root/Menu/Content"]
+layout_mode = 2
+theme_override_font_sizes/font_size = 23
+text = "Eat. Survive. Frame your friends."
+[node name="NameField" type="LineEdit" parent="Root/Menu/Content"]
+unique_name_in_owner = true
+layout_mode = 2
+placeholder_text = "Student name"
+max_length = 20
+[node name="AddressField" type="LineEdit" parent="Root/Menu/Content"]
+unique_name_in_owner = true
+layout_mode = 2
+placeholder_text = "Host LAN IPv4 (optional; auto-detected otherwise)"
+[node name="Host" type="Button" parent="Root/Menu/Content"]
+layout_mode = 2
+custom_minimum_size = Vector2(0, 42)
+text = "HOST CLASSROOM"
+[node name="JoinRow" type="HBoxContainer" parent="Root/Menu/Content"]
+layout_mode = 2
+[node name="CodeField" type="LineEdit" parent="Root/Menu/Content/JoinRow"]
+unique_name_in_owner = true
+layout_mode = 2
+size_flags_horizontal = 3
+placeholder_text = "Join code, e.g. C0A8-012A"
+[node name="Join" type="Button" parent="Root/Menu/Content/JoinRow"]
+layout_mode = 2
+custom_minimum_size = Vector2(0, 42)
+text = "JOIN"
+[node name="MenuStatus" type="Label" parent="Root/Menu/Content"]
+unique_name_in_owner = true
+layout_mode = 2
+theme_override_font_sizes/font_size = 16
+autowrap_mode = 3
+text = "Same LAN • 2–6 students • Host runs the classroom"
+[node name="Controls" type="Label" parent="Root/Menu/Content"]
+layout_mode = 2
+theme_override_font_sizes/font_size = 17
+text = "WASD move • Mouse look • E grab / sit / interact\nLMB hold + release: throw • LMB empty: punch\nRMB eat / use • Q drop • Space jump / stand / escape\nShift sprint • G fart • Tab scoreboard • Esc menu"
+[node name="Quit" type="Button" parent="Root/Menu/Content"]
+layout_mode = 2
+custom_minimum_size = Vector2(0, 42)
+text = "QUIT"
+[node name="HUD" type="Control" parent="Root"]
+unique_name_in_owner = true
+visible = false
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 2
+[node name="Stats" type="Label" parent="Root/HUD"]
+unique_name_in_owner = true
+offset_left = 24.0
+offset_top = 18.0
+offset_right = 350.0
+offset_bottom = 78.0
+theme_override_font_sizes/font_size = 24
+text = "₿20 • STOMACH / HEALTH\nTransfer student"
+[node name="Stomach" type="ProgressBar" parent="Root/HUD"]
+unique_name_in_owner = true
+offset_left = 24.0
+offset_top = 85.0
+offset_right = 294.0
+offset_bottom = 109.0
+value = 100.0
+mouse_filter = 2
+[node name="PhaseLabel" type="Label" parent="Root/HUD"]
+unique_name_in_owner = true
+anchor_left = 1.0
+anchor_right = 1.0
+offset_left = -470.0
+offset_top = 18.0
+offset_right = -40.0
+offset_bottom = 108.0
+grow_horizontal = 0
+horizontal_alignment = 2
+theme_override_font_sizes/font_size = 22
+text = "PREPARATION • GRADE 1 • 00:30\nJOIN C0A8-012A"
+[node name="Crosshair" type="Label" parent="Root/HUD"]
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -8.0
+offset_top = -16.0
+offset_right = 8.0
+offset_bottom = 16.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_font_sizes/font_size = 26
+text = "+"
+[node name="Prompt" type="Label" parent="Root/HUD"]
+unique_name_in_owner = true
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -330.0
+offset_top = 45.0
+offset_right = 330.0
+offset_bottom = 75.0
+grow_horizontal = 2
+grow_vertical = 2
+horizontal_alignment = 1
+theme_override_font_sizes/font_size = 21
+[node name="HeldLabel" type="Label" parent="Root/HUD"]
+unique_name_in_owner = true
+anchor_top = 1.0
+anchor_bottom = 1.0
+anchor_right = 1.0
+offset_left = 24.0
+offset_top = -90.0
+offset_right = -24.0
+offset_bottom = -55.0
+grow_vertical = 0
+text = "EMPTY HAND • [LMB] Punch • [E] Grab"
+[node name="ThrowCharge" type="ProgressBar" parent="Root/HUD"]
+unique_name_in_owner = true
+visible = false
+anchor_left = 0.5
+anchor_top = 1.0
+anchor_right = 0.5
+anchor_bottom = 1.0
+offset_left = -150.0
+offset_top = -40.0
+offset_right = 150.0
+offset_bottom = -24.0
+grow_horizontal = 2
+grow_vertical = 0
+max_value = 1.0
+show_percentage = false
+mouse_filter = 2
+[node name="Banner" type="Label" parent="Root/HUD"]
+unique_name_in_owner = true
+visible = false
+anchor_left = 0.05
+anchor_right = 0.95
+offset_top = 150.0
+offset_bottom = 210.0
+horizontal_alignment = 1
+autowrap_mode = 3
+theme_override_font_sizes/font_size = 25
+text = "Find food. Take a seat."
+[node name="Scoreboard" type="Label" parent="Root/HUD"]
+unique_name_in_owner = true
+visible = false
+offset_left = 32.0
+offset_top = 190.0
+offset_right = 600.0
+offset_bottom = 480.0
+theme_override_font_sizes/font_size = 24
+text = "CLASS REGISTER"
+[node name="Debug" type="Label" parent="Root/HUD"]
+unique_name_in_owner = true
+visible = false
+offset_left = 24.0
+offset_top = 125.0
+offset_right = 800.0
+offset_bottom = 145.0
+theme_override_font_sizes/font_size = 16
+[node name="DamageTint" type="ColorRect" parent="Root"]
+unique_name_in_owner = true
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 2
+color = Color(1, 0.05, 0, 0)
+[node name="Pause" type="PanelContainer" parent="Root"]
+unique_name_in_owner = true
+visible = false
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -240.0
+offset_top = -130.0
+offset_right = 240.0
+offset_bottom = 130.0
+grow_horizontal = 2
+grow_vertical = 2
+[node name="Content" type="VBoxContainer" parent="Root/Pause"]
+layout_mode = 2
+[node name="Title" type="Label" parent="Root/Pause/Content"]
+layout_mode = 2
+theme_override_font_sizes/font_size = 28
+text = "CLASS IS STILL RUNNING"
+[node name="Resume" type="Button" parent="Root/Pause/Content"]
+layout_mode = 2
+custom_minimum_size = Vector2(0, 42)
+text = "RESUME"
+[node name="CopyCode" type="Button" parent="Root/Pause/Content"]
+layout_mode = 2
+custom_minimum_size = Vector2(0, 42)
+text = "COPY JOIN CODE"
+[node name="QuitToMenu" type="Button" parent="Root/Pause/Content"]
+layout_mode = 2
+custom_minimum_size = Vector2(0, 42)
+text = "QUIT TO MAIN MENU"
+[node name="Vending" type="PanelContainer" parent="Root"]
+unique_name_in_owner = true
+visible = false
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -390.0
+offset_top = -320.0
+offset_right = 390.0
+offset_bottom = 320.0
+grow_horizontal = 2
+grow_vertical = 2
+[node name="Content" type="VBoxContainer" parent="Root/Vending"]
+layout_mode = 2
+[node name="Title" type="Label" parent="Root/Vending/Content"]
+layout_mode = 2
+theme_override_font_sizes/font_size = 30
+text = "COSMIC CRUNCH • KEYPAD"
+[node name="VendingStatus" type="Label" parent="Root/Vending/Content"]
+unique_name_in_owner = true
+layout_mode = 2
+theme_override_font_sizes/font_size = 17
+text = "Purchases drop into the tray. One hand. No inventory."
+[node name="Scroll" type="ScrollContainer" parent="Root/Vending/Content"]
+layout_mode = 2
+custom_minimum_size = Vector2(0, 390)
+size_flags_vertical = 3
+[node name="VendingRows" type="VBoxContainer" parent="Root/Vending/Content/Scroll"]
+unique_name_in_owner = true
+layout_mode = 2
+size_flags_horizontal = 3
+[node name="Slurpee" parent="Root/Vending/Content/Scroll/VendingRows" instance=ExtResource("2")]
+item_id = "slurpee"
+text = "A01 • ₿2 • Slurpee (10% remaining)"
+[node name="Rock" parent="Root/Vending/Content/Scroll/VendingRows" instance=ExtResource("2")]
+item_id = "rock"
+text = "A02 • ₿3 • Moon rock"
+[node name="Carrot" parent="Root/Vending/Content/Scroll/VendingRows" instance=ExtResource("2")]
+item_id = "carrot"
+text = "A03 • ₿4 • Carrot"
+[node name="Tomato" parent="Root/Vending/Content/Scroll/VendingRows" instance=ExtResource("2")]
+item_id = "tomato"
+text = "A04 • ₿4 • Tomato"
+[node name="Apple" parent="Root/Vending/Content/Scroll/VendingRows" instance=ExtResource("2")]
+item_id = "apple"
+text = "A05 • ₿5 • Apple"
+[node name="Chocolate" parent="Root/Vending/Content/Scroll/VendingRows" instance=ExtResource("2")]
+item_id = "chocolate"
+text = "A06 • ₿6 • Chocolate"
+[node name="Chips" parent="Root/Vending/Content/Scroll/VendingRows" instance=ExtResource("2")]
+item_id = "chips"
+text = "A07 • ₿7 • Chips"
+[node name="Cushion" parent="Root/Vending/Content/Scroll/VendingRows" instance=ExtResource("2")]
+item_id = "cushion"
+text = "A08 • ₿8 • Whoopee cushion"
+[node name="PopRocks" parent="Root/Vending/Content/Scroll/VendingRows" instance=ExtResource("2")]
+item_id = "pop_rocks"
+text = "A09 • ₿8 • Pop Rocks"
+[node name="Drug" parent="Root/Vending/Content/Scroll/VendingRows" instance=ExtResource("2")]
+item_id = "drug"
+text = "A10 • ₿10 • Sleeping tablets"
+[node name="Monster" parent="Root/Vending/Content/Scroll/VendingRows" instance=ExtResource("2")]
+item_id = "monster"
+text = "A11 • ₿12 • White Monster"
+[node name="LootBox" parent="Root/Vending/Content/Scroll/VendingRows" instance=ExtResource("2")]
+item_id = "loot_box"
+text = "A12 • ₿15 • Mystery lunchbox"
+[node name="Nerf" parent="Root/Vending/Content/Scroll/VendingRows" instance=ExtResource("2")]
+item_id = "nerf"
+text = "A13 • ₿18 • Foam gun"
+[node name="Firework" parent="Root/Vending/Content/Scroll/VendingRows" instance=ExtResource("2")]
+item_id = "firework"
+text = "A14 • ₿25 • Firework"
+[node name="Knife" parent="Root/Vending/Content/Scroll/VendingRows" instance=ExtResource("2")]
+item_id = "knife"
+text = "A15 • ₿30 • Karambit"
+[node name="Gun" parent="Root/Vending/Content/Scroll/VendingRows" instance=ExtResource("2")]
+item_id = "gun"
+text = "A16 • ₿55 • Gun"
+[node name="Rocket" parent="Root/Vending/Content/Scroll/VendingRows" instance=ExtResource("2")]
+item_id = "rocket"
+text = "A17 • ₿75 • Rocket part"
+[node name="Keypad" type="LineEdit" parent="Root/Vending/Content"]
+unique_name_in_owner = true
+layout_mode = 2
+placeholder_text = "Enter item code (e.g. A01), then Enter"
+[node name="Dispense" type="Button" parent="Root/Vending/Content"]
+layout_mode = 2
+custom_minimum_size = Vector2(0, 42)
+text = "DISPENSE"
+[node name="Close" type="Button" parent="Root/Vending/Content"]
+layout_mode = 2
+custom_minimum_size = Vector2(0, 42)
+text = "CLOSE [Esc]"
+[node name="Crawl" type="Control" parent="Root"]
+unique_name_in_owner = true
+visible = false
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+clip_contents = true
+[node name="Background" type="ColorRect" parent="Root/Crawl"]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+color = Color(0.005, 0.01, 0.025, 1)
+[node name="CrawlText" type="Label" parent="Root/Crawl"]
+unique_name_in_owner = true
+anchor_left = 0.5
+anchor_right = 0.5
+offset_left = -370.0
+offset_top = 650.0
+offset_right = 370.0
+offset_bottom = 1650.0
+grow_horizontal = 2
+modulate = Color(1, 0.85, 0.2, 1)
+theme_override_font_sizes/font_size = 31
+autowrap_mode = 3
+horizontal_alignment = 1
+text = "EPISODE I\nA NEW CURRICULUM\n\nIt is a period of intergalactic confusion. Having raided Earth, curious extraterrestrials have become obsessed with human culture, snacks, and questionable television broadcasts.\n\nTheir researchers cloned one human specimen. Fresh subjects now tumble down a cold metal chute into an orbiting academy. You are its latest transfer student.\n\nThe syllabus is simple: attend class, or be vaporized. Eat to survive. Spend your allowance. Build a starship, one suspicious purchase at a time.\n\nAnd whatever you do…\n\nDO NOT DISTURB THE TEACHER."
+[node name="Skip" type="Button" parent="Root/Crawl"]
+anchor_left = 0.5
+anchor_top = 1.0
+anchor_right = 0.5
+anchor_bottom = 1.0
+offset_left = -150.0
+offset_top = -60.0
+offset_right = 150.0
+offset_bottom = -18.0
+grow_horizontal = 2
+grow_vertical = 0
+text = "SKIP INTRO [Space / Esc]"
+[connection signal="pressed" from="Root/Menu/Content/Host" to="." method="host_pressed"]
+[connection signal="pressed" from="Root/Menu/Content/JoinRow/Join" to="." method="join_pressed"]
+[connection signal="text_submitted" from="Root/Menu/Content/JoinRow/CodeField" to="." method="join_pressed"]
+[connection signal="pressed" from="Root/Menu/Content/Quit" to="." method="quit_pressed"]
+[connection signal="pressed" from="Root/Pause/Content/Resume" to="." method="resume_pressed"]
+[connection signal="pressed" from="Root/Pause/Content/CopyCode" to="." method="copy_code_pressed"]
+[connection signal="pressed" from="Root/Pause/Content/QuitToMenu" to="." method="quit_to_menu_pressed"]
+[connection signal="text_submitted" from="Root/Vending/Content/Keypad" to="." method="buy_code"]
+[connection signal="pressed" from="Root/Vending/Content/Dispense" to="." method="dispense_pressed"]
+[connection signal="pressed" from="Root/Vending/Content/Close" to="." method="close_vending"]
+[connection signal="pressed" from="Root/Crawl/Skip" to="." method="close_crawl"]
