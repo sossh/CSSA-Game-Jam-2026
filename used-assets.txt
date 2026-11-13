@@ -1,0 +1,5 @@
+
+Put links in here to assets we are using
+
+https://moltenmaps.itch.io/molten-maps-scifi-pack - world assets
+https://somasnacks.itch.io/stylized-low-poly-character-template - player model
