@@ -345,7 +345,7 @@ func buy(id: int, item_id: String) -> void:
 	p.money -= data.price
 	Game.log_activity("%s buys %s for ₿%d." % [p.name, data.display_name, data.price])
 	var item := spawn_item(item_id, $Hallway/VendingMachine/DispensePoint.global_position)
-	item.linear_velocity = Vector3(0, 0.5, -2)
+	item.linear_velocity = Vector3(0, 0, -0.15)
 	NoiseBus.emit_noise(item.global_position, 25, str(id), "vending_dispense")
 
 func spawn_corpse(id: int, impulse: Vector3) -> void:
@@ -379,6 +379,9 @@ func on_effect(kind: String, data: Dictionary) -> void:
 	var direction: Vector3 = data.get("direction", Vector3.FORWARD)
 	if kind == "sound":
 		var key: String = data.key
+		if key == "vending_dispense":
+			var animation: AnimationPlayer = $Hallway/VendingMachine/Cabinet/AnimationPlayer
+			animation.queue(&"moving")
 		scene = PARTICLE_SCENES.get(key)
 		if scene == null: return
 		if key in ["chew", "crunch", "slurp", "can_open", "burp", "sneeze", "pop_rocks"]:
