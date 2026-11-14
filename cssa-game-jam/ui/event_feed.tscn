@@ -2,22 +2,22 @@
 
 [ext_resource type="Script" path="res://ui/event_feed.gd" id="1"]
 [sub_resource type="StyleBoxFlat" id="Background"]
-bg_color = Color(0.01, 0.03, 0.065, 0.84)
-border_width_left = 4
-border_width_top = 1
-border_width_right = 1
-border_width_bottom = 1
-border_color = Color(0.2, 0.9, 0.95, 0.85)
-corner_radius_top_left = 2
-corner_radius_top_right = 6
-corner_radius_bottom_right = 2
-corner_radius_bottom_left = 6
-shadow_color = Color(0, 0.75, 0.9, 0.15)
-shadow_size = 8
-content_margin_left = 14.0
-content_margin_top = 10.0
-content_margin_right = 14.0
-content_margin_bottom = 10.0
+content_margin_left = 10.0
+content_margin_top = 8.0
+content_margin_right = 10.0
+content_margin_bottom = 8.0
+bg_color = Color(0.007843138, 0.02745098, 0.05882353, 0.3647059)
+border_width_left = 2
+border_width_top = 2
+border_width_right = 2
+border_width_bottom = 2
+border_color = Color(0.18, 0.92, 1, 0.9)
+corner_radius_top_left = 3
+corner_radius_top_right = 3
+corner_radius_bottom_right = 3
+corner_radius_bottom_left = 3
+shadow_color = Color(0, 0.8, 1, 0.18)
+shadow_size = 10
 
 [node name="EventFeed" type="PanelContainer"]
 layout_mode = 1
@@ -26,10 +26,10 @@ anchor_left = 1.0
 anchor_top = 1.0
 anchor_right = 1.0
 anchor_bottom = 1.0
-offset_left = -430.0
-offset_top = -315.0
-offset_right = -24.0
-offset_bottom = -110.0
+offset_left = -310.0
+offset_top = -148.0
+offset_right = -20.0
+offset_bottom = -20.0
 grow_horizontal = 0
 grow_vertical = 0
 mouse_filter = 2
@@ -39,7 +39,7 @@ script = ExtResource("1")
 [node name="Content" type="VBoxContainer" parent="."]
 layout_mode = 2
 mouse_filter = 2
-theme_override_constants/separation = 6
+theme_override_constants/separation = 4
 
 [node name="Title" type="Label" parent="Content"]
 layout_mode = 2
@@ -47,15 +47,15 @@ mouse_filter = 2
 theme_override_colors/font_color = Color(0.35, 0.95, 1, 1)
 theme_override_colors/font_outline_color = Color(0, 0.1, 0.2, 0.9)
 theme_override_constants/outline_size = 3
-theme_override_font_sizes/font_size = 14
-text = "◈ COMMS LOG // INCIDENT FEED"
+theme_override_font_sizes/font_size = 12
+text = "INCIDENT FEED"
 
 [node name="Entries" type="RichTextLabel" parent="Content"]
 layout_mode = 2
 size_flags_vertical = 3
 mouse_filter = 2
 theme_override_colors/default_color = Color(0.82, 0.96, 1, 0.95)
-theme_override_font_sizes/normal_font_size = 15
+theme_override_font_sizes/normal_font_size = 13
 bbcode_enabled = false
 scroll_following = true
 text = ""
@@ -68,5 +68,5 @@ mouse_filter = 2
 theme_override_colors/font_color = Color(0.4, 0.95, 1, 0.9)
 theme_override_colors/font_outline_color = Color(0, 0.08, 0.16, 0.95)
 theme_override_constants/outline_size = 3
-theme_override_font_sizes/font_size = 13
+theme_override_font_sizes/font_size = 11
 text = "[H] Hide"

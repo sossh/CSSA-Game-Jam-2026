@@ -553,10 +553,6 @@ theme_override_colors/font_color = Color(0.45, 1, 0.8, 0.9)
 theme_override_font_sizes/font_size = 15
 
 [node name="EventFeed" parent="Root/HUD" unique_id=2025136264 instance=ExtResource("3")]
-offset_left = -406.0
-offset_top = -205.0
-offset_right = 0.0
-offset_bottom = 0.0
 
 [node name="DamageTint" type="ColorRect" parent="Root" unique_id=1046034552]
 unique_name_in_owner = true
