@@ -4,6 +4,11 @@ extends Node3D
 @onready var anim_player: AnimationPlayer = $AnimationPlayer
 @onready var skeleton: Skeleton3D = $GeneralSkeleton
 
+@export_group("Seated Offset")
+@export var seated_x_offset: float = 0.0
+@export var seated_y_offset: float = 0.32
+@export var seated_z_offset: float = -0.15
+
 var current_color: Color = Color.WHITE
 var _queued_throw: bool = false
 var _is_throwing: bool = false
@@ -108,6 +113,8 @@ func update_motion(is_on_floor: bool, velocity: Vector3, is_sprinting: bool, mod
 		_is_jumping = false
 		_is_seated = false
 		anim_player.speed_scale = 1.0
+		if anim_player.has_animation("idle") and anim_player.current_animation != "idle":
+			anim_player.play("idle")
 		return
 
 	if mode == "seated":

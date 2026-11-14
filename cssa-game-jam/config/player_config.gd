@@ -45,3 +45,8 @@ extends Resource
 @export var struggle_impulse: float = 4.0
 @export var aim_reach: float = 3.2
 @export var interaction_reach: float = 4.0
+
+@export_group("Seating")
+@export var seated_x_offset: float = 0.0
+@export var seated_y_offset: float = 0.25
+@export var seated_z_offset: float = 0.0

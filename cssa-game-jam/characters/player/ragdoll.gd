@@ -19,7 +19,7 @@ func _ready() -> void:
 func activate(color: Color, origin: Vector3, yaw: float, simulate: bool, impulse: Vector3) -> void:
 	simulating = simulate
 	active = true
-	show()
+	hide()
 	global_transform = Transform3D(Basis(Vector3.UP, yaw), origin)
 	for i in range(bodies.size()):
 		var body := bodies[i]

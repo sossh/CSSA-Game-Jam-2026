@@ -36,6 +36,18 @@ var remote_velocity: Vector3 = Vector3.ZERO
 var prev_remote_position: Vector3 = Vector3.ZERO
 var default_visual_rotation := Vector3(0, PI, 0)
 
+@export_group("Seated Offset")
+@export var seated_x_offset: float = 0.0
+@export var seated_y_offset: float = 0.25
+@export var seated_z_offset: float = 0.0
+
+func get_seated_offset() -> Vector3:
+	var cfg = Game.config.player if Game and Game.config and Game.config.player else null
+	var x = visual.seated_x_offset if visual and visual.seated_x_offset != 0.0 else (seated_x_offset if seated_x_offset != 0.0 else (cfg.seated_x_offset if cfg else 0.0))
+	var y = visual.seated_y_offset if visual and visual.seated_y_offset != 0.25 else (seated_y_offset if seated_y_offset != 0.25 else (cfg.seated_y_offset if cfg else 0.25))
+	var z = visual.seated_z_offset if visual and visual.seated_z_offset != 0.0 else (seated_z_offset if seated_z_offset != 0.0 else (cfg.seated_z_offset if cfg else 0.0))
+	return Vector3(x, y, z)
+
 func _ready() -> void:
 	floor_snap_length = Game.config.player.floor_snap_length
 	local = peer_id == multiplayer.get_unique_id()
@@ -112,13 +124,14 @@ func _physics_process(delta: float) -> void:
 	var my_id: int = multiplayer.get_unique_id()
 	var local_is_dead: bool = Game.players.has(my_id) and Game.players[my_id].mode == "dead"
 	var is_other_ghost: bool = not local and mode == "dead" and local_is_dead
-	visual.visible = not local and (mode not in ["dead", "ragdoll"] or is_other_ghost)
+	visual.visible = not local
 	name_label.visible = not local and (mode != "dead" or is_other_ghost)
+	name_label.position.y = 0.7 if mode in ["ragdoll", "dead"] else 2.05
 	if is_other_ghost:
 		visual.set_color(Color(0.65, 0.85, 1.0))
 		name_label.text = "👻 " + p.name
 		name_label.modulate = Color(0.7, 0.9, 1.0, 0.85)
-	elif not local and mode != "dead":
+	elif not local:
 		visual.set_color(color)
 		name_label.text = p.name
 		name_label.modulate = Color.WHITE
@@ -127,13 +140,12 @@ func _physics_process(delta: float) -> void:
 		var carrier = Game.world.player_nodes[p.carrier]
 		global_position = carrier.carry_position() - Vector3(0, 0.9, 0)
 		if Game.is_host(): p.position = global_position
-		visual.rotation = default_visual_rotation
 	elif mode == "seated":
 		global_position = p.position
-		visual.rotation = default_visual_rotation
 	elif mode == "ragdoll" and ragdoll.active:
 		if local:
 			global_position = ragdoll.bodies[0].global_position - Vector3(0, 0.9, 0)
+			global_position.y = maxf(0.05, global_position.y)
 		else:
 			ragdoll.follow(p.limbs, delta)
 			global_position = p.position
@@ -141,7 +153,6 @@ func _physics_process(delta: float) -> void:
 		ragdoll.follow(p.limbs, delta)
 		global_position = p.position
 	elif local:
-		visual.rotation = default_visual_rotation
 		var input := Vector2.ZERO if Game.ui_open else Input.get_vector("move_left", "move_right", "move_forward", "move_backward")
 		var forward_basis := camera.global_basis if mode == "dead" else global_basis
 		var direction := forward_basis * Vector3(input.x, 0, input.y)
@@ -176,7 +187,6 @@ func _physics_process(delta: float) -> void:
 				step_timer = movement.sprint_step_seconds if speed > movement.walk_speed else movement.walk_step_seconds
 				Game.request("step", {"sprint": speed > movement.walk_speed, "position": global_position})
 	else:
-		visual.rotation = default_visual_rotation
 		var pos_delta: Vector3 = p.position - prev_remote_position
 		if delta > 0.0001:
 			remote_velocity = remote_velocity.lerp(pos_delta / delta, minf(1.0, delta * 15.0))
@@ -186,7 +196,19 @@ func _physics_process(delta: float) -> void:
 		rotation.y = lerp_angle(rotation.y, p.yaw, minf(1, delta * 20))
 		pitch = lerpf(pitch, p.pitch, minf(1, delta * 20))
 	head.rotation.x = pitch
-	head.position.y = 1.40 if mode == "seated" else STANDING_EYE_HEIGHT
+	head.position.y = 1.40 if mode == "seated" else (0.35 if mode == "ragdoll" else STANDING_EYE_HEIGHT)
+
+	var is_down: bool = mode in ["ragdoll", "dead"] and not is_other_ghost
+	var target_visual_rotation: Vector3 = default_visual_rotation + Vector3(PI * 0.5, 0, 0) if is_down else default_visual_rotation
+	var target_visual_position: Vector3 = Vector3.ZERO
+	if is_down:
+		target_visual_position = Vector3(0, 0.15, 0.5)
+	elif mode == "seated":
+		target_visual_position = get_seated_offset()
+	visual.rotation.x = lerp_angle(visual.rotation.x, target_visual_rotation.x, minf(1.0, delta * 18.0))
+	visual.rotation.y = lerp_angle(visual.rotation.y, target_visual_rotation.y, minf(1.0, delta * 18.0))
+	visual.rotation.z = lerp_angle(visual.rotation.z, target_visual_rotation.z, minf(1.0, delta * 18.0))
+	visual.position = visual.position.lerp(target_visual_position, minf(1.0, delta * 18.0))
 	if local:
 		var is_sprinting: bool = Input.is_action_pressed("sprint")
 		visual.update_motion(is_on_floor(), velocity, is_sprinting, mode, delta)
