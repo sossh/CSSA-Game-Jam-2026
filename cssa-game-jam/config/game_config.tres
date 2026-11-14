@@ -8,7 +8,7 @@
 [resource]
 script = ExtResource("1")
 preparation_seconds = 20.0
-class_seconds = 300.0
+class_seconds = 120.0
 break_seconds = 90.0
 maximum_players = 6
 stomach_max = 100.0

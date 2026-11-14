@@ -306,8 +306,12 @@ func interact(id: int, target: String) -> void:
 	NoiseBus.emit_noise(p.position, Game.config.interactions.pickup_loudness, str(id), "pickup")
 
 func has_reach(id: int, at: Vector3) -> bool:
-	var eye: Vector3 = Game.players[id].position + Vector3(0, 1.55, 0)
-	return get_world_3d().direct_space_state.intersect_ray(PhysicsRayQueryParameters3D.create(eye, at, 1)).is_empty()
+	var eye: Vector3 = Game.players[id].position + Vector3(0, 1.40 if Game.players[id].mode == "seated" else 1.55, 0)
+	var dir := (at - eye)
+	var dist := dir.length()
+	if dist <= 0.1: return true
+	var target_check := eye + dir.normalized() * maxf(0.0, dist - 0.08)
+	return get_world_3d().direct_space_state.intersect_ray(PhysicsRayQueryParameters3D.create(eye, target_check, 1)).is_empty()
 
 func release_hand(id: int, charge: float = -1) -> void:
 	if not Game.players.has(id): return
@@ -455,7 +459,7 @@ func on_effect(kind: String, data: Dictionary) -> void:
 		scene = PARTICLE_SCENES.get(key)
 		if scene == null: return
 		if key in ["chew", "crunch", "slurp", "can_open", "burp", "sneeze", "pop_rocks"]:
-			at += Vector3.UP * (1.15 if data.get("seated", false) else 1.55) + direction * 0.35
+			at += Vector3.UP * (1.40 if data.get("seated", false) else 1.55) + direction * 0.35
 		elif key == "fart": at += Vector3.UP * 0.65 - direction * 0.25
 		elif key == "footstep": at += Vector3.UP * 0.08
 	elif kind == "shot":

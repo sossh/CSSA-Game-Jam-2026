@@ -16,7 +16,7 @@ size = Vector3(0.65, 0.12, 0.65)
 [sub_resource type="BoxMesh" id="BackMesh"]
 size = Vector3(0.65, 0.65, 0.1)
 [sub_resource type="BoxShape3D" id="InteractionShape"]
-size = Vector3(0.8, 1.1, 0.8)
+size = Vector3(0.7, 0.5, 0.7)
 [node name="Desk" type="Node3D"]
 [node name="Desktop" parent="." instance=ExtResource("1")]
 position = Vector3(0, 0.87, 0)
@@ -42,7 +42,7 @@ position = Vector3(0, 0.8, 1.08)
 mesh = SubResource("BackMesh")
 material_override = SubResource("Chair")
 [node name="Seat" parent="." instance=ExtResource("2")]
-position = Vector3(0, 0.55, 0.8)
+position = Vector3(0, 0.45, 0.8)
 prompt = "Sit / evict clone"
 [node name="CollisionShape3D" parent="Seat" index="0"]
 shape = SubResource("InteractionShape")
