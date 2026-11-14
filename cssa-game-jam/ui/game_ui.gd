@@ -9,6 +9,9 @@ extends CanvasLayer
 @onready var join_lan_button: Button = %JoinLAN
 @onready var hud: Control = %HUD
 @onready var stats: Label = %Stats
+@onready var rocket_stage_1: Node2D = %RocketStage1
+@onready var rocket_stage_2: Node2D = %RocketStage2
+@onready var rocket_stage_3: Node2D = %RocketStage3
 @onready var phase_label: Label = %PhaseLabel
 @onready var prompt: Label = %Prompt
 @onready var held_label: Label = %HeldLabel
@@ -197,6 +200,9 @@ func _process(delta: float) -> void:
 		reset_wasted()
 	was_alive = not is_dead
 	stats.text = "%d" % p.money
+	_update_rocket_stage(rocket_stage_1, Game.installed_rocket_parts.has("rocket"))
+	_update_rocket_stage(rocket_stage_2, Game.installed_rocket_parts.has("rocket_second_stage"))
+	_update_rocket_stage(rocket_stage_3, Game.installed_rocket_parts.has("rocket_fairing"))
 	stomach.value = p.stomach
 	var current_gas: float = float(p.get("gas", 0.0))
 	gas_bar.value = current_gas
@@ -256,6 +262,12 @@ func reset_wasted() -> void:
 		wasted_container.visible = false
 	if is_instance_valid(death_filter):
 		death_filter.visible = false
+
+func _update_rocket_stage(stage: Node2D, installed: bool) -> void:
+	var fill := stage.get_node("Fill") as Polygon2D
+	var outline := stage.get_node("Outline") as Line2D
+	fill.color = Color(0.18, 0.95, 1.0, 0.85) if installed else Color(0.01, 0.05, 0.1, 0.25)
+	outline.default_color = Color(0.78, 1.0, 1.0, 1.0) if installed else Color(0.18, 0.92, 1.0, 0.45)
 
 func show_banner(text: String) -> void:
 	var formatted := text.replace("[", "[lb]").replace("\u20bf", "[img=16x16]res://assets/ui/bitcoin.png[/img]")

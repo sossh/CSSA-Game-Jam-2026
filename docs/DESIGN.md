@@ -84,7 +84,13 @@ All live gameplay HUD nodes reside under `Root/HUD`:
    - `CurrencyBay` (`PanelContainer` at `offset = (20, 18, 136, 66)`): Uses `HudBayLeft` (`2px` cyan border, `3px` corner radius, `10px` cyan glow). Contains `BitcoinIcon` (`28x28`) and `%Stats` (`font_size = 24`, numeric balance only).
    - `PauseHint` (`Label` at `offset = (22, 72, 180, 94)`): Displays `[ESC] Pause / Status` (`font_size = 16`, `Color(0.45, 0.95, 1, 0.9)`) directly below `CurrencyBay` so players always know how to view session status and controls.
 
-2. **Top-Right — Compact Announcement Banner (`%Banner`)**:
+2. **Top-Center — Rocket Assembly Schematic Tracker (`RocketTracker`)**:
+   - `RocketTracker` (`PanelContainer` anchored top-center at `offset = (-140, 18, 140, 66)`): Styled with `HudBayLeft` (`2px` cyan border, `3px` corner radius, `10px` cyan glow).
+   - Contains `Schematic` (`Control`, `246x30`) with three horizontal rocket stage silhouette nodes (`%RocketStage1` for `"rocket"` First Stage booster, `%RocketStage2` for `"rocket_second_stage"` Second Stage, and `%RocketStage3` for `"rocket_fairing"` Payload Fairing nosecone), each built from a scene-authored `Fill` (`Polygon2D`) and `Outline` (`Line2D`).
+   - **Unbuilt State**: Hollow translucent blueprint interior (`Fill.color = Color(0.01, 0.05, 0.1, 0.25)`) with a crisp cyan outline (`Outline.default_color = Color(0.18, 0.92, 1.0, 0.45)`).
+   - **Built State**: Solid glowing cyan interior (`Fill.color = Color(0.18, 0.95, 1.0, 0.85)`) with a bright ice-cyan outline (`Outline.default_color = Color(0.78, 1.0, 1.0, 1.0)`) as each corresponding Falcon 9 stage is installed on the launch pad.
+
+3. **Top-Right — Compact Announcement Banner (`%Banner`)**:
    - `RichTextLabel` anchored top-right (`offset = (-360, 18, -20, 66)`), styled with `BannerStyle` (`2px` cyan border, `3px` corner radius, translucent dark navy fill).
    - Right-aligned (`[right]...[/right]`, `normal_font_size = 16`), unobtrusive, and automatically converts `₿` into an inline `16x16` `bitcoin.png` icon.
 
