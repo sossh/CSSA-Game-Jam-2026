@@ -202,11 +202,10 @@ func _process(delta: float) -> void:
 	var current_gas: float = float(p.get("gas", 0.0))
 	gas_bar.value = current_gas
 	var gas_fraction := current_gas / Game.config.gas_capacity
-	var gas_percent := int(current_gas * 100.0 / Game.config.gas_capacity)
 	if gas_fraction >= Game.config.gas_warning_fraction:
-		gas_label.text = "GAS: %d%% • ABOUT TO POP! [F] VENT" % gas_percent
+		gas_label.text = "POP! [F]"
 	else:
-		gas_label.text = "GAS: %d%% • [F] VENT" % gas_percent
+		gas_label.text = "GAS [F]"
 	var minutes := int(ceil(Game.remaining) / 60.0)
 	var seconds := int(ceil(Game.remaining)) % 60
 	phase_label.text = "%s • GRADE %d • %02d:%02d\nJOIN %s • %d classes / %d parts" % [Game.phase.to_upper(), Game.grade, minutes, seconds, Net.join_code, Game.survived, Game.rocket_parts]
