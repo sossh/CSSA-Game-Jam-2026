@@ -324,19 +324,40 @@ func interact(id: int, target: String) -> void:
 	p.violation_until = Game.elapsed + Game.config.interactions.pickup_violation_seconds
 	NoiseBus.emit_noise(p.position, Game.config.interactions.pickup_loudness, str(id), "pickup")
 
-## Non-positional victory sting. Ducks the room ambiance while it plays; silent without a clip.
+const MOGGING_FADE_SECONDS := 10.0
+var _mogging_tween: Tween
+
+## Non-positional victory sting. Keeps playing through the break as background music and fades
+## out over the last MOGGING_FADE_SECONDS before the next class. Ducks the room ambiance while
+## it plays; silent without a clip.
 func play_mogging() -> void:
 	if DisplayServer.get_name() == "headless" or $MoggingPlayer.playing: return
 	var stream := Sfx.stream_for_event("mogging")
 	if stream == null: return
-	$MoggingPlayer.stream = stream
-	$MoggingPlayer.play()
+	var player: AudioStreamPlayer = $MoggingPlayer
 	var ambiance: AudioStreamPlayer = $AmbiancePlayer
 	var base_db := Sfx.config.classroom_ambiance_db
-	var tween := create_tween()
-	tween.tween_property(ambiance, "volume_db", base_db - 10.0, 0.2)
-	tween.tween_interval(maxf(stream.get_length() - 0.2, 0.0))
-	tween.tween_property(ambiance, "volume_db", base_db, 0.6)
+	var fade := minf(MOGGING_FADE_SECONDS, Game.config.break_seconds)
+	player.stream = stream
+	player.volume_db = -4.0
+	player.play()
+	if _mogging_tween: _mogging_tween.kill()
+	_mogging_tween = create_tween()
+	_mogging_tween.tween_property(ambiance, "volume_db", base_db - 10.0, 0.2)
+	_mogging_tween.tween_interval(maxf(Game.config.break_seconds - fade - 0.2, 0.0))
+	_mogging_tween.tween_property(player, "volume_db", -60.0, fade)
+	_mogging_tween.parallel().tween_property(ambiance, "volume_db", base_db, fade)
+	_mogging_tween.tween_callback(player.stop)
+
+## Safety net: quickly fades the sting out if it is somehow still playing when class starts.
+func stop_mogging() -> void:
+	var player: AudioStreamPlayer = $MoggingPlayer
+	if not player.playing: return
+	if _mogging_tween: _mogging_tween.kill()
+	_mogging_tween = create_tween()
+	_mogging_tween.tween_property(player, "volume_db", -60.0, 0.5)
+	_mogging_tween.parallel().tween_property($AmbiancePlayer, "volume_db", Sfx.config.classroom_ambiance_db, 0.5)
+	_mogging_tween.tween_callback(player.stop)
 
 func update_rocket_assembly() -> void:
 	var was_showing_launch: bool = launch_site.launch_camera.current

@@ -289,6 +289,7 @@ func start_preparation() -> void:
 	warning_bell_fired = false
 	world.prepare_class()
 	for id in players: players[id].food = 0.0
+	event.rpc("mogging", {"stop": true})
 	event.rpc("banner", {"text": "GRADE %d • Find food. Take a seat." % grade})
 	print("PHASE preparation grade=", grade)
 
@@ -298,6 +299,7 @@ func start_class() -> void:
 	warning_bell_fired = false
 	next_npc_noise_at = elapsed + randf_range(config.npc_first_noise_delay.x, config.npc_first_noise_delay.y)
 	world.teacher.start_class()
+	event.rpc("mogging", {"stop": true})
 	event.rpc("sound", {"position": world.bell_origin.global_position, "key": "bell", "loudness": config.bell_volume})
 	event.rpc("banner", {"text": "CLASS STARTED • Sit down. Eat quietly. Blame your friends."})
 	for id in players:
@@ -457,6 +459,8 @@ func event(kind: String, data: Dictionary) -> void:
 			if int(data.id) == multiplayer.get_unique_id(): announcement.emit(str(data.text))
 		"activity": append_activity(str(data.text), float(data.get("time", elapsed)))
 		"mogging":
-			if is_instance_valid(world): world.play_mogging()
+			if is_instance_valid(world):
+				if data.get("stop", false): world.stop_mogging()
+				else: world.play_mogging()
 		"sound": Sfx.play_at(str(data.key), data.position, float(data.get("loudness", Sfx.config.default_playback_loudness)))
 	effect.emit(kind, data)
