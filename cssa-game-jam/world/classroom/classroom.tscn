@@ -19,6 +19,7 @@
 [ext_resource type="PackedScene" path="res://world/classroom/props/bookcase_short.tscn" id="18_bookcase_short"]
 [ext_resource type="PackedScene" path="res://world/classroom/props/tv_cart.tscn" id="19_tv_cart"]
 [ext_resource type="PackedScene" path="res://world/classroom/props/locker_bank.tscn" id="20_locker_bank"]
+[ext_resource type="PackedScene" path="res://world/classroom/props/observatory_roof.tscn" id="21_roof"]
 
 [sub_resource type="StandardMaterial3D" id="FloorMaterial"]
 albedo_color = Color(0.18, 0.22, 0.3, 1)
@@ -456,6 +457,8 @@ transform = Transform3D(0, 0, 0.72093, 0, 1.66667, 0, -1, 0, 0, -9, 0, 10.15)
 [node name="LeftHall2" parent="Room/Finish/Walls" instance=ExtResource("12_kit_wall")]
 transform = Transform3D(0, 0, 0.72093, 0, 1.66667, 0, -1, 0, 0, -9, 0, 14.15)
 
+[node name="Roof" parent="Room" instance=ExtResource("21_roof")]
+
 [node name="Desks" type="Node3D" parent="." unique_id=622476237]
 
 [node name="Desk01" parent="Desks" unique_id=203763012 instance=ExtResource("3")]
@@ -751,7 +754,7 @@ light_energy = 1.1
 shadow_enabled = true
 
 [node name="MenuCamera" type="Camera3D" parent="." unique_id=18181629]
-transform = Transform3D(0.8192468, -0.21737903, 0.5306421, 0, 0.9253646, 0.37907824, -0.5734411, -0.31055865, 0.758102, 7, 6, 7)
+transform = Transform3D(0.8192468, -0.21737903, 0.5306421, 0, 0.9253646, 0.37907824, -0.5734411, -0.31055865, 0.758102, 7, 4.6, 7)
 current = true
 
 [node name="AmbiancePlayer" type="AudioStreamPlayer" parent="." unique_id=1849182041]
