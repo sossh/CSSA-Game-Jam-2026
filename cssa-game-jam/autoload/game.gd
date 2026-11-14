@@ -21,6 +21,8 @@ var installed_rocket_parts := PackedStringArray()
 var rocket_parts: int:
 	get: return installed_rocket_parts.size()
 var rocket_launch_started_at := -1.0
+var launch_cinematic_active: bool:
+	get: return rocket_launch_started_at >= 0.0
 var ui_open: bool = true
 var elapsed: float = 0.0
 var sync_time: float = 0.0
@@ -56,6 +58,14 @@ func reset() -> void:
 func _physics_process(delta: float) -> void:
 	if not is_host() or not is_instance_valid(world): return
 	elapsed += delta
+	if not launch_cinematic_active:
+		update_round(delta)
+	sync_time += delta
+	if sync_time >= SNAPSHOT_INTERVAL:
+		sync_time = 0
+		broadcast_snapshot()
+
+func update_round(delta: float) -> void:
 	if phase in ["preparation", "class", "break"]:
 		remaining = maxf(0.0, remaining - delta)
 		var phase_dur: float = config.break_seconds if phase == "break" else config.preparation_seconds
@@ -94,10 +104,6 @@ func _physics_process(delta: float) -> void:
 	if is_host() and phase == "class" and next_npc_noise_at > 0.0 and elapsed >= next_npc_noise_at:
 		next_npc_noise_at = elapsed + randf_range(config.npc_noise_interval.x, config.npc_noise_interval.y)
 		trigger_npc_noise()
-	sync_time += delta
-	if sync_time >= SNAPSHOT_INTERVAL:
-		sync_time = 0
-		broadcast_snapshot()
 
 func make_snapshot() -> Dictionary:
 	return {"epoch": epoch, "players": players, "phase": phase, "remaining": remaining,
@@ -200,7 +206,7 @@ func action(action_name: String, data: Dictionary) -> void:
 	if is_host(): handle_action(multiplayer.get_remote_sender_id(), action_name, data)
 
 func handle_action(id: int, action_name: String, data: Dictionary) -> void:
-	if not players.has(id): return
+	if launch_cinematic_active or not players.has(id): return
 	if action_name == "start" and id == 1 and phase in ["lobby", "game_over"]:
 		start_run()
 		return
@@ -345,7 +351,7 @@ func respawn(id: int, relocate_to_cafe: bool = true) -> void:
 		event.rpc("sound", {"position": p.position, "key": "clone", "loudness": config.clone_volume})
 
 func damage(id: int, amount: float, reason: String, impulse: Vector3 = Vector3.ZERO) -> void:
-	if not players.has(id) or not players[id].alive: return
+	if launch_cinematic_active or not players.has(id) or not players[id].alive: return
 	players[id].stomach = maxf(0, players[id].stomach - amount)
 	event.rpc("hurt", {"id": id})
 	if players[id].stomach <= 0: kill(id, reason, impulse)
@@ -369,7 +375,7 @@ func kill(id: int, reason: String, impulse: Vector3 = Vector3.ZERO) -> void:
 	check_wipe()
 
 func check_wipe() -> void:
-	if not phase in ["class", "preparation"]: return
+	if launch_cinematic_active or not phase in ["class", "preparation"]: return
 	for p in players.values():
 		if p.alive: return
 	phase = "game_over"

@@ -318,6 +318,8 @@ func verify_rocket_assembly() -> void:
 	var pad_height := rocket.position.y
 	Game.request("interact", {"target": "rocket_console"})
 	var started_at := Game.rocket_launch_started_at
+	var remaining := Game.remaining
+	verify(get_viewport().get_camera_3d() == site.launch_camera, "Host switches to the launch camera")
 	verify(started_at >= 0.0 and Game.make_snapshot().rocket_launch_started_at == started_at, "Host starts and replicates the launch")
 	await wait(0.65)
 	verify(core.emitting and is_equal_approx(rocket.position.y, pad_height), "Engine ignites before liftoff")
@@ -325,8 +327,19 @@ func verify_rocket_assembly() -> void:
 	verify(rocket.position.y > pad_height and rocket.quaternion.is_equal_approx(Quaternion.IDENTITY)
 		and is_equal_approx(rocket.position.x, site.pad_position.x) and is_equal_approx(rocket.position.z, site.pad_position.z)
 		and site.stage_colliders.all(func(shape): return shape.disabled), "Rocket lifts straight off the pad with stage collisions disabled")
+	verify(Game.remaining == remaining, "Launch cinematic suspends the class timer")
 	Game.request("interact", {"target": "rocket_console"})
 	verify(Game.rocket_launch_started_at == started_at, "Launch console cannot restart an active flight")
+
+	var pad_distance := rocket.global_position.distance_to(site.earth.global_position)
+	site.flight.seek(site.flight_duration, true)
+	await wait(0.15)
+	verify(rocket.visible and rocket.global_position.distance_to(site.earth.global_position) < pad_distance * 0.4
+		and site.launch_camera.is_position_in_frustum(site.earth.global_position),
+		"Final camera holds on the rocket approaching Earth")
+	Game.start_run()
+	Game.remaining = 60
+	verify(get_viewport().get_camera_3d() == world.player_nodes[1].camera, "Reset restores the player camera")
 
 func verify_lunar_collision() -> void:
 	var world := Game.world
@@ -400,4 +413,5 @@ func run_client() -> void:
 		if Game.rocket_launch_started_at >= 0.0 and site.get_node("Falcon9/Thruster/Core").emitting: break
 		await wait(0.1)
 	verify(Game.rocket_launch_started_at >= 0.0 and site.get_node("Falcon9/Thruster/Core").emitting, "Client sees the host's rocket ignition")
+	verify(get_viewport().get_camera_3d() == site.launch_camera, "Client switches to the shared launch camera")
 	print("SMOKE_CLIENT_", "FAILED" if failed else "PASSED")

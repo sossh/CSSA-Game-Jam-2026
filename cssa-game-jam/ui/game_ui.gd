@@ -167,10 +167,20 @@ func _input(event: InputEvent) -> void:
 		else: pause_panel.visible = not pause_panel.visible
 		update_mouse()
 		get_viewport().set_input_as_handled()
+	if Game.launch_cinematic_active: return
 	if event.is_action_pressed("start_run") and not Game.ui_open: Game.request("start")
 	if event.is_action_pressed("debug_hud"): debug_visible = not debug_visible
 
 func _process(delta: float) -> void:
+	if Game.launch_cinematic_active:
+		if hud.visible:
+			hud.hide()
+			close_vending()
+			close_crawl()
+			reset_wasted()
+			tint.color.a = 0.0
+		return
+	hud.visible = Net.active and not menu.visible
 	banner_left -= delta
 	banner.visible = banner_left > 0
 	tint.color.a = maxf(0, tint.color.a - delta * Game.config.flash_fade_per_second)

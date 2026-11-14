@@ -111,7 +111,7 @@ func earth_look_angles(position: Vector3) -> Vector2:
 
 func _physics_process(_delta: float) -> void:
 	if Net.active: ensure_players()
-	if Game.is_host(): update_food_drops()
+	if Game.is_host() and not Game.launch_cinematic_active: update_food_drops()
 	var closed := Game.phase == "class"
 	door.global_position = $Room/DoorClosedPoint.global_position if closed else $Room/DoorOpenPoint.global_position
 	clock.text = "%02d:%02d" % [int(Game.remaining / 60.0), int(Game.remaining) % 60]
@@ -339,7 +339,15 @@ func play_mogging() -> void:
 	tween.tween_property(ambiance, "volume_db", base_db, 0.6)
 
 func update_rocket_assembly() -> void:
+	var was_showing_launch: bool = launch_site.launch_camera.current
 	launch_site.apply_assembly(Game.installed_rocket_parts, Game.rocket_launch_started_at, Game.elapsed)
+	if was_showing_launch and not Game.launch_cinematic_active:
+		var player: StudentPlayer = player_nodes.get(multiplayer.get_unique_id())
+		if is_instance_valid(player):
+			player.camera.make_current()
+			player.audio_listener.make_current()
+		else:
+			menu_camera.make_current()
 
 func use_rocket_console(id: int) -> void:
 	var player: Dictionary = Game.players[id]
@@ -348,9 +356,9 @@ func use_rocket_console(id: int) -> void:
 		return
 	if Game.rocket_parts == ItemDB.FALCON_STOCK.size() and player.held.is_empty():
 		Game.rocket_launch_started_at = Game.elapsed
+		teacher.leave()
 		update_rocket_assembly()
-		Game.event.rpc("banner", {"text": "Falcon 9 ignition. Stand clear of the launch pad!"})
-		Game.event.rpc("mogging", {})
+		Game.log_activity("Falcon 9 launched toward Earth.")
 		return
 	var item: ClassroomItem = items.get(player.held)
 	if item == null or item.holder != id or item.item_id not in ItemDB.FALCON_STOCK:

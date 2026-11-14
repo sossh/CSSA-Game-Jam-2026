@@ -39,9 +39,9 @@ func _ready() -> void:
 	color = Color.from_hsv(fmod(peer_id * 0.173, 1.0), 0.55, 0.95)
 	visual.set_color(color)
 	visual.visible = not local
-	camera.current = local
+	camera.current = local and not Game.launch_cinematic_active
 	base_fov = camera.fov
-	if local:
+	if camera.current:
 		audio_listener.make_current()
 	name_label.text = str(Game.players[peer_id].name)
 	name_label.visible = not local
@@ -52,7 +52,7 @@ func _ready() -> void:
 	head.rotation.x = pitch
 
 func _unhandled_input(event: InputEvent) -> void:
-	if not local or Game.ui_open or not Game.players.has(peer_id): return
+	if not local or Game.ui_open or Game.launch_cinematic_active or not Game.players.has(peer_id): return
 	var p: Dictionary = Game.players[peer_id]
 	if event is InputEventMouseMotion and Input.mouse_mode == Input.MOUSE_MODE_CAPTURED:
 		rotation.y -= event.relative.x * Game.config.player.mouse_sensitivity
@@ -79,7 +79,7 @@ func _unhandled_input(event: InputEvent) -> void:
 		charge = -1
 
 func _physics_process(delta: float) -> void:
-	if not Game.players.has(peer_id): return
+	if Game.launch_cinematic_active or not Game.players.has(peer_id): return
 	var p: Dictionary = Game.players[peer_id]
 	var mode: String = p.mode
 	if applied_epoch != p.epoch:
