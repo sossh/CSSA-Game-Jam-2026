@@ -1,0 +1,223 @@
+[gd_scene format=3]
+
+[sub_resource type="StandardMaterial3D" id="SteelMaterial"]
+albedo_color = Color(0.2, 0.23, 0.27, 1)
+metallic = 0.55
+roughness = 0.42
+
+[sub_resource type="StandardMaterial3D" id="GlassMaterial"]
+transparency = 1
+shading_mode = 0
+albedo_color = Color(0.62, 0.8, 1, 0.035)
+
+[sub_resource type="StandardMaterial3D" id="DeckMaterial"]
+albedo_color = Color(0.78, 0.77, 0.73, 1)
+roughness = 0.9
+
+[sub_resource type="StandardMaterial3D" id="GableMaterial"]
+albedo_color = Color(0.7, 0.67, 0.6, 1)
+roughness = 0.92
+
+[sub_resource type="StandardMaterial3D" id="StripLightMaterial"]
+shading_mode = 0
+albedo_color = Color(0.62, 0.92, 1, 1)
+
+[sub_resource type="BoxMesh" id="GlassMesh"]
+material = SubResource("GlassMaterial")
+size = Vector3(12.258, 0.02, 17.6)
+
+[sub_resource type="BoxMesh" id="WestRafterMesh"]
+material = SubResource("SteelMaterial")
+size = Vector3(12.358, 0.22, 0.12)
+
+[sub_resource type="BoxMesh" id="EastRafterMesh"]
+material = SubResource("SteelMaterial")
+size = Vector3(6.6, 0.22, 0.12)
+
+[sub_resource type="BoxMesh" id="PurlinMesh"]
+material = SubResource("SteelMaterial")
+size = Vector3(0.1, 0.08, 17.6)
+
+[sub_resource type="BoxMesh" id="RidgeMesh"]
+material = SubResource("SteelMaterial")
+size = Vector3(0.32, 0.3, 17.6)
+
+[sub_resource type="BoxMesh" id="EavePlateMesh"]
+material = SubResource("SteelMaterial")
+size = Vector3(0.3, 0.25, 17.6)
+
+[sub_resource type="BoxMesh" id="EndTrimMesh"]
+material = SubResource("SteelMaterial")
+size = Vector3(17.7, 0.16, 0.14)
+
+[sub_resource type="BoxMesh" id="StripLightMesh"]
+material = SubResource("StripLightMaterial")
+size = Vector3(0.06, 0.03, 17.2)
+
+[sub_resource type="BoxMesh" id="DeckMesh"]
+material = SubResource("DeckMaterial")
+size = Vector3(6.5, 0.12, 17.6)
+
+[sub_resource type="PrismMesh" id="GableMesh"]
+material = SubResource("GableMaterial")
+left_to_right = 0.66667
+size = Vector3(18, 2.5, 0.2)
+
+[sub_resource type="BoxShape3D" id="WestSlopeShape"]
+size = Vector3(12.458, 0.2, 18)
+
+[sub_resource type="BoxShape3D" id="EastSlopeShape"]
+size = Vector3(6.7, 0.2, 18)
+
+[node name="ObservatoryRoof" type="Node3D"]
+editor_description = "Classroom roof: glazed west slope faces Earth, solid east deck. Visuals are separate from the two-box collider (world layer). Glass is unshaded and casts no shadow so sunlight and the sky stay visible cheaply. Origin matches the classroom origin; walls top out at y = 5."
+
+[node name="Glazing" type="Node3D" parent="."]
+
+[node name="WestGlass" type="MeshInstance3D" parent="Glazing"]
+position = Vector3(-3, 6.25, -1)
+rotation = Vector3(0, 0, 0.2054)
+cast_shadow = 0
+mesh = SubResource("GlassMesh")
+
+[node name="Deck" type="Node3D" parent="."]
+
+[node name="EastDeck" type="MeshInstance3D" parent="Deck"]
+position = Vector3(5.9769, 6.1946, -1)
+rotation = Vector3(0, 0, -0.39479)
+mesh = SubResource("DeckMesh")
+
+[node name="Frame" type="Node3D" parent="."]
+
+[node name="Ridge" type="MeshInstance3D" parent="Frame"]
+position = Vector3(3, 7.38, -1)
+mesh = SubResource("RidgeMesh")
+
+[node name="RidgeStripLight" type="MeshInstance3D" parent="Frame"]
+position = Vector3(3, 7.215, -1)
+cast_shadow = 0
+mesh = SubResource("StripLightMesh")
+
+[node name="WestEavePlate" type="MeshInstance3D" parent="Frame"]
+position = Vector3(-8.85, 5, -1)
+mesh = SubResource("EavePlateMesh")
+
+[node name="EastEavePlate" type="MeshInstance3D" parent="Frame"]
+position = Vector3(8.85, 5, -1)
+mesh = SubResource("EavePlateMesh")
+
+[node name="FrontTrim" type="MeshInstance3D" parent="Frame"]
+position = Vector3(0, 5, -9.73)
+mesh = SubResource("EndTrimMesh")
+
+[node name="BackTrim" type="MeshInstance3D" parent="Frame"]
+position = Vector3(0, 5, 7.73)
+mesh = SubResource("EndTrimMesh")
+
+[node name="WestRafters" type="Node3D" parent="Frame"]
+
+[node name="Rafter1" type="MeshInstance3D" parent="Frame/WestRafters"]
+position = Vector3(-2.9755, 6.1325, -9.74)
+rotation = Vector3(0, 0, 0.2054)
+mesh = SubResource("WestRafterMesh")
+
+[node name="Rafter2" type="MeshInstance3D" parent="Frame/WestRafters"]
+position = Vector3(-2.9755, 6.1325, -7)
+rotation = Vector3(0, 0, 0.2054)
+mesh = SubResource("WestRafterMesh")
+
+[node name="Rafter3" type="MeshInstance3D" parent="Frame/WestRafters"]
+position = Vector3(-2.9755, 6.1325, -4)
+rotation = Vector3(0, 0, 0.2054)
+mesh = SubResource("WestRafterMesh")
+
+[node name="Rafter4" type="MeshInstance3D" parent="Frame/WestRafters"]
+position = Vector3(-2.9755, 6.1325, -1)
+rotation = Vector3(0, 0, 0.2054)
+mesh = SubResource("WestRafterMesh")
+
+[node name="Rafter5" type="MeshInstance3D" parent="Frame/WestRafters"]
+position = Vector3(-2.9755, 6.1325, 2)
+rotation = Vector3(0, 0, 0.2054)
+mesh = SubResource("WestRafterMesh")
+
+[node name="Rafter6" type="MeshInstance3D" parent="Frame/WestRafters"]
+position = Vector3(-2.9755, 6.1325, 5)
+rotation = Vector3(0, 0, 0.2054)
+mesh = SubResource("WestRafterMesh")
+
+[node name="Rafter7" type="MeshInstance3D" parent="Frame/WestRafters"]
+position = Vector3(-2.9755, 6.1325, 7.74)
+rotation = Vector3(0, 0, 0.2054)
+mesh = SubResource("WestRafterMesh")
+
+[node name="EastRafters" type="Node3D" parent="Frame"]
+
+[node name="Rafter1" type="MeshInstance3D" parent="Frame/EastRafters"]
+position = Vector3(5.9115, 6.0377, -9.74)
+rotation = Vector3(0, 0, -0.39479)
+mesh = SubResource("EastRafterMesh")
+
+[node name="Rafter2" type="MeshInstance3D" parent="Frame/EastRafters"]
+position = Vector3(5.9115, 6.0377, -7)
+rotation = Vector3(0, 0, -0.39479)
+mesh = SubResource("EastRafterMesh")
+
+[node name="Rafter3" type="MeshInstance3D" parent="Frame/EastRafters"]
+position = Vector3(5.9115, 6.0377, -4)
+rotation = Vector3(0, 0, -0.39479)
+mesh = SubResource("EastRafterMesh")
+
+[node name="Rafter4" type="MeshInstance3D" parent="Frame/EastRafters"]
+position = Vector3(5.9115, 6.0377, -1)
+rotation = Vector3(0, 0, -0.39479)
+mesh = SubResource("EastRafterMesh")
+
+[node name="Rafter5" type="MeshInstance3D" parent="Frame/EastRafters"]
+position = Vector3(5.9115, 6.0377, 2)
+rotation = Vector3(0, 0, -0.39479)
+mesh = SubResource("EastRafterMesh")
+
+[node name="Rafter6" type="MeshInstance3D" parent="Frame/EastRafters"]
+position = Vector3(5.9115, 6.0377, 5)
+rotation = Vector3(0, 0, -0.39479)
+mesh = SubResource("EastRafterMesh")
+
+[node name="Rafter7" type="MeshInstance3D" parent="Frame/EastRafters"]
+position = Vector3(5.9115, 6.0377, 7.74)
+rotation = Vector3(0, 0, -0.39479)
+mesh = SubResource("EastRafterMesh")
+
+[node name="Purlins" type="Node3D" parent="Frame"]
+
+[node name="Purlin1" type="MeshInstance3D" parent="Frame/Purlins"]
+position = Vector3(-4.9898, 5.7844, -1)
+rotation = Vector3(0, 0, 0.2054)
+mesh = SubResource("PurlinMesh")
+
+[node name="Purlin2" type="MeshInstance3D" parent="Frame/Purlins"]
+position = Vector3(-0.9898, 6.6177, -1)
+rotation = Vector3(0, 0, 0.2054)
+mesh = SubResource("PurlinMesh")
+
+[node name="Gables" type="Node3D" parent="."]
+
+[node name="FrontGable" type="MeshInstance3D" parent="Gables"]
+position = Vector3(0, 6.25, -9.9)
+mesh = SubResource("GableMesh")
+
+[node name="BackGable" type="MeshInstance3D" parent="Gables"]
+position = Vector3(0, 6.25, 7.9)
+mesh = SubResource("GableMesh")
+
+[node name="Collision" type="StaticBody3D" parent="."]
+
+[node name="WestSlope" type="CollisionShape3D" parent="Collision"]
+position = Vector3(-3.0204, 6.3479, -1)
+rotation = Vector3(0, 0, 0.2054)
+shape = SubResource("WestSlopeShape")
+
+[node name="EastSlope" type="CollisionShape3D" parent="Collision"]
+position = Vector3(6.0385, 6.3423, -1)
+rotation = Vector3(0, 0, -0.39479)
+shape = SubResource("EastSlopeShape")
