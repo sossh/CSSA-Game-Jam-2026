@@ -113,7 +113,7 @@ func resolve_impact(body: Node, speed: float, hit_velocity: Vector3) -> void:
 			Game.world.remove_item(entity_id)
 		elif speed > tuning.ragdoll_impact_speed: Game.launch_player(body.peer_id, impulse)
 	elif body is ClassroomTeacher:
-		body.provoked(thrower, global_position)
+		body.provoked(thrower, global_position, sound)
 	if not kid and data.effect == "tomato" and is_inside_tree() and speed > tuning.tomato_splat_speed:
 		Game.event.rpc("burst", {"position": global_position, "color": Color.TOMATO})
 		Game.world.remove_item(entity_id)

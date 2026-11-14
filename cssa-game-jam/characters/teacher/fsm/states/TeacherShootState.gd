@@ -37,6 +37,7 @@ func physics_update(delta: float) -> void:
 		var recovery_after_shot: float = (TOTAL_ANIM_LENGTH - AIM_PEAK_TIME) / maxf(0.1, recoil_speed)
 		if state_time >= fire_delay + recovery_after_shot:
 			teacher.suspicion = 0.0
+			teacher.relieve_irritation()
 			teacher.last_check = Game.elapsed
 			state_transition.emit(self, "LectureState")
 	elif teacher.shot_fired:

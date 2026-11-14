@@ -422,7 +422,7 @@ func hit_body(body: Node, damage: float, impulse: Vector3, reason: String) -> vo
 	elif body is ClassroomItem:
 		if body.kid and damage > Game.config.interactions.clone_lethal_damage: body.dead = true
 		body.release(body.global_position, impulse, "")
-	elif body is ClassroomTeacher: body.provoked("", body.global_position)
+	elif body is ClassroomTeacher: body.provoked("", body.global_position, "punch")  # only punches reach the teacher here; the shotgun ray excludes it
 
 func buy(id: int, item_id: String, machine_id: String = "vending") -> bool:
 	if Game.phase not in ["lobby", "preparation", "break"] or not ItemDB.sells(item_id, machine_id): return false

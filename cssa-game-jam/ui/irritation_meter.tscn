@@ -1,0 +1,241 @@
+[gd_scene format=3]
+
+[ext_resource type="Script" path="res://ui/irritation_meter.gd" id="1_script"]
+[ext_resource type="Shader" path="res://ui/irritation_meter.gdshader" id="2_shader"]
+
+[sub_resource type="StyleBoxFlat" id="FrameStyle"]
+bg_color = Color(0.015, 0.03, 0.06, 0.72)
+border_width_left = 2
+border_width_top = 2
+border_width_right = 2
+border_width_bottom = 2
+border_color = Color(0.18, 0.92, 1, 0.95)
+corner_radius_top_left = 4
+corner_radius_top_right = 14
+corner_radius_bottom_right = 4
+corner_radius_bottom_left = 14
+shadow_color = Color(0, 0.8, 1, 0.3)
+shadow_size = 12
+
+[sub_resource type="StyleBoxFlat" id="FaceStyle"]
+bg_color = Color(0.02, 0.05, 0.09, 0.95)
+border_width_left = 2
+border_width_top = 2
+border_width_right = 2
+border_width_bottom = 2
+border_color = Color(0.3, 0.88, 1, 1)
+corner_radius_top_left = 26
+corner_radius_top_right = 26
+corner_radius_bottom_right = 26
+corner_radius_bottom_left = 26
+
+[sub_resource type="StyleBoxFlat" id="BarFrameStyle"]
+bg_color = Color(0, 0, 0, 0.55)
+border_width_left = 2
+border_width_top = 2
+border_width_right = 2
+border_width_bottom = 2
+border_color = Color(0.3, 0.88, 1, 0.8)
+corner_radius_top_left = 3
+corner_radius_top_right = 3
+corner_radius_bottom_right = 3
+corner_radius_bottom_left = 3
+
+[sub_resource type="ShaderMaterial" id="BarMaterial"]
+shader = ExtResource("2_shader")
+shader_parameter/level = 0.0
+shader_parameter/flash = 0.0
+shader_parameter/track_color = Color(0.015, 0.04, 0.07, 1)
+
+[sub_resource type="StyleBoxFlat" id="DinBack"]
+bg_color = Color(0, 0, 0, 0.5)
+
+[sub_resource type="StyleBoxFlat" id="DinFill"]
+bg_color = Color(0.3, 0.88, 1, 0.9)
+
+[sub_resource type="Gradient" id="SteamGradient"]
+colors = PackedColorArray(1, 1, 1, 0.75, 1, 0.85, 0.7, 0)
+
+[node name="IrritationMeter" type="Control"]
+layout_mode = 1
+anchors_preset = 1
+anchor_left = 1.0
+anchor_right = 1.0
+offset_left = -334.0
+offset_top = 206.0
+offset_right = -14.0
+offset_bottom = 340.0
+grow_horizontal = 0
+mouse_filter = 2
+script = ExtResource("1_script")
+
+[node name="Shaker" type="Control" parent="."]
+unique_name_in_owner = true
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+pivot_offset = Vector2(160, 67)
+mouse_filter = 2
+
+[node name="Frame" type="Panel" parent="Shaker"]
+unique_name_in_owner = true
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 2
+theme_override_styles/panel = SubResource("FrameStyle")
+
+[node name="Title" type="Label" parent="Shaker"]
+layout_mode = 0
+offset_left = 14.0
+offset_top = 6.0
+offset_right = 306.0
+offset_bottom = 24.0
+theme_override_colors/font_color = Color(0.3, 0.88, 1, 0.85)
+theme_override_font_sizes/font_size = 11
+text = "◈ TEACHER IRRITATION-O-METER"
+
+[node name="FacePanel" type="Panel" parent="Shaker"]
+unique_name_in_owner = true
+layout_mode = 0
+offset_left = 14.0
+offset_top = 28.0
+offset_right = 86.0
+offset_bottom = 84.0
+pivot_offset = Vector2(36, 28)
+mouse_filter = 2
+theme_override_styles/panel = SubResource("FaceStyle")
+
+[node name="Face" type="Label" parent="Shaker/FacePanel"]
+unique_name_in_owner = true
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_font_sizes/font_size = 19
+text = "(^_^)"
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="SteamLeft" type="CPUParticles2D" parent="Shaker/FacePanel"]
+unique_name_in_owner = true
+position = Vector2(10, 4)
+emitting = false
+amount = 8
+lifetime = 0.9
+direction = Vector2(-0.4, -1)
+spread = 18.0
+gravity = Vector2(0, -30)
+initial_velocity_min = 25.0
+initial_velocity_max = 45.0
+scale_amount_min = 2.0
+scale_amount_max = 4.5
+color_ramp = SubResource("SteamGradient")
+
+[node name="SteamRight" type="CPUParticles2D" parent="Shaker/FacePanel"]
+unique_name_in_owner = true
+position = Vector2(62, 4)
+emitting = false
+amount = 8
+lifetime = 0.9
+direction = Vector2(0.4, -1)
+spread = 18.0
+gravity = Vector2(0, -30)
+initial_velocity_min = 25.0
+initial_velocity_max = 45.0
+scale_amount_min = 2.0
+scale_amount_max = 4.5
+color_ramp = SubResource("SteamGradient")
+
+[node name="Percent" type="Label" parent="Shaker"]
+unique_name_in_owner = true
+layout_mode = 0
+offset_left = 232.0
+offset_top = 24.0
+offset_right = 306.0
+offset_bottom = 54.0
+theme_override_colors/font_outline_color = Color(0, 0.05, 0.1, 0.95)
+theme_override_constants/outline_size = 4
+theme_override_font_sizes/font_size = 24
+text = "0%"
+horizontal_alignment = 2
+
+[node name="Tier" type="Label" parent="Shaker"]
+unique_name_in_owner = true
+layout_mode = 0
+offset_left = 96.0
+offset_top = 28.0
+offset_right = 226.0
+offset_bottom = 50.0
+theme_override_colors/font_outline_color = Color(0, 0.05, 0.1, 0.95)
+theme_override_constants/outline_size = 3
+theme_override_font_sizes/font_size = 11
+text = "VIBING"
+clip_text = true
+
+[node name="BarFrame" type="Panel" parent="Shaker"]
+layout_mode = 0
+offset_left = 96.0
+offset_top = 54.0
+offset_right = 306.0
+offset_bottom = 82.0
+mouse_filter = 2
+theme_override_styles/panel = SubResource("BarFrameStyle")
+
+[node name="Bar" type="ColorRect" parent="Shaker/BarFrame"]
+unique_name_in_owner = true
+material = SubResource("BarMaterial")
+layout_mode = 0
+offset_left = 3.0
+offset_top = 3.0
+offset_right = 207.0
+offset_bottom = 25.0
+mouse_filter = 2
+
+[node name="Reason" type="Label" parent="Shaker"]
+unique_name_in_owner = true
+layout_mode = 0
+offset_left = 14.0
+offset_top = 90.0
+offset_right = 306.0
+offset_bottom = 110.0
+pivot_offset = Vector2(146, 10)
+theme_override_colors/font_outline_color = Color(0, 0.05, 0.1, 0.95)
+theme_override_constants/outline_size = 3
+theme_override_font_sizes/font_size = 13
+text = "Teacher is enjoying the silence."
+horizontal_alignment = 1
+vertical_alignment = 1
+clip_text = true
+
+[node name="DinLabel" type="Label" parent="Shaker"]
+layout_mode = 0
+offset_left = 14.0
+offset_top = 112.0
+offset_right = 90.0
+offset_bottom = 128.0
+theme_override_colors/font_color = Color(0.3, 0.88, 1, 0.7)
+theme_override_font_sizes/font_size = 10
+text = "CLASS DIN"
+
+[node name="DinBar" type="ProgressBar" parent="Shaker"]
+unique_name_in_owner = true
+layout_mode = 0
+offset_left = 80.0
+offset_top = 116.0
+offset_right = 306.0
+offset_bottom = 122.0
+mouse_filter = 2
+theme_override_styles/background = SubResource("DinBack")
+theme_override_styles/fill = SubResource("DinFill")
+max_value = 1.0
+step = 0.001
+show_percentage = false
