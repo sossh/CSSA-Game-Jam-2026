@@ -21,6 +21,9 @@
 [ext_resource type="PackedScene" path="res://world/classroom/props/locker_bank.tscn" id="20_locker_bank"]
 [ext_resource type="PackedScene" path="res://world/classroom/props/observatory_roof.tscn" id="21_roof"]
 
+[ext_resource type="PackedScene" path="res://world/classroom/props/vending_snack_display.tscn" id="21_vending_snacks"]
+[ext_resource type="PackedScene" path="res://world/classroom/props/vending_drink_display.tscn" id="22_vending_drinks"]
+
 [sub_resource type="StandardMaterial3D" id="FloorMaterial"]
 albedo_color = Color(0.18, 0.22, 0.3, 1)
 roughness = 0.85
@@ -676,12 +679,16 @@ transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 6.95, 0, 8.45)
 position = Vector3(-8.25, 0, 13.9)
 rotation = Vector3(0, -1.5707963, 0)
 
+[node name="SnackDisplay" parent="Hallway/VendingMachine" instance=ExtResource("21_vending_snacks")]
+
 [node name="VendingMachine2" parent="Hallway" instance=ExtResource("5")]
 position = Vector3(-8.25, 0, 10.3)
 rotation = Vector3(0, -1.5707963, 0)
 
 [node name="Keypad" parent="Hallway/VendingMachine2" index="3"]
 interaction_id = "vending:2"
+
+[node name="DrinkDisplay" parent="Hallway/VendingMachine2" instance=ExtResource("22_vending_drinks")]
 
 [node name="TransferChute" parent="Hallway" unique_id=1288543665 instance=ExtResource("7")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 13.8)
