@@ -16,8 +16,10 @@ void fragment() {
 	vec3 n = abs(world_normal);
 	vec2 p = n.y > max(n.x, n.z) ? world_pos.xz : (n.x > n.z ? world_pos.zy : world_pos.xy);
 	float t = (p.x + p.y) / (stripe_width * 2.0);
-	float aa = fwidth(t);
-	float s = smoothstep(0.5 - aa, 0.5 + aa, fract(t)) - smoothstep(1.0 - aa, 1.0, fract(t));
+	float aa = max(fwidth(t) * 0.5, 0.0001);
+	// Filter both edges of the stripe equally across the repeat boundary.
+	float stripe_distance = abs(fract(t - 0.25) - 0.5);
+	float s = 1.0 - smoothstep(0.25 - aa, 0.25 + aa, stripe_distance);
 	ALBEDO = mix(stripe_color, gap_color, s);
 	ROUGHNESS = 0.6;
 }

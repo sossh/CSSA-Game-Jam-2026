@@ -8,6 +8,7 @@ roughness = 0.42
 [sub_resource type="StandardMaterial3D" id="GlassMaterial"]
 transparency = 1
 shading_mode = 0
+cull_mode = 2
 albedo_color = Color(0.62, 0.8, 1, 0.035)
 
 [sub_resource type="StandardMaterial3D" id="DeckMaterial"]
@@ -22,9 +23,9 @@ roughness = 0.92
 shading_mode = 0
 albedo_color = Color(0.62, 0.92, 1, 1)
 
-[sub_resource type="BoxMesh" id="GlassMesh"]
+[sub_resource type="PlaneMesh" id="GlassMesh"]
 material = SubResource("GlassMaterial")
-size = Vector3(12.258, 0.02, 17.6)
+size = Vector2(12.258, 17.6)
 
 [sub_resource type="BoxMesh" id="WestRafterMesh"]
 material = SubResource("SteelMaterial")

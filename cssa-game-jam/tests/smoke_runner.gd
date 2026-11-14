@@ -99,6 +99,9 @@ func run_host() -> void:
 	await wait(Game.config.interactions.eat_seconds + 0.2)
 	verify(Game.players[1].stomach > 70 and Game.players[1].food == 25, "Eating restores stomach and records allowance food")
 	verify(not Game.world.items.has(apple.entity_id) if is_instance_valid(apple) else true, "Eaten item consumed")
+	Game.players[1].gas = 0.0
+	Game.handle_action(1, "fart", {})
+	verify(Game.players[1].gas == 0.0, "Player with 0% gas cannot fart")
 	var teacher = Game.world.teacher
 	verify(teacher.get_current_state_name() == "lecturestate" and teacher.global_position.distance_to(teacher.board) < 0.2, "Teacher lectures right away at round start")
 	teacher.suspicion = 0
@@ -111,6 +114,27 @@ func run_host() -> void:
 	NoiseBus.emit_noise(Vector3(2, 0, 5), 100, str(client), "crunch")
 	verify(teacher.target == str(1) and teacher.get_current_state_name() == "shootstate", "Player can make noise when teacher actively attacks another student")
 	teacher.fsm.force_change_state("LectureState")
+	# Irritation meter: near noise and hits raise it, far noise raises it less, and it never touches suspicion.
+	teacher.reset_irritation()
+	teacher.suspicion = 0
+	teacher.sound_grace_until = Game.elapsed + 60.0
+	NoiseBus.emit_noise(teacher.global_position + Vector3.BACK * 14.0, 45, str(client), "burp")
+	var far_irritation: float = teacher.irritation
+	teacher.reset_irritation()
+	NoiseBus.emit_noise(teacher.global_position + Vector3.BACK * 1.5, 45, str(client), "burp")
+	verify(teacher.irritation > far_irritation and teacher.irritation > 0.0, "Irritation grows with proximity to the teacher")
+	var seq_before: int = teacher.irritation_seq
+	teacher.provoked(str(client), teacher.global_position, "splat")
+	verify(teacher.irritation_seq > seq_before and teacher.irritation_reason == ClassroomTeacher.Irr.TOMATO, "Hitting the teacher spikes irritation with a reason")
+	teacher.fsm.force_change_state("LectureState")
+	teacher.suspicion = 0
+	teacher.irritate(20.0, ClassroomTeacher.Irr.NOISE)
+	verify(teacher.suspicion == 0.0 and teacher.get_current_state_name() == "lecturestate", "Irritation does not feed teacher suspicion or state")
+	var restored: Dictionary = teacher.serialize()
+	teacher.reset_irritation()
+	teacher.receive(restored)
+	verify(teacher.irritation > 0.0 and teacher.irritation_seq == restored.irr_seq, "Irritation replicates through teacher snapshots")
+	teacher.reset_irritation()
 	teacher.suspicion = 0
 	teacher.sound_grace_until = 0.0
 	teacher.last_check = Game.elapsed
@@ -237,6 +261,7 @@ func verify_rocket_vending_machine() -> void:
 	ui.close_vending()
 	teleport(1, world.get_node("Hallway/VendingMachine").to_global(Vector3(0, 0, -2)))
 	await wait(0.15)
+	item_count = world.items.size()
 	player.money = 1
 	world.buy(1, "rocket")
 	verify(player.money == 1 and world.items.size() == item_count, "Cosmic Crunch rejects rocket parts even with enough money")

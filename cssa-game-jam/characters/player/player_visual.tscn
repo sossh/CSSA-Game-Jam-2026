@@ -1,0 +1,58 @@
+[gd_scene format=3 uid="uid://d2so5464s4ow0"]
+
+[ext_resource type="PackedScene" uid="uid://chgkvgyuidkih" path="res://characters/player/assets/player_idle.fbx" id="1_dnpie"]
+[ext_resource type="Animation" uid="uid://bl8t5gelua3j7" path="res://characters/player/assets/animations/idle.res" id="2_w1cl4"]
+[ext_resource type="Animation" uid="uid://iqp5tp3sihda" path="res://characters/player/assets/animations/jump.res" id="3_gi08g"]
+[ext_resource type="Animation" uid="uid://p85xof7tpq5c" path="res://characters/player/assets/animations/run.res" id="4_s2q5y"]
+[ext_resource type="Animation" uid="uid://dwvfyo12ardsc" path="res://characters/player/assets/animations/sit.res" id="5_d6anh"]
+[ext_resource type="Animation" uid="uid://n802b6ou5xh0" path="res://characters/player/assets/animations/stand_up.res" id="6_88pkb"]
+[ext_resource type="Animation" uid="uid://co1eumliunfjo" path="res://characters/player/assets/animations/thow.res" id="7_pq4mr"]
+[ext_resource type="Animation" uid="uid://bymjsba8ddnc5" path="res://characters/player/assets/animations/walk.res" id="8_b7hav"]
+
+[sub_resource type="AnimationLibrary" id="AnimationLibrary_wt1md"]
+_data = {
+&"idle": ExtResource("2_w1cl4"),
+&"jump": ExtResource("3_gi08g"),
+&"run": ExtResource("4_s2q5y"),
+&"sit": ExtResource("5_d6anh"),
+&"stand_up": ExtResource("6_88pkb"),
+&"thow": ExtResource("7_pq4mr"),
+&"walk": ExtResource("8_b7hav")
+}
+
+[node name="PlayerVisual" unique_id=1706436324 instance=ExtResource("1_dnpie")]
+transform = Transform3D(120, 0, 0, 0, 120, 0, 0, 0, 120, 0, 0, 0)
+
+[node name="GeneralSkeleton" parent="." index="0" unique_id=590756097]
+bones/0/position = Vector3(3.7110024e-06, 0.0043495297, -9.122297e-05)
+bones/0/rotation = Quaternion(0.01611161, 0.017043145, -0.002684148, 0.99972135)
+bones/1/rotation = Quaternion(0.054631524, -0.011179764, 0.0013787277, 0.99844307)
+bones/2/rotation = Quaternion(0.02156581, -0.021340419, 0.010288942, 0.99948674)
+bones/3/rotation = Quaternion(0.021317378, -0.020972867, 0.011259138, 0.9994894)
+bones/4/rotation = Quaternion(-0.0041984688, 0.018570643, -0.0021493712, 0.9998165)
+bones/5/rotation = Quaternion(-0.028483165, 0.039053738, -0.017458737, 0.99867857)
+bones/7/rotation = Quaternion(0.5086615, 0.46838593, 0.60024154, -0.40198046)
+bones/8/rotation = Quaternion(0.0025473237, 0.88773775, -0.3864024, -0.25021678)
+bones/9/rotation = Quaternion(0.13314363, -0.6913756, 0.04739132, 0.7085384)
+bones/10/rotation = Quaternion(0.02281461, 0.7443405, -0.11146609, 0.65803653)
+bones/11/rotation = Quaternion(0.103020385, -0.010358079, 0.31058523, 0.94488955)
+bones/12/rotation = Quaternion(0.25455946, 0.01800609, -0.30292425, 0.9182115)
+bones/13/rotation = Quaternion(-0.24282962, -0.09491043, 0.3138917, 0.91296107)
+bones/15/rotation = Quaternion(0.53852695, -0.44269192, -0.583163, -0.41705352)
+bones/16/rotation = Quaternion(-0.08415556, 0.9254116, -0.32621977, 0.17352806)
+bones/17/rotation = Quaternion(0.18078354, 0.6886917, -0.095772, 0.69559246)
+bones/18/rotation = Quaternion(0.10874808, -0.71298003, 0.014374064, 0.6925509)
+bones/19/rotation = Quaternion(0.046589155, -0.0077762315, 0.1009289, 0.9937718)
+bones/20/rotation = Quaternion(0.16600876, -0.12515341, 0.067295246, 0.9758326)
+bones/21/rotation = Quaternion(0.29744762, -0.120103694, -0.28481954, 0.90331495)
+bones/23/rotation = Quaternion(0.079202175, 0.2060655, 0.97490096, 0.028846348)
+bones/24/rotation = Quaternion(0.021526238, 0.8821748, -0.4702869, 0.01160085)
+bones/25/rotation = Quaternion(0.024527194, 0.6849675, -0.72761536, -0.028176257)
+bones/26/rotation = Quaternion(3.6878497e-08, 0.9974383, 0.07153318, 4.741521e-08)
+bones/28/rotation = Quaternion(-0.058401633, 0.09874207, 0.99055654, -0.075080134)
+bones/29/rotation = Quaternion(0.038232885, 0.9817172, -0.18620852, 0.009798815)
+bones/30/rotation = Quaternion(-0.022815745, 0.6212185, -0.7826187, 0.032788612)
+bones/31/rotation = Quaternion(-9.2196245e-08, 0.99905896, 0.04337335, 7.902536e-09)
+
+[node name="AnimationPlayer" parent="." index="1" unique_id=1344139903]
+libraries/ = SubResource("AnimationLibrary_wt1md")

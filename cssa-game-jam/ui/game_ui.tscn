@@ -2,7 +2,13 @@
 
 [ext_resource type="Script" uid="uid://cwsrc05ernper" path="res://ui/game_ui.gd" id="1"]
 [ext_resource type="PackedScene" path="res://ui/event_feed.tscn" id="3"]
+[ext_resource type="Texture2D" uid="uid://bqyalv1uxmwcp" path="res://assets/ui/bitcoin.png" id="4"]
+[ext_resource type="Texture2D" uid="uid://dc4b1imbf6oee" path="res://assets/ui/chicken.png" id="5"]
+[ext_resource type="Texture2D" uid="uid://btf5717nm1wrx" path="res://assets/ui/gas.png" id="6"]
 [ext_resource type="Shader" path="res://ui/death_filter.gdshader" id="4_death_shader"]
+[ext_resource type="PackedScene" path="res://ui/irritation_meter.tscn" id="5_irritation"]
+[ext_resource type="FontFile" uid="uid://bddrcfhrb4gvj" path="res://fonts/Jersey_25/Jersey25-Regular.ttf" id="7_font"]
+[ext_resource type="Theme" path="res://ui/menu_theme.tres" id="8_theme"]
 
 [sub_resource type="ShaderMaterial" id="DeathFilterMat"]
 shader = ExtResource("4_death_shader")
@@ -10,49 +16,21 @@ shader_parameter/desaturation = 0.92
 shader_parameter/tint_color = Color(0.48, 0.52, 0.6, 1)
 shader_parameter/vignette_strength = 0.75
 
-[sub_resource type="StyleBoxFlat" id="PanelStyle"]
-content_margin_left = 24.0
-content_margin_top = 20.0
-content_margin_right = 24.0
-content_margin_bottom = 20.0
-bg_color = Color(0.025, 0.04, 0.09, 0.96)
-border_width_left = 2
-border_width_top = 2
-border_width_right = 2
-border_width_bottom = 2
-border_color = Color(0.3, 0.7, 0.8, 1)
-
-[sub_resource type="Theme" id="UITheme"]
-default_font_size = 20
-PanelContainer/styles/panel = SubResource("PanelStyle")
-
-[sub_resource type="StyleBoxFlat" id="HudTopVisor"]
-bg_color = Color(0.007843138, 0.02745098, 0.05882353, 0.3647059)
-border_width_left = 2
-border_width_top = 2
-border_width_right = 2
-border_width_bottom = 2
-border_color = Color(0.2, 0.88, 1, 0.65)
-shadow_color = Color(0, 0.8, 1, 0.18039216)
-shadow_size = 10
-
 [sub_resource type="StyleBoxFlat" id="HudBayLeft"]
+content_margin_left = 12.0
+content_margin_top = 8.0
+content_margin_right = 16.0
+content_margin_bottom = 8.0
 bg_color = Color(0.007843138, 0.02745098, 0.05882353, 0.3647059)
 border_width_left = 2
 border_width_top = 2
 border_width_right = 2
 border_width_bottom = 2
 border_color = Color(0.18, 0.92, 1, 0.9)
-shadow_color = Color(0, 0.8, 1, 0.18)
-shadow_size = 10
-
-[sub_resource type="StyleBoxFlat" id="HudBayRight"]
-bg_color = Color(0.007843138, 0.02745098, 0.05882353, 0.3647059)
-border_width_left = 2
-border_width_top = 2
-border_width_right = 2
-border_width_bottom = 2
-border_color = Color(0.18, 0.92, 1, 0.9)
+corner_radius_top_left = 3
+corner_radius_top_right = 3
+corner_radius_bottom_right = 3
+corner_radius_bottom_left = 3
 shadow_color = Color(0, 0.8, 1, 0.18)
 shadow_size = 10
 
@@ -68,31 +46,24 @@ corner_radius_top_right = 48
 corner_radius_bottom_right = 48
 corner_radius_bottom_left = 48
 
-[sub_resource type="StyleBoxFlat" id="HudBottomConsole"]
-bg_color = Color(0.007843138, 0.02745098, 0.05882353, 0.3647059)
+[sub_resource type="StyleBoxFlat" id="BarBg"]
+bg_color = Color(0.007843138, 0.02745098, 0.05882353, 0.45)
 border_width_left = 2
 border_width_top = 2
 border_width_right = 2
 border_width_bottom = 2
-border_color = Color(0.2, 0.92, 1, 0.85)
-shadow_color = Color(0, 0.8, 1, 0.16)
-shadow_size = 10
-
-[sub_resource type="StyleBoxFlat" id="BarBg"]
-bg_color = Color(0.01, 0.04, 0.08, 0.92)
-border_width_left = 1
-border_width_top = 1
-border_width_right = 1
-border_width_bottom = 1
-border_color = Color(0.2, 0.75, 0.9, 0.65)
-corner_radius_top_left = 2
-corner_radius_top_right = 2
-corner_radius_bottom_right = 2
-corner_radius_bottom_left = 2
+border_color = Color(0.18, 0.92, 1, 0.9)
+corner_radius_top_left = 3
+corner_radius_top_right = 3
+corner_radius_bottom_right = 3
+corner_radius_bottom_left = 3
+shadow_color = Color(0, 0.8, 1, 0.18)
+shadow_size = 8
 
 [sub_resource type="StyleBoxFlat" id="StomachFill"]
 bg_color = Color(0.12, 0.95, 0.72, 0.92)
-border_color = Color(0.75, 1, 0.95, 0.95)
+border_width_top = 2
+border_color = Color(0.8, 1, 0.96, 0.95)
 corner_radius_top_left = 2
 corner_radius_top_right = 2
 corner_radius_bottom_right = 2
@@ -101,37 +72,58 @@ corner_radius_bottom_left = 2
 [sub_resource type="StyleBoxFlat" id="GasFill"]
 bg_color = Color(1, 0.62, 0.14, 0.92)
 border_width_top = 2
-border_width_right = 2
 border_color = Color(1, 0.92, 0.6, 0.95)
 corner_radius_top_left = 2
 corner_radius_top_right = 2
 corner_radius_bottom_right = 2
 corner_radius_bottom_left = 2
 
+[sub_resource type="Shader" id="CircularChargeShader"]
+code = "shader_type canvas_item;
+uniform float progress : hint_range(0.0, 1.0) = 0.65;
+void fragment() {
+	vec2 p = UV * 2.0 - vec2(1.0);
+	float r = length(p);
+	float ring = smoothstep(0.87, 0.89, r) * (1.0 - smoothstep(0.915, 0.935, r));
+	vec2 b = vec2(-0.70710678, 0.70710678);
+	vec2 c = vec2(0.70710678, 0.70710678);
+	float deg = degrees(atan(dot(p, c), dot(p, b)));
+	float in_semi = step(-90.0, deg) * step(deg, 90.0);
+	float t = clamp((deg + 90.0) / 180.0, 0.0, 1.0);
+	float arc = 1.0 - smoothstep(progress - 0.015, progress + 0.015, t);
+	vec4 track_col = vec4(0.02, 0.12, 0.22, 0.4);
+	vec4 fill_col = vec4(0.18, 0.95, 1.0, 0.95);
+	vec4 col = mix(track_col, fill_col, arc * step(0.001, progress));
+	COLOR = vec4(col.rgb, col.a * ring * in_semi);
+}
+"
+
+[sub_resource type="ShaderMaterial" id="CircularChargeMat"]
+shader = SubResource("CircularChargeShader")
+shader_parameter/progress = 0.65
+
 [sub_resource type="StyleBoxFlat" id="ChargeFill"]
-bg_color = Color(0.2, 0.92, 1, 0.95)
-skew = Vector2(-0.12, 0)
-border_width_top = 2
-border_width_right = 2
-border_color = Color(0.85, 1, 1, 1)
+bg_color = Color(1, 1, 1, 1)
+
+[sub_resource type="StyleBoxEmpty" id="ChargeEmpty"]
 
 [sub_resource type="StyleBoxFlat" id="BannerStyle"]
-content_margin_left = 20.0
-content_margin_top = 10.0
-content_margin_right = 20.0
-content_margin_bottom = 10.0
-bg_color = Color(0.08, 0.03, 0.02, 0.88)
-border_width_left = 4
+content_margin_left = 14.0
+content_margin_top = 8.0
+content_margin_right = 14.0
+content_margin_bottom = 8.0
+bg_color = Color(0.007843138, 0.02745098, 0.05882353, 0.55)
+border_width_left = 2
 border_width_top = 2
-border_width_right = 4
+border_width_right = 2
 border_width_bottom = 2
-border_color = Color(1, 0.65, 0.18, 0.95)
-corner_radius_top_left = 6
-corner_radius_top_right = 6
-corner_radius_bottom_right = 6
-corner_radius_bottom_left = 6
-shadow_color = Color(1, 0.5, 0, 0.22)
-shadow_size = 12
+border_color = Color(0.18, 0.92, 1, 0.9)
+corner_radius_top_left = 3
+corner_radius_top_right = 3
+corner_radius_bottom_right = 3
+corner_radius_bottom_left = 3
+shadow_color = Color(0, 0.8, 1, 0.18)
+shadow_size = 10
 
 [sub_resource type="StyleBoxFlat" id="ScoreboardStyle"]
 content_margin_left = 22.0
@@ -149,6 +141,24 @@ corner_radius_bottom_right = 10
 shadow_color = Color(0, 0.8, 1, 0.2)
 shadow_size = 12
 
+[sub_resource type="StyleBoxFlat" id="HudBottomConsole"]
+content_margin_left = 14.0
+content_margin_top = 10.0
+content_margin_right = 14.0
+content_margin_bottom = 10.0
+bg_color = Color(0.007843138, 0.02745098, 0.05882353, 0.45)
+border_width_left = 2
+border_width_top = 2
+border_width_right = 2
+border_width_bottom = 2
+border_color = Color(0.18, 0.92, 1, 0.9)
+corner_radius_top_left = 3
+corner_radius_top_right = 3
+corner_radius_bottom_right = 3
+corner_radius_bottom_left = 3
+shadow_color = Color(0, 0.8, 1, 0.16)
+shadow_size = 10
+
 [node name="UI" type="CanvasLayer" unique_id=1907831806]
 script = ExtResource("1")
 
@@ -160,19 +170,20 @@ anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
 mouse_filter = 2
-theme = SubResource("UITheme")
+theme = ExtResource("8_theme")
 
 [node name="Menu" type="PanelContainer" parent="Root" unique_id=1945357025]
 unique_name_in_owner = true
-layout_mode = 0
+layout_mode = 1
+anchors_preset = 8
 anchor_left = 0.5
 anchor_top = 0.5
 anchor_right = 0.5
 anchor_bottom = 0.5
-offset_left = -315.0
-offset_top = -285.0
-offset_right = 315.0
-offset_bottom = 285.0
+offset_left = -330.0
+offset_top = -305.0
+offset_right = 330.0
+offset_bottom = 305.0
 grow_horizontal = 2
 grow_vertical = 2
 
@@ -181,15 +192,22 @@ layout_mode = 2
 theme_override_constants/separation = 10
 
 [node name="Title" type="Label" parent="Root/Menu/Content" unique_id=125092282]
-modulate = Color(0.5, 0.95, 1, 1)
 layout_mode = 2
-theme_override_font_sizes/font_size = 42
+theme_override_colors/font_color = Color(0.35, 0.95, 1, 1)
+theme_override_colors/font_outline_color = Color(0, 0.08, 0.16, 0.95)
+theme_override_constants/outline_size = 4
+theme_override_font_sizes/font_size = 44
 text = "COSMIC DETENTION"
+horizontal_alignment = 1
 
 [node name="Subtitle" type="Label" parent="Root/Menu/Content" unique_id=1180339448]
 layout_mode = 2
-theme_override_font_sizes/font_size = 23
+theme_override_colors/font_color = Color(0.82, 0.97, 1, 0.9)
+theme_override_colors/font_outline_color = Color(0, 0.08, 0.16, 0.95)
+theme_override_constants/outline_size = 3
+theme_override_font_sizes/font_size = 22
 text = "Eat. Survive. Frame your friends."
+horizontal_alignment = 1
 
 [node name="NameField" type="LineEdit" parent="Root/Menu/Content" unique_id=151136378]
 unique_name_in_owner = true
@@ -246,17 +264,25 @@ text = "JOIN"
 [node name="MenuStatus" type="Label" parent="Root/Menu/Content" unique_id=335902947]
 unique_name_in_owner = true
 layout_mode = 2
-theme_override_font_sizes/font_size = 16
+theme_override_colors/font_color = Color(0.55, 0.95, 1, 0.92)
+theme_override_font_sizes/font_size = 17
 text = "Same LAN • 2–6 students • Host runs the classroom"
+horizontal_alignment = 1
 autowrap_mode = 3
 
 [node name="Controls" type="Label" parent="Root/Menu/Content" unique_id=1468424898]
 layout_mode = 2
+theme_override_colors/font_color = Color(0.84, 0.97, 1, 0.95)
+theme_override_colors/font_outline_color = Color(0, 0.08, 0.16, 0.95)
+theme_override_constants/line_spacing = 4
+theme_override_constants/outline_size = 3
 theme_override_font_sizes/font_size = 17
-text = "WASD move • Mouse look • E grab / sit / interact
-LMB hold + release: throw • LMB empty: punch
-RMB eat / use • Q drop • Space jump / stand / escape
-Shift sprint • G fart • Tab scoreboard • Esc menu"
+theme_override_styles/normal = SubResource("HudBottomConsole")
+text = "[WASD] Move   •   [Shift] Sprint   •   [Space] Jump / Stand / Escape
+[E] Grab / Sit / Interact   •   [Q] Drop   •   [F] Vent Gas
+[Left-click] Punch / Hold to Throw   •   [Right-click] Eat / Use
+[Tab] Class Register   •   [H] Incident Feed   •   [Esc] Pause Menu"
+horizontal_alignment = 1
 
 [node name="Quit" type="Button" parent="Root/Menu/Content" unique_id=1706002822]
 custom_minimum_size = Vector2(0, 42)
@@ -286,80 +312,129 @@ grow_horizontal = 2
 grow_vertical = 2
 mouse_filter = 2
 
-[node name="TopVisorBar" type="Panel" parent="Root/HUD" unique_id=476950910]
+[node name="CurrencyBay" type="PanelContainer" parent="Root/HUD" unique_id=2079221591]
+layout_mode = 0
+offset_left = 20.0
+offset_top = 18.0
+offset_right = 136.0
+offset_bottom = 66.0
+mouse_filter = 2
+theme_override_styles/panel = SubResource("HudBayLeft")
+
+[node name="CurrencyRow" type="HBoxContainer" parent="Root/HUD/CurrencyBay" unique_id=1663417413]
+layout_mode = 2
+mouse_filter = 2
+theme_override_constants/separation = 10
+alignment = 1
+
+[node name="BitcoinIcon" type="TextureRect" parent="Root/HUD/CurrencyBay/CurrencyRow" unique_id=2104111076]
+custom_minimum_size = Vector2(28, 28)
+layout_mode = 2
+size_flags_vertical = 4
+mouse_filter = 2
+texture = ExtResource("4")
+expand_mode = 1
+stretch_mode = 5
+
+[node name="Stats" type="Label" parent="Root/HUD/CurrencyBay/CurrencyRow" unique_id=802122237]
+unique_name_in_owner = true
+layout_mode = 2
+theme_override_colors/font_color = Color(0.92, 0.99, 1, 1)
+theme_override_colors/font_outline_color = Color(0, 0.08, 0.16, 0.95)
+theme_override_constants/outline_size = 4
+theme_override_font_sizes/font_size = 24
+text = "20"
+
+[node name="PauseHint" type="Label" parent="Root/HUD" unique_id=1928374651]
+layout_mode = 0
+offset_left = 22.0
+offset_top = 72.0
+offset_right = 180.0
+offset_bottom = 94.0
+mouse_filter = 2
+theme_override_colors/font_color = Color(0.45, 0.95, 1, 0.9)
+theme_override_colors/font_outline_color = Color(0, 0.08, 0.16, 0.95)
+theme_override_constants/outline_size = 3
+theme_override_font_sizes/font_size = 16
+text = "[ESC] Pause / Status"
+
+[node name="RocketTracker" type="PanelContainer" parent="Root/HUD" unique_id=1492837465]
 layout_mode = 1
 anchors_preset = 5
 anchor_left = 0.5
 anchor_right = 0.5
-offset_left = -290.0
-offset_top = 12.0
-offset_right = 272.0
-offset_bottom = 46.0
+offset_left = -140.0
+offset_top = 18.0
+offset_right = 140.0
+offset_bottom = 84.0
 grow_horizontal = 2
-mouse_filter = 2
-theme_override_styles/panel = SubResource("HudTopVisor")
-
-[node name="CompassReadout" type="Label" parent="Root/HUD/TopVisorBar" unique_id=689184618]
-layout_mode = 1
-anchors_preset = 15
-anchor_right = 1.0
-anchor_bottom = 1.0
-grow_horizontal = 2
-grow_vertical = 2
-theme_override_colors/font_color = Color(0.45, 0.95, 1, 0.9)
-theme_override_colors/font_outline_color = Color(0, 0.08, 0.16, 0.95)
-theme_override_constants/outline_size = 3
-theme_override_font_sizes/font_size = 13
-text = "SYS // ORBITAL DETENTION DECK 04   [ 045°  •  090°  ▲  135°  •  180° ]   GRAV 0.98G"
-horizontal_alignment = 1
-vertical_alignment = 1
-
-[node name="LeftTelemetryBay" type="Panel" parent="Root/HUD" unique_id=393595346]
-layout_mode = 0
-offset_left = 14.0
-offset_top = 12.0
-offset_right = 344.0
-offset_bottom = 176.0
 mouse_filter = 2
 theme_override_styles/panel = SubResource("HudBayLeft")
 
-[node name="BayHeader" type="Label" parent="Root/HUD/LeftTelemetryBay" unique_id=1362974603]
-layout_mode = 0
-offset_left = 14.0
-offset_top = 6.0
-offset_right = 310.0
-offset_bottom = 24.0
-theme_override_colors/font_color = Color(0.3, 0.88, 1, 0.78)
-theme_override_font_sizes/font_size = 11
-text = "◈ BIO-TELEMETRY // LIFE SUPPORT"
-
-[node name="RightTelemetryBay" type="Panel" parent="Root/HUD" unique_id=1470056257]
-layout_mode = 1
-anchors_preset = 1
-anchor_left = 1.0
-anchor_right = 1.0
-offset_left = -363.0
-offset_top = 12.0
-offset_right = -14.0
-offset_bottom = 120.0
-grow_horizontal = 0
+[node name="Content" type="VBoxContainer" parent="Root/HUD/RocketTracker" unique_id=1492837476]
+layout_mode = 2
 mouse_filter = 2
-theme_override_styles/panel = SubResource("HudBayRight")
+theme_override_constants/separation = 2
+alignment = 1
 
-[node name="BayHeader" type="Label" parent="Root/HUD/RightTelemetryBay" unique_id=274111431]
-layout_mode = 1
-anchors_preset = 1
-anchor_left = 1.0
-anchor_right = 1.0
-offset_left = -430.0
-offset_top = 6.0
-offset_right = -16.0
-offset_bottom = 24.0
-grow_horizontal = 0
-theme_override_colors/font_color = Color(0.3, 0.88, 1, 0.78)
-theme_override_font_sizes/font_size = 11
-text = "SECTOR CHRONO & TRANSPONDER ◈"
-horizontal_alignment = 2
+[node name="Title" type="Label" parent="Root/HUD/RocketTracker/Content" unique_id=1492837477]
+layout_mode = 2
+mouse_filter = 2
+theme_override_colors/font_color = Color(0.35, 0.95, 1, 1)
+theme_override_colors/font_outline_color = Color(0, 0.08, 0.16, 0.95)
+theme_override_constants/outline_size = 3
+theme_override_font_sizes/font_size = 15
+text = "Rocket Progress"
+horizontal_alignment = 1
+
+[node name="Schematic" type="Control" parent="Root/HUD/RocketTracker/Content" unique_id=1492837466]
+custom_minimum_size = Vector2(246, 30)
+layout_mode = 2
+size_flags_horizontal = 4
+size_flags_vertical = 4
+mouse_filter = 2
+
+[node name="RocketStage1" type="Node2D" parent="Root/HUD/RocketTracker/Content/Schematic" unique_id=1492837467]
+unique_name_in_owner = true
+
+[node name="Fill" type="Polygon2D" parent="Root/HUD/RocketTracker/Content/Schematic/RocketStage1" unique_id=1492837468]
+color = Color(0.01, 0.05, 0.1, 0.25)
+polygon = PackedVector2Array(6, 9, 14, 7, 16, 4, 28, 8, 122, 8, 122, 22, 28, 22, 16, 26, 14, 23, 6, 21)
+
+[node name="Outline" type="Line2D" parent="Root/HUD/RocketTracker/Content/Schematic/RocketStage1" unique_id=1492837469]
+points = PackedVector2Array(6, 9, 14, 7, 16, 4, 28, 8, 122, 8, 122, 22, 28, 22, 16, 26, 14, 23, 6, 21)
+closed = true
+width = 2.0
+default_color = Color(0.18, 0.92, 1, 0.55)
+joint_mode = 2
+
+[node name="RocketStage2" type="Node2D" parent="Root/HUD/RocketTracker/Content/Schematic" unique_id=1492837470]
+unique_name_in_owner = true
+
+[node name="Fill" type="Polygon2D" parent="Root/HUD/RocketTracker/Content/Schematic/RocketStage2" unique_id=1492837471]
+color = Color(0.01, 0.05, 0.1, 0.25)
+polygon = PackedVector2Array(128, 10, 133, 8, 184, 8, 184, 22, 133, 22, 128, 20)
+
+[node name="Outline" type="Line2D" parent="Root/HUD/RocketTracker/Content/Schematic/RocketStage2" unique_id=1492837472]
+points = PackedVector2Array(128, 10, 133, 8, 184, 8, 184, 22, 133, 22, 128, 20)
+closed = true
+width = 2.0
+default_color = Color(0.18, 0.92, 1, 0.55)
+joint_mode = 2
+
+[node name="RocketStage3" type="Node2D" parent="Root/HUD/RocketTracker/Content/Schematic" unique_id=1492837473]
+unique_name_in_owner = true
+
+[node name="Fill" type="Polygon2D" parent="Root/HUD/RocketTracker/Content/Schematic/RocketStage3" unique_id=1492837474]
+color = Color(0.01, 0.05, 0.1, 0.25)
+polygon = PackedVector2Array(190, 8, 195, 6, 216, 6, 230, 9, 240, 15, 230, 21, 216, 24, 195, 24, 190, 22)
+
+[node name="Outline" type="Line2D" parent="Root/HUD/RocketTracker/Content/Schematic/RocketStage3" unique_id=1492837475]
+points = PackedVector2Array(190, 8, 195, 6, 216, 6, 230, 9, 240, 15, 230, 21, 216, 24, 195, 24, 190, 22)
+closed = true
+width = 2.0
+default_color = Color(0.18, 0.92, 1, 0.55)
+joint_mode = 2
 
 [node name="ReticleRing" type="Panel" parent="Root/HUD" unique_id=445304197]
 layout_mode = 1
@@ -377,107 +452,70 @@ grow_vertical = 2
 mouse_filter = 2
 theme_override_styles/panel = SubResource("ReticleRing")
 
-[node name="BottomConsoleBay" type="Panel" parent="Root/HUD" unique_id=1575651211]
-layout_mode = 1
-anchors_preset = 7
-anchor_left = 0.5
-anchor_top = 1.0
-anchor_right = 0.5
-anchor_bottom = 1.0
-offset_left = -330.0
-offset_top = -70.0
-offset_right = 330.0
-offset_bottom = -11.0
-grow_horizontal = 2
-grow_vertical = 0
-mouse_filter = 2
-theme_override_styles/panel = SubResource("HudBottomConsole")
-
-[node name="BayHeader" type="Label" parent="Root/HUD/BottomConsoleBay" unique_id=242449355]
-layout_mode = 1
-anchors_preset = 10
-anchor_right = 1.0
-offset_top = 5.0
-offset_bottom = 21.0
-grow_horizontal = 2
-theme_override_colors/font_color = Color(0.35, 0.9, 1, 0.72)
-theme_override_font_sizes/font_size = 11
-text = "◈ MANIPULATOR BAY // KINETIC ACTUATOR ◈"
-horizontal_alignment = 1
-
-[node name="Stats" type="Label" parent="Root/HUD" unique_id=802122237]
-unique_name_in_owner = true
-layout_mode = 0
-offset_left = 28.0
-offset_top = 29.0
-offset_right = 338.0
-offset_bottom = 86.0
-theme_override_colors/font_color = Color(0.75, 0.98, 1, 1)
-theme_override_colors/font_outline_color = Color(0, 0.08, 0.16, 0.95)
-theme_override_constants/outline_size = 4
-theme_override_font_sizes/font_size = 19
-text = "₿20 • STOMACH / HEALTH
-Transfer student"
-
 [node name="Stomach" type="ProgressBar" parent="Root/HUD" unique_id=1455380214]
 unique_name_in_owner = true
-layout_mode = 0
-offset_left = 28.0
-offset_top = 86.0
-offset_right = 326.0
-offset_bottom = 110.0
+layout_mode = 1
+anchors_preset = 2
+anchor_top = 1.0
+anchor_bottom = 1.0
+offset_left = 26.0
+offset_top = -224.0
+offset_right = 44.0
+offset_bottom = -52.0
+grow_vertical = 0
 mouse_filter = 2
-theme_override_colors/font_color = Color(0.92, 1, 0.98, 1)
-theme_override_colors/font_outline_color = Color(0, 0.1, 0.16, 0.95)
-theme_override_constants/outline_size = 3
-theme_override_font_sizes/font_size = 14
 theme_override_styles/background = SubResource("BarBg")
 theme_override_styles/fill = SubResource("StomachFill")
 value = 100.0
+fill_mode = 3
+show_percentage = false
 
-[node name="GasLabel" type="Label" parent="Root/HUD" unique_id=1216963209]
-unique_name_in_owner = true
-layout_mode = 0
-offset_left = 28.0
-offset_top = 116.0
-offset_right = 326.0
-offset_bottom = 136.0
-theme_override_colors/font_color = Color(1, 0.78, 0.35, 1)
-theme_override_colors/font_outline_color = Color(0.12, 0.05, 0, 0.95)
-theme_override_constants/outline_size = 3
-theme_override_font_sizes/font_size = 13
-text = "GAS: 0% • [F] TO VENT"
+[node name="StomachIcon" type="TextureRect" parent="Root/HUD" unique_id=753278379]
+layout_mode = 1
+anchors_preset = 2
+anchor_top = 1.0
+anchor_bottom = 1.0
+offset_left = 23.0
+offset_top = -44.0
+offset_right = 47.0
+offset_bottom = -20.0
+grow_vertical = 0
+mouse_filter = 2
+texture = ExtResource("5")
+expand_mode = 1
+stretch_mode = 5
 
 [node name="Gas" type="ProgressBar" parent="Root/HUD" unique_id=228781182]
 unique_name_in_owner = true
-layout_mode = 0
-offset_left = 28.0
-offset_top = 138.0
-offset_right = 326.0
-offset_bottom = 158.0
+layout_mode = 1
+anchors_preset = 2
+anchor_top = 1.0
+anchor_bottom = 1.0
+offset_left = 60.0
+offset_top = -224.0
+offset_right = 78.0
+offset_bottom = -52.0
+grow_vertical = 0
 mouse_filter = 2
 theme_override_styles/background = SubResource("BarBg")
 theme_override_styles/fill = SubResource("GasFill")
+fill_mode = 3
 show_percentage = false
 
-[node name="PhaseLabel" type="Label" parent="Root/HUD" unique_id=170845364]
-unique_name_in_owner = true
+[node name="GasIcon" type="TextureRect" parent="Root/HUD" unique_id=687049830]
 layout_mode = 1
-anchors_preset = 1
-anchor_left = 1.0
-anchor_right = 1.0
-offset_left = -450.0
-offset_top = 26.0
-offset_right = -30.0
-offset_bottom = 124.0
-grow_horizontal = 0
-theme_override_colors/font_color = Color(0.72, 0.96, 1, 1)
-theme_override_colors/font_outline_color = Color(0, 0.08, 0.16, 0.95)
-theme_override_constants/outline_size = 4
-theme_override_font_sizes/font_size = 19
-text = "PREPARATION • GRADE 1 • 00:30
-JOIN C0A8-012A"
-horizontal_alignment = 2
+anchors_preset = 2
+anchor_top = 1.0
+anchor_bottom = 1.0
+offset_left = 57.0
+offset_top = -44.0
+offset_right = 81.0
+offset_bottom = -20.0
+grow_vertical = 0
+mouse_filter = 2
+texture = ExtResource("6")
+expand_mode = 1
+stretch_mode = 5
 
 [node name="Crosshair" type="Label" parent="Root/HUD" unique_id=1817600521]
 layout_mode = 1
@@ -520,68 +558,53 @@ theme_override_constants/outline_size = 4
 theme_override_font_sizes/font_size = 20
 horizontal_alignment = 1
 
-[node name="HeldLabel" type="Label" parent="Root/HUD" unique_id=269296443]
-unique_name_in_owner = true
-layout_mode = 1
-anchors_preset = 12
-anchor_top = 1.0
-anchor_right = 1.0
-anchor_bottom = 1.0
-offset_left = 24.0
-offset_top = -45.0
-offset_right = -24.0
-offset_bottom = -13.0
-grow_horizontal = 2
-grow_vertical = 0
-theme_override_colors/font_color = Color(0.78, 0.98, 1, 1)
-theme_override_colors/font_outline_color = Color(0, 0.08, 0.16, 0.95)
-theme_override_constants/outline_size = 4
-theme_override_font_sizes/font_size = 18
-text = "EMPTY HAND • [LMB] Punch • [E] Grab"
-horizontal_alignment = 1
-
 [node name="ThrowCharge" type="ProgressBar" parent="Root/HUD" unique_id=526597351]
 unique_name_in_owner = true
 visible = false
+material = SubResource("CircularChargeMat")
 layout_mode = 1
-anchors_preset = 7
+anchors_preset = 8
 anchor_left = 0.5
-anchor_top = 1.0
+anchor_top = 0.5
 anchor_right = 0.5
-anchor_bottom = 1.0
-offset_left = -180.0
-offset_top = -34.0
-offset_right = 180.0
-offset_bottom = -14.0
+anchor_bottom = 0.5
+offset_left = -62.0
+offset_top = 63.0
+offset_right = 62.0
+offset_bottom = 187.0
 grow_horizontal = 2
-grow_vertical = 0
+grow_vertical = 2
+rotation = -1.5707964
 mouse_filter = 2
-theme_override_styles/background = SubResource("BarBg")
-theme_override_styles/fill = SubResource("ChargeFill")
+theme_override_styles/background = SubResource("ChargeFill")
+theme_override_styles/fill = SubResource("ChargeEmpty")
 max_value = 1.0
 show_percentage = false
 
-[node name="Banner" type="Label" parent="Root/HUD" unique_id=425669874]
+[node name="Banner" type="RichTextLabel" parent="Root/HUD" unique_id=425669874]
 unique_name_in_owner = true
 visible = false
 layout_mode = 1
-anchors_preset = -1
-anchor_left = 0.18
-anchor_right = 0.82
-offset_top = 135.0
-offset_bottom = 198.0
-grow_horizontal = 2
-theme_override_colors/font_color = Color(1, 0.88, 0.55, 1)
-theme_override_colors/font_outline_color = Color(0.15, 0.04, 0, 0.95)
-theme_override_constants/outline_size = 4
-theme_override_font_sizes/font_size = 24
+anchors_preset = 1
+anchor_left = 1.0
+anchor_right = 1.0
+offset_left = -360.0
+offset_top = 18.0
+offset_right = -20.0
+offset_bottom = 66.0
+grow_horizontal = 0
+mouse_filter = 2
+theme_override_colors/default_color = Color(0.88, 0.98, 1, 1)
+theme_override_colors/font_outline_color = Color(0, 0.08, 0.16, 0.95)
+theme_override_constants/outline_size = 3
+theme_override_font_sizes/normal_font_size = 16
 theme_override_styles/normal = SubResource("BannerStyle")
-text = "Find food. Take a seat."
-horizontal_alignment = 1
-vertical_alignment = 1
-autowrap_mode = 3
+bbcode_enabled = true
+text = "[right]Find food. Take a seat.[/right]"
+fit_content = true
+scroll_active = false
 
-[node name="Scoreboard" type="Label" parent="Root/HUD" unique_id=1546425106]
+[node name="Scoreboard" type="RichTextLabel" parent="Root/HUD" unique_id=1546425106]
 unique_name_in_owner = true
 visible = false
 layout_mode = 0
@@ -589,12 +612,16 @@ offset_left = 24.0
 offset_top = 210.0
 offset_right = 560.0
 offset_bottom = 490.0
-theme_override_colors/font_color = Color(0.78, 0.98, 1, 1)
+mouse_filter = 2
+theme_override_colors/default_color = Color(0.78, 0.98, 1, 1)
 theme_override_colors/font_outline_color = Color(0, 0.08, 0.16, 0.95)
 theme_override_constants/outline_size = 3
-theme_override_font_sizes/font_size = 21
+theme_override_font_sizes/normal_font_size = 21
 theme_override_styles/normal = SubResource("ScoreboardStyle")
+bbcode_enabled = true
 text = "CLASS REGISTER"
+fit_content = true
+scroll_active = false
 
 [node name="Debug" type="Label" parent="Root/HUD" unique_id=1673086265]
 unique_name_in_owner = true
@@ -607,11 +634,9 @@ offset_bottom = 204.0
 theme_override_colors/font_color = Color(0.45, 1, 0.8, 0.9)
 theme_override_font_sizes/font_size = 15
 
+[node name="IrritationMeter" parent="Root/HUD" instance=ExtResource("5_irritation")]
+
 [node name="EventFeed" parent="Root/HUD" unique_id=2025136264 instance=ExtResource("3")]
-offset_left = -406.0
-offset_top = -205.0
-offset_right = 0.0
-offset_bottom = 0.0
 
 [node name="DamageTint" type="ColorRect" parent="Root" unique_id=1046034552]
 unique_name_in_owner = true
@@ -667,25 +692,69 @@ horizontal_alignment = 1
 [node name="Pause" type="PanelContainer" parent="Root" unique_id=1974177496]
 unique_name_in_owner = true
 visible = false
-layout_mode = 0
+layout_mode = 1
+anchors_preset = 8
 anchor_left = 0.5
 anchor_top = 0.5
 anchor_right = 0.5
 anchor_bottom = 0.5
-offset_left = -240.0
-offset_top = -130.0
-offset_right = 240.0
-offset_bottom = 130.0
+offset_left = -270.0
+offset_top = -225.0
+offset_right = 270.0
+offset_bottom = 225.0
 grow_horizontal = 2
 grow_vertical = 2
 
 [node name="Content" type="VBoxContainer" parent="Root/Pause" unique_id=596507608]
 layout_mode = 2
+theme_override_constants/separation = 12
 
 [node name="Title" type="Label" parent="Root/Pause/Content" unique_id=857407157]
 layout_mode = 2
+theme_override_colors/font_color = Color(0.35, 0.95, 1, 1)
+theme_override_colors/font_outline_color = Color(0, 0.08, 0.16, 0.95)
+theme_override_constants/outline_size = 4
 theme_override_font_sizes/font_size = 28
 text = "CLASS IS STILL RUNNING"
+horizontal_alignment = 1
+
+[node name="PhaseLabel" type="Label" parent="Root/Pause/Content" unique_id=170845364]
+unique_name_in_owner = true
+layout_mode = 2
+theme_override_colors/font_color = Color(0.82, 0.97, 1, 1)
+theme_override_colors/font_outline_color = Color(0, 0.08, 0.16, 0.95)
+theme_override_constants/outline_size = 3
+theme_override_font_sizes/font_size = 18
+text = "STUDENT: Transfer student
+PREPARATION • GRADE 1 • 00:30
+JOIN C0A8-012A • 0 classes / 0 parts"
+horizontal_alignment = 1
+
+[node name="BottomConsoleBay" type="PanelContainer" parent="Root/Pause/Content" unique_id=1575651211]
+layout_mode = 2
+theme_override_styles/panel = SubResource("HudBottomConsole")
+
+[node name="ConsoleContent" type="VBoxContainer" parent="Root/Pause/Content/BottomConsoleBay" unique_id=311608645]
+layout_mode = 2
+theme_override_constants/separation = 4
+
+[node name="BayHeader" type="Label" parent="Root/Pause/Content/BottomConsoleBay/ConsoleContent" unique_id=242449355]
+layout_mode = 2
+theme_override_colors/font_color = Color(0.35, 0.9, 1, 0.78)
+theme_override_font_sizes/font_size = 13
+text = "◈ MANIPULATOR BAY // KINETIC ACTUATOR ◈"
+horizontal_alignment = 1
+
+[node name="HeldLabel" type="Label" parent="Root/Pause/Content/BottomConsoleBay/ConsoleContent" unique_id=269296443]
+unique_name_in_owner = true
+layout_mode = 2
+theme_override_colors/font_color = Color(0.88, 0.99, 1, 1)
+theme_override_colors/font_outline_color = Color(0, 0.08, 0.16, 0.95)
+theme_override_constants/outline_size = 3
+theme_override_font_sizes/font_size = 17
+text = "EMPTY HAND • [Left-click] Punch • [E] Grab"
+horizontal_alignment = 1
+autowrap_mode = 3
 
 [node name="Resume" type="Button" parent="Root/Pause/Content" unique_id=419519031]
 custom_minimum_size = Vector2(0, 42)
@@ -722,15 +791,7 @@ layout_mode = 2
 
 [node name="Header" type="HBoxContainer" parent="Root/Vending/Content"]
 layout_mode = 2
-theme_override_constants/separation = 12
-
-[node name="VendingBalance" type="Label" parent="Root/Vending/Content/Header"]
-unique_name_in_owner = true
-layout_mode = 2
-size_flags_horizontal = 3
-theme_override_colors/font_color = Color(0.64, 0.93, 1, 1)
-theme_override_font_sizes/font_size = 30
-text = "Balance ₿0"
+alignment = 2
 
 [node name="Exit" type="Button" parent="Root/Vending/Content/Header"]
 custom_minimum_size = Vector2(96, 40)

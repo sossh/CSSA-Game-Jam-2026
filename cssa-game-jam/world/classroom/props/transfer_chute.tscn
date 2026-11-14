@@ -1,5 +1,7 @@
-[gd_scene load_steps=3 format=3]
+[gd_scene load_steps=5 format=3]
 [ext_resource type="PackedScene" path="res://world/classroom/props/static_box.tscn" id="1"]
+[ext_resource type="Texture2D" uid="uid://bqyalv1uxmwcp" path="res://assets/ui/bitcoin.png" id="2"]
+[ext_resource type="FontFile" uid="uid://bddrcfhrb4gvj" path="res://fonts/Jersey_25/Jersey25-Regular.ttf" id="3"]
 [sub_resource type="StandardMaterial3D" id="Metal"]
 albedo_color = Color(0.4, 0.45, 0.5, 1)
 roughness = 0.85
@@ -17,9 +19,14 @@ material_override = SubResource("Metal")
 [node name="Sign" type="Label3D" parent="."]
 position = Vector3(0, 3.8, 1.9)
 rotation = Vector3(0, 3.141593, 0)
-text = "TRANSFER CHUTE\nCloning fee: ₿10"
+text = "TRANSFER CHUTE\nCloning fee:    10"
+font = ExtResource("3")
 font_size = 32
 outline_size = 5
+[node name="BitcoinIcon" type="Sprite3D" parent="Sign"]
+position = Vector3(0.2, -0.095, 0.002)
+pixel_size = 0.0012
+texture = ExtResource("2")
 [node name="SpawnPoints" type="Node3D" parent="."]
 [node name="Player1" type="Marker3D" parent="SpawnPoints"]
 position = Vector3(-0.5, 3.5, -0.4)

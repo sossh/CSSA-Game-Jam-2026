@@ -43,12 +43,12 @@ mesh = SubResource("Box")
 material_override = ExtResource("1_hull")
 
 [node name="WestSill" type="MeshInstance3D" parent="Cladding"]
-transform = Transform3D(0.12, 0, 0, 0, 1.65, 0, -0, 0, 14.4, -9.23, 0.375, 0)
+transform = Transform3D(0.12, 0, 0, 0, 1.62, 0, -0, 0, 14.4, -9.23, 0.36, 0)
 mesh = SubResource("Box")
 material_override = ExtResource("1_hull")
 
 [node name="WestHeader" type="MeshInstance3D" parent="Cladding"]
-transform = Transform3D(0.12, 0, 0, 0, 0.6, 0, -0, 0, 14.4, -9.23, 4.7, 0)
+transform = Transform3D(0.12, 0, 0, 0, 0.6, 0, -0, 0, 14.4, -9.23, 4.72, 0)
 mesh = SubResource("Box")
 material_override = ExtResource("1_hull")
 
@@ -115,24 +115,25 @@ mesh = SubResource("Box")
 material_override = ExtResource("2_roof")
 
 [node name="WindowFrame" type="Node3D" parent="."]
+editor_description = "The jambs project into the opening to clear the cladding ends. The top and ledge extend past the jambs."
 
 [node name="Top" type="MeshInstance3D" parent="WindowFrame"]
-transform = Transform3D(0.2, 0, 0, 0, 0.18, 0, -0, 0, 14.76, -9.35, 4.49, 0)
+transform = Transform3D(0.2, 0, 0, 0, 0.18, 0, -0, 0, 14.84, -9.35, 4.48, 0)
 mesh = SubResource("Box")
 material_override = ExtResource("3_trim")
 
 [node name="Ledge" type="MeshInstance3D" parent="WindowFrame"]
-transform = Transform3D(0.3, 0, 0, 0, 0.14, 0, -0, 0, 14.76, -9.38, 1.13, 0)
+transform = Transform3D(0.3, 0, 0, 0, 0.14, 0, -0, 0, 14.84, -9.38, 1.12, 0)
 mesh = SubResource("Box")
 material_override = ExtResource("3_trim")
 
 [node name="FrontJamb" type="MeshInstance3D" parent="WindowFrame"]
-transform = Transform3D(0.2, 0, 0, 0, 3.56, 0, -0, 0, 0.18, -9.35, 2.8, -7.29)
+transform = Transform3D(0.2, 0, 0, 0, 3.56, 0, -0, 0, 0.24, -9.35, 2.8, -7.26)
 mesh = SubResource("Box")
 material_override = ExtResource("3_trim")
 
 [node name="BackJamb" type="MeshInstance3D" parent="WindowFrame"]
-transform = Transform3D(0.2, 0, 0, 0, 3.56, 0, -0, 0, 0.18, -9.35, 2.8, 7.29)
+transform = Transform3D(0.2, 0, 0, 0, 3.56, 0, -0, 0, 0.24, -9.35, 2.8, 7.26)
 mesh = SubResource("Box")
 material_override = ExtResource("3_trim")
 
@@ -224,7 +225,7 @@ mesh = SubResource("Box")
 material_override = ExtResource("3_trim")
 
 [node name="CapFront" type="MeshInstance3D" parent="Trim"]
-transform = Transform3D(18.98, 0, 0, 0, 0.16, 0, -0, 0, 0.4, 0, 5.08, -10.25)
+transform = Transform3D(18.98, 0, 0, 0, 0.16, 0, -0, 0, 0.4, 0, 5.11, -10.25)
 mesh = SubResource("Box")
 material_override = ExtResource("3_trim")
 
@@ -239,7 +240,7 @@ mesh = SubResource("Box")
 material_override = ExtResource("3_trim")
 
 [node name="CapBack" type="MeshInstance3D" parent="Trim"]
-transform = Transform3D(18.98, 0, 0, 0, 0.16, 0, -0, 0, 0.4, 0, 6.83, 16.25)
+transform = Transform3D(18.98, 0, 0, 0, 0.16, 0, -0, 0, 0.4, 0, 6.86, 16.25)
 mesh = SubResource("Box")
 material_override = ExtResource("3_trim")
 
@@ -254,39 +255,39 @@ mesh = SubResource("Box")
 material_override = ExtResource("3_trim")
 
 [node name="SkirtFront" type="MeshInstance3D" parent="Trim"]
-transform = Transform3D(18.8, 0, 0, 0, 0.3, 0, -0, 0, 0.2, 0, -0.3, -10.3)
+transform = Transform3D(18.8, 0, 0, 0, 0.3, 0, -0, 0, 0.2, 0, -0.32, -10.3)
 mesh = SubResource("Box")
 material_override = ExtResource("3_trim")
 
 [node name="SkirtBackLeft" type="MeshInstance3D" parent="Trim"]
-transform = Transform3D(10.9, 0, 0, 0, 0.3, 0, -0, 0, 0.2, -3.95, -0.3, 16.3)
+transform = Transform3D(10.9, 0, 0, 0, 0.3, 0, -0, 0, 0.2, -3.95, -0.32, 16.3)
 mesh = SubResource("Box")
 material_override = ExtResource("3_trim")
 
 [node name="SkirtBackRight" type="MeshInstance3D" parent="Trim"]
-transform = Transform3D(4.9, 0, 0, 0, 0.3, 0, -0, 0, 0.2, 6.95, -0.3, 16.3)
+transform = Transform3D(4.9, 0, 0, 0, 0.3, 0, -0, 0, 0.2, 6.95, -0.32, 16.3)
 mesh = SubResource("Box")
 material_override = ExtResource("3_trim")
 
 [node name="Airlock" type="Node3D" parent="."]
 
 [node name="PostLeft" type="MeshInstance3D" parent="Airlock"]
-transform = Transform3D(0.35, 0, 0, 0, 3.4, 0, -0, 0, 0.3, 1.325, 1.25, 16.38)
+transform = Transform3D(0.39, 0, 0, 0, 3.4, 0, 0, 0, 0.3, 1.345, 1.25, 16.38)
 mesh = SubResource("Box")
 material_override = ExtResource("4_hazard")
 
 [node name="PostRight" type="MeshInstance3D" parent="Airlock"]
-transform = Transform3D(0.35, 0, 0, 0, 3.4, 0, -0, 0, 0.3, 4.675, 1.25, 16.38)
+transform = Transform3D(0.39, 0, 0, 0, 3.4, 0, 0, 0, 0.3, 4.655, 1.25, 16.38)
 mesh = SubResource("Box")
 material_override = ExtResource("4_hazard")
 
 [node name="Header" type="MeshInstance3D" parent="Airlock"]
-transform = Transform3D(4, 0, 0, 0, 0.35, 0, -0, 0, 0.3, 3, 3.125, 16.38)
+transform = Transform3D(4, 0, 0, 0, 0.35, 0, -0, 0, 0.3, 3, 3.125, 16.42)
 mesh = SubResource("Box")
 material_override = ExtResource("4_hazard")
 
 [node name="LampStrip" type="MeshInstance3D" parent="Airlock"]
-position = Vector3(3, 3.34, 16.5)
+position = Vector3(3, 3.34, 16.54)
 mesh = SubResource("LampStrip")
 cast_shadow = 0
 

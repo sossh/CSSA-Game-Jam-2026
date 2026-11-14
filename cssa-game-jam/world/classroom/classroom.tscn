@@ -28,6 +28,7 @@
 [ext_resource type="Material" path="res://world/classroom/materials/hull_foundation.tres" id="25_foundation"]
 [ext_resource type="Material" path="res://world/classroom/materials/hull_ramp.tres" id="26_ramp"]
 [ext_resource type="Sky" uid="uid://b1vvfc7ur7k7l" path="res://world/lunar/materials/space_sky.tres" id="27_sky"]
+[ext_resource type="PackedScene" path="res://world/classroom/props/wall_tv.tscn" id="28_wall_tv"]
 
 [sub_resource type="ShaderMaterial" id="CafeFloorMaterial"]
 shader = ExtResource("14_cafe_floor")
@@ -59,11 +60,6 @@ material = SubResource("ObservationWallMaterial")
 albedo_color = Color(0.3, 0.33, 0.36, 1)
 metallic = 0.35
 roughness = 0.45
-
-[sub_resource type="StandardMaterial3D" id="ObservationGlass"]
-transparency = 1
-shading_mode = 0
-albedo_color = Color(1, 1, 1, 0)
 
 [sub_resource type="StandardMaterial3D" id="DoorMaterial"]
 albedo_color = Color(0.33, 0.36, 0.38, 1)
@@ -116,8 +112,36 @@ ambient_light_color = Color(0.83, 0.87, 0.94, 1)
 ambient_light_energy = 0.48
 tonemap_mode = 3
 
+[sub_resource type="BoxShape3D" id="LunarGravityBounds"]
+size = Vector3(512, 512, 512)
+
+[sub_resource type="BoxShape3D" id="StationGravityBounds"]
+size = Vector3(18.3, 8.6, 26.3)
+
 [node name="Classroom" type="Node3D" unique_id=1350988650]
 script = ExtResource("1")
+
+[node name="LunarGravity" type="Area3D" parent="."]
+collision_layer = 0
+collision_mask = 46
+monitorable = false
+gravity_space_override = 3
+gravity = 2.5
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="LunarGravity"]
+shape = SubResource("LunarGravityBounds")
+
+[node name="StationGravity" type="Area3D" parent="."]
+editor_description = "Overrides lunar gravity within the station, ending at the lunar exit."
+collision_layer = 0
+collision_mask = 46
+monitorable = false
+priority = 1
+gravity_space_override = 3
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="StationGravity"]
+position = Vector3(0, 3.3, 3)
+shape = SubResource("StationGravityBounds")
 
 [node name="PlanetSurface" parent="." unique_id=806728454 instance=ExtResource("10")]
 transform = Transform3D(1.7169118, 0, 0, 0, 1.7169118, 0, 0, 0, 1.7169118, 0, -1.1192179, 0)
@@ -296,33 +320,27 @@ transform = Transform3D(0.3, 0, 0, 0, 5, 0, 0, 0, 26, -9, 2.5, 3)
 visible = false
 
 [node name="ObservationWindow" type="Node3D" parent="Room" unique_id=1482292786]
-editor_description = "LeftWall provides continuous collision behind the window and its frame. Sill, Header and the two jambs frame the 14 m window; School Kit walls (Room/Finish/Walls/Left*) cover the rest of the left wall."
+editor_description = "LeftWall provides continuous collision behind the window and its frame. Sill and header bridge the wall thickness to meet the exterior trim. The jambs project into the opening so their end faces clear the wall module ends; School Kit walls (Room/Finish/Walls/Left*) cover the rest of the left wall."
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -9, 0, 0)
 
 [node name="Sill" type="MeshInstance3D" parent="Room/ObservationWindow" unique_id=1088728733]
-transform = Transform3D(0.34, 0, 0, 0, 1.2, 0, 0, 0, 14.4, 0, 0.6, 0)
+transform = Transform3D(0.52, 0, 0, 0, 1.2, 0, 0, 0, 14.4, -0.07, 0.6, 0)
 material_override = SubResource("ObservationFrameMaterial")
 mesh = SubResource("ObservationWallMesh")
 
 [node name="Header" type="MeshInstance3D" parent="Room/ObservationWindow" unique_id=369304707]
-transform = Transform3D(0.34, 0, 0, 0, 0.6, 0, 0, 0, 14.4, 0, 4.7, 0)
+transform = Transform3D(0.52, 0, 0, 0, 0.6, 0, 0, 0, 14.4, -0.07, 4.7, 0)
 material_override = SubResource("ObservationFrameMaterial")
 mesh = SubResource("ObservationWallMesh")
 
 [node name="FrontPier" type="MeshInstance3D" parent="Room/ObservationWindow" unique_id=1147975498]
-transform = Transform3D(0.34, 0, 0, 0, 3.2, 0, 0, 0, 0.2, 0, 2.8, -7.1)
+transform = Transform3D(0.55, 0, 0, 0, 3.28, 0, 0, 0, 0.31, -0.045, 2.8, -7.095)
 material_override = SubResource("ObservationFrameMaterial")
 mesh = SubResource("ObservationWallMesh")
 
 [node name="RearPier" type="MeshInstance3D" parent="Room/ObservationWindow" unique_id=2114340451]
-transform = Transform3D(0.34, 0, 0, 0, 3.2, 0, 0, 0, 0.2, 0, 2.8, 7.1)
+transform = Transform3D(0.55, 0, 0, 0, 3.28, 0, 0, 0, 0.31, -0.045, 2.8, 7.095)
 material_override = SubResource("ObservationFrameMaterial")
-mesh = SubResource("ObservationWallMesh")
-
-[node name="Glass" type="MeshInstance3D" parent="Room/ObservationWindow" unique_id=990047496]
-transform = Transform3D(0.04, 0, 0, 0, 3.2, 0, 0, 0, 14, 0, 2.8, 0)
-material_override = SubResource("ObservationGlass")
-cast_shadow = 0
 mesh = SubResource("ObservationWallMesh")
 
 [node name="RightWall" parent="Room" unique_id=1706351095 instance=ExtResource("2")]
@@ -772,6 +790,9 @@ spot_angle_attenuation = 0.55
 position = Vector3(5.25, 2.35, 8.22)
 scale = Vector3(0.72, 0.72, 0.72)
 
+[node name="WallTV" parent="Hallway" instance=ExtResource("28_wall_tv")]
+transform = Transform3D(-1.3, 0, -1.1365e-07, 0, 1.3, 0, 1.1365e-07, 0, -1.3, -4.5, 2.75, 15.77)
+
 [node name="VendingMachine" parent="Hallway" unique_id=869019490 instance=ExtResource("5")]
 transform = Transform3D(7.54979e-08, 0, -1, 0, 1, 0, 1, 0, 7.54979e-08, -8.25, 0, 13.9)
 
@@ -883,6 +904,9 @@ transform = Transform3D(0.8192468, -0.21737903, 0.5306421, 0, 0.9253646, 0.37907
 current = true
 
 [node name="AmbiancePlayer" type="AudioStreamPlayer" parent="." unique_id=1849182041]
+
+[node name="MoggingPlayer" type="AudioStreamPlayer" parent="." unique_id=1849182042]
+volume_db = -4.0
 
 [editable path="LunarLaunchSite"]
 [editable path="LunarOutpost"]

@@ -45,7 +45,7 @@ are core, not optional polish.
   and friends can be carried/thrown. Keep physical ragdolls and recovery.
 - Single **Stomach / health** bar: time and damage deplete it, food refills it.
   Eating is loud; hunger, burps, impacts, footsteps and punches create noise.
-- Configurable phases, currently **20s preparation / 120s class / 90s break**.
+- Configurable phases, currently **20s preparation / 120s class / 60s break**.
   Round, economy and spawn tuning lives in `config/game_config.tres`. That
   resource links the player, teacher and interaction settings. Audio paths
   and mixing live in `config/audio_config.tres`, and LAN ports and discovery

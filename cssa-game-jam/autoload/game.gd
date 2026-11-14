@@ -233,7 +233,7 @@ func handle_action(id: int, action_name: String, data: Dictionary) -> void:
 				p.seat = -1
 				p.epoch += 1
 		"fart":
-			if allowed(id, "fart", config.interactions.fart_cooldown): relieve_gas(id)
+			if float(p.get("gas", 0.0)) > 0.0 and allowed(id, "fart", config.interactions.fart_cooldown): relieve_gas(id)
 		"step":
 			if p.mode == "walk" and allowed(id, "step", config.interactions.step_cooldown):
 				var step_pos: Vector3 = data.get("position", p.position)
@@ -312,6 +312,7 @@ func start_break() -> void:
 			respawn(id)
 	grade += 1
 	event.rpc("sound", {"position": world.bell_origin.global_position, "key": "bell", "loudness": config.bell_volume})
+	event.rpc("mogging", {})
 	event.rpc("banner", {"text": "RECESS • Allowances paid. Clones cost ₿%d. Vending is open!" % config.cloning_fee})
 	print("PHASE break survived=", survived)
 
@@ -399,7 +400,7 @@ func finish_eating(id: int) -> void:
 func relieve_gas(id: int) -> void:
 	if not players.has(id): return
 	var p: Dictionary = players[id]
-	if not p.alive: return
+	if not p.alive or float(p.get("gas", 0.0)) <= 0.0: return
 	var kind: String = "fart" if randf() < 0.5 else "burp"
 	var loudness: float = config.burp_loudness if kind == "burp" else config.fart_loudness
 	p.gas = maxf(0.0, float(p.get("gas", 0.0)) - randf_range(config.gas_relief.x, config.gas_relief.y))
@@ -439,5 +440,7 @@ func event(kind: String, data: Dictionary) -> void:
 		"rocket_console":
 			if int(data.id) == multiplayer.get_unique_id(): announcement.emit(str(data.text))
 		"activity": append_activity(str(data.text), float(data.get("time", elapsed)))
+		"mogging":
+			if is_instance_valid(world): world.play_mogging()
 		"sound": Sfx.play_at(str(data.key), data.position, float(data.get("loudness", Sfx.config.default_playback_loudness)))
 	effect.emit(kind, data)

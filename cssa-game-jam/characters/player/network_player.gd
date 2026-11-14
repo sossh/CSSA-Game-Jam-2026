@@ -2,8 +2,10 @@ class_name StudentPlayer
 extends CharacterBody3D
 
 var peer_id: int
+var default_gravity := float(ProjectSettings.get_setting("physics/3d/default_gravity"))
 @onready var head: Node3D = $Head
 @onready var camera: Camera3D = $Head/Camera
+@onready var audio_listener: AudioListener3D = $Head/Camera/AudioListener3D
 @onready var visual: StudentVisual = $Visual
 @onready var name_label: Label3D = $NameLabel
 @onready var ragdoll: StudentRagdoll = $Ragdoll
@@ -37,6 +39,8 @@ func _ready() -> void:
 	visual.visible = not local
 	camera.current = local
 	base_fov = camera.fov
+	if local:
+		audio_listener.make_current()
 	name_label.text = str(Game.players[peer_id].name)
 	name_label.visible = not local
 	global_position = Game.players[peer_id].position
@@ -55,7 +59,9 @@ func _unhandled_input(event: InputEvent) -> void:
 			Game.request("interact", {"target": target_id})
 	if event.is_action_pressed("use_item"): Game.request("use")
 	if event.is_action_pressed("drop_item"): Game.request("drop")
-	if event.is_action_pressed("fart"): Game.request("fart")
+	if event.is_action_pressed("fart"):
+		if float(p.get("gas", 0.0)) > 0.0:
+			Game.request("fart")
 	if event.is_action_pressed("jump"):
 		if p.mode == "seated": Game.request("stand")
 		if p.mode == "carried": Game.request("wiggle")
@@ -81,7 +87,8 @@ func _physics_process(delta: float) -> void:
 	if mode not in ["ragdoll", "dead"] and ragdoll.active:
 		if local:
 			global_position = ragdoll.bodies[0].global_position
-			global_position.y = maxf(0.2, global_position.y)
+			if ragdoll.bodies[0].get_gravity().length() >= default_gravity:
+				global_position.y = maxf(0.2, global_position.y)
 		ragdoll.deactivate()
 	var my_id: int = multiplayer.get_unique_id()
 	var local_is_dead: bool = Game.players.has(my_id) and Game.players[my_id].mode == "dead"
@@ -126,13 +133,26 @@ func _physics_process(delta: float) -> void:
 			if not Game.ui_open: direction.y += float(Input.is_action_pressed("jump")) - float(Input.is_action_pressed("crouch"))
 			global_position += direction * movement.spectate_speed * delta
 		else:
-			velocity.x = move_toward(velocity.x, direction.x * speed, movement.acceleration * delta)
-			velocity.z = move_toward(velocity.z, direction.z * speed, movement.acceleration * delta)
-			if not is_on_floor(): velocity.y -= movement.gravity * delta
-			if not Game.ui_open and Input.is_action_just_pressed("jump") and is_on_floor(): velocity.y = movement.jump_speed
-			move_and_slide()
+			var gravity_ratio := get_gravity().length() / default_gravity
+			var on_moon := gravity_ratio < 1.0
+			var acceleration := movement.acceleration
+			if on_moon:
+				acceleration = movement.lunar_braking if input.is_zero_approx() else movement.lunar_acceleration
+			velocity.x = move_toward(velocity.x, direction.x * speed, acceleration * delta)
+			velocity.z = move_toward(velocity.z, direction.z * speed, acceleration * delta)
+			var grounded := is_on_floor()
+			var has_movement := input.length_squared() > 0.01
 			step_timer -= delta
-			if input.length() > 0.1 and is_on_floor() and step_timer <= 0:
+			var hop := false
+			if not grounded:
+				velocity.y -= movement.gravity * gravity_ratio * delta
+			elif not Game.ui_open and Input.is_action_just_pressed("jump"):
+				velocity.y = movement.lunar_jump_speed if on_moon else movement.jump_speed
+			elif on_moon and has_movement and step_timer <= 0:
+				velocity.y = movement.lunar_step_hop_speed
+				hop = true
+			move_and_slide()
+			if has_movement and (hop or is_on_floor()) and step_timer <= 0:
 				step_timer = movement.sprint_step_seconds if speed > movement.walk_speed else movement.walk_step_seconds
 				Game.request("step", {"sprint": speed > movement.walk_speed, "position": global_position})
 	else:

@@ -16,5 +16,5 @@ void fragment() {
 	float dist = length(uv);
 	float vignette = clamp(1.0 - dist * vignette_strength, 0.0, 1.0);
 
-	COLOR = vec4(desaturated * vignette, 1.0);
+	COLOR = vec4(desaturated * vignette, COLOR.a);
 }

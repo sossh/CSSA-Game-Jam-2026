@@ -3,6 +3,8 @@ extends Node3D
 
 ## Six physical bodies joined with PinJoint3D. The owning player simulates;
 ## peers render the transmitted limb transforms. No skeleton asset required.
+const GRAVITY_LAYER := 32
+
 var bodies: Array[RigidBody3D] = []
 var simulating: bool = false
 var active: bool = false
@@ -26,6 +28,7 @@ func activate(color: Color, origin: Vector3, yaw: float, simulate: bool, impulse
 		material.albedo_color = color.lightened(0.2) if i == 1 else color
 		body.linear_velocity = impulse
 		body.angular_velocity = Vector3(2, 1, -3) if simulate else Vector3.ZERO
+		body.collision_layer = GRAVITY_LAYER if simulate else 0
 		body.collision_mask = 1 if simulate else 0
 		body.freeze = not simulate
 	# Reset each joint's rest attachment after repositioning the pooled bodies.
@@ -39,6 +42,7 @@ func deactivate() -> void:
 	hide()
 	for body in bodies:
 		body.freeze = true
+		body.collision_layer = 0
 		body.collision_mask = 0
 		body.linear_velocity = Vector3.ZERO
 		body.angular_velocity = Vector3.ZERO
