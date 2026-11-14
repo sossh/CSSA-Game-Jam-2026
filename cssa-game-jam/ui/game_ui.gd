@@ -25,10 +25,15 @@ extends CanvasLayer
 @onready var keypad: LineEdit = %Keypad
 @onready var vending_status: Label = %VendingStatus
 @onready var tint: ColorRect = %DamageTint
+@onready var death_filter: ColorRect = %DeathFilter
+@onready var wasted_container: CenterContainer = %WastedContainer
+@onready var wasted_label: Label = %WastedLabel
 @onready var crawl_panel: Control = %Crawl
 @onready var crawl_text: Label = %CrawlText
 var banner_left: float = 0
 var debug_visible: bool = false
+var wasted_timer: float = 0.0
+var was_alive: bool = true
 
 func _ready() -> void:
 	stomach.max_value = Game.config.stomach_max
@@ -121,6 +126,7 @@ func buy_code(code: String) -> void:
 	keypad.clear()
 
 func connected() -> void:
+	reset_wasted()
 	menu.hide()
 	hud.show()
 	if DisplayServer.get_name() != "headless" and not "--skip-intro" in OS.get_cmdline_user_args():
@@ -153,12 +159,28 @@ func _process(delta: float) -> void:
 	banner_left -= delta
 	banner.visible = banner_left > 0
 	tint.color.a = maxf(0, tint.color.a - delta * Game.config.flash_fade_per_second)
+	if wasted_timer > 0.0:
+		wasted_timer -= delta
+		if wasted_timer <= 0.0:
+			wasted_container.visible = false
+		else:
+			wasted_container.modulate.a = clampf(wasted_timer / 1.0, 0.0, 1.0)
 	if crawl_panel.visible:
 		crawl_text.position.y -= delta * 45
 		if crawl_text.position.y < -1100: close_crawl()
-	if not Net.active or not Game.players.has(multiplayer.get_unique_id()): return
+	if not Net.active or not Game.players.has(multiplayer.get_unique_id()):
+		if is_instance_valid(death_filter): death_filter.visible = false
+		if is_instance_valid(wasted_container): wasted_container.visible = false
+		return
 	var id := multiplayer.get_unique_id()
 	var p: Dictionary = Game.players[id]
+	var is_dead: bool = not p.alive or p.mode == "dead"
+	if was_alive and is_dead:
+		trigger_wasted()
+	elif not was_alive and not is_dead:
+		reset_wasted()
+	was_alive = not is_dead
+	death_filter.visible = is_dead
 	stats.text = "₿%d   •   STOMACH / HEALTH\n%s" % [p.money, p.name]
 	stomach.value = p.stomach
 	var current_gas: float = float(p.get("gas", 0.0))
@@ -169,7 +191,7 @@ func _process(delta: float) -> void:
 		gas_label.text = "GAS: %d%% • ABOUT TO POP! [F] VENT" % gas_percent
 	else:
 		gas_label.text = "GAS: %d%% • [F] VENT" % gas_percent
-	var minutes := int(ceil(Game.remaining)) / 60
+	var minutes := int(ceil(Game.remaining) / 60.0)
 	var seconds := int(ceil(Game.remaining)) % 60
 	phase_label.text = "%s • GRADE %d • %02d:%02d\nJOIN %s • %d classes / %d parts" % [Game.phase.to_upper(), Game.grade, minutes, seconds, Net.join_code, Game.survived, Game.rocket_parts]
 	if Game.phase in ["lobby", "game_over"]:
@@ -204,11 +226,25 @@ func _process(delta: float) -> void:
 		vending_status.text = "Balance: ₿%d • Grade %d • Purchases fall into the tray" % [p.money, Game.grade]
 		if not p.alive or Game.phase == "class": close_vending()
 
+func trigger_wasted() -> void:
+	wasted_timer = 1.6
+	if is_instance_valid(wasted_container):
+		wasted_container.visible = true
+		wasted_container.modulate.a = 1.0
+
+func reset_wasted() -> void:
+	wasted_timer = 0.0
+	if is_instance_valid(wasted_container):
+		wasted_container.visible = false
+	if is_instance_valid(death_filter):
+		death_filter.visible = false
+
 func show_banner(text: String) -> void:
 	banner.text = text
 	banner_left = Game.config.banner_seconds
 
 func on_effect(kind: String, data: Dictionary) -> void:
 	if kind == "vending" and data.id == multiplayer.get_unique_id(): open_vending(data.get("machine", "vending"))
+	if kind == "killed" and data.id == multiplayer.get_unique_id(): trigger_wasted()
 	if kind in ["hurt", "splat"] and data.id == multiplayer.get_unique_id():
 		tint.color.a = Game.config.splat_flash_alpha if kind == "splat" else Game.config.hurt_flash_alpha

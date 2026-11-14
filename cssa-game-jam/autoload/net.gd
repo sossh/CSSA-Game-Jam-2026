@@ -103,8 +103,8 @@ func respond_to_discovery() -> void:
 	for _packet in range(mini(discovery_listener.get_available_packet_count(), 32)):
 		if discovery_listener.get_packet() != DISCOVERY_REQUEST.to_utf8_buffer(): continue
 		var address := discovery_listener.get_packet_ip()
-		var port := discovery_listener.get_packet_port()
-		if discovery_listener.set_dest_address(address, port) == OK:
+		var sender_port := discovery_listener.get_packet_port()
+		if discovery_listener.set_dest_address(address, sender_port) == OK:
 			discovery_listener.put_packet((DISCOVERY_RESPONSE + player_name).to_utf8_buffer())
 
 func poll_lan_scan() -> void:
@@ -145,7 +145,7 @@ func disconnect_session(message: String = "") -> void:
 	closing = false
 	disconnected.emit(message)
 
-static func clean_name(value: String) -> String:
+func clean_name(value: String) -> String:
 	var result := value.strip_edges().replace("\n", " ").left(20)
 	return "Transfer student" if result.is_empty() else result
 

@@ -100,7 +100,6 @@ func _physics_process(delta: float) -> void:
 
 func _process_client_interpolation(delta: float) -> void:
 	var lerp_speed := minf(1.0, delta * 15.0)
-	var prev_pos := global_position
 	global_position = global_position.lerp(destination, lerp_speed)
 	rotation.y = lerp_angle(rotation.y, desired_yaw, lerp_speed)
 	if global_position.distance_to(destination) > 0.1 and current_anim == "idle":
@@ -306,8 +305,8 @@ func fire() -> void:
 	Game.event.rpc("sound", {"position": origin, "key": "shotgun", "loudness": tuning.shotgun_volume})
 	
 	# Host raycast prevents shots through walls
-	var collision_mask := 1 | 2 | 8
-	var ray := PhysicsRayQueryParameters3D.create(origin, origin + direction * tuning.shotgun_range, collision_mask, [get_rid()])
+	var ray_mask := 1 | 2 | 8
+	var ray := PhysicsRayQueryParameters3D.create(origin, origin + direction * tuning.shotgun_range, ray_mask, [get_rid()])
 	var hit := get_world_3d().direct_space_state.intersect_ray(ray)
 	
 	if not hit.is_empty():

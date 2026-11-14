@@ -58,10 +58,10 @@ func _ready() -> void:
 		seat_positions.append(desk.get_node("SitPoint").global_position)
 		for marker: Marker3D in desk.get_node("LootSpawns").get_children():
 			spawn_positions.append(marker.global_position)
-		var obstacle = desk.get_node("NavigationObstacle")
-		mark_obstacle(to_local(obstacle.global_position), obstacle.half_extents)
-	var obstacle = $TeacherDesk/NavigationObstacle
-	mark_obstacle(to_local(obstacle.global_position), obstacle.half_extents)
+		var desk_obstacle = desk.get_node("NavigationObstacle")
+		mark_obstacle(to_local(desk_obstacle.global_position), desk_obstacle.half_extents)
+	var teacher_obstacle = $TeacherDesk/NavigationObstacle
+	mark_obstacle(to_local(teacher_obstacle.global_position), teacher_obstacle.half_extents)
 	for decor_obstacle in $Decor.find_children("NavigationObstacle", "Marker3D", true, false):
 		mark_obstacle(to_local(decor_obstacle.global_position), decor_obstacle.half_extents)
 	spawn_positions.append($TeacherDesk/LootSpawn.global_position)
@@ -76,7 +76,7 @@ func _ready() -> void:
 
 func mark_obstacle(pos: Vector3, half_size: Vector2) -> void:
 	for cell in grid.region.size.x * grid.region.size.y:
-		var id := Vector2i(grid.region.position.x + cell % grid.region.size.x, grid.region.position.y + cell / grid.region.size.x)
+		var id := Vector2i(grid.region.position.x + cell % grid.region.size.x, grid.region.position.y + int(cell / float(grid.region.size.x)))
 		var point := Vector2(id) * 0.5
 		if absf(point.x - pos.x) < half_size.x and absf(point.y - pos.z) < half_size.y: grid.set_point_solid(id)
 
@@ -107,7 +107,7 @@ func _physics_process(_delta: float) -> void:
 	if Game.is_host(): update_food_drops()
 	var closed := Game.phase == "class"
 	door.global_position = $Room/DoorClosedPoint.global_position if closed else $Room/DoorOpenPoint.global_position
-	clock.text = "%02d:%02d" % [int(Game.remaining) / 60, int(Game.remaining) % 60]
+	clock.text = "%02d:%02d" % [int(Game.remaining / 60.0), int(Game.remaining) % 60]
 
 func update_food_drops() -> void:
 	if Game.phase not in ["preparation", "class"]:
@@ -119,17 +119,17 @@ func update_food_drops() -> void:
 	next_food_drop = Game.elapsed + randf_range(Game.config.food_drop_min_seconds, Game.config.food_drop_max_seconds)
 	if items.size() >= Game.config.max_loose_items: return
 	# Drop just above a random living player's head so it is always visible nearby.
-	var targets: Array = []
+	var player_targets: Array = []
 	for id in player_nodes:
-		if Game.players.has(id) and Game.players[id].alive: targets.append(player_nodes[id])
+		if Game.players.has(id) and Game.players[id].alive: player_targets.append(player_nodes[id])
 	var point: Vector3
-	if targets.is_empty():
+	if player_targets.is_empty():
 		var points := $FoodDrops.get_children()
 		point = points[randi() % points.size()].global_position
 		var scatter := Game.config.food_drop_marker_scatter
 		point += Vector3(randf_range(-scatter, scatter), 0, randf_range(-scatter, scatter))
 	else:
-		var target: Node3D = targets[randi() % targets.size()]
+		var target: Node3D = player_targets[randi() % player_targets.size()]
 		# Scatter snacks in front of or behind the player.
 		var forward := -target.global_basis.z
 		forward.y = 0
@@ -215,7 +215,7 @@ func reconcile(state: Dictionary) -> void:
 func prepare_class() -> void:
 	for id in items.keys():
 		var item = items[id]
-		if item.holder == 0 and (item.kid or items.size() > Game.config.max_loose_items / 2): remove_item(id)
+		if item.holder == 0 and (item.kid or items.size() > int(Game.config.max_loose_items / 2.0)): remove_item(id)
 	var npc_spawned := 0
 	for seat in range(seat_positions.size() - 1, -1, -1):
 		if npc_spawned >= Game.config.npc_count: break
@@ -227,7 +227,7 @@ func prepare_class() -> void:
 	for i in range(count):
 		if items.size() >= Game.config.max_loose_items: break
 		var point: Vector3 = spawn_positions[i % spawn_positions.size()]
-		var height := Game.config.prep_loot_base_height + (i / spawn_positions.size()) * Game.config.prep_loot_stack_height
+		var height := Game.config.prep_loot_base_height + int(i / float(spawn_positions.size())) * Game.config.prep_loot_stack_height
 		point += Vector3(randf_range(-scatter.x, scatter.x), height, randf_range(-scatter.y, scatter.y))
 		spawn_item(ItemDB.random_item(Game.grade, i < count - Game.config.mixed_loot_spawns), point)
 	spawn_item("drug", $Hallway/StarterSpawns/Drug.global_position)

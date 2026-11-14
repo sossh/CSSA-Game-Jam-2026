@@ -2,6 +2,7 @@ class_name State
 extends Node
 
 # Emit this when you want the StateMachine to swap to a different state
+@warning_ignore("unused_signal")
 signal state_transition(state: State, new_state_name: String)
 
 # Called exactly once when the state machine enters this state. 

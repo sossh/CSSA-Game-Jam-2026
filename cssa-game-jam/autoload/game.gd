@@ -332,6 +332,7 @@ func kill(id: int, reason: String, impulse: Vector3 = Vector3.ZERO) -> void:
 	p.launch = impulse
 	p.epoch += 1
 	world.spawn_corpse(id, impulse)
+	event.rpc("killed", {"id": id, "reason": reason})
 	event.rpc("banner", {"text": "%s %s." % [p.name, reason]})
 	check_wipe()
 
@@ -404,7 +405,7 @@ func log_activity(text: String) -> void:
 	if is_host(): event.rpc("activity", {"text": text, "time": elapsed})
 
 func append_activity(text: String, time: float) -> void:
-	var line := "[%02d:%02d] %s" % [int(time) / 60, int(time) % 60, text]
+	var line := "[%02d:%02d] %s" % [int(time / 60.0), int(time) % 60, text]
 	activity_history.append(line)
 	while activity_history.size() > config.activity_limit: activity_history.remove_at(0)
 	activity_added.emit(line)

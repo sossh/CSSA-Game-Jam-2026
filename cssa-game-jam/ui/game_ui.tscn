@@ -3,6 +3,13 @@
 [ext_resource type="Script" uid="uid://cwsrc05ernper" path="res://ui/game_ui.gd" id="1"]
 [ext_resource type="PackedScene" path="res://ui/vending_entry.tscn" id="2"]
 [ext_resource type="PackedScene" path="res://ui/event_feed.tscn" id="3"]
+[ext_resource type="Shader" path="res://ui/death_filter.gdshader" id="4_death_shader"]
+
+[sub_resource type="ShaderMaterial" id="DeathFilterMat"]
+shader = ExtResource("4_death_shader")
+shader_parameter/desaturation = 0.92
+shader_parameter/tint_color = Color(0.48, 0.52, 0.6, 1)
+shader_parameter/vignette_strength = 0.75
 
 [sub_resource type="StyleBoxFlat" id="PanelStyle"]
 content_margin_left = 24.0
@@ -256,6 +263,18 @@ Shift sprint • G fart • Tab scoreboard • Esc menu"
 custom_minimum_size = Vector2(0, 42)
 layout_mode = 2
 text = "QUIT"
+
+[node name="DeathFilter" type="ColorRect" parent="Root"]
+unique_name_in_owner = true
+visible = false
+material = SubResource("DeathFilterMat")
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 2
 
 [node name="HUD" type="Control" parent="Root" unique_id=1650783509]
 unique_name_in_owner = true
@@ -605,6 +624,46 @@ grow_horizontal = 2
 grow_vertical = 2
 mouse_filter = 2
 color = Color(1, 0.05, 0, 0)
+
+[node name="WastedContainer" type="CenterContainer" parent="Root"]
+unique_name_in_owner = true
+visible = false
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 2
+
+[node name="WastedVBox" type="VBoxContainer" parent="Root/WastedContainer"]
+layout_mode = 2
+mouse_filter = 2
+theme_override_constants/separation = 12
+
+[node name="WastedLabel" type="Label" parent="Root/WastedContainer/WastedVBox"]
+unique_name_in_owner = true
+layout_mode = 2
+theme_override_colors/font_color = Color(0.92, 0.12, 0.12, 1)
+theme_override_colors/font_shadow_color = Color(0.3, 0, 0, 0.9)
+theme_override_colors/font_outline_color = Color(0, 0, 0, 1)
+theme_override_constants/shadow_offset_y = 6
+theme_override_constants/outline_size = 18
+theme_override_font_sizes/font_size = 88
+text = "WASTED"
+horizontal_alignment = 1
+
+[node name="WastedSubtitle" type="Label" parent="Root/WastedContainer/WastedVBox"]
+unique_name_in_owner = true
+layout_mode = 2
+theme_override_colors/font_color = Color(0.85, 0.88, 0.95, 0.9)
+theme_override_colors/font_shadow_color = Color(0, 0, 0, 0.8)
+theme_override_colors/font_outline_color = Color(0, 0, 0, 1)
+theme_override_constants/shadow_offset_y = 3
+theme_override_constants/outline_size = 8
+theme_override_font_sizes/font_size = 22
+text = "SPECTATING • RE-CLONE AT THE BELL"
+horizontal_alignment = 1
 
 [node name="Pause" type="PanelContainer" parent="Root" unique_id=1974177496]
 unique_name_in_owner = true
