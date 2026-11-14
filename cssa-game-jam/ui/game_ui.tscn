@@ -9,12 +9,12 @@
 [ext_resource type="Texture2D" uid="uid://btf5717nm1wrx" path="res://assets/ui/gas.png" id="6"]
 [ext_resource type="Theme" path="res://ui/menu_theme.tres" id="8_theme"]
 [ext_resource type="Shader" path="res://ui/helmet_visor.gdshader" id="9_visor"]
-
-[sub_resource type="ShaderMaterial" id="HelmetVisorMaterial"]
-shader = ExtResource("9_visor")
 [ext_resource type="VideoStream" uid="uid://n0dbsf6opxp2" path="res://videos/title.ogv" id="9_title_video"]
 [ext_resource type="Texture2D" uid="uid://bltejex8383tc" path="res://logo/munchtitle.002.png" id="10_logo"]
 [ext_resource type="AudioStream" uid="uid://daotf6ojmnxte" path="res://music/sprach.ogg" id="11_menu_music"]
+
+[sub_resource type="ShaderMaterial" id="HelmetVisorMaterial"]
+shader = ExtResource("9_visor")
 
 [sub_resource type="StyleBoxFlat" id="HudBottomConsole"]
 content_margin_left = 14.0
