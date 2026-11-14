@@ -8,7 +8,7 @@ import tempfile
 import time
 
 project = pathlib.Path(__file__).resolve().parents[1]
-base = [os.environ.get("GODOT_BIN", "godot"), "--headless", "--path", str(project), "--", "--network-test", "--skip-intro", "--quit-after=35"]
+base = [os.environ.get("GODOT_BIN", "godot"), "--verbose", "--headless", "--path", str(project), "--", "--network-test", "--skip-intro", "--quit-after=35"]
 with socket.socket(socket.AF_INET, socket.SOCK_DGRAM) as reservation:
     reservation.bind(("127.0.0.1", 0))
     base.append(f"--port={reservation.getsockname()[1]}")

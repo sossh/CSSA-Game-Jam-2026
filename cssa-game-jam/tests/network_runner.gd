@@ -79,9 +79,9 @@ func run_host() -> void:
 		await wait(0.1)
 	verify(Game.players.size() == 5 and Game.world.player_nodes.size() == 5, "Disconnect removes roster and player body")
 	for attempt in range(50):
-		if Game.phase == "preparation": break
+		if Game.phase == "class": break
 		await wait(0.1)
-	verify(Game.phase == "preparation", "Break timer advances to next preparation")
+	verify(Game.phase == "class", "Break timer advances to next class")
 	print("NETWORK_HOST_", "FAILED" if failed else "PASSED")
 	await wait(0.5)
 	get_tree().quit(1 if failed else 0)

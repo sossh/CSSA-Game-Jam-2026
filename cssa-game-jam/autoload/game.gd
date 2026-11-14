@@ -27,12 +27,14 @@ var snapshot_sequence: int = 0
 var receiving_sequence: int = -1
 var received_chunks: Dictionary = {}
 var next_npc_noise_at: float = 0.0
+var warning_bell_fired: bool = false
 
 func is_host() -> bool:
 	return Net.active and multiplayer.is_server()
 
 func reset() -> void:
 	activity_history.clear()
+	warning_bell_fired = false
 	players.clear()
 	phase = "menu"
 	remaining = 0
@@ -51,11 +53,16 @@ func _physics_process(delta: float) -> void:
 	elapsed += delta
 	if phase in ["preparation", "class", "break"]:
 		remaining = maxf(0.0, remaining - delta)
+		var phase_dur: float = config.break_seconds if phase == "break" else config.preparation_seconds
+		if phase in ["preparation", "break"] and not warning_bell_fired and phase_dur > config.warning_bell_seconds and remaining <= config.warning_bell_seconds and remaining > 0.0:
+			warning_bell_fired = true
+			event.rpc("sound", {"position": world.bell_origin.global_position, "key": "bell", "loudness": config.bell_volume})
+			event.rpc("banner", {"text": "WARNING BELL • %d seconds to take your seats!" % int(config.warning_bell_seconds)})
 		if remaining <= 0:
 			match phase:
 				"preparation": start_class()
 				"class": start_break()
-				"break": start_preparation()
+				"break": start_class()
 	for id in players.keys():
 		var p: Dictionary = players[id]
 		if not p.alive: continue
@@ -257,6 +264,7 @@ func start_run() -> void:
 func start_preparation() -> void:
 	phase = "preparation"
 	remaining = config.preparation_seconds
+	warning_bell_fired = false
 	world.prepare_class()
 	for id in players: players[id].food = 0.0
 	event.rpc("banner", {"text": "GRADE %d • Drug the coffee. Find food. Take a seat." % grade})
@@ -265,6 +273,7 @@ func start_preparation() -> void:
 func start_class() -> void:
 	phase = "class"
 	remaining = config.class_seconds
+	warning_bell_fired = false
 	next_npc_noise_at = elapsed + randf_range(config.npc_first_noise_delay.x, config.npc_first_noise_delay.y)
 	world.teacher.start_class()
 	event.rpc("sound", {"position": world.bell_origin.global_position, "key": "bell", "loudness": config.bell_volume})
@@ -279,12 +288,15 @@ func start_break() -> void:
 	survived += 1
 	phase = "break"
 	remaining = config.break_seconds
+	warning_bell_fired = false
 	next_npc_noise_at = 0.0
 	world.teacher.leave()
 	world.teacher.drugs = 0
+	world.prepare_class()
 	for id in players:
 		var p: Dictionary = players[id]
 		p.money += config.attendance_allowance + int(p.food * config.bitcoin_per_food)
+		p.food = 0.0
 		if not p.alive:
 			p.money -= config.cloning_fee
 			respawn(id)

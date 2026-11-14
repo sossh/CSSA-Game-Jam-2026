@@ -205,6 +205,8 @@ func _process(delta: float) -> void:
 				prompt.text = "[E] Stand • [SPACE] Stand • [RMB] Eat • [LMB] Throw"
 			elif player.target_id == "seat:" + str(p.seat):
 				prompt.text = "[E] Stand up • [RMB] Eat • [LMB] Throw"
+		elif p.alive and player.interaction_text == "" and Game.phase in ["break", "preparation"] and Game.remaining <= Game.config.warning_bell_seconds and Game.remaining > 0.0:
+			prompt.text = "WARNING BELL! Get to your chair! [%02d]" % int(ceil(Game.remaining))
 		charge.visible = player.charge >= 0
 		charge.value = player.charge
 	held_label.text = "EMPTY HAND • [LMB] Punch • [E] Grab"
