@@ -9,7 +9,7 @@ extends Resource
 
 @export_group("Stomach")
 @export var stomach_max: float = 100.0
-@export var hunger_per_second: float = 0.70
+@export var hunger_per_second: float = 1.40
 @export var hunger_per_grade: float = 0.06
 @export var growl_stomach_threshold: float = 25.0
 @export var growl_interval: Vector2 = Vector2(10, 18)
