@@ -45,6 +45,8 @@ func _ready() -> void:
 		$AmbiancePlayer.stream = Sfx.config.classroom_ambiance
 		$AmbiancePlayer.volume_db = Sfx.config.classroom_ambiance_db
 		$AmbiancePlayer.play()
+	if DisplayServer.get_name() != "headless":
+		Sfx.stream_for_event("mogging") # warm the cache so the first sting does not hitch
 	grid = AStarGrid2D.new()
 	grid.region = Rect2i(-16, -18, 33, 34)
 	grid.cell_size = Vector2(0.5, 0.5)
@@ -315,6 +317,20 @@ func interact(id: int, target: String) -> void:
 	p.violation_until = Game.elapsed + Game.config.interactions.pickup_violation_seconds
 	NoiseBus.emit_noise(p.position, Game.config.interactions.pickup_loudness, str(id), "pickup")
 
+## Non-positional victory sting. Ducks the room ambiance while it plays; silent without a clip.
+func play_mogging() -> void:
+	if DisplayServer.get_name() == "headless" or $MoggingPlayer.playing: return
+	var stream := Sfx.stream_for_event("mogging")
+	if stream == null: return
+	$MoggingPlayer.stream = stream
+	$MoggingPlayer.play()
+	var ambiance: AudioStreamPlayer = $AmbiancePlayer
+	var base_db := Sfx.config.classroom_ambiance_db
+	var tween := create_tween()
+	tween.tween_property(ambiance, "volume_db", base_db - 10.0, 0.2)
+	tween.tween_interval(maxf(stream.get_length() - 0.2, 0.0))
+	tween.tween_property(ambiance, "volume_db", base_db, 0.6)
+
 func update_rocket_assembly() -> void:
 	launch_site.apply_assembly(Game.installed_rocket_parts, Game.rocket_launch_started_at, Game.elapsed)
 
@@ -327,6 +343,7 @@ func use_rocket_console(id: int) -> void:
 		Game.rocket_launch_started_at = Game.elapsed
 		update_rocket_assembly()
 		Game.event.rpc("banner", {"text": "Falcon 9 ignition. Stand clear of the launch pad!"})
+		Game.event.rpc("mogging", {})
 		return
 	var item: ClassroomItem = items.get(player.held)
 	if item == null or item.holder != id or item.item_id not in ItemDB.FALCON_STOCK:

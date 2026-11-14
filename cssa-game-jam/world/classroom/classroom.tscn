@@ -877,6 +877,9 @@ current = true
 
 [node name="AmbiancePlayer" type="AudioStreamPlayer" parent="." unique_id=1849182041]
 
+[node name="MoggingPlayer" type="AudioStreamPlayer" parent="." unique_id=1849182042]
+volume_db = -4.0
+
 [editable path="LunarLaunchSite"]
 [editable path="LunarOutpost"]
 [editable path="Room/Floor"]

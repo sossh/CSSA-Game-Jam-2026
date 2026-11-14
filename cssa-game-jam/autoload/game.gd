@@ -312,6 +312,7 @@ func start_break() -> void:
 			respawn(id)
 	grade += 1
 	event.rpc("sound", {"position": world.bell_origin.global_position, "key": "bell", "loudness": config.bell_volume})
+	event.rpc("mogging", {})
 	event.rpc("banner", {"text": "RECESS • Allowances paid. Clones cost ₿%d. Vending is open!" % config.cloning_fee})
 	print("PHASE break survived=", survived)
 
@@ -439,5 +440,7 @@ func event(kind: String, data: Dictionary) -> void:
 		"rocket_console":
 			if int(data.id) == multiplayer.get_unique_id(): announcement.emit(str(data.text))
 		"activity": append_activity(str(data.text), float(data.get("time", elapsed)))
+		"mogging":
+			if is_instance_valid(world): world.play_mogging()
 		"sound": Sfx.play_at(str(data.key), data.position, float(data.get("loudness", Sfx.config.default_playback_loudness)))
 	effect.emit(kind, data)
