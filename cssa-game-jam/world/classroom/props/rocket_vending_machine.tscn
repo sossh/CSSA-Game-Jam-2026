@@ -143,7 +143,6 @@ mesh = SubResource("BadgeFace")
 [node name="Falcon" type="Label3D" parent="MissionBadge"]
 position = Vector3(0, 0.14, -0.098)
 rotation = Vector3(0, 3.1415927, 0)
-render_priority = 1
 pixel_size = 0.006
 font_size = 33
 outline_size = 0
@@ -152,7 +151,6 @@ text = "FALCON"
 [node name="Nine" type="Label3D" parent="MissionBadge"]
 position = Vector3(0, -0.13, -0.098)
 rotation = Vector3(0, 3.1415927, 0)
-render_priority = 1
 pixel_size = 0.006
 font_size = 60
 outline_size = 0

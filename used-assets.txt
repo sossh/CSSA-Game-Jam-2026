@@ -41,6 +41,3 @@ https://github.com/spothq/cryptocurrency-icons
 
 Jersey 25 Font (cssa-game-jam/fonts/Jersey_25/Jersey25-Regular.ttf) by The Soft Type Project Authors, SIL Open Font License 1.1.
 https://github.com/scfried/soft-type-jersey
-
-Soft Toon by Francisco Cidade (fcidade.com, fcidade.itch.io), CC0 1.0 Universal (Public Domain).
-Shaders integrated in cssa-game-jam/shaders/ (soft_toon.gdshader, soft_toon_outline.gdshader, soft_toon_screen.gdshader) and effects/toon_screen_pass.tscn for full-scene cel shading, comic ink line silhouettes and creases.

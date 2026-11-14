@@ -31,7 +31,6 @@ cast_shadow = 0
 
 [node name="Title" type="Label3D" parent="."]
 position = Vector3(0, 1.295, 0.04)
-render_priority = 1
 pixel_size = 0.01
 font_size = 49
 outline_size = 0
@@ -40,7 +39,6 @@ text = "SPACE TRAVEL TO EARTH"
 
 [node name="Caption1" type="Label3D" parent="."]
 position = Vector3(-2.43, -1.305, 0.04)
-render_priority = 1
 pixel_size = 0.008
 font_size = 30
 outline_size = 0
@@ -49,7 +47,6 @@ text = "STAGE 1"
 
 [node name="Caption2" type="Label3D" parent="."]
 position = Vector3(-0.81, -1.305, 0.04)
-render_priority = 1
 pixel_size = 0.008
 font_size = 30
 outline_size = 0
@@ -58,7 +55,6 @@ text = "STAGE 2"
 
 [node name="Caption3" type="Label3D" parent="."]
 position = Vector3(0.81, -1.305, 0.04)
-render_priority = 1
 pixel_size = 0.008
 font_size = 30
 outline_size = 0
@@ -67,7 +63,6 @@ text = "STAGE 3"
 
 [node name="Caption4" type="Label3D" parent="."]
 position = Vector3(2.43, -1.305, 0.04)
-render_priority = 1
 pixel_size = 0.008
 font_size = 30
 outline_size = 0

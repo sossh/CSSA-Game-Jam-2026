@@ -41,8 +41,6 @@ func _ready() -> void:
 	visual.visible = not local
 	camera.current = local
 	base_fov = camera.fov
-	if has_node("Head/Camera/ToonScreenPass"):
-		$Head/Camera/ToonScreenPass.visible = local
 	if local:
 		audio_listener.make_current()
 	name_label.text = str(Game.players[peer_id].name)
