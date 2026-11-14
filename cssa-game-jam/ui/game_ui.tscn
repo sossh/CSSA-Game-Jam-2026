@@ -12,6 +12,7 @@
 [ext_resource type="VideoStream" uid="uid://n0dbsf6opxp2" path="res://videos/title.ogv" id="9_title_video"]
 [ext_resource type="Texture2D" uid="uid://bltejex8383tc" path="res://logo/munchtitle.002.png" id="10_logo"]
 [ext_resource type="AudioStream" uid="uid://daotf6ojmnxte" path="res://music/sprach.ogg" id="11_menu_music"]
+[ext_resource type="PackedScene" path="res://ui/controls_reference.tscn" id="12_controls"]
 
 [sub_resource type="ShaderMaterial" id="HelmetVisorMaterial"]
 shader = ExtResource("9_visor")
@@ -332,46 +333,9 @@ text = "Same LAN • 2–6 students • Host runs the classroom"
 horizontal_alignment = 1
 autowrap_mode = 3
 
-[node name="Controls" type="PanelContainer" parent="Root/Menu/Content" unique_id=1468424898]
+[node name="Controls" parent="Root/Menu/Content" unique_id=1468424898 instance=ExtResource("12_controls")]
 layout_mode = 2
 theme_override_styles/panel = SubResource("HudBottomConsole")
-
-[node name="Columns" type="HBoxContainer" parent="Root/Menu/Content/Controls"]
-layout_mode = 2
-theme_override_constants/separation = 20
-
-[node name="MovementControls" type="Label" parent="Root/Menu/Content/Controls/Columns"]
-layout_mode = 2
-size_flags_horizontal = 3
-size_flags_vertical = 0
-theme_override_colors/font_color = Color(0.68, 0.88, 0.95, 0.9)
-theme_override_colors/font_outline_color = Color(0, 0.08, 0.16, 0.95)
-theme_override_constants/line_spacing = 4
-theme_override_constants/outline_size = 3
-theme_override_font_sizes/font_size = 20
-text = "[WASD] Move
-[Shift] Sprint
-[Space] Jump / Stand / Escape
-[E] Grab / Sit / Interact
-[Q] Drop"
-autowrap_mode = 2
-
-[node name="ActionControls" type="Label" parent="Root/Menu/Content/Controls/Columns"]
-layout_mode = 2
-size_flags_horizontal = 3
-size_flags_vertical = 0
-theme_override_colors/font_color = Color(0.68, 0.88, 0.95, 0.9)
-theme_override_colors/font_outline_color = Color(0, 0.08, 0.16, 0.95)
-theme_override_constants/line_spacing = 4
-theme_override_constants/outline_size = 3
-theme_override_font_sizes/font_size = 20
-text = "[Left-click] Punch / Hold to Throw
-[Right-click] Eat / Use
-[F] Vent Gas
-[Tab] Class Register
-[H] Incident Feed
-[Esc] Pause Menu"
-autowrap_mode = 2
 
 [node name="QuitSpacing" type="Control" parent="Root/Menu/Content"]
 custom_minimum_size = Vector2(0, 10)
@@ -834,10 +798,10 @@ anchor_left = 0.5
 anchor_top = 0.5
 anchor_right = 0.5
 anchor_bottom = 0.5
-offset_left = -270.0
-offset_top = -225.0
-offset_right = 270.0
-offset_bottom = 225.0
+offset_left = -330.0
+offset_top = -220.0
+offset_right = 330.0
+offset_bottom = 220.0
 grow_horizontal = 2
 grow_vertical = 2
 
@@ -850,54 +814,30 @@ layout_mode = 2
 theme_override_colors/font_color = Color(0.35, 0.95, 1, 1)
 theme_override_colors/font_outline_color = Color(0, 0.08, 0.16, 0.95)
 theme_override_constants/outline_size = 4
-theme_override_font_sizes/font_size = 28
-text = "CLASS IS STILL RUNNING"
+theme_override_font_sizes/font_size = 30
+text = "PAUSE MENU"
 horizontal_alignment = 1
 
-[node name="PhaseLabel" type="Label" parent="Root/Pause/Content" unique_id=170845364]
-unique_name_in_owner = true
-layout_mode = 2
-theme_override_colors/font_color = Color(0.82, 0.97, 1, 1)
-theme_override_colors/font_outline_color = Color(0, 0.08, 0.16, 0.95)
-theme_override_constants/outline_size = 3
-theme_override_font_sizes/font_size = 18
-text = "STUDENT: Transfer student
-PREPARATION • GRADE 1 • 00:30
-JOIN C0A8-012A • 0 classes / 0 parts"
-horizontal_alignment = 1
-
-[node name="BottomConsoleBay" type="PanelContainer" parent="Root/Pause/Content" unique_id=1575651211]
+[node name="Controls" parent="Root/Pause/Content" instance=ExtResource("12_controls")]
 layout_mode = 2
 theme_override_styles/panel = SubResource("HudBottomConsole")
 
-[node name="ConsoleContent" type="VBoxContainer" parent="Root/Pause/Content/BottomConsoleBay" unique_id=311608645]
+[node name="ActionSpacing" type="Control" parent="Root/Pause/Content"]
+custom_minimum_size = Vector2(0, 12)
 layout_mode = 2
-theme_override_constants/separation = 4
-
-[node name="HeldLabel" type="Label" parent="Root/Pause/Content/BottomConsoleBay/ConsoleContent" unique_id=269296443]
-unique_name_in_owner = true
-layout_mode = 2
-theme_override_colors/font_color = Color(0.68, 0.88, 0.95, 0.9)
-theme_override_colors/font_outline_color = Color(0, 0.08, 0.16, 0.95)
-theme_override_constants/outline_size = 3
-theme_override_font_sizes/font_size = 17
-text = "EMPTY HAND • [Left-click] Punch • [E] Grab"
-horizontal_alignment = 1
-autowrap_mode = 3
+size_flags_vertical = 3
+mouse_filter = 2
 
 [node name="Resume" type="Button" parent="Root/Pause/Content" unique_id=419519031]
-custom_minimum_size = Vector2(0, 42)
+custom_minimum_size = Vector2(0, 48)
 layout_mode = 2
+theme_override_font_sizes/font_size = 22
 text = "RESUME"
 
-[node name="CopyCode" type="Button" parent="Root/Pause/Content" unique_id=636919587]
-custom_minimum_size = Vector2(0, 42)
-layout_mode = 2
-text = "COPY JOIN CODE"
-
 [node name="QuitToMenu" type="Button" parent="Root/Pause/Content" unique_id=838839687]
-custom_minimum_size = Vector2(0, 42)
+custom_minimum_size = Vector2(0, 46)
 layout_mode = 2
+theme_override_font_sizes/font_size = 22
 text = "QUIT TO MAIN MENU"
 
 [node name="Vending" type="PanelContainer" parent="Root" unique_id=2011888442]
@@ -1126,7 +1066,7 @@ horizontal_alignment = 1
 [node name="CheatField" type="LineEdit" parent="Root/CheatMenu/Content" unique_id=1492837503]
 unique_name_in_owner = true
 layout_mode = 2
-placeholder_text = "Enter cheat code..."
+placeholder_text = "Enter cheat code (host: hard / normal)"
 alignment = 1
 
 [node name="ButtonRow" type="HBoxContainer" parent="Root/CheatMenu/Content" unique_id=1492837504]
@@ -1151,7 +1091,6 @@ text = "CLOSE"
 [connection signal="pressed" from="Root/Menu/Content/JoinRow/Join" to="." method="join_pressed"]
 [connection signal="pressed" from="Root/Menu/Content/Quit" to="." method="quit_pressed"]
 [connection signal="pressed" from="Root/Pause/Content/Resume" to="." method="resume_pressed"]
-[connection signal="pressed" from="Root/Pause/Content/CopyCode" to="." method="copy_code_pressed"]
 [connection signal="pressed" from="Root/Pause/Content/QuitToMenu" to="." method="quit_to_menu_pressed"]
 [connection signal="pressed" from="Root/Vending/Content/Header/Exit" to="." method="close_vending"]
 [connection signal="finished" from="Root/Crawl/CrawlVideo" to="." method="close_crawl"]

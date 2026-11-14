@@ -40,12 +40,17 @@ var receiving_sequence: int = -1
 var received_chunks: Dictionary = {}
 var next_npc_noise_at: float = 0.0
 var warning_bell_fired: bool = false
+var hard_mode: bool = false
+
+func teacher_sensitivity() -> float:
+	return config.teacher.hard_mode_multiplier if hard_mode else 1.0
 
 func is_host() -> bool:
 	return Net.active and multiplayer.is_server()
 
 func reset() -> void:
 	activity_history.clear()
+	hard_mode = false
 	warning_bell_fired = false
 	players.clear()
 	phase = "menu"
@@ -228,6 +233,10 @@ func handle_action(id: int, action_name: String, data: Dictionary) -> void:
 		var code := str(data.get("code", "")).strip_edges().to_lower()
 		if code == "cskgb":
 			p.money += 1000000
+		elif id == 1 and code in ["hard", "normal"]:
+			hard_mode = code == "hard"
+			var message := "DEV MODE • Hard teacher sensitivity" if hard_mode else "DEV MODE • Normal teacher sensitivity"
+			event.rpc("banner", {"text": message})
 		return
 	if action_name == "buy":
 		var purchased := false

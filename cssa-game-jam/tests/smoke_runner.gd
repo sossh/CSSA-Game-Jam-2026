@@ -160,6 +160,34 @@ func run_host() -> void:
 	teacher.last_check = Game.elapsed
 	NoiseBus.emit_noise(Game.world.to_global(Vector3(0, 0, 5)), 65, str(1), "crunch")
 	verify(teacher.get_current_state_name() == "lecturestate", "Check cooldown blocks repeated low-noise turns")
+	teacher.reset_irritation()
+	teacher.suspicion = 0.0
+	teacher.sound_grace_until = Game.elapsed + 60.0
+	var walk_loudness := Game.config.player.walk_step_loudness
+	NoiseBus.emit_noise(teacher.global_position, walk_loudness, str(1), "footstep")
+	var normal_footstep_irritation: float = teacher.irritation
+	verify(normal_footstep_irritation > 0.0 and teacher.get_current_state_name() == "lecturestate", "Normal mode ignores the test footstep during grace")
+	teacher.reset_irritation()
+	Game.handle_action(client, "cheat", {"code": "hard"})
+	verify(not Game.hard_mode, "Only the host can switch difficulty")
+	Game.request("cheat", {"code": "hard"})
+	NoiseBus.emit_noise(teacher.global_position, walk_loudness, str(1), "footstep")
+	verify(is_equal_approx(teacher.irritation, normal_footstep_irritation * 4.0), "Hard mode quadruples footstep irritation")
+	verify(teacher.get_current_state_name() == "investigatestate", "Hard mode makes a footstep trigger an investigation during normal grace")
+	var previous_teacher_pose: Transform3D = teacher.global_transform
+	var previous_host_position: Vector3 = Game.players[1].position
+	var footstep_position := Game.world.to_global(Vector3(0, 0, -5))
+	Game.players[1].position = footstep_position
+	teacher.global_position = footstep_position + Vector3.BACK * 2.0
+	teacher.rotation.y = 0.0
+	NoiseBus.emit_noise(footstep_position, walk_loudness, str(1), "footstep")
+	verify(teacher.get_current_state_name() == "shootstate" and teacher.target == str(1), "Hard mode can target a visible student for a single footstep")
+	Game.players[1].position = previous_host_position
+	teacher.global_transform = previous_teacher_pose
+	Game.request("cheat", {"code": "normal"})
+	verify(not Game.hard_mode, "Normal code restores default sensitivity")
+	teacher.fsm.force_change_state("LectureState")
+	teacher.sound_grace_until = 0.0
 	var before_stomach: float = Game.players[client].stomach
 	Game.damage(client, 30, "was expelled by shotgun", Vector3(0, 5, 5))
 	verify(Game.players[client].stomach < before_stomach and Game.players[client].mode != "ragdoll", "Non-lethal shot does not ragdoll immediately")

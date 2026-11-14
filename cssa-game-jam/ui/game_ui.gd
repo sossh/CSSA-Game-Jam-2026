@@ -12,9 +12,7 @@ extends CanvasLayer
 @onready var rocket_stage_1: Node2D = %RocketStage1
 @onready var rocket_stage_2: Node2D = %RocketStage2
 @onready var rocket_stage_3: Node2D = %RocketStage3
-@onready var phase_label: Label = %PhaseLabel
 @onready var prompt: Label = %Prompt
-@onready var held_label: Label = %HeldLabel
 @onready var banner: RichTextLabel = %Banner
 @onready var stomach: ProgressBar = %Stomach
 @onready var gas_bar: ProgressBar = %Gas
@@ -68,9 +66,6 @@ func quit_pressed() -> void:
 func resume_pressed() -> void:
 	pause_panel.hide()
 	update_mouse()
-
-func copy_code_pressed() -> void:
-	DisplayServer.clipboard_set(Net.join_code)
 
 func quit_to_menu_pressed() -> void:
 	Net.disconnect_session()
@@ -151,6 +146,8 @@ func submit_cheat_pressed(_text: String = "") -> void:
 		var id := multiplayer.get_unique_id()
 		if not Game.is_host() and Game.players.has(id):
 			Game.players[id].money += 1000000
+		Game.request("cheat", {"code": code})
+	elif Game.is_host() and code in ["hard", "normal"]:
 		Game.request("cheat", {"code": code})
 	close_cheat_menu()
 
@@ -246,11 +243,7 @@ func _process(delta: float) -> void:
 	stomach.value = p.stomach
 	var current_gas: float = float(p.get("gas", 0.0))
 	gas_bar.value = current_gas
-	var clock_text := Game.clock_text
-	game_clock.text = clock_text
-	phase_label.text = "STUDENT: %s\n%s • GRADE %d • %s\nJOIN %s • %d classes / %d parts" % [p.name, Game.phase.to_upper(), Game.grade, clock_text, Net.join_code, Game.survived, Game.rocket_parts]
-	if Game.phase in ["lobby", "game_over"]:
-		phase_label.text += "\n[ENTER] Host: start new run" if Game.is_host() else "\nWaiting for host"
+	game_clock.text = Game.clock_text
 	var player = Game.world.player_nodes.get(id)
 	if is_instance_valid(player):
 		prompt.text = player.interaction_text if p.alive else "SPECTATING • Space / Ctrl fly • Re-clone at the bell"
@@ -266,12 +259,6 @@ func _process(delta: float) -> void:
 		charge.value = player.charge
 		if charge.material is ShaderMaterial:
 			charge.material.set_shader_parameter("progress", clampf(player.charge / maxf(0.001, charge.max_value), 0.0, 1.0))
-	held_label.text = "EMPTY HAND • [Left-click] Punch • [E] Grab"
-	if p.held.begins_with("player:"): held_label.text = "HOLDING YOUR FRIEND • Hold Left-click to throw • Q drop"
-	elif Game.world.items.has(p.held):
-		var item = Game.world.items[p.held]
-		held_label.text = item.display_name() + " • [Right-click] Use / eat • Hold Left-click to throw • Q drop"
-	if p.eat_until > Game.elapsed: held_label.text = "CHOMP CHOMP CHOMP…"
 	scoreboard.visible = Input.is_action_pressed("scoreboard")
 	if scoreboard.visible:
 		scoreboard.text = "CLASS REGISTER\n"

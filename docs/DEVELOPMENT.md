@@ -25,6 +25,8 @@ Host codes encode IPv4 only. Normal play uses UDP **7777** for gameplay and UDP 
 | Enter in lobby/game over | Host starts a new run |
 | Space / Ctrl when dead | Fly up/down while spectating |
 
+The host can open the Dev Cheat Console with the backtick key and enter `hard` or `normal`. Hard multiplies teacher hearing and irritation gains by four and skips the class-start sound grace period. The setting lasts for the hosted session. Tune the multiplier in `config/teacher_config.tres`.
+
 ## Implemented loop and decisions
 
 - Host-authoritative teacher, object physics, NPCs, economy, health, seats, ownership and phases. Player movement and six-body jointed ragdolls are simulated by the owning peer for responsiveness.

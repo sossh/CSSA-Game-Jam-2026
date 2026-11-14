@@ -17,6 +17,8 @@ extends Resource
 @export var suspicion_after_check_scale: float = 0.5
 
 @export_group("Hearing")
+@export_range(1.0, 10.0, 0.1) var hard_mode_multiplier: float = 4.0
+@export var hard_mode_reaction_loudness: float = 3.5
 @export var hearing_threshold: float = 65.0
 @export var coffee_hearing_scale: float = 0.28
 @export var lecture_hearing_scale: float = 0.35

@@ -230,9 +230,10 @@ func hear(at: Vector3, loudness: float, source: String, kind: String) -> void:
 		return
 
 	var tuning := Game.config.teacher
-	if Game.elapsed < sound_grace_until:
+	if not Game.hard_mode and Game.elapsed < sound_grace_until:
 		if loudness < tuning.lecture_extreme_loudness:
 			return
+	loudness *= Game.teacher_sensitivity()
 
 	var multiplier := 1.0
 	if current == "coffeestate":
@@ -252,19 +253,22 @@ func hear(at: Vector3, loudness: float, source: String, kind: String) -> void:
 	target = choose_blame(at, source)
 	
 	var check_cooldown_met := (Game.elapsed - last_check >= tuning.check_cooldown)
+	var hard_mode_reaction := Game.hard_mode and perceived >= tuning.hard_mode_reaction_loudness
 	
 	# If in lecture with back turned, don't blind snap-shoot behind back unless catastrophic explosion
 	if current == "lecturestate":
-		if loudness >= tuning.lecture_extreme_loudness and perceived >= tuning.hearing_threshold * tuning.lecture_hearing_scale:
+		if hard_mode_reaction:
+			fsm.force_change_state("InvestigateState")
+		elif loudness >= tuning.lecture_extreme_loudness and perceived >= tuning.hearing_threshold * tuning.lecture_hearing_scale:
 			fsm.force_change_state("InvestigateState")
 		elif suspicion >= tuning.warning_suspicion and check_cooldown_met:
 			fsm.force_change_state("WarningState")
 		elif suspicion >= tuning.lecture_investigate_suspicion or perceived >= tuning.lecture_investigate_loudness:
 			fsm.force_change_state("InvestigateState")
-	elif perceived >= tuning.hearing_threshold or suspicion >= tuning.catch_suspicion:
+	elif hard_mode_reaction or perceived >= tuning.hearing_threshold or suspicion >= tuning.catch_suspicion:
 		if target != "" and can_see(target):
 			catch_target(target)
-		else: 
+		elif current != "investigatestate" or not hard_mode_reaction:
 			fsm.force_change_state("InvestigateState")
 	elif suspicion >= tuning.alert_investigate_suspicion and current != "investigatestate":
 		fsm.force_change_state("InvestigateState")
@@ -278,6 +282,7 @@ func irritation_active() -> bool:
 func irritate(amount: float, reason: int, notable: bool = false) -> void:
 	if amount <= 0.0 or not irritation_active(): return
 	var tuning := Game.config.teacher
+	amount *= Game.teacher_sensitivity()
 	irritation = minf(tuning.irritation_maximum, irritation + amount)
 	if notable or amount >= tuning.irritation_notable_gain:
 		irritation_reason = reason
@@ -339,7 +344,7 @@ func _update_irritation(delta: float) -> void:
 	if not irritation_active(): return
 	var decay := tuning.irritation_decay_per_second
 	if get_current_state_name() == "coffeestate": decay *= tuning.irritation_coffee_decay_scale
-	irritation += maxf(0.0, classroom_din - tuning.irritation_din_threshold) * tuning.irritation_din_gain * delta
+	irritation += maxf(0.0, classroom_din - tuning.irritation_din_threshold) * tuning.irritation_din_gain * Game.teacher_sensitivity() * delta
 	irritation = clampf(irritation - decay * delta, 0.0, tuning.irritation_maximum)
 
 func choose_blame(at: Vector3, source: String) -> String:
