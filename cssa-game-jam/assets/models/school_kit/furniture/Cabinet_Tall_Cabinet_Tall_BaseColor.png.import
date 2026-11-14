@@ -4,8 +4,9 @@ importer="texture"
 type="CompressedTexture2D"
 uid="uid://cmqdpvsyaubaq"
 path.s3tc="res://.godot/imported/Cabinet_Tall_Cabinet_Tall_BaseColor.png-991f382eed509d6a9112833f1685d6e5.s3tc.ctex"
+path.etc2="res://.godot/imported/Cabinet_Tall_Cabinet_Tall_BaseColor.png-991f382eed509d6a9112833f1685d6e5.etc2.ctex"
 metadata={
-"imported_formats": ["s3tc_bptc"],
+"imported_formats": ["s3tc_bptc", "etc2_astc"],
 "vram_texture": true
 }
 generator_parameters={
@@ -15,7 +16,7 @@ generator_parameters={
 [deps]
 
 source_file="res://assets/models/school_kit/furniture/Cabinet_Tall_Cabinet_Tall_BaseColor.png"
-dest_files=["res://.godot/imported/Cabinet_Tall_Cabinet_Tall_BaseColor.png-991f382eed509d6a9112833f1685d6e5.s3tc.ctex"]
+dest_files=["res://.godot/imported/Cabinet_Tall_Cabinet_Tall_BaseColor.png-991f382eed509d6a9112833f1685d6e5.s3tc.ctex", "res://.godot/imported/Cabinet_Tall_Cabinet_Tall_BaseColor.png-991f382eed509d6a9112833f1685d6e5.etc2.ctex"]
 
 [params]
 

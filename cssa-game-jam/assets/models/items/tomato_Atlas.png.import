@@ -4,8 +4,9 @@ importer="texture"
 type="CompressedTexture2D"
 uid="uid://d31goro81bmnw"
 path.s3tc="res://.godot/imported/tomato_Atlas.png-585b7270c7ac9e140a202c04ef169760.s3tc.ctex"
+path.etc2="res://.godot/imported/tomato_Atlas.png-585b7270c7ac9e140a202c04ef169760.etc2.ctex"
 metadata={
-"imported_formats": ["s3tc_bptc"],
+"imported_formats": ["s3tc_bptc", "etc2_astc"],
 "vram_texture": true
 }
 generator_parameters={
@@ -15,7 +16,7 @@ generator_parameters={
 [deps]
 
 source_file="res://assets/models/items/tomato_Atlas.png"
-dest_files=["res://.godot/imported/tomato_Atlas.png-585b7270c7ac9e140a202c04ef169760.s3tc.ctex"]
+dest_files=["res://.godot/imported/tomato_Atlas.png-585b7270c7ac9e140a202c04ef169760.s3tc.ctex", "res://.godot/imported/tomato_Atlas.png-585b7270c7ac9e140a202c04ef169760.etc2.ctex"]
 
 [params]
 

@@ -4,15 +4,16 @@ importer="texture"
 type="CompressedTexture2D"
 uid="uid://t3plm6d2bxv3"
 path.s3tc="res://.godot/imported/head.png-b63d44ebdf7b4f810c3f21da18f5df43.s3tc.ctex"
+path.etc2="res://.godot/imported/head.png-b63d44ebdf7b4f810c3f21da18f5df43.etc2.ctex"
 metadata={
-"imported_formats": ["s3tc_bptc"],
+"imported_formats": ["s3tc_bptc", "etc2_astc"],
 "vram_texture": true
 }
 
 [deps]
 
 source_file="res://characters/npc/assets/textures/kid1/head.png"
-dest_files=["res://.godot/imported/head.png-b63d44ebdf7b4f810c3f21da18f5df43.s3tc.ctex"]
+dest_files=["res://.godot/imported/head.png-b63d44ebdf7b4f810c3f21da18f5df43.s3tc.ctex", "res://.godot/imported/head.png-b63d44ebdf7b4f810c3f21da18f5df43.etc2.ctex"]
 
 [params]
 

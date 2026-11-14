@@ -4,15 +4,16 @@ importer="texture"
 type="CompressedTexture2D"
 uid="uid://cysepihb8s6ah"
 path.s3tc="res://.godot/imported/texture.png-f6fa15c600801e5ac017828c8e56a61f.s3tc.ctex"
+path.etc2="res://.godot/imported/texture.png-f6fa15c600801e5ac017828c8e56a61f.etc2.ctex"
 metadata={
-"imported_formats": ["s3tc_bptc"],
+"imported_formats": ["s3tc_bptc", "etc2_astc"],
 "vram_texture": true
 }
 
 [deps]
 
 source_file="res://characters/teacher/assets/texture/texture.png"
-dest_files=["res://.godot/imported/texture.png-f6fa15c600801e5ac017828c8e56a61f.s3tc.ctex"]
+dest_files=["res://.godot/imported/texture.png-f6fa15c600801e5ac017828c8e56a61f.s3tc.ctex", "res://.godot/imported/texture.png-f6fa15c600801e5ac017828c8e56a61f.etc2.ctex"]
 
 [params]
 

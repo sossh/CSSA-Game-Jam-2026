@@ -4,8 +4,9 @@ importer="texture"
 type="CompressedTexture2D"
 uid="uid://cm0mkvgfyqi0y"
 path.s3tc="res://.godot/imported/Moon_NASA_LRO_8k_Topo_Small_Moon_8k_Color_v001.jpg-ea6db3cd67b09e7876df0c5eff66262e.s3tc.ctex"
+path.etc2="res://.godot/imported/Moon_NASA_LRO_8k_Topo_Small_Moon_8k_Color_v001.jpg-ea6db3cd67b09e7876df0c5eff66262e.etc2.ctex"
 metadata={
-"imported_formats": ["s3tc_bptc"],
+"imported_formats": ["s3tc_bptc", "etc2_astc"],
 "vram_texture": true
 }
 generator_parameters={
@@ -15,7 +16,7 @@ generator_parameters={
 [deps]
 
 source_file="res://world/lunar/assets/Moon_NASA_LRO_8k_Topo_Small_Moon_8k_Color_v001.jpg"
-dest_files=["res://.godot/imported/Moon_NASA_LRO_8k_Topo_Small_Moon_8k_Color_v001.jpg-ea6db3cd67b09e7876df0c5eff66262e.s3tc.ctex"]
+dest_files=["res://.godot/imported/Moon_NASA_LRO_8k_Topo_Small_Moon_8k_Color_v001.jpg-ea6db3cd67b09e7876df0c5eff66262e.s3tc.ctex", "res://.godot/imported/Moon_NASA_LRO_8k_Topo_Small_Moon_8k_Color_v001.jpg-ea6db3cd67b09e7876df0c5eff66262e.etc2.ctex"]
 
 [params]
 

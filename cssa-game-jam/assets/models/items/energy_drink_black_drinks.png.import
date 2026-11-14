@@ -4,8 +4,9 @@ importer="texture"
 type="CompressedTexture2D"
 uid="uid://c8w052m6hvf82"
 path.s3tc="res://.godot/imported/energy_drink_black_drinks.png-4e583ba69d1082b263ebd82671089366.s3tc.ctex"
+path.etc2="res://.godot/imported/energy_drink_black_drinks.png-4e583ba69d1082b263ebd82671089366.etc2.ctex"
 metadata={
-"imported_formats": ["s3tc_bptc"],
+"imported_formats": ["s3tc_bptc", "etc2_astc"],
 "vram_texture": true
 }
 generator_parameters={
@@ -15,7 +16,7 @@ generator_parameters={
 [deps]
 
 source_file="res://assets/models/items/energy_drink_black_drinks.png"
-dest_files=["res://.godot/imported/energy_drink_black_drinks.png-4e583ba69d1082b263ebd82671089366.s3tc.ctex"]
+dest_files=["res://.godot/imported/energy_drink_black_drinks.png-4e583ba69d1082b263ebd82671089366.s3tc.ctex", "res://.godot/imported/energy_drink_black_drinks.png-4e583ba69d1082b263ebd82671089366.etc2.ctex"]
 
 [params]
 

@@ -4,15 +4,16 @@ importer="texture"
 type="CompressedTexture2D"
 uid="uid://c3g3rqhp20koi"
 path.s3tc="res://.godot/imported/space_travel_earth.png-37e58a8b6acbc6ada0a1c6b2a22dc087.s3tc.ctex"
+path.etc2="res://.godot/imported/space_travel_earth.png-37e58a8b6acbc6ada0a1c6b2a22dc087.etc2.ctex"
 metadata={
-"imported_formats": ["s3tc_bptc"],
+"imported_formats": ["s3tc_bptc", "etc2_astc"],
 "vram_texture": true
 }
 
 [deps]
 
 source_file="res://world/classroom/props/assets/space_travel_earth.png"
-dest_files=["res://.godot/imported/space_travel_earth.png-37e58a8b6acbc6ada0a1c6b2a22dc087.s3tc.ctex"]
+dest_files=["res://.godot/imported/space_travel_earth.png-37e58a8b6acbc6ada0a1c6b2a22dc087.s3tc.ctex", "res://.godot/imported/space_travel_earth.png-37e58a8b6acbc6ada0a1c6b2a22dc087.etc2.ctex"]
 
 [params]
 

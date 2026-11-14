@@ -4,15 +4,16 @@ importer="texture"
 type="CompressedTexture2D"
 uid="uid://cvy6y17ohhe8l"
 path.s3tc="res://.godot/imported/PS1Shotgun_1K_Pixels.png-4f4c7d630977174880ec6cc28e60143c.s3tc.ctex"
+path.etc2="res://.godot/imported/PS1Shotgun_1K_Pixels.png-4f4c7d630977174880ec6cc28e60143c.etc2.ctex"
 metadata={
-"imported_formats": ["s3tc_bptc"],
+"imported_formats": ["s3tc_bptc", "etc2_astc"],
 "vram_texture": true
 }
 
 [deps]
 
 source_file="res://characters/teacher/assets/shotgun/PS1Shotgun_1K_Pixels.png"
-dest_files=["res://.godot/imported/PS1Shotgun_1K_Pixels.png-4f4c7d630977174880ec6cc28e60143c.s3tc.ctex"]
+dest_files=["res://.godot/imported/PS1Shotgun_1K_Pixels.png-4f4c7d630977174880ec6cc28e60143c.s3tc.ctex", "res://.godot/imported/PS1Shotgun_1K_Pixels.png-4f4c7d630977174880ec6cc28e60143c.etc2.ctex"]
 
 [params]
 

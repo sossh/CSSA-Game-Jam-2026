@@ -4,8 +4,9 @@ importer="texture"
 type="CompressedTexture2D"
 uid="uid://cl5mnqapivavn"
 path.s3tc="res://.godot/imported/EarthClouds_1_12756_earth_norm.png-244bf139953efc4e614c0ea649cd6f64.s3tc.ctex"
+path.etc2="res://.godot/imported/EarthClouds_1_12756_earth_norm.png-244bf139953efc4e614c0ea649cd6f64.etc2.ctex"
 metadata={
-"imported_formats": ["s3tc_bptc"],
+"imported_formats": ["s3tc_bptc", "etc2_astc"],
 "vram_texture": true
 }
 generator_parameters={
@@ -15,7 +16,7 @@ generator_parameters={
 [deps]
 
 source_file="res://world/lunar/assets/EarthClouds_1_12756_earth_norm.png"
-dest_files=["res://.godot/imported/EarthClouds_1_12756_earth_norm.png-244bf139953efc4e614c0ea649cd6f64.s3tc.ctex"]
+dest_files=["res://.godot/imported/EarthClouds_1_12756_earth_norm.png-244bf139953efc4e614c0ea649cd6f64.s3tc.ctex", "res://.godot/imported/EarthClouds_1_12756_earth_norm.png-244bf139953efc4e614c0ea649cd6f64.etc2.ctex"]
 
 [params]
 

@@ -4,8 +4,9 @@ importer="texture"
 type="CompressedTexture2D"
 uid="uid://bu8y4fc26cqh8"
 path.s3tc="res://.godot/imported/apple_Atlas.png-5e3a2b0c709ebef3a0b97dee37630214.s3tc.ctex"
+path.etc2="res://.godot/imported/apple_Atlas.png-5e3a2b0c709ebef3a0b97dee37630214.etc2.ctex"
 metadata={
-"imported_formats": ["s3tc_bptc"],
+"imported_formats": ["s3tc_bptc", "etc2_astc"],
 "vram_texture": true
 }
 generator_parameters={
@@ -15,7 +16,7 @@ generator_parameters={
 [deps]
 
 source_file="res://assets/models/items/apple_Atlas.png"
-dest_files=["res://.godot/imported/apple_Atlas.png-5e3a2b0c709ebef3a0b97dee37630214.s3tc.ctex"]
+dest_files=["res://.godot/imported/apple_Atlas.png-5e3a2b0c709ebef3a0b97dee37630214.s3tc.ctex", "res://.godot/imported/apple_Atlas.png-5e3a2b0c709ebef3a0b97dee37630214.etc2.ctex"]
 
 [params]
 

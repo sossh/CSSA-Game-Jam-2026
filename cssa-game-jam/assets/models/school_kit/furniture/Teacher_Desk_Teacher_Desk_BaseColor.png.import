@@ -4,8 +4,9 @@ importer="texture"
 type="CompressedTexture2D"
 uid="uid://dpnolk8s0wq56"
 path.s3tc="res://.godot/imported/Teacher_Desk_Teacher_Desk_BaseColor.png-b8e5eca3dd7b6efce7e326a8ce0782f1.s3tc.ctex"
+path.etc2="res://.godot/imported/Teacher_Desk_Teacher_Desk_BaseColor.png-b8e5eca3dd7b6efce7e326a8ce0782f1.etc2.ctex"
 metadata={
-"imported_formats": ["s3tc_bptc"],
+"imported_formats": ["s3tc_bptc", "etc2_astc"],
 "vram_texture": true
 }
 generator_parameters={
@@ -15,7 +16,7 @@ generator_parameters={
 [deps]
 
 source_file="res://assets/models/school_kit/furniture/Teacher_Desk_Teacher_Desk_BaseColor.png"
-dest_files=["res://.godot/imported/Teacher_Desk_Teacher_Desk_BaseColor.png-b8e5eca3dd7b6efce7e326a8ce0782f1.s3tc.ctex"]
+dest_files=["res://.godot/imported/Teacher_Desk_Teacher_Desk_BaseColor.png-b8e5eca3dd7b6efce7e326a8ce0782f1.s3tc.ctex", "res://.godot/imported/Teacher_Desk_Teacher_Desk_BaseColor.png-b8e5eca3dd7b6efce7e326a8ce0782f1.etc2.ctex"]
 
 [params]
 

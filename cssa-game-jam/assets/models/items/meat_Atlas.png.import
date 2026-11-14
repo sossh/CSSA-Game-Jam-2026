@@ -4,8 +4,9 @@ importer="texture"
 type="CompressedTexture2D"
 uid="uid://bg668ykmv7quf"
 path.s3tc="res://.godot/imported/meat_Atlas.png-fb0556404dd3a261099f3c109a130cbb.s3tc.ctex"
+path.etc2="res://.godot/imported/meat_Atlas.png-fb0556404dd3a261099f3c109a130cbb.etc2.ctex"
 metadata={
-"imported_formats": ["s3tc_bptc"],
+"imported_formats": ["s3tc_bptc", "etc2_astc"],
 "vram_texture": true
 }
 generator_parameters={
@@ -15,7 +16,7 @@ generator_parameters={
 [deps]
 
 source_file="res://assets/models/items/meat_Atlas.png"
-dest_files=["res://.godot/imported/meat_Atlas.png-fb0556404dd3a261099f3c109a130cbb.s3tc.ctex"]
+dest_files=["res://.godot/imported/meat_Atlas.png-fb0556404dd3a261099f3c109a130cbb.s3tc.ctex", "res://.godot/imported/meat_Atlas.png-fb0556404dd3a261099f3c109a130cbb.etc2.ctex"]
 
 [params]
 

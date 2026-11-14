@@ -1,0 +1,246 @@
+[gd_scene format=3 uid="uid://cjt8wy3e7p2q8"]
+
+[ext_resource type="Script" uid="uid://bjhlk03pffsmi" path="res://prototypes/display_teacher_shoot.gd" id="1_script"]
+[ext_resource type="PackedScene" uid="uid://cdpy4lrqhsicg" path="res://characters/teacher/teacher_visual.tscn" id="2_teacher"]
+[ext_resource type="PackedScene" uid="uid://d2so5464s4ow0" path="res://characters/player/player_visual.tscn" id="3_player"]
+[ext_resource type="PackedScene" path="res://world/classroom/props/desk.tscn" id="4_desk"]
+[ext_resource type="PackedScene" path="res://world/classroom/props/teacher_desk.tscn" id="5_teacher_desk"]
+[ext_resource type="PackedScene" uid="uid://c0vovm3ke4mfp" path="res://assets/models/school_kit/furniture/Chalkboard.glb" id="6_chalkboard"]
+[ext_resource type="AudioStream" uid="uid://dca7sd8nspu6d" path="res://assets/audio/shotgun/shotgun_blast.wav" id="7_shotgun_sfx"]
+[ext_resource type="AudioStream" uid="uid://mkqtjbvkwipm" path="res://assets/audio/shotgun_pump/shotgun_pump.wav" id="8_pump_sfx"]
+[ext_resource type="Theme" uid="uid://b6gb8tlq5ilm0" path="res://ui/menu_theme.tres" id="9_theme"]
+
+[sub_resource type="ProceduralSkyMaterial" id="SkyMat"]
+sky_top_color = Color(0.1, 0.12, 0.18, 1)
+sky_horizon_color = Color(0.18, 0.22, 0.3, 1)
+ground_bottom_color = Color(0.08, 0.09, 0.12, 1)
+ground_horizon_color = Color(0.15, 0.18, 0.24, 1)
+
+[sub_resource type="Sky" id="SkyRes"]
+sky_material = SubResource("SkyMat")
+
+[sub_resource type="Environment" id="EnvRes"]
+background_mode = 2
+sky = SubResource("SkyRes")
+ambient_light_source = 2
+ambient_light_color = Color(0.35, 0.38, 0.45, 1)
+ambient_light_energy = 0.85
+tonemap_mode = 2
+
+[sub_resource type="StandardMaterial3D" id="FloorMaterial"]
+albedo_color = Color(0.18, 0.16, 0.14, 1)
+roughness = 0.65
+
+[sub_resource type="StandardMaterial3D" id="WallMaterial"]
+albedo_color = Color(0.14, 0.2, 0.26, 1)
+roughness = 0.85
+
+[sub_resource type="StandardMaterial3D" id="LaserMaterial"]
+shading_mode = 0
+albedo_color = Color(1, 0.1, 0.1, 1)
+
+[sub_resource type="BoxMesh" id="LaserMesh"]
+size = Vector3(0.012, 0.012, 1)
+
+[node name="DisplayTeacherShoot" type="Node3D" unique_id=1010101001]
+script = ExtResource("1_script")
+
+[node name="WorldEnvironment" type="WorldEnvironment" parent="." unique_id=1010101002]
+environment = SubResource("EnvRes")
+
+[node name="DirectionalLight3D" type="DirectionalLight3D" parent="." unique_id=1010101003]
+transform = Transform3D(-0.866025, -0.353553, 0.353553, 0, 0.707107, 0.707107, -0.5, 0.612372, -0.612372, 0, 7.5, 0)
+light_color = Color(1, 0.96, 0.9, 1)
+light_energy = 1.25
+shadow_enabled = true
+
+[node name="Room" type="Node3D" parent="." unique_id=1010101004]
+
+[node name="Floor" type="CSGBox3D" parent="Room" unique_id=1010101005]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -0.1, 0)
+use_collision = true
+size = Vector3(16, 0.2, 16)
+material = SubResource("FloorMaterial")
+
+[node name="BackWall" type="CSGBox3D" parent="Room" unique_id=1010101006]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 2.5, -5.5)
+use_collision = true
+size = Vector3(16, 5, 0.3)
+material = SubResource("WallMaterial")
+
+[node name="Chalkboard" parent="Room" unique_id=1010101007 instance=ExtResource("6_chalkboard")]
+transform = Transform3D(1.2, 0, 0, 0, 1.2, 0, 0, 0, 1.2, 0, 0.65, -5.3)
+
+[node name="TeacherDesk" parent="Room" unique_id=1010101008 instance=ExtResource("5_teacher_desk")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 2.5, 0, -3.8)
+
+[node name="StudentDesk" parent="Room" unique_id=1010101009 instance=ExtResource("4_desk")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 1)
+
+[node name="TeacherOrigin" type="Node3D" parent="." unique_id=1010101010]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, -3.5)
+
+[node name="TeacherVisual" parent="TeacherOrigin" unique_id=1010101011 instance=ExtResource("2_teacher")]
+unique_name_in_owner = true
+transform = Transform3D(-100, 0, -8.742278e-06, 0, 100, 0, 8.742278e-06, 0, -100, 0, 0, 0)
+
+[node name="StudentOrigin" type="Node3D" parent="." unique_id=1010101012]
+unique_name_in_owner = true
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 1.8)
+
+[node name="PlayerVisual" parent="StudentOrigin" unique_id=1010101013 instance=ExtResource("3_player")]
+unique_name_in_owner = true
+transform = Transform3D(-120, 0, -1.0490733e-05, 0, 120, 0, 1.0490733e-05, 0, -120, 0, 0, 0)
+
+[node name="AimLaser" type="MeshInstance3D" parent="." unique_id=1010101014]
+unique_name_in_owner = true
+top_level = true
+visible = false
+material_override = SubResource("LaserMaterial")
+mesh = SubResource("LaserMesh")
+
+[node name="MuzzleFlashLight" type="OmniLight3D" parent="." unique_id=1010101015]
+unique_name_in_owner = true
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.13, 1.45, -3)
+visible = false
+light_color = Color(1, 0.85, 0.45, 1)
+light_energy = 5.0
+omni_range = 8.0
+
+[node name="Audio" type="Node3D" parent="." unique_id=1010101016]
+
+[node name="ShotgunAudio" type="AudioStreamPlayer" parent="Audio" unique_id=1010101017]
+unique_name_in_owner = true
+stream = ExtResource("7_shotgun_sfx")
+volume_db = 2.0
+
+[node name="PumpAudio" type="AudioStreamPlayer" parent="Audio" unique_id=1010101018]
+unique_name_in_owner = true
+stream = ExtResource("8_pump_sfx")
+volume_db = 0.5
+
+[node name="EffectsContainer" type="Node3D" parent="." unique_id=1010101019]
+unique_name_in_owner = true
+
+[node name="Cameras" type="Node3D" parent="." unique_id=1010101020]
+
+[node name="CinematicCamera" type="Camera3D" parent="Cameras" unique_id=1010101021]
+unique_name_in_owner = true
+transform = Transform3D(0.707107, -0.183013, 0.683013, 0, 0.965926, 0.258819, -0.707107, -0.183013, 0.683013, 3.2, 1.6, -0.8)
+current = true
+fov = 68.0
+
+[node name="TeacherCamera" type="Camera3D" parent="Cameras" unique_id=1010101022]
+unique_name_in_owner = true
+transform = Transform3D(1, 0, 0, 0, 0.984808, 0.173648, 0, -0.173648, 0.984808, 0.45, 1.6, -3.2)
+fov = 75.0
+
+[node name="StudentCamera" type="Camera3D" parent="Cameras" unique_id=1010101023]
+unique_name_in_owner = true
+transform = Transform3D(-1, 0, 8.74228e-08, 0, 0.984808, 0.173648, -8.74228e-08, 0.173648, -0.984808, 0, 1.25, 1.8)
+fov = 80.0
+
+[node name="SideCamera" type="Camera3D" parent="Cameras" unique_id=1010101024]
+unique_name_in_owner = true
+transform = Transform3D(-4.37114e-08, 0, 1, 0, 1, 0, -1, 0, -4.37114e-08, 5.2, 1.35, -0.8)
+fov = 62.0
+
+[node name="UI" type="CanvasLayer" parent="." unique_id=1010101025]
+
+[node name="RootControl" type="Control" parent="UI" unique_id=1010101026]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+theme = ExtResource("9_theme")
+
+[node name="TopPanel" type="PanelContainer" parent="UI/RootControl" unique_id=1010101027]
+layout_mode = 1
+anchors_preset = 10
+anchor_right = 1.0
+offset_left = 20.0
+offset_top = 16.0
+offset_right = -20.0
+offset_bottom = 96.0
+grow_horizontal = 2
+
+[node name="VBox" type="VBoxContainer" parent="UI/RootControl/TopPanel" unique_id=1010101028]
+layout_mode = 2
+
+[node name="Title" type="Label" parent="UI/RootControl/TopPanel/VBox" unique_id=1010101029]
+layout_mode = 2
+theme_override_font_sizes/font_size = 28
+text = "COSMIC DETENTION — TEACHER SHOTGUN SHOWCASE"
+horizontal_alignment = 1
+
+[node name="StatusLabel" type="Label" parent="UI/RootControl/TopPanel/VBox" unique_id=1010101030]
+unique_name_in_owner = true
+layout_mode = 2
+theme_override_colors/font_color = Color(0.2, 0.9, 1, 1)
+theme_override_font_sizes/font_size = 20
+text = "READY — Press Shoot (Spacebar) to fire!"
+horizontal_alignment = 1
+
+[node name="CameraLabel" type="Label" parent="UI/RootControl/TopPanel/VBox" unique_id=1010101031]
+unique_name_in_owner = true
+layout_mode = 2
+theme_override_colors/font_color = Color(0.8, 0.85, 0.9, 0.8)
+theme_override_font_sizes/font_size = 16
+text = "Camera: 1: Cinematic (3/4)"
+horizontal_alignment = 1
+
+[node name="BottomBar" type="PanelContainer" parent="UI/RootControl" unique_id=1010101032]
+layout_mode = 1
+anchors_preset = 12
+anchor_top = 1.0
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = 20.0
+offset_top = -80.0
+offset_right = -20.0
+offset_bottom = -16.0
+grow_horizontal = 2
+grow_vertical = 0
+
+[node name="HBox" type="HBoxContainer" parent="UI/RootControl/BottomBar" unique_id=1010101033]
+layout_mode = 2
+theme_override_constants/separation = 12
+alignment = 1
+
+[node name="ShootButton" type="Button" parent="UI/RootControl/BottomBar/HBox" unique_id=1010101034]
+unique_name_in_owner = true
+custom_minimum_size = Vector2(160, 42)
+layout_mode = 2
+text = "[Space] Shoot Player"
+
+[node name="ResetButton" type="Button" parent="UI/RootControl/BottomBar/HBox" unique_id=1010101035]
+unique_name_in_owner = true
+custom_minimum_size = Vector2(110, 42)
+layout_mode = 2
+text = "[R] Reset"
+
+[node name="CamButton" type="Button" parent="UI/RootControl/BottomBar/HBox" unique_id=1010101036]
+unique_name_in_owner = true
+custom_minimum_size = Vector2(140, 42)
+layout_mode = 2
+text = "[C] Switch Cam"
+
+[node name="PoseButton" type="Button" parent="UI/RootControl/BottomBar/HBox" unique_id=1010101037]
+unique_name_in_owner = true
+custom_minimum_size = Vector2(140, 42)
+layout_mode = 2
+text = "Pose: [Sitting]"
+
+[node name="SpeedButton" type="Button" parent="UI/RootControl/BottomBar/HBox" unique_id=1010101038]
+unique_name_in_owner = true
+custom_minimum_size = Vector2(120, 42)
+layout_mode = 2
+text = "Speed: [1.0x]"
+
+[node name="AutoButton" type="Button" parent="UI/RootControl/BottomBar/HBox" unique_id=1010101039]
+unique_name_in_owner = true
+custom_minimum_size = Vector2(130, 42)
+layout_mode = 2
+text = "Auto-Loop: [OFF]"

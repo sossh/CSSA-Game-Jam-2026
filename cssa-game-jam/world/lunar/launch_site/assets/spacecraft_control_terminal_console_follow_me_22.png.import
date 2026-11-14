@@ -4,8 +4,9 @@ importer="texture"
 type="CompressedTexture2D"
 uid="uid://ch17ktw13vhu2"
 path.s3tc="res://.godot/imported/spacecraft_control_terminal_console_follow_me_22.png-ad65727c72764006a00e61d9b7ff613f.s3tc.ctex"
+path.etc2="res://.godot/imported/spacecraft_control_terminal_console_follow_me_22.png-ad65727c72764006a00e61d9b7ff613f.etc2.ctex"
 metadata={
-"imported_formats": ["s3tc_bptc"],
+"imported_formats": ["s3tc_bptc", "etc2_astc"],
 "vram_texture": true
 }
 generator_parameters={
@@ -15,7 +16,7 @@ generator_parameters={
 [deps]
 
 source_file="res://world/lunar/launch_site/assets/spacecraft_control_terminal_console_follow_me_22.png"
-dest_files=["res://.godot/imported/spacecraft_control_terminal_console_follow_me_22.png-ad65727c72764006a00e61d9b7ff613f.s3tc.ctex"]
+dest_files=["res://.godot/imported/spacecraft_control_terminal_console_follow_me_22.png-ad65727c72764006a00e61d9b7ff613f.s3tc.ctex", "res://.godot/imported/spacecraft_control_terminal_console_follow_me_22.png-ad65727c72764006a00e61d9b7ff613f.etc2.ctex"]
 
 [params]
 

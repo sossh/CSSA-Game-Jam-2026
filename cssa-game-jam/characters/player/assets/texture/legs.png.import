@@ -4,15 +4,16 @@ importer="texture"
 type="CompressedTexture2D"
 uid="uid://bwh8acn6x0htm"
 path.s3tc="res://.godot/imported/legs.png-d8cd79f5130b55970f7464c3ad29f1e8.s3tc.ctex"
+path.etc2="res://.godot/imported/legs.png-d8cd79f5130b55970f7464c3ad29f1e8.etc2.ctex"
 metadata={
-"imported_formats": ["s3tc_bptc"],
+"imported_formats": ["s3tc_bptc", "etc2_astc"],
 "vram_texture": true
 }
 
 [deps]
 
 source_file="res://characters/player/assets/texture/legs.png"
-dest_files=["res://.godot/imported/legs.png-d8cd79f5130b55970f7464c3ad29f1e8.s3tc.ctex"]
+dest_files=["res://.godot/imported/legs.png-d8cd79f5130b55970f7464c3ad29f1e8.s3tc.ctex", "res://.godot/imported/legs.png-d8cd79f5130b55970f7464c3ad29f1e8.etc2.ctex"]
 
 [params]
 

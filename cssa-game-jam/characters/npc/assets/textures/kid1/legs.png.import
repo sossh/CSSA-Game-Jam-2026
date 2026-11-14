@@ -4,15 +4,16 @@ importer="texture"
 type="CompressedTexture2D"
 uid="uid://cqu2dowycvray"
 path.s3tc="res://.godot/imported/legs.png-f6a309195b7980171cdec00f9ee270da.s3tc.ctex"
+path.etc2="res://.godot/imported/legs.png-f6a309195b7980171cdec00f9ee270da.etc2.ctex"
 metadata={
-"imported_formats": ["s3tc_bptc"],
+"imported_formats": ["s3tc_bptc", "etc2_astc"],
 "vram_texture": true
 }
 
 [deps]
 
 source_file="res://characters/npc/assets/textures/kid1/legs.png"
-dest_files=["res://.godot/imported/legs.png-f6a309195b7980171cdec00f9ee270da.s3tc.ctex"]
+dest_files=["res://.godot/imported/legs.png-f6a309195b7980171cdec00f9ee270da.s3tc.ctex", "res://.godot/imported/legs.png-f6a309195b7980171cdec00f9ee270da.etc2.ctex"]
 
 [params]
 

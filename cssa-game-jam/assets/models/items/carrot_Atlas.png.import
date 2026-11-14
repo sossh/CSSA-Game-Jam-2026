@@ -4,8 +4,9 @@ importer="texture"
 type="CompressedTexture2D"
 uid="uid://wbjbnr4uajyg"
 path.s3tc="res://.godot/imported/carrot_Atlas.png-0701331b320e7c57a4c928c63a0a5c30.s3tc.ctex"
+path.etc2="res://.godot/imported/carrot_Atlas.png-0701331b320e7c57a4c928c63a0a5c30.etc2.ctex"
 metadata={
-"imported_formats": ["s3tc_bptc"],
+"imported_formats": ["s3tc_bptc", "etc2_astc"],
 "vram_texture": true
 }
 generator_parameters={
@@ -15,7 +16,7 @@ generator_parameters={
 [deps]
 
 source_file="res://assets/models/items/carrot_Atlas.png"
-dest_files=["res://.godot/imported/carrot_Atlas.png-0701331b320e7c57a4c928c63a0a5c30.s3tc.ctex"]
+dest_files=["res://.godot/imported/carrot_Atlas.png-0701331b320e7c57a4c928c63a0a5c30.s3tc.ctex", "res://.godot/imported/carrot_Atlas.png-0701331b320e7c57a4c928c63a0a5c30.etc2.ctex"]
 
 [params]
 

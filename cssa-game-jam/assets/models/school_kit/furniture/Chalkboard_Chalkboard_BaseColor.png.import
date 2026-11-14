@@ -4,8 +4,9 @@ importer="texture"
 type="CompressedTexture2D"
 uid="uid://chmi1771cm0nq"
 path.s3tc="res://.godot/imported/Chalkboard_Chalkboard_BaseColor.png-facae623557bd256a0815c2abb773d16.s3tc.ctex"
+path.etc2="res://.godot/imported/Chalkboard_Chalkboard_BaseColor.png-facae623557bd256a0815c2abb773d16.etc2.ctex"
 metadata={
-"imported_formats": ["s3tc_bptc"],
+"imported_formats": ["s3tc_bptc", "etc2_astc"],
 "vram_texture": true
 }
 generator_parameters={
@@ -15,7 +16,7 @@ generator_parameters={
 [deps]
 
 source_file="res://assets/models/school_kit/furniture/Chalkboard_Chalkboard_BaseColor.png"
-dest_files=["res://.godot/imported/Chalkboard_Chalkboard_BaseColor.png-facae623557bd256a0815c2abb773d16.s3tc.ctex"]
+dest_files=["res://.godot/imported/Chalkboard_Chalkboard_BaseColor.png-facae623557bd256a0815c2abb773d16.s3tc.ctex", "res://.godot/imported/Chalkboard_Chalkboard_BaseColor.png-facae623557bd256a0815c2abb773d16.etc2.ctex"]
 
 [params]
 

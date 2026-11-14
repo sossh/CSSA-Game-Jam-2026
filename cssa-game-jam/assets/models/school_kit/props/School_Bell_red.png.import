@@ -4,8 +4,9 @@ importer="texture"
 type="CompressedTexture2D"
 uid="uid://bd78k6y6e1y85"
 path.s3tc="res://.godot/imported/School_Bell_red.png-80d35ba23ea47c410abffecf47d038cd.s3tc.ctex"
+path.etc2="res://.godot/imported/School_Bell_red.png-80d35ba23ea47c410abffecf47d038cd.etc2.ctex"
 metadata={
-"imported_formats": ["s3tc_bptc"],
+"imported_formats": ["s3tc_bptc", "etc2_astc"],
 "vram_texture": true
 }
 generator_parameters={
@@ -15,7 +16,7 @@ generator_parameters={
 [deps]
 
 source_file="res://assets/models/school_kit/props/School_Bell_red.png"
-dest_files=["res://.godot/imported/School_Bell_red.png-80d35ba23ea47c410abffecf47d038cd.s3tc.ctex"]
+dest_files=["res://.godot/imported/School_Bell_red.png-80d35ba23ea47c410abffecf47d038cd.s3tc.ctex", "res://.godot/imported/School_Bell_red.png-80d35ba23ea47c410abffecf47d038cd.etc2.ctex"]
 
 [params]
 
