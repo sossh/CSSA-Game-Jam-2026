@@ -74,7 +74,7 @@ Open the relevant `.tres` file in the Godot Inspector.
 | File | Settings |
 |---|---|
 | [game_config.tres](../cssa-game-jam/config/game_config.tres) | Round timers, lobby size, stomach and gas, Bitcoin, cloning, loot and HUD feedback |
-| [player_config.tres](../cssa-game-jam/config/player_config.tres) | Walk, sprint, jump, look sensitivity, reach, throw charge, struggle and ragdoll recovery |
+| [player_config.tres](../cssa-game-jam/config/player_config.tres) | Walk, sprint, jump, look sensitivity, eye/head heights, reach, throw charge, struggle and ragdoll recovery |
 | [teacher_config.tres](../cssa-game-jam/config/teacher_config.tres) | Check and warning timing, hearing, suspicion, blame, coffee, movement and shotgun |
 | [interactions_config.tres](../cssa-game-jam/config/interactions_config.tres) | Eating and action cooldowns, throws and impacts, weapons, props and vending reach |
 | [audio_config.tres](../cssa-game-jam/config/audio_config.tres) | Event folders and clip overrides, playback mix, classroom ambience and lecture chalk |
@@ -95,10 +95,10 @@ event. Hearing and gameplay loudness are tuned in the gameplay resources above.
 
 - All RPCs live at `/root/Game`; scene creation is driven by stable entity IDs in snapshots. No dependency on peer-local node instance IDs.
 - Reliable channel 0: requests, presentation events, registration/initial snapshot. Host validates ownership, alive state, distance, phase, prices and cooldowns before applying actions.
-- Unreliable ordered channel 1: 15Hz compressed complete snapshots, chunked into <=1,000-byte payloads. Apply only a complete matching sequence. A lost chunk is repaired by a later full snapshot; no partial world is applied.
+- Unreliable ordered channel 1: 30Hz compressed complete snapshots (about 2 KB, 2-3 chunks), chunked into <=1,000-byte payloads. Host actions, damage, kills and launches call `Game.request_snapshot()` so the next physics tick sends an extra snapshot instead of waiting for the interval. Apply only a complete matching sequence. A lost chunk is repaired by a later full snapshot; no partial world is applied.
 - Unreliable ordered channel 2: owner pose updates at about 30Hz. State epochs reject old movement packets after teleports, seating, carrying, ragdoll launches and respawns.
 - Host simulated `RigidBody3D` items; clients use frozen bodies and interpolate. Held objects are positioned locally from the holder's pose to avoid round-trip hand lag.
-- Friend ragdolls: six `RigidBody3D` boxes with five `PinJoint3D`s. Owner reports limb transforms, peers interpolate visual bodies. Corpses and clone NPCs are throwable single rigid bodies in the greybox.
+- Friend ragdolls: six `RigidBody3D` boxes with five `PinJoint3D`s. Owner reports limb transforms, peers interpolate visual bodies. When a player dies their own ragdoll stays where they fell (no clone is spawned); living players see the body at the ragdoll torso while spectators fly free as ghosts only fellow spectators can see. `players[id].corpse` marks a real death so late joiners registered as dead do not get a body. Clone NPCs are throwable single rigid bodies in the greybox. Ragdoll velocities must be written after the bodies are unfrozen, otherwise Jolt discards them and thrown or shot players drop in place.
 - This is a trusted-LAN jam implementation, not an anti-cheat design. Host departure ends the session; there is no host migration.
 
 ## Shared APIs

@@ -1,8 +1,6 @@
 class_name StudentPlayer
 extends CharacterBody3D
 
-const STANDING_EYE_HEIGHT := 1.55
-
 var peer_id: int
 var default_gravity := float(ProjectSettings.get_setting("physics/3d/default_gravity"))
 @onready var head: Node3D = $Head
@@ -16,6 +14,7 @@ var local: bool = false
 var applied_epoch: int = -1
 var last_mode: String = ""
 var pitch: float = 0.0
+var name_label_height: float = 1.55
 var send_timer: float = 0.0
 var step_timer: float = 0.0
 var charge: float = -1.0
@@ -63,6 +62,7 @@ func _ready() -> void:
 	base_fov = camera.fov
 	if camera.current:
 		audio_listener.make_current()
+	name_label_height = name_label.position.y
 	name_label.text = str(Game.players[peer_id].name)
 	name_label.visible = not local
 	var p: Dictionary = Game.players[peer_id]
@@ -80,6 +80,7 @@ func _unhandled_input(event: InputEvent) -> void:
 		rotation.y -= event.relative.x * Game.config.player.mouse_sensitivity
 		var look := Game.config.player
 		pitch = clampf(pitch - event.relative.y * look.mouse_sensitivity, -look.pitch_limit_radians, look.pitch_limit_radians)
+		head.rotation.x = pitch
 	if event.is_action_pressed("interact"):
 		if p.mode == "seated" and (target_id == "" or target_id == "seat:" + str(p.seat)):
 			Game.request("stand")
@@ -113,7 +114,7 @@ func _physics_process(delta: float) -> void:
 		velocity = Vector3.ZERO
 		if mode not in ["ragdoll", "dead"]:
 			ragdoll.deactivate()
-	if (mode == "ragdoll" or (mode == "dead" and p.launch.length() > 0)) and not ragdoll.active:
+	if (mode == "ragdoll" or (mode == "dead" and p.get("corpse", false))) and not ragdoll.active:
 		ragdoll.activate(color, p.position, p.yaw, local, p.launch)
 	if mode not in ["ragdoll", "dead"] and ragdoll.active:
 		if local:
@@ -124,9 +125,10 @@ func _physics_process(delta: float) -> void:
 	var my_id: int = multiplayer.get_unique_id()
 	var local_is_dead: bool = Game.players.has(my_id) and Game.players[my_id].mode == "dead"
 	var is_other_ghost: bool = not local and mode == "dead" and local_is_dead
-	visual.visible = not local
+	# A dead player with no corpse (late joiner) is invisible to the living; spectators see ghosts.
+	visual.visible = not local and (mode != "dead" or is_other_ghost or ragdoll.active)
 	name_label.visible = not local and (mode != "dead" or is_other_ghost)
-	name_label.position.y = 0.7 if mode in ["ragdoll", "dead"] else 2.05
+	name_label.position.y = 0.7 if mode in ["ragdoll", "dead"] else name_label_height
 	if is_other_ghost:
 		visual.set_color(Color(0.65, 0.85, 1.0))
 		name_label.text = "👻 " + p.name
@@ -151,7 +153,15 @@ func _physics_process(delta: float) -> void:
 			global_position = p.position
 	elif not local and mode == "dead" and ragdoll.active:
 		ragdoll.follow(p.limbs, delta)
-		global_position = p.position
+		if is_other_ghost:
+			# Fellow spectators see each other flying around as ghosts.
+			global_position = global_position.lerp(p.position, minf(1, delta * 18))
+		else:
+			# Living players see the body stay where it fell. The spectator's own
+			# free-fly position never moves the corpse.
+			var torso_y: float = ragdoll.bodies[0].global_position.y
+			global_position = ragdoll.bodies[0].global_position - Vector3(0, 0.9, 0)
+			if torso_y > Game.config.fall_out_height + 5.0: global_position.y = maxf(0.05, global_position.y)
 	elif local:
 		var input := Vector2.ZERO if Game.ui_open else Input.get_vector("move_left", "move_right", "move_forward", "move_backward")
 		var forward_basis := camera.global_basis if mode == "dead" else global_basis
@@ -196,7 +206,7 @@ func _physics_process(delta: float) -> void:
 		rotation.y = lerp_angle(rotation.y, p.yaw, minf(1, delta * 20))
 		pitch = lerpf(pitch, p.pitch, minf(1, delta * 20))
 	head.rotation.x = pitch
-	head.position.y = 1.40 if mode == "seated" else (0.35 if mode == "ragdoll" else STANDING_EYE_HEIGHT)
+	head.position.y = Game.config.player.head_height(mode)
 
 	var is_down: bool = mode in ["ragdoll", "dead"] and not is_other_ghost
 	var target_visual_rotation: Vector3 = default_visual_rotation + Vector3(PI * 0.5, 0, 0) if is_down else default_visual_rotation

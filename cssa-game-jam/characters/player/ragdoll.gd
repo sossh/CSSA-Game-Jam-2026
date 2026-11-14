@@ -26,11 +26,13 @@ func activate(color: Color, origin: Vector3, yaw: float, simulate: bool, impulse
 		body.transform = rest_poses[i]
 		var material: StandardMaterial3D = body.get_node("Mesh").material_override
 		material.albedo_color = color.lightened(0.2) if i == 1 else color
-		body.linear_velocity = impulse
-		body.angular_velocity = Vector3(2, 1, -3) if simulate else Vector3.ZERO
 		body.collision_layer = GRAVITY_LAYER if simulate else 0
 		body.collision_mask = 1 if simulate else 0
+		# Unfreeze before setting velocities: Jolt discards velocities written while a
+		# body is still frozen, which made thrown and shot players drop in place.
 		body.freeze = not simulate
+		body.linear_velocity = impulse if simulate else Vector3.ZERO
+		body.angular_velocity = Vector3(2, 1, -3) if simulate else Vector3.ZERO
 	# Reset each joint's rest attachment after repositioning the pooled bodies.
 	for joint: PinJoint3D in $Joints.get_children():
 		var path_a := joint.node_a

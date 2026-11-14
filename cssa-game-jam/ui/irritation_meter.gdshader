@@ -1,42 +1,42 @@
 shader_type canvas_item;
 render_mode unshaded;
 
-// Thermometer-style heat bar. One draw call; everything animates from TIME and two uniforms.
+// Chunky segmented heat bar to match the pixel HUD. One draw call; animates from TIME and two uniforms.
 uniform float level : hint_range(0.0, 1.0) = 0.0;
 uniform float flash : hint_range(0.0, 1.0) = 0.0;
-uniform vec4 track_color : source_color = vec4(0.015, 0.04, 0.07, 1.0);
+uniform vec4 track_color : source_color = vec4(0.01, 0.03, 0.06, 1.0);
 
-vec3 heat_ramp(float t) {
-	vec3 c0 = vec3(0.20, 0.95, 0.62);
-	vec3 c1 = vec3(0.95, 0.90, 0.22);
-	vec3 c2 = vec3(1.00, 0.52, 0.10);
-	vec3 c3 = vec3(1.00, 0.14, 0.16);
-	vec3 c4 = vec3(1.00, 0.30, 0.85);
-	if (t < 0.33) return mix(c0, c1, t / 0.33);
-	if (t < 0.66) return mix(c1, c2, (t - 0.33) / 0.33);
-	if (t < 0.92) return mix(c2, c3, (t - 0.66) / 0.26);
-	return mix(c3, c4, (t - 0.92) / 0.08);
+const float SEGMENTS = 20.0;
+
+// Flat tier colors, same hues as the HUD (stomach teal up to alarm magenta), no smooth rainbow.
+vec3 heat_step(float t) {
+	if (t < 0.15) return vec3(0.12, 0.95, 0.72);
+	if (t < 0.35) return vec3(0.72, 0.95, 0.30);
+	if (t < 0.55) return vec3(1.00, 0.80, 0.22);
+	if (t < 0.75) return vec3(1.00, 0.52, 0.14);
+	if (t < 0.92) return vec3(1.00, 0.28, 0.20);
+	return vec3(1.00, 0.30, 0.85);
 }
 
 void fragment() {
 	vec2 uv = UV;
-	float speed = 2.0 + level * 9.0;
-	float wave = sin(uv.x * 26.0 - TIME * speed + sin(uv.y * 7.0 + TIME * 2.3) * 1.6) * 0.5 + 0.5;
-	float inside = smoothstep(level, level - 0.006, uv.x);
+	float seg = floor(uv.x * SEGMENTS);
+	float seg_x = fract(uv.x * SEGMENTS);
+	// Thin gap between blocks.
+	float block = step(0.12, seg_x);
+	float seg_mid = (seg + 0.5) / SEGMENTS;
+	float lit = step(seg_mid, level);
 	float danger = smoothstep(0.7, 1.0, level);
-	float pulse = 0.5 + 0.5 * sin(TIME * (5.0 + level * 16.0));
+	float pulse = step(0.5, fract(TIME * (1.5 + level * 4.0)));
 
-	vec3 fill = heat_ramp(uv.x) * (0.72 + 0.4 * wave);
-	// Diagonal hazard stripes crawl across the fill once the teacher is close to snapping.
-	float stripes = step(0.5, fract((uv.x * 14.0 - uv.y * 2.5) - TIME * 0.8));
-	fill = mix(fill, fill * 0.55, stripes * danger * 0.8);
-	fill += vec3(1.0, 0.85, 0.5) * exp(-abs(uv.x - level) * 38.0) * (0.55 + 0.45 * pulse);
-	fill += vec3(1.0) * flash * 0.55;
-	fill *= 1.0 + danger * pulse * 0.25;
-	// Top gloss.
-	fill += vec3(0.18) * smoothstep(0.5, 0.0, uv.y);
+	vec3 fill = heat_step(seg_mid);
+	// Top edge highlight like the Stomach bar fill.
+	fill = mix(fill, mix(fill, vec3(1.0), 0.6), step(uv.y, 0.14));
+	// Last lit block blinks when the teacher is close to snapping.
+	float lead = step(abs(seg_mid - level), 0.5 / SEGMENTS + 0.001);
+	fill *= 1.0 - danger * lead * pulse * 0.35;
+	fill += vec3(1.0) * flash * 0.5;
 
-	float tick = step(0.985, fract(uv.x * 5.0 + 0.001)) * 0.12;
-	vec3 track = track_color.rgb + vec3(tick);
-	COLOR = vec4(mix(track, fill, inside), 1.0);
+	vec3 track = track_color.rgb + vec3(0.04) * block;
+	COLOR = vec4(mix(track, fill, lit * block), 1.0);
 }

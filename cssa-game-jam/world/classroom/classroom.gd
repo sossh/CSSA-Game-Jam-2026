@@ -106,7 +106,7 @@ func cafe_respawn_position(slot: int) -> Vector3:
 	return $Hallway/CafeRespawns.get_child(slot).global_position
 
 func earth_look_angles(position: Vector3) -> Vector2:
-	var toward: Vector3 = $SpaceBackdrop/Earth.global_position - (position + Vector3.UP * StudentPlayer.STANDING_EYE_HEIGHT)
+	var toward: Vector3 = $SpaceBackdrop/Earth.global_position - (position + Vector3.UP * Game.config.player.eye_height())
 	return Vector2(atan2(-toward.x, -toward.z), atan2(toward.y, Vector2(toward.x, toward.z).length()))
 
 func _physics_process(_delta: float) -> void:
@@ -398,7 +398,7 @@ func use_rocket_console(id: int) -> void:
 	Game.event.rpc("banner", {"text": status})
 
 func has_reach(id: int, at: Vector3) -> bool:
-	var eye: Vector3 = Game.players[id].position + Vector3(0, 1.40 if Game.players[id].mode == "seated" else 1.55, 0)
+	var eye: Vector3 = Game.players[id].position + Vector3(0, Game.config.player.eye_height(Game.players[id].mode), 0)
 	var dir := (at - eye)
 	var dist := dir.length()
 	if dist <= 0.1: return true
@@ -420,7 +420,7 @@ func release_hand(id: int, charge: float = -1) -> void:
 	var impulse := direction * tuning.item_drop_speed
 	if charge >= 0:
 		impulse = direction * (tuning.item_throw_speed + charge * tuning.item_throw_charge_bonus) + Vector3.UP * tuning.item_throw_lift
-	var at: Vector3 = p.position + Vector3(0, 1.4, 0) + direction * 0.8
+	var at: Vector3 = p.position + Vector3(0, Game.config.player.eye_height(p.mode), 0) + direction * 0.8
 	if items.has(held):
 		var item = items[held]
 		if item.kid: impulse *= tuning.clone_throw_scale
@@ -428,7 +428,10 @@ func release_hand(id: int, charge: float = -1) -> void:
 	elif held.begins_with("player:"):
 		var other := int(held.get_slice(":", 1))
 		if Game.players.has(other):
-			Game.players[other].position = at - Vector3(0, 0.6, 0)
+			var drop_at := at - Vector3(0, 0.6, 0)
+			# Dropping a friend while looking straight down must not start the ragdoll under the floor.
+			drop_at.y = maxf(drop_at.y, p.position.y)
+			Game.players[other].position = drop_at
 			var throw_impulse := direction * tuning.player_drop_speed + Vector3.UP
 			if charge >= 0:
 				var lift := tuning.player_throw_lift + charge * tuning.player_throw_lift_charge_bonus
@@ -459,7 +462,7 @@ func aim_direction(id: int) -> Vector3:
 
 func punch(id: int) -> void:
 	var p: Dictionary = Game.players[id]
-	var origin: Vector3 = p.position + Vector3(0, 1.4, 0)
+	var origin: Vector3 = p.position + Vector3(0, Game.config.player.eye_height(p.mode), 0)
 	var direction := aim_direction(id)
 	Game.log_activity("%s throws hands." % p.name)
 	var tuning := Game.config.interactions
@@ -492,12 +495,6 @@ func buy(id: int, item_id: String, machine_id: String = "vending") -> bool:
 	NoiseBus.emit_noise(item.global_position, Game.config.interactions.vending_loudness, str(id), "vending_dispense")
 	return true
 
-func spawn_corpse(id: int, impulse: Vector3) -> void:
-	var p: Dictionary = Game.players[id]
-	var corpse := spawn_item("rock", p.position + Vector3(0, 0.9, 0), true, true)
-	corpse.linear_velocity = impulse
-	corpse.angular_velocity = Vector3(3, 1, 2)
-
 func targets() -> Array[String]:
 	var result: Array[String] = []
 	for id in Game.players:
@@ -526,7 +523,7 @@ func on_effect(kind: String, data: Dictionary) -> void:
 		scene = PARTICLE_SCENES.get(key)
 		if scene == null: return
 		if key in ["chew", "crunch", "slurp", "can_open", "burp", "sneeze"]:
-			at += Vector3.UP * (1.40 if data.get("seated", false) else 1.55) + direction * 0.35
+			at += Vector3.UP * Game.config.player.eye_height("seated" if data.get("seated", false) else "walk") + direction * 0.35
 		elif key == "fart": at += Vector3.UP * 0.65 - direction * 0.25
 		elif key == "footstep": at += Vector3.UP * 0.08
 	elif kind == "shot":

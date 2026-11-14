@@ -28,7 +28,7 @@ fov = 82.0
 [node name="AudioListener3D" type="AudioListener3D" parent="Head/Camera" unique_id=1737556082]
 
 [node name="NameLabel" type="Label3D" parent="." unique_id=969072512]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 2.05, 0)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.55, 0)
 billboard = 1
 text = "Transfer student"
 font_size = 26

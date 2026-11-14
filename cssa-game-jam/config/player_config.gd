@@ -50,3 +50,25 @@ extends Resource
 @export var seated_x_offset: float = 0.0
 @export var seated_y_offset: float = 0.25
 @export var seated_z_offset: float = 0.0
+
+@export_group("Eye height")
+## Height of the Head node above the player origin while standing. Matches the
+## authored Head node in network_player.tscn and the ~1.2 m student model/capsule.
+@export_range(0.2, 2.5, 0.01, "suffix:m") var standing_head_height: float = 1.0576
+## Head node height while seated at a desk (model sit pose plus the seated visual offset).
+@export_range(0.2, 2.5, 0.01, "suffix:m") var seated_head_height: float = 1.1546
+## Head node height while tumbling as a ragdoll.
+@export_range(0.05, 2.5, 0.01, "suffix:m") var ragdoll_head_height: float = 0.35
+## Camera height above the Head node (the Camera child in network_player.tscn).
+@export_range(0.0, 0.5, 0.005, "suffix:m") var camera_height_above_head: float = 0.0659
+
+## Head node height for a replicated player mode.
+func head_height(mode: String) -> float:
+	if mode == "seated": return seated_head_height
+	if mode == "ragdoll": return ragdoll_head_height
+	return standing_head_height
+
+## World-space eye height above the player origin for a replicated player mode.
+## Host-side reach, throw and punch maths use this so they match the camera.
+func eye_height(mode: String = "walk") -> float:
+	return head_height(mode) + camera_height_above_head

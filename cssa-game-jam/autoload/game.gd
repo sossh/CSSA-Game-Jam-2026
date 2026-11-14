@@ -5,7 +5,9 @@ signal state_changed
 signal effect(kind: String, data: Dictionary)
 signal activity_added(line: String)
 
-const SNAPSHOT_INTERVAL := 0.0667
+const SNAPSHOT_INTERVAL := 1.0 / 30.0
+## Discrete actions and impacts flush a snapshot early so clients see them within a tick or two.
+const SNAPSHOT_FLUSH_GAP := 0.012
 const SNAPSHOT_CHUNK_BYTES := 1000
 
 var activity_history: PackedStringArray = []
@@ -29,6 +31,7 @@ var sync_time: float = 0.0
 var epoch: int = 0
 var cooldowns: Dictionary = {}
 var snapshot_sequence: int = 0
+var snapshot_requested: bool = false
 var receiving_sequence: int = -1
 var received_chunks: Dictionary = {}
 var next_npc_noise_at: float = 0.0
@@ -61,9 +64,14 @@ func _physics_process(delta: float) -> void:
 	if not launch_cinematic_active:
 		update_round(delta)
 	sync_time += delta
-	if sync_time >= SNAPSHOT_INTERVAL:
+	if sync_time >= SNAPSHOT_INTERVAL or (snapshot_requested and sync_time >= SNAPSHOT_FLUSH_GAP):
 		sync_time = 0
+		snapshot_requested = false
 		broadcast_snapshot()
+
+## Ask the host to send the next snapshot early. Safe to call from any host code path.
+func request_snapshot() -> void:
+	snapshot_requested = true
 
 func update_round(delta: float) -> void:
 	if phase in ["preparation", "class", "break"]:
@@ -174,7 +182,7 @@ func register(display_name: String) -> void:
 		"mode": "walk" if alive else "dead", "seat": -1, "held": "", "carrier": 0,
 		"eat_until": 0.0, "violation_until": 0.0, "speed_until": 0.0, "recover_at": 0.0,
 		"burp_at": 0.0, "growl_at": elapsed + 15, "gas": 0.0,
-		"epoch": 0, "limbs": [], "launch": Vector3.ZERO}
+		"epoch": 0, "limbs": [], "launch": Vector3.ZERO, "corpse": false}
 	world.ensure_players()
 	if id != 1:
 		var initial := make_snapshot()
@@ -211,6 +219,7 @@ func handle_action(id: int, action_name: String, data: Dictionary) -> void:
 		start_run()
 		return
 	var p: Dictionary = players[id]
+	if action_name != "step": request_snapshot()
 	if action_name == "buy":
 		var purchased := false
 		if p.alive and p.mode not in ["carried", "ragdoll"] and allowed(id, "buy", config.interactions.buy_cooldown):
@@ -348,6 +357,7 @@ func respawn(id: int, relocate_to_cafe: bool = true) -> void:
 	p.gas = 0.0
 	p.limbs = []
 	p.launch = Vector3.ZERO
+	p.corpse = false
 	p.epoch += 1
 	if relocate_to_cafe:
 		event.rpc("sound", {"position": p.position, "key": "clone", "loudness": config.clone_volume})
@@ -355,6 +365,7 @@ func respawn(id: int, relocate_to_cafe: bool = true) -> void:
 func damage(id: int, amount: float, reason: String, impulse: Vector3 = Vector3.ZERO) -> void:
 	if launch_cinematic_active or not players.has(id) or not players[id].alive: return
 	players[id].stomach = maxf(0, players[id].stomach - amount)
+	request_snapshot()
 	event.rpc("hurt", {"id": id})
 	if players[id].stomach <= 0: kill(id, reason, impulse)
 	elif impulse.length() > 0 and reason != "was expelled by shotgun": launch_player(id, impulse)
@@ -370,8 +381,9 @@ func kill(id: int, reason: String, impulse: Vector3 = Vector3.ZERO) -> void:
 	p.carrier = 0
 	p.eat_until = 0.0
 	p.launch = impulse
+	p.corpse = true
 	p.epoch += 1
-	world.spawn_corpse(id, impulse)
+	request_snapshot()
 	event.rpc("killed", {"id": id, "reason": reason})
 	event.rpc("banner", {"text": "%s %s." % [p.name, reason]})
 	check_wipe()
@@ -398,6 +410,7 @@ func launch_player(id: int, impulse: Vector3) -> void:
 	p.eat_until = 0.0
 	p.limbs = []
 	p.epoch += 1
+	request_snapshot()
 
 func finish_eating(id: int) -> void:
 	var p: Dictionary = players[id]
