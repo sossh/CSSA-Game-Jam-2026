@@ -114,9 +114,9 @@ func update_food_drops() -> void:
 		next_food_drop = 0.0
 		return
 	if next_food_drop == 0.0:
-		next_food_drop = Game.elapsed + randf_range(Game.config.food_drop_min_seconds, Game.config.food_drop_max_seconds)
+		next_food_drop = Game.elapsed + food_drop_delay()
 	if Game.elapsed < next_food_drop: return
-	next_food_drop = Game.elapsed + randf_range(Game.config.food_drop_min_seconds, Game.config.food_drop_max_seconds)
+	next_food_drop = Game.elapsed + food_drop_delay()
 	if items.size() >= Game.config.max_loose_items: return
 	# Drop just above a random living player's head so it is always visible nearby.
 	var player_targets: Array = []
@@ -152,6 +152,20 @@ func update_food_drops() -> void:
 		var player: Node3D = player_nodes[id]
 		print("DROPDEBUG %s at %s | player %d food_dist=%.2f teacher_dist=%.2f" % [item.item_id, point, id,
 			player.global_position.distance_to(point), player.global_position.distance_to(teacher.global_position)])
+
+# Collective room hunger: a well-fed room gets fewer free ceiling snacks, which
+# pushes players toward the vending machine. A starving room gets drops sooner.
+func food_drop_delay() -> float:
+	var delay := randf_range(Game.config.food_drop_min_seconds, Game.config.food_drop_max_seconds)
+	var total := 0.0
+	var living := 0
+	for p in Game.players.values():
+		if p.alive:
+			total += p.stomach
+			living += 1
+	if living == 0 or Game.config.stomach_max <= 0.0: return delay
+	var fullness := clampf(total / (living * Game.config.stomach_max), 0.0, 1.0)
+	return delay * lerpf(1.0, Game.config.food_drop_fed_multiplier, fullness)
 
 func ensure_players() -> void:
 	for id in Game.players:
