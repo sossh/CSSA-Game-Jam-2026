@@ -4,17 +4,22 @@ extends PanelContainer
 @onready var entries: RichTextLabel = $Content/Entries
 @onready var toggle_tip: Label = $ToggleTip
 
+const BITCOIN_TAG := "[img=13x13]res://assets/ui/bitcoin.png[/img]"
+
 var _expanded := true
 var _expanded_offsets := Vector4.ZERO
 
 func _ready() -> void:
 	_expanded_offsets = Vector4(offset_left, offset_top, offset_right, offset_bottom)
-	entries.text = "\n".join(Game.activity_history)
+	refresh("")
 	Game.activity_added.connect(refresh)
 
 func refresh(_line: String) -> void:
-	# Bounded history and plain text: player names cannot inject rich-text tags.
-	entries.text = "\n".join(Game.activity_history)
+	# Escape '[' so player names cannot inject rich-text tags, then replace ₿ with icon.
+	var lines := PackedStringArray()
+	for line in Game.activity_history:
+		lines.append(line.replace("[", "[lb]").replace("\u20bf", BITCOIN_TAG))
+	entries.text = "\n".join(lines)
 
 func _unhandled_key_input(event: InputEvent) -> void:
 	if not is_visible_in_tree():

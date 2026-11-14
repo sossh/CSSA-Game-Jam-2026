@@ -12,11 +12,11 @@ extends CanvasLayer
 @onready var phase_label: Label = %PhaseLabel
 @onready var prompt: Label = %Prompt
 @onready var held_label: Label = %HeldLabel
-@onready var banner: Label = %Banner
+@onready var banner: RichTextLabel = %Banner
 @onready var stomach: ProgressBar = %Stomach
 @onready var gas_bar: ProgressBar = %Gas
 @onready var charge: ProgressBar = %ThrowCharge
-@onready var scoreboard: Label = %Scoreboard
+@onready var scoreboard: RichTextLabel = %Scoreboard
 @onready var debug: Label = %Debug
 @onready var pause_panel: PanelContainer = %Pause
 @onready var vending_panel: PanelContainer = %Vending
@@ -229,7 +229,9 @@ func _process(delta: float) -> void:
 	scoreboard.visible = Input.is_action_pressed("scoreboard")
 	if scoreboard.visible:
 		scoreboard.text = "CLASS REGISTER\n"
-		for other in Game.players.values(): scoreboard.text += "%s   ₿%d   %s\n" % [other.name, other.money, "%d stomach" % other.stomach if other.alive else "DEAD"]
+		for other in Game.players.values():
+			var safe_name := str(other.name).replace("[", "[lb]")
+			scoreboard.text += "%s   [img=19x19]res://assets/ui/bitcoin.png[/img]%d   %s\n" % [safe_name, other.money, "%d stomach" % other.stomach if other.alive else "DEAD"]
 	debug.visible = debug_visible
 	var teacher_state_name := "Unknown"
 	if Game.world.teacher.fsm and Game.world.teacher.fsm.current_state:
@@ -256,7 +258,8 @@ func reset_wasted() -> void:
 		death_filter.visible = false
 
 func show_banner(text: String) -> void:
-	banner.text = text
+	var formatted := text.replace("[", "[lb]").replace("\u20bf", "[img=16x16]res://assets/ui/bitcoin.png[/img]")
+	banner.text = "[right]%s[/right]" % formatted
 	banner_left = Game.config.banner_seconds
 
 func on_effect(kind: String, data: Dictionary) -> void:
