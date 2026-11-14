@@ -108,10 +108,82 @@ script = ExtResource("1")
 transform = Transform3D(1.7169118, 0, 0, 0, 1.7169118, 0, 0, 0, 1.7169118, 0, -1.1192179, 0)
 
 [node name="LunarLaunchSite" parent="." unique_id=2097573954 node_paths=PackedStringArray("earth") instance=ExtResource("11_launch_site")]
-transform = Transform3D(-0.44936123, 0, 0.034460206, 0, 0.4506805, 0, -0.034460206, 0, -0.44936123, -7.443264, -8.662841, 55.50866)
+transform = Transform3D(-0.44936123, 0, 0.034460206, 0, 0.4506805, 0, -0.034460206, 0, -0.44936123, -2.1771421, -8.527194, 52.219326)
 earth = NodePath("../SpaceBackdrop/Earth")
 
+[node name="LaunchConsole" parent="LunarLaunchSite" index="3"]
+transform = Transform3D(0.99733716, 0, 0.07293002, 0, 1, 0, -0.07293002, 0, 0.99733716, -10.625738, 0, 4.863945)
+
+[node name="Model" parent="LunarLaunchSite/LaunchConsole" index="0"]
+transform = Transform3D(2.2, 0, 0, 0, 2.2, 0, 0, 0, 2.2, -0.96, 1.59, 0.92)
+
+[node name="CollisionShape3D" parent="LunarLaunchSite/LaunchConsole/Base" index="0"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.73, 0)
+
+[node name="Interact" parent="LunarLaunchSite/LaunchConsole" index="2"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 2.2, 0)
+
+[node name="CollisionShape3D" parent="LunarLaunchSite/LaunchConsole/Interact" index="0"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -0.65, 0)
+
+[node name="Status" parent="LunarLaunchSite/LaunchConsole" index="3"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 3.65, 0.3)
+
+[node name="Thruster" parent="LunarLaunchSite/Falcon9" parent_id_path=PackedInt32Array(2097573954, 187864234) index="0"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -0.15, 0)
+
+[node name="BoosterCollision" parent="LunarLaunchSite/Falcon9/RocketBody" index="0"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 23.88, 0)
+
+[node name="UpperStageCollision" parent="LunarLaunchSite/Falcon9/RocketBody" index="1"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 52.25, 0)
+
+[node name="FairingCollision" parent="LunarLaunchSite/Falcon9/RocketBody" index="2"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 63, 0)
+
+[node name="PadDust" parent="LunarLaunchSite" index="5"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.8, 0)
+
+[node name="TowerClearance" parent="LunarLaunchSite" index="6"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 86, 0)
+
+[node name="IgnitionAudio" parent="LunarLaunchSite" index="7"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1, 0)
+
+[node name="PadFill" parent="LunarLaunchSite/Lighting" parent_id_path=PackedInt32Array(2097573954, 1589782689) index="0" unique_id=1433498782]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -11, 10, -11)
+
+[node name="BoosterFill" parent="LunarLaunchSite/Lighting" parent_id_path=PackedInt32Array(2097573954, 1589782689) index="1" unique_id=1260018905]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -13, 31, -12)
+
+[node name="UpperStageFill" parent="LunarLaunchSite/Lighting" parent_id_path=PackedInt32Array(2097573954, 1589782689) index="2" unique_id=1648879204]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -12, 57, -11)
+
+[node name="CoolRim" parent="LunarLaunchSite/Lighting" parent_id_path=PackedInt32Array(2097573954, 1589782689) index="3"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 10, 36, 8)
+
 [node name="LunarOutpost" parent="." unique_id=705771223 instance=ExtResource("24_outpost")]
+
+[node name="Habitat" parent="LunarOutpost/WestCompound" parent_id_path=PackedInt32Array(705771223, 1896428364) index="0" unique_id=1107565999]
+transform = Transform3D(-0.4406333, -0.05064008, -0.65690184, -0.18665937, 0.7674863, 0.06604112, 0.6318565, 0.19141175, -0.43858942, -22.767218, -7.4816394, 39.32756)
+
+[node name="CommsTower" parent="LunarOutpost/WestCompound" parent_id_path=PackedInt32Array(705771223, 1896428364) index="2" unique_id=119577056]
+transform = Transform3D(1.2, 0, 0, 0, 1.2, 0, 0, 0, 1.2, -15, -2.9773304, 17)
+
+[node name="LandedShuttle" parent="LunarOutpost/WestCompound" parent_id_path=PackedInt32Array(705771223, 1896428364) index="3" unique_id=1059810785]
+transform = Transform3D(1.12583, 0, 0.65, 0, 1.3, 0, -0.65, 0, 1.12583, -36, -7.313031, -6)
+
+[node name="MiningDrill" parent="LunarOutpost/EastYard" parent_id_path=PackedInt32Array(705771223, 1678055935) index="3" unique_id=1839211053]
+transform = Transform3D(0.93969005, 0, 0.34202003, 0, 1, 0, -0.34202003, 0, 0.93969005, 16, -6.296638, -24)
+
+[node name="FuelCanister" parent="LunarOutpost/EastYard" parent_id_path=PackedInt32Array(705771223, 1678055935) index="4" unique_id=1893825727]
+transform = Transform3D(-0.0012884103, -0.01026266, 0.99994665, 0.24718404, 0.9689142, 0.010262658, -0.9689677, 0.24718407, 0.001288414, 12, -5.077901, 12.000005)
+
+[node name="Rover" parent="LunarOutpost/ExitApron" parent_id_path=PackedInt32Array(705771223, 1939728663) index="2" unique_id=1158461020]
+transform = Transform3D(-0.93969, 0, -0.34202, 0, 1, 0, 0.34202, 0, -0.93969, 10, -4.205788, 29)
+
+[node name="Boulder3" parent="LunarOutpost/Boulders" parent_id_path=PackedInt32Array(705771223, 838457553) index="2" unique_id=935287101]
+transform = Transform3D(-0.68944, 0, 0.57851, 0, 0.9, 0, -0.57851, 0, -0.68944, -29, -4.962122, 24)
 
 [node name="Room" type="Node3D" parent="." unique_id=1281839070]
 
@@ -824,6 +896,8 @@ current = true
 
 [node name="AmbiancePlayer" type="AudioStreamPlayer" parent="." unique_id=1849182041]
 
+[editable path="LunarLaunchSite"]
+[editable path="LunarOutpost"]
 [editable path="Room/Floor"]
 [editable path="Room/SurfaceRamp"]
 [editable path="Room/FrontWall"]
