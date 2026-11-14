@@ -158,6 +158,94 @@ corner_radius_bottom_right = 10
 shadow_color = Color(0, 0.8, 1, 0.2)
 shadow_size = 12
 
+[sub_resource type="StyleBoxFlat" id="VictoryOuterStyle"]
+content_margin_left = 8.0
+content_margin_top = 8.0
+content_margin_right = 8.0
+content_margin_bottom = 8.0
+bg_color = Color(0.032, 0.022, 0.005, 0.88)
+border_width_left = 3
+border_width_top = 3
+border_width_right = 3
+border_width_bottom = 3
+border_color = Color(1, 0.84, 0.28, 0.98)
+corner_radius_top_left = 6
+corner_radius_top_right = 6
+corner_radius_bottom_right = 6
+corner_radius_bottom_left = 6
+shadow_color = Color(1, 0.78, 0.15, 0.45)
+shadow_size = 24
+
+[sub_resource type="StyleBoxFlat" id="VictoryInnerStyle"]
+content_margin_left = 26.0
+content_margin_top = 20.0
+content_margin_right = 26.0
+content_margin_bottom = 22.0
+bg_color = Color(0.045, 0.03, 0.008, 0.45)
+border_width_left = 1
+border_width_top = 1
+border_width_right = 1
+border_width_bottom = 1
+border_color = Color(1, 0.92, 0.55, 0.65)
+corner_radius_top_left = 4
+corner_radius_top_right = 4
+corner_radius_bottom_right = 4
+corner_radius_bottom_left = 4
+
+[sub_resource type="StyleBoxFlat" id="VictoryBtnNormal"]
+content_margin_left = 16.0
+content_margin_top = 8.0
+content_margin_right = 16.0
+content_margin_bottom = 8.0
+bg_color = Color(0.16, 0.11, 0.02, 0.88)
+border_width_left = 2
+border_width_top = 2
+border_width_right = 2
+border_width_bottom = 2
+border_color = Color(1, 0.84, 0.28, 0.95)
+corner_radius_top_left = 3
+corner_radius_top_right = 3
+corner_radius_bottom_right = 3
+corner_radius_bottom_left = 3
+shadow_color = Color(1, 0.78, 0.15, 0.28)
+shadow_size = 10
+
+[sub_resource type="StyleBoxFlat" id="VictoryBtnHover"]
+content_margin_left = 16.0
+content_margin_top = 8.0
+content_margin_right = 16.0
+content_margin_bottom = 8.0
+bg_color = Color(0.28, 0.19, 0.04, 0.95)
+border_width_left = 2
+border_width_top = 2
+border_width_right = 2
+border_width_bottom = 2
+border_color = Color(1, 0.94, 0.55, 1)
+corner_radius_top_left = 3
+corner_radius_top_right = 3
+corner_radius_bottom_right = 3
+corner_radius_bottom_left = 3
+shadow_color = Color(1, 0.82, 0.2, 0.42)
+shadow_size = 14
+
+[sub_resource type="StyleBoxFlat" id="VictoryBtnPressed"]
+content_margin_left = 16.0
+content_margin_top = 8.0
+content_margin_right = 16.0
+content_margin_bottom = 8.0
+bg_color = Color(0.38, 0.26, 0.06, 0.98)
+border_width_left = 2
+border_width_top = 2
+border_width_right = 2
+border_width_bottom = 2
+border_color = Color(1, 0.98, 0.75, 1)
+corner_radius_top_left = 3
+corner_radius_top_right = 3
+corner_radius_bottom_right = 3
+corner_radius_bottom_left = 3
+shadow_color = Color(1, 0.85, 0.25, 0.5)
+shadow_size = 12
+
 [node name="UI" type="CanvasLayer" unique_id=1907831806]
 script = ExtResource("1")
 
@@ -908,6 +996,103 @@ grow_horizontal = 2
 grow_vertical = 0
 text = "SKIP INTRO [Space / Esc]"
 
+[node name="Victory" type="PanelContainer" parent="Root" unique_id=1492837490]
+unique_name_in_owner = true
+visible = false
+layout_mode = 1
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -295.0
+offset_top = -180.0
+offset_right = 295.0
+offset_bottom = 180.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_styles/panel = SubResource("VictoryOuterStyle")
+
+[node name="InnerFrame" type="PanelContainer" parent="Root/Victory" unique_id=1492837491]
+layout_mode = 2
+theme_override_styles/panel = SubResource("VictoryInnerStyle")
+
+[node name="Content" type="VBoxContainer" parent="Root/Victory/InnerFrame" unique_id=1492837492]
+layout_mode = 2
+theme_override_constants/separation = 10
+alignment = 1
+
+[node name="TopOrnament" type="Label" parent="Root/Victory/InnerFrame/Content" unique_id=1492837493]
+layout_mode = 2
+theme_override_colors/font_color = Color(1, 0.88, 0.42, 0.95)
+theme_override_colors/font_outline_color = Color(0.14, 0.08, 0, 0.95)
+theme_override_constants/outline_size = 3
+theme_override_font_sizes/font_size = 18
+text = "✦ ═══ ❖ ◈ ❖ ═══ ✦"
+horizontal_alignment = 1
+
+[node name="Title" type="Label" parent="Root/Victory/InnerFrame/Content" unique_id=1492837494]
+layout_mode = 2
+theme_override_colors/font_color = Color(1, 0.88, 0.32, 1)
+theme_override_colors/font_shadow_color = Color(1, 0.72, 0.1, 0.45)
+theme_override_colors/font_outline_color = Color(0.16, 0.09, 0, 0.98)
+theme_override_constants/shadow_offset_y = 2
+theme_override_constants/outline_size = 5
+theme_override_font_sizes/font_size = 44
+text = "CONGRATULATIONS!"
+horizontal_alignment = 1
+
+[node name="Subtitle" type="Label" parent="Root/Victory/InnerFrame/Content" unique_id=1492837495]
+layout_mode = 2
+theme_override_colors/font_color = Color(1, 0.96, 0.78, 1)
+theme_override_colors/font_outline_color = Color(0.14, 0.08, 0, 0.95)
+theme_override_constants/outline_size = 3
+theme_override_font_sizes/font_size = 24
+text = "YOU'RE RETURNING HOME"
+horizontal_alignment = 1
+
+[node name="MidOrnament" type="Label" parent="Root/Victory/InnerFrame/Content" unique_id=1492837496]
+layout_mode = 2
+theme_override_colors/font_color = Color(0.95, 0.78, 0.32, 0.9)
+theme_override_colors/font_outline_color = Color(0.12, 0.06, 0, 0.95)
+theme_override_constants/outline_size = 3
+theme_override_font_sizes/font_size = 15
+text = "─── ◈ ORBITAL ESCAPE ACHIEVED ◈ ───"
+horizontal_alignment = 1
+
+[node name="Message" type="Label" parent="Root/Victory/InnerFrame/Content" unique_id=1492837497]
+layout_mode = 2
+theme_override_colors/font_color = Color(0.96, 0.92, 0.78, 0.92)
+theme_override_colors/font_outline_color = Color(0.12, 0.06, 0, 0.95)
+theme_override_constants/outline_size = 3
+theme_override_font_sizes/font_size = 18
+text = "Your crew assembled the Falcon 9, survived detention,
+and blasted off the Moon bound for Earth."
+horizontal_alignment = 1
+autowrap_mode = 3
+
+[node name="BottomOrnament" type="Label" parent="Root/Victory/InnerFrame/Content" unique_id=1492837498]
+layout_mode = 2
+theme_override_colors/font_color = Color(1, 0.86, 0.38, 0.85)
+theme_override_colors/font_outline_color = Color(0.12, 0.06, 0, 0.95)
+theme_override_constants/outline_size = 3
+theme_override_font_sizes/font_size = 16
+text = "✦ ═══════════════ ❖ ═══════════════ ✦"
+horizontal_alignment = 1
+
+[node name="QuitToMenu" type="Button" parent="Root/Victory/InnerFrame/Content" unique_id=1492837499]
+custom_minimum_size = Vector2(0, 44)
+layout_mode = 2
+theme_override_colors/font_color = Color(1, 0.95, 0.72, 1)
+theme_override_colors/font_focus_color = Color(1, 0.98, 0.85, 1)
+theme_override_colors/font_pressed_color = Color(1, 1, 0.9, 1)
+theme_override_colors/font_hover_color = Color(1, 0.99, 0.88, 1)
+theme_override_styles/normal = SubResource("VictoryBtnNormal")
+theme_override_styles/pressed = SubResource("VictoryBtnPressed")
+theme_override_styles/hover = SubResource("VictoryBtnHover")
+theme_override_styles/focus = SubResource("VictoryBtnHover")
+text = "QUIT TO MAIN MENU"
+
 [connection signal="pressed" from="Root/Menu/Content/Host" to="." method="host_pressed"]
 [connection signal="text_submitted" from="Root/Menu/Content/JoinRow/CodeField" to="." method="join_pressed"]
 [connection signal="pressed" from="Root/Menu/Content/JoinRow/Join" to="." method="join_pressed"]
@@ -918,3 +1103,4 @@ text = "SKIP INTRO [Space / Esc]"
 [connection signal="pressed" from="Root/Vending/Content/Header/Exit" to="." method="close_vending"]
 [connection signal="finished" from="Root/Crawl/CrawlVideo" to="." method="close_crawl"]
 [connection signal="pressed" from="Root/Crawl/Skip" to="." method="close_crawl"]
+[connection signal="pressed" from="Root/Victory/InnerFrame/Content/QuitToMenu" to="." method="quit_to_menu_pressed"]

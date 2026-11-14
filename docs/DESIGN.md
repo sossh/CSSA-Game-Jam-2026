@@ -141,3 +141,10 @@ All live gameplay HUD nodes reside under `Root/HUD`:
   - `%PhaseLabel`: Displays student name, current phase, grade, countdown timer, LAN join code, classes survived, and rocket parts (`STUDENT: <name>\n<PHASE> • GRADE <n> • <MM:SS>\nJOIN <code> • <n> classes / <n> parts`).
   - `BottomConsoleBay` (`PanelContainer` with `HudBottomConsole`): Contains `BayHeader` (`◈ MANIPULATOR BAY // KINETIC ACTUATOR ◈`) and `%HeldLabel` (current held item or empty-hand actions using `Left-click` / `Right-click`).
   - Action buttons: `RESUME`, `COPY JOIN CODE`, `QUIT TO MAIN MENU`.
+
+### Victory Popup (`Root/Victory`)
+- Centered `PanelContainer` (`590x360`, `offset = (-295, -180, 295, 180)`) displayed automatically when the Falcon 9 rocket launches (`Game.launch_cinematic_active`).
+- **Ornate Gold Sci-Fi Styling**:
+  - Outer panel (`VictoryOuterStyle`): Dark obsidian-gold translucent fill (`Color(0.032, 0.022, 0.005, 0.88)`), `3px` metallic gold border (`Color(1.0, 0.84, 0.28, 0.98)`), `6px` corner radius, and warm golden glow (`shadow_size = 24`).
+  - Inner double-frame (`InnerFrame` with `VictoryInnerStyle`): `1px` champagne-gold inner border (`Color(1.0, 0.92, 0.55, 0.65)`) framing ornate gold dividers (`TopOrnament`, `MidOrnament`, `BottomOrnament`), `CONGRATULATIONS!` heading, `YOU'RE RETURNING HOME` subtitle, and a gold-styled `QUIT TO MAIN MENU` button.
+- **Input Rules**: Cannot be dismissed with `[Esc]`, and pressing `[Esc]` while the victory popup is up does not open `Root/Pause`.

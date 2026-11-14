@@ -32,6 +32,7 @@ extends CanvasLayer
 @onready var wasted_label: Label = %WastedLabel
 @onready var crawl_panel: Control = %Crawl
 @onready var crawl_video: VideoStreamPlayer = %CrawlVideo
+@onready var victory_panel: PanelContainer = %Victory
 var banner_left: float = 0
 var debug_visible: bool = false
 var wasted_timer: float = 0.0
@@ -120,6 +121,7 @@ func purchase_item(item_id: String) -> void:
 
 func connected() -> void:
 	reset_wasted()
+	victory_panel.hide()
 	menu.hide()
 	if is_instance_valid(menu_music):
 		menu_music.stop()
@@ -136,7 +138,7 @@ func close_crawl() -> void:
 	update_mouse()
 
 func update_mouse() -> void:
-	Game.ui_open = menu.visible or pause_panel.visible or vending_panel.visible or crawl_panel.visible
+	Game.ui_open = menu.visible or pause_panel.visible or vending_panel.visible or crawl_panel.visible or victory_panel.visible
 	Input.mouse_mode = Input.MOUSE_MODE_VISIBLE if Game.ui_open else Input.MOUSE_MODE_CAPTURED
 
 func _input(event: InputEvent) -> void:
@@ -145,12 +147,15 @@ func _input(event: InputEvent) -> void:
 		get_viewport().set_input_as_handled()
 		return
 	if not Net.active: return
+	if Game.launch_cinematic_active or victory_panel.visible:
+		if event.is_action_pressed("ui_cancel"):
+			get_viewport().set_input_as_handled()
+		return
 	if event.is_action_pressed("ui_cancel"):
 		if vending_panel.visible: close_vending()
 		else: pause_panel.visible = not pause_panel.visible
 		update_mouse()
 		get_viewport().set_input_as_handled()
-	if Game.launch_cinematic_active: return
 	if event.is_action_pressed("start_run") and not Game.ui_open: Game.request("start")
 	if event.is_action_pressed("debug_hud"): debug_visible = not debug_visible
 
@@ -163,11 +168,19 @@ func _process(delta: float) -> void:
 	if Game.launch_cinematic_active:
 		if hud.visible:
 			hud.hide()
+			pause_panel.hide()
 			close_vending()
 			close_crawl()
 			reset_wasted()
 			tint.color.a = 0.0
+		if not victory_panel.visible:
+			pause_panel.hide()
+			victory_panel.show()
+			update_mouse()
 		return
+	if victory_panel.visible:
+		victory_panel.hide()
+		update_mouse()
 	hud.visible = Net.active and not menu.visible
 	banner_left -= delta
 	banner.visible = banner_left > 0
