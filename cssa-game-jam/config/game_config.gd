@@ -33,8 +33,12 @@ extends Resource
 @export var base_loot_spawns: int = 5
 @export var mixed_loot_spawns: int = 4
 @export var max_loose_items: int = 90
-@export var food_drop_min_seconds: float = 6.0
-@export var food_drop_max_seconds: float = 14.0
+@export var food_drop_min_seconds: float = 7.0
+@export var food_drop_max_seconds: float = 15.0
+## Ceiling drops slow down as the room fills up. The drop delay is multiplied by
+## lerp(1, this, average stomach fraction of living players), so a starving room
+## gets the base delay and a fully fed room waits this many times longer.
+@export_range(1.0, 5.0, 0.05) var food_drop_fed_multiplier: float = 1.75
 @export var food_drop_marker_scatter: float = 0.4
 @export var food_drop_player_distance: Vector2 = Vector2(1, 2)
 @export var food_drop_side_scatter: float = 0.5
