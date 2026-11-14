@@ -224,6 +224,8 @@ func _process(delta: float) -> void:
 			prompt.text = "WARNING BELL! Get to your chair! [%02d]" % int(ceil(Game.remaining))
 		charge.visible = player.charge >= 0
 		charge.value = player.charge
+		if charge.material is ShaderMaterial:
+			charge.material.set_shader_parameter("progress", clampf(player.charge / maxf(0.001, charge.max_value), 0.0, 1.0))
 	held_label.text = "EMPTY HAND • [LMB] Punch • [E] Grab"
 	if p.held.begins_with("player:"): held_label.text = "HOLDING YOUR FRIEND • Hold LMB to throw • Q drop"
 	elif Game.world.items.has(p.held):
