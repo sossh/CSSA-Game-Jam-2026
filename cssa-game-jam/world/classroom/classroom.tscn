@@ -12,13 +12,13 @@
 [ext_resource type="PackedScene" uid="uid://dno6gh7m8yift" path="res://world/lunar/launch_site/lunar_launch_site.tscn" id="11_launch_site"]
 [ext_resource type="PackedScene" path="res://world/classroom/props/school_wall.tscn" id="12_kit_wall"]
 [ext_resource type="PackedScene" uid="uid://b8p7oomrygqsy" path="res://assets/models/school_kit/architecture/Floor_Wood_4x4.glb" id="13_kit_wood_floor"]
-[ext_resource type="PackedScene" uid="uid://d3jlclyio4j0n" path="res://assets/models/school_kit/architecture/Floor_Tiles_4x4.glb" id="14_kit_tile_floor"]
+[ext_resource type="Shader" path="res://world/classroom/materials/hull_panel.gdshader" id="14_cafe_floor"]
 [ext_resource type="PackedScene" uid="uid://c0vovm3ke4mfp" path="res://assets/models/school_kit/furniture/Chalkboard.glb" id="15_kit_chalkboard"]
 [ext_resource type="PackedScene" uid="uid://cl3yky71vovoe" path="res://assets/models/school_kit/props/School_Bell.glb" id="16_kit_bell"]
 [ext_resource type="PackedScene" path="res://world/classroom/props/bookcase_tall.tscn" id="17_bookcase_tall"]
 [ext_resource type="PackedScene" path="res://world/classroom/props/bookcase_short.tscn" id="18_bookcase_short"]
 [ext_resource type="PackedScene" path="res://world/classroom/props/tv_cart.tscn" id="19_tv_cart"]
-[ext_resource type="PackedScene" path="res://world/classroom/props/locker_bank.tscn" id="20_locker_bank"]
+[ext_resource type="PackedScene" path="res://world/classroom/props/space_travel_painting.tscn" id="20_travel_painting"]
 [ext_resource type="PackedScene" path="res://world/classroom/props/observatory_roof.tscn" id="21_roof"]
 [ext_resource type="PackedScene" path="res://world/classroom/props/vending_snack_display.tscn" id="21_vending_snacks"]
 [ext_resource type="PackedScene" path="res://world/classroom/props/vending_drink_display.tscn" id="22_vending_drinks"]
@@ -28,6 +28,21 @@
 [ext_resource type="Material" path="res://world/classroom/materials/hull_foundation.tres" id="25_foundation"]
 [ext_resource type="Material" path="res://world/classroom/materials/hull_ramp.tres" id="26_ramp"]
 [ext_resource type="Sky" uid="uid://b1vvfc7ur7k7l" path="res://world/lunar/materials/space_sky.tres" id="27_sky"]
+
+[sub_resource type="ShaderMaterial" id="CafeFloorMaterial"]
+shader = ExtResource("14_cafe_floor")
+shader_parameter/base_color = Color(0.245, 0.26, 0.285, 1)
+shader_parameter/seam_color = Color(0.175, 0.19, 0.213, 1)
+shader_parameter/panel_size = Vector2(3, 2)
+shader_parameter/seam_width = 0.012
+shader_parameter/band_enabled = 0.0
+shader_parameter/dust_strength = 0.0
+shader_parameter/variation = 0.035
+shader_parameter/metal = 0.0
+
+[sub_resource type="PlaneMesh" id="CafeFloorMesh"]
+material = SubResource("CafeFloorMaterial")
+size = Vector2(18, 8)
 
 [sub_resource type="StandardMaterial3D" id="FloorMaterial"]
 albedo_color = Color(0.18, 0.22, 0.3, 1)
@@ -459,31 +474,9 @@ transform = Transform3D(1.125, 0, 0, 0, 1, 0, 0, 0, 1.125, 2.25, -0.135, 5.75)
 [node name="Wood16" parent="Room/Finish/ClassroomFloor" unique_id=141556480 instance=ExtResource("13_kit_wood_floor")]
 transform = Transform3D(1.125, 0, 0, 0, 1, 0, 0, 0, 1.125, 6.75, -0.135, 5.75)
 
-[node name="HallwayFloor" type="Node3D" parent="Room/Finish" unique_id=442742349]
-
-[node name="Tile01" parent="Room/Finish/HallwayFloor" unique_id=645630798 instance=ExtResource("14_kit_tile_floor")]
-transform = Transform3D(1.125, 0, 0, 0, 1, 0, 0, 0, 1, -6.75, -0.135, 10)
-
-[node name="Tile02" parent="Room/Finish/HallwayFloor" unique_id=1241285347 instance=ExtResource("14_kit_tile_floor")]
-transform = Transform3D(1.125, 0, 0, 0, 1, 0, 0, 0, 1, -2.25, -0.135, 10)
-
-[node name="Tile03" parent="Room/Finish/HallwayFloor" unique_id=1593621860 instance=ExtResource("14_kit_tile_floor")]
-transform = Transform3D(1.125, 0, 0, 0, 1, 0, 0, 0, 1, 2.25, -0.135, 10)
-
-[node name="Tile04" parent="Room/Finish/HallwayFloor" unique_id=1047018536 instance=ExtResource("14_kit_tile_floor")]
-transform = Transform3D(1.125, 0, 0, 0, 1, 0, 0, 0, 1, 6.75, -0.135, 10)
-
-[node name="Tile05" parent="Room/Finish/HallwayFloor" unique_id=407529197 instance=ExtResource("14_kit_tile_floor")]
-transform = Transform3D(1.125, 0, 0, 0, 1, 0, 0, 0, 1, -6.75, -0.135, 14)
-
-[node name="Tile06" parent="Room/Finish/HallwayFloor" unique_id=1060798614 instance=ExtResource("14_kit_tile_floor")]
-transform = Transform3D(1.125, 0, 0, 0, 1, 0, 0, 0, 1, -2.25, -0.135, 14)
-
-[node name="Tile07" parent="Room/Finish/HallwayFloor" unique_id=1656993283 instance=ExtResource("14_kit_tile_floor")]
-transform = Transform3D(1.125, 0, 0, 0, 1, 0, 0, 0, 1, 2.25, -0.135, 14)
-
-[node name="Tile08" parent="Room/Finish/HallwayFloor" unique_id=1843342091 instance=ExtResource("14_kit_tile_floor")]
-transform = Transform3D(1.125, 0, 0, 0, 1, 0, 0, 0, 1, 6.75, -0.135, 14)
+[node name="HallwayFloor" type="MeshInstance3D" parent="Room/Finish" unique_id=442742349]
+position = Vector3(0, 0.006, 12)
+mesh = SubResource("CafeFloorMesh")
 
 [node name="Walls" type="Node3D" parent="Room/Finish" unique_id=1552390129]
 
@@ -775,11 +768,9 @@ spot_range = 6.1
 spot_angle = 52.0
 spot_angle_attenuation = 0.55
 
-[node name="LockersLeft" parent="Hallway" unique_id=1485181818 instance=ExtResource("20_locker_bank")]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -4.368115, 0, 8.45)
-
-[node name="LockersRight" parent="Hallway" unique_id=1083419770 instance=ExtResource("20_locker_bank")]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 4.3536525, 0, 8.45)
+[node name="SpaceTravelPainting" parent="Hallway" instance=ExtResource("20_travel_painting")]
+position = Vector3(5.25, 2.35, 8.22)
+scale = Vector3(0.72, 0.72, 0.72)
 
 [node name="VendingMachine" parent="Hallway" unique_id=869019490 instance=ExtResource("5")]
 transform = Transform3D(7.54979e-08, 0, -1, 0, 1, 0, 1, 0, 7.54979e-08, -8.25, 0, 13.9)
