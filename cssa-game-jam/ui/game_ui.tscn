@@ -3,6 +3,8 @@
 [ext_resource type="Script" uid="uid://cwsrc05ernper" path="res://ui/game_ui.gd" id="1"]
 [ext_resource type="PackedScene" path="res://ui/event_feed.tscn" id="3"]
 [ext_resource type="Texture2D" uid="uid://bqyalv1uxmwcp" path="res://assets/ui/bitcoin.png" id="4"]
+[ext_resource type="Texture2D" uid="uid://dc4b1imbf6oee" path="res://assets/ui/chicken.png" id="5"]
+[ext_resource type="Texture2D" uid="uid://btf5717nm1wrx" path="res://assets/ui/gas.png" id="6"]
 [ext_resource type="Shader" path="res://ui/death_filter.gdshader" id="4_death_shader"]
 
 [sub_resource type="ShaderMaterial" id="DeathFilterMat"]
@@ -375,10 +377,10 @@ layout_mode = 1
 anchors_preset = 2
 anchor_top = 1.0
 anchor_bottom = 1.0
-offset_left = 28.0
+offset_left = 26.0
 offset_top = -224.0
-offset_right = 64.0
-offset_bottom = -48.0
+offset_right = 44.0
+offset_bottom = -52.0
 grow_vertical = 0
 mouse_filter = 2
 theme_override_styles/background = SubResource("BarBg")
@@ -387,23 +389,20 @@ value = 100.0
 fill_mode = 3
 show_percentage = false
 
-[node name="StomachLabel" type="Label" parent="Root/HUD"]
+[node name="StomachIcon" type="TextureRect" parent="Root/HUD"]
 layout_mode = 1
 anchors_preset = 2
 anchor_top = 1.0
 anchor_bottom = 1.0
-offset_left = 12.0
-offset_top = -42.0
-offset_right = 80.0
-offset_bottom = -18.0
+offset_left = 23.0
+offset_top = -44.0
+offset_right = 47.0
+offset_bottom = -20.0
 grow_vertical = 0
 mouse_filter = 2
-theme_override_colors/font_color = Color(0.55, 0.98, 0.9, 1)
-theme_override_colors/font_outline_color = Color(0, 0.08, 0.16, 0.95)
-theme_override_constants/outline_size = 3
-theme_override_font_sizes/font_size = 12
-text = "STOMACH"
-horizontal_alignment = 1
+texture = ExtResource("5")
+expand_mode = 1
+stretch_mode = 5
 
 [node name="Gas" type="ProgressBar" parent="Root/HUD" unique_id=228781182]
 unique_name_in_owner = true
@@ -411,10 +410,10 @@ layout_mode = 1
 anchors_preset = 2
 anchor_top = 1.0
 anchor_bottom = 1.0
-offset_left = 88.0
+offset_left = 60.0
 offset_top = -224.0
-offset_right = 124.0
-offset_bottom = -48.0
+offset_right = 78.0
+offset_bottom = -52.0
 grow_vertical = 0
 mouse_filter = 2
 theme_override_styles/background = SubResource("BarBg")
@@ -422,24 +421,20 @@ theme_override_styles/fill = SubResource("GasFill")
 fill_mode = 3
 show_percentage = false
 
-[node name="GasLabel" type="Label" parent="Root/HUD" unique_id=1216963209]
-unique_name_in_owner = true
+[node name="GasIcon" type="TextureRect" parent="Root/HUD"]
 layout_mode = 1
 anchors_preset = 2
 anchor_top = 1.0
 anchor_bottom = 1.0
-offset_left = 72.0
-offset_top = -42.0
-offset_right = 140.0
-offset_bottom = -18.0
+offset_left = 57.0
+offset_top = -44.0
+offset_right = 81.0
+offset_bottom = -20.0
 grow_vertical = 0
 mouse_filter = 2
-theme_override_colors/font_color = Color(1, 0.78, 0.35, 1)
-theme_override_colors/font_outline_color = Color(0.12, 0.05, 0, 0.95)
-theme_override_constants/outline_size = 3
-theme_override_font_sizes/font_size = 12
-text = "GAS [F]"
-horizontal_alignment = 1
+texture = ExtResource("6")
+expand_mode = 1
+stretch_mode = 5
 
 [node name="Crosshair" type="Label" parent="Root/HUD" unique_id=1817600521]
 layout_mode = 1

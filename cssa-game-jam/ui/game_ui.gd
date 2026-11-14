@@ -15,7 +15,6 @@ extends CanvasLayer
 @onready var banner: Label = %Banner
 @onready var stomach: ProgressBar = %Stomach
 @onready var gas_bar: ProgressBar = %Gas
-@onready var gas_label: Label = %GasLabel
 @onready var charge: ProgressBar = %ThrowCharge
 @onready var scoreboard: Label = %Scoreboard
 @onready var debug: Label = %Debug
@@ -201,11 +200,6 @@ func _process(delta: float) -> void:
 	stomach.value = p.stomach
 	var current_gas: float = float(p.get("gas", 0.0))
 	gas_bar.value = current_gas
-	var gas_fraction := current_gas / Game.config.gas_capacity
-	if gas_fraction >= Game.config.gas_warning_fraction:
-		gas_label.text = "POP! [F]"
-	else:
-		gas_label.text = "GAS [F]"
 	var minutes := int(ceil(Game.remaining) / 60.0)
 	var seconds := int(ceil(Game.remaining)) % 60
 	phase_label.text = "STUDENT: %s\n%s • GRADE %d • %02d:%02d\nJOIN %s • %d classes / %d parts" % [p.name, Game.phase.to_upper(), Game.grade, minutes, seconds, Net.join_code, Game.survived, Game.rocket_parts]
