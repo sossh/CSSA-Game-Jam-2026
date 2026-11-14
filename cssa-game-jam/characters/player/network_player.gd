@@ -93,8 +93,8 @@ func _physics_process(delta: float) -> void:
 		rotation.y = p.yaw
 		pitch = p.pitch
 		velocity = Vector3.ZERO
-		# A new hit restarts the pooled bodies even during an existing fall.
-		ragdoll.deactivate()
+		if mode not in ["ragdoll", "dead"]:
+			ragdoll.deactivate()
 	if (mode == "ragdoll" or (mode == "dead" and p.launch.length() > 0)) and not ragdoll.active:
 		ragdoll.activate(color, p.position, p.yaw, local, p.launch)
 	if mode not in ["ragdoll", "dead"] and ragdoll.active:

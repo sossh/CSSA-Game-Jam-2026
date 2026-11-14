@@ -355,7 +355,7 @@ func damage(id: int, amount: float, reason: String, impulse: Vector3 = Vector3.Z
 	players[id].stomach = maxf(0, players[id].stomach - amount)
 	event.rpc("hurt", {"id": id})
 	if players[id].stomach <= 0: kill(id, reason, impulse)
-	elif impulse.length() > 0: launch_player(id, impulse)
+	elif impulse.length() > 0 and reason != "was expelled by shotgun": launch_player(id, impulse)
 
 func kill(id: int, reason: String, impulse: Vector3 = Vector3.ZERO) -> void:
 	if not players[id].alive: return
