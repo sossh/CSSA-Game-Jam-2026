@@ -17,3 +17,7 @@ Sourced under CC0 / Freesound community contributions.
 Vending Machine by Stuff6898, CC BY 4.0.
 https://sketchfab.com/3d-models/vending-machine-8f1e8ad4ddeb4523982c4e514af24cff
 https://creativecommons.org/licenses/by/4.0/
+
+The Last Class - School Kit by Jerico (desks, chairs, teacher desk, chalkboard, bookcases, lockers, TV cart, school bell, wall, wood and tile floor models/textures).
+Free for personal and commercial games, modification allowed, credit optional; not to be resold as a standalone asset pack. Terms copied to cssa-game-jam/assets/models/school_kit/LICENSE.txt.
+Integrated in cssa-game-jam/world/classroom/ (classroom.tscn and props/). Walls are recoloured in-engine by world/classroom/materials/school_wall.gdshader.

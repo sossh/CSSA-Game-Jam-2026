@@ -1,0 +1,9 @@
+[gd_scene load_steps=3 format=3]
+[ext_resource type="PackedScene" path="res://assets/models/school_kit/architecture/Wall_Solid.glb" id="1"]
+[ext_resource type="Material" path="res://world/classroom/materials/school_wall.tres" id="2"]
+[node name="SchoolWall" type="Node3D"]
+editor_description = "Visual-only 4 x 3 m School Kit wall module (x -2..2, y 0..3, z +/-0.215). Scale to fit the greybox wall colliders; paint comes from school_wall.tres."
+[node name="Model" parent="." instance=ExtResource("1")]
+[node name="Mesh" parent="Model" index="0"]
+material_override = ExtResource("2")
+[editable path="Model"]
