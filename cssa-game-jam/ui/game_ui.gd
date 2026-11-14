@@ -1,6 +1,7 @@
 extends CanvasLayer
 
 @onready var menu: PanelContainer = %Menu
+@onready var menu_music: AudioStreamPlayer = %MenuMusic
 @onready var menu_status: Label = %MenuStatus
 @onready var name_field: LineEdit = %NameField
 @onready var code_field: LineEdit = %CodeField
@@ -50,6 +51,10 @@ func _ready() -> void:
 	var lobby_status := "Same LAN • 2–%d students • Host runs the classroom" % Game.config.maximum_players
 	menu_status.text = get_tree().get_meta("disconnect_message", lobby_status)
 	get_tree().remove_meta("disconnect_message")
+	if is_instance_valid(menu_music) and menu_music.stream is AudioStreamOggVorbis:
+		menu_music.stream.loop = true
+		if DisplayServer.get_name() != "headless" and menu.visible:
+			menu_music.play()
 	Input.mouse_mode = Input.MOUSE_MODE_VISIBLE
 
 func host_pressed() -> void:
@@ -145,6 +150,8 @@ func purchase_item(item_id: String) -> void:
 func connected() -> void:
 	reset_wasted()
 	menu.hide()
+	if is_instance_valid(menu_music):
+		menu_music.stop()
 	hud.show()
 	if DisplayServer.get_name() != "headless" and not "--skip-intro" in OS.get_cmdline_user_args():
 		crawl_panel.show()
@@ -177,6 +184,11 @@ func _input(event: InputEvent) -> void:
 	if event.is_action_pressed("debug_hud"): debug_visible = not debug_visible
 
 func _process(delta: float) -> void:
+	if is_instance_valid(menu_music) and DisplayServer.get_name() != "headless":
+		if menu.visible and not menu_music.playing:
+			menu_music.play()
+		elif not menu.visible and menu_music.playing:
+			menu_music.stop()
 	if Game.launch_cinematic_active:
 		if hud.visible:
 			hud.hide()

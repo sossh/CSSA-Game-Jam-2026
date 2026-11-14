@@ -14,6 +14,7 @@
 shader = ExtResource("9_visor")
 [ext_resource type="VideoStream" uid="uid://n0dbsf6opxp2" path="res://videos/title.ogv" id="9_title_video"]
 [ext_resource type="Texture2D" uid="uid://bltejex8383tc" path="res://logo/munchtitle.002.png" id="10_logo"]
+[ext_resource type="AudioStream" uid="uid://daotf6ojmnxte" path="res://music/sprach.ogg" id="11_menu_music"]
 
 [sub_resource type="StyleBoxFlat" id="HudBottomConsole"]
 content_margin_left = 14.0
@@ -284,6 +285,10 @@ horizontal_alignment = 1
 custom_minimum_size = Vector2(0, 42)
 layout_mode = 2
 text = "QUIT"
+
+[node name="MenuMusic" type="AudioStreamPlayer" parent="Root/Menu" unique_id=1492837480]
+unique_name_in_owner = true
+stream = ExtResource("11_menu_music")
 
 [node name="DeathFilter" type="ColorRect" parent="Root" unique_id=426231322]
 unique_name_in_owner = true
