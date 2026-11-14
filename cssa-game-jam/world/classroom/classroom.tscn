@@ -24,10 +24,10 @@
 [ext_resource type="PackedScene" path="res://world/classroom/props/vending_drink_display.tscn" id="22_vending_drinks"]
 [ext_resource type="PackedScene" path="res://world/classroom/props/exterior_shell.tscn" id="23_exterior"]
 [ext_resource type="PackedScene" path="res://world/classroom/props/rocket_vending_machine.tscn" id="23_rocket_vending"]
-[ext_resource type="PackedScene" path="res://world/lunar/outpost/lunar_outpost.tscn" id="24_outpost"]
+[ext_resource type="PackedScene" uid="uid://urbl64ij52j2" path="res://world/lunar/outpost/lunar_outpost.tscn" id="24_outpost"]
 [ext_resource type="Material" path="res://world/classroom/materials/hull_foundation.tres" id="25_foundation"]
 [ext_resource type="Material" path="res://world/classroom/materials/hull_ramp.tres" id="26_ramp"]
-[ext_resource type="Sky" path="res://world/lunar/materials/space_sky.tres" id="27_sky"]
+[ext_resource type="Sky" uid="uid://b1vvfc7ur7k7l" path="res://world/lunar/materials/space_sky.tres" id="27_sky"]
 
 [sub_resource type="StandardMaterial3D" id="FloorMaterial"]
 albedo_color = Color(0.18, 0.22, 0.3, 1)
@@ -704,10 +704,10 @@ spot_angle = 52.0
 spot_angle_attenuation = 0.55
 
 [node name="LockersLeft" parent="Hallway" unique_id=1485181818 instance=ExtResource("20_locker_bank")]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -6.95, 0, 8.45)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -4.368115, 0, 8.45)
 
 [node name="LockersRight" parent="Hallway" unique_id=1083419770 instance=ExtResource("20_locker_bank")]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 6.95, 0, 8.45)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 4.3536525, 0, 8.45)
 
 [node name="VendingMachine" parent="Hallway" unique_id=869019490 instance=ExtResource("5")]
 transform = Transform3D(7.54979e-08, 0, -1, 0, 1, 0, 1, 0, 7.54979e-08, -8.25, 0, 13.9)
