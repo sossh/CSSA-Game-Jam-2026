@@ -57,7 +57,7 @@ extends Resource
 @export_group("Presentation")
 @export_range(0, 500) var activity_limit: int = 60
 @export var active_effect_limit: int = 100
-@export var bell_volume: float = 100.0
+@export var bell_volume: float = 200.0
 @export var clone_volume: float = 55.0
 @export var banner_seconds: float = 5.0
 @export var hurt_flash_alpha: float = 0.35
