@@ -79,8 +79,6 @@ func _unhandled_input(event: InputEvent) -> void:
 		if p.held == "": Game.request("punch")
 		else: charge = 0
 	if event.is_action_released("throw_item") and charge >= 0:
-		if p.mode == "seated":
-			Game.request("stand")
 		Game.request("throw", {"charge": minf(charge / Game.config.player.throw_charge_seconds, 1.0)})
 		charge = -1
 		visual.trigger_throw()
