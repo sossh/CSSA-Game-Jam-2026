@@ -399,5 +399,5 @@ func receive(data: Dictionary) -> void:
 		actual_shot_fired = data.shot_fired
 	
 	# Force the client FSM to mirror the host's state so visuals render!
-	if fsm:
+	if not Game.is_host() and fsm and data.has("state_name") and data.state_name != "":
 		fsm.force_change_state(data.state_name)

@@ -14,16 +14,18 @@ func enter() -> void:
 func physics_update(delta: float) -> void:
 	super(delta)
 	var tuning := Game.config.teacher
+	var coffee_pos: Vector3 = Game.world.coffee_position if is_instance_valid(Game.world) else teacher.desk
 	
-	var at_desk := teacher.global_position.distance_to(teacher.desk) <= 0.85
+	var at_desk := teacher.global_position.distance_to(teacher.desk) <= 0.85 or teacher.global_position.distance_to(coffee_pos) <= 1.0
 	if not drank and not at_desk:
-		if state_time > tuning.coffee_travel_timeout or (teacher.path.is_empty() and state_time > tuning.coffee_blocked_timeout):
-			at_desk = true
-		else:
-			teacher.walk_to_desk(delta)
+		if state_time > tuning.coffee_travel_timeout:
+			teacher.path.clear()
+			state_transition.emit(self, "LectureState")
 			return
+		teacher.walk_to_desk(delta)
+		return
 
-	teacher.turn(0, delta, tuning.coffee_turn_speed)
+	teacher.face_point(coffee_pos, delta, tuning.coffee_turn_speed)
 
 	if not drank:
 		drank = true
