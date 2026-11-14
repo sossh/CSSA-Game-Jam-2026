@@ -197,7 +197,7 @@ func _process(delta: float) -> void:
 		reset_wasted()
 	was_alive = not is_dead
 	death_filter.visible = is_dead
-	stats.text = "₿%d   •   STOMACH / HEALTH\n%s" % [p.money, p.name]
+	stats.text = "%d" % p.money
 	stomach.value = p.stomach
 	var current_gas: float = float(p.get("gas", 0.0))
 	gas_bar.value = current_gas

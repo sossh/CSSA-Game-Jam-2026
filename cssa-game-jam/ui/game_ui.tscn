@@ -2,6 +2,7 @@
 
 [ext_resource type="Script" uid="uid://cwsrc05ernper" path="res://ui/game_ui.gd" id="1"]
 [ext_resource type="PackedScene" path="res://ui/event_feed.tscn" id="3"]
+[ext_resource type="Texture2D" uid="uid://bqyalv1uxmwcp" path="res://assets/ui/bitcoin.png" id="4"]
 [ext_resource type="Shader" path="res://ui/death_filter.gdshader" id="4_death_shader"]
 
 [sub_resource type="ShaderMaterial" id="DeathFilterMat"]
@@ -26,33 +27,21 @@ border_color = Color(0.3, 0.7, 0.8, 1)
 default_font_size = 20
 PanelContainer/styles/panel = SubResource("PanelStyle")
 
-[sub_resource type="StyleBoxFlat" id="HudTopVisor"]
-bg_color = Color(0.007843138, 0.02745098, 0.05882353, 0.3647059)
-border_width_left = 2
-border_width_top = 2
-border_width_right = 2
-border_width_bottom = 2
-border_color = Color(0.2, 0.88, 1, 0.65)
-shadow_color = Color(0, 0.8, 1, 0.18039216)
-shadow_size = 10
-
 [sub_resource type="StyleBoxFlat" id="HudBayLeft"]
+content_margin_left = 12.0
+content_margin_top = 8.0
+content_margin_right = 16.0
+content_margin_bottom = 8.0
 bg_color = Color(0.007843138, 0.02745098, 0.05882353, 0.3647059)
 border_width_left = 2
 border_width_top = 2
 border_width_right = 2
 border_width_bottom = 2
 border_color = Color(0.18, 0.92, 1, 0.9)
-shadow_color = Color(0, 0.8, 1, 0.18)
-shadow_size = 10
-
-[sub_resource type="StyleBoxFlat" id="HudBayRight"]
-bg_color = Color(0.007843138, 0.02745098, 0.05882353, 0.3647059)
-border_width_left = 2
-border_width_top = 2
-border_width_right = 2
-border_width_bottom = 2
-border_color = Color(0.18, 0.92, 1, 0.9)
+corner_radius_top_left = 3
+corner_radius_top_right = 3
+corner_radius_bottom_right = 3
+corner_radius_bottom_left = 3
 shadow_color = Color(0, 0.8, 1, 0.18)
 shadow_size = 10
 
@@ -286,80 +275,39 @@ grow_horizontal = 2
 grow_vertical = 2
 mouse_filter = 2
 
-[node name="TopVisorBar" type="Panel" parent="Root/HUD" unique_id=476950910]
-layout_mode = 1
-anchors_preset = 5
-anchor_left = 0.5
-anchor_right = 0.5
-offset_left = -290.0
-offset_top = 12.0
-offset_right = 272.0
-offset_bottom = 46.0
-grow_horizontal = 2
-mouse_filter = 2
-theme_override_styles/panel = SubResource("HudTopVisor")
-
-[node name="CompassReadout" type="Label" parent="Root/HUD/TopVisorBar" unique_id=689184618]
-layout_mode = 1
-anchors_preset = 15
-anchor_right = 1.0
-anchor_bottom = 1.0
-grow_horizontal = 2
-grow_vertical = 2
-theme_override_colors/font_color = Color(0.45, 0.95, 1, 0.9)
-theme_override_colors/font_outline_color = Color(0, 0.08, 0.16, 0.95)
-theme_override_constants/outline_size = 3
-theme_override_font_sizes/font_size = 13
-text = "SYS // ORBITAL DETENTION DECK 04   [ 045°  •  090°  ▲  135°  •  180° ]   GRAV 0.98G"
-horizontal_alignment = 1
-vertical_alignment = 1
-
-[node name="LeftTelemetryBay" type="Panel" parent="Root/HUD" unique_id=393595346]
+[node name="CurrencyBay" type="PanelContainer" parent="Root/HUD"]
 layout_mode = 0
-offset_left = 14.0
-offset_top = 12.0
-offset_right = 344.0
-offset_bottom = 176.0
+offset_left = 20.0
+offset_top = 18.0
+offset_right = 136.0
+offset_bottom = 66.0
 mouse_filter = 2
 theme_override_styles/panel = SubResource("HudBayLeft")
 
-[node name="BayHeader" type="Label" parent="Root/HUD/LeftTelemetryBay" unique_id=1362974603]
-layout_mode = 0
-offset_left = 14.0
-offset_top = 6.0
-offset_right = 310.0
-offset_bottom = 24.0
-theme_override_colors/font_color = Color(0.3, 0.88, 1, 0.78)
-theme_override_font_sizes/font_size = 11
-text = "◈ BIO-TELEMETRY // LIFE SUPPORT"
-
-[node name="RightTelemetryBay" type="Panel" parent="Root/HUD" unique_id=1470056257]
-layout_mode = 1
-anchors_preset = 1
-anchor_left = 1.0
-anchor_right = 1.0
-offset_left = -363.0
-offset_top = 12.0
-offset_right = -14.0
-offset_bottom = 120.0
-grow_horizontal = 0
+[node name="CurrencyRow" type="HBoxContainer" parent="Root/HUD/CurrencyBay"]
+layout_mode = 2
 mouse_filter = 2
-theme_override_styles/panel = SubResource("HudBayRight")
+theme_override_constants/separation = 10
+alignment = 1
 
-[node name="BayHeader" type="Label" parent="Root/HUD/RightTelemetryBay" unique_id=274111431]
-layout_mode = 1
-anchors_preset = 1
-anchor_left = 1.0
-anchor_right = 1.0
-offset_left = -430.0
-offset_top = 6.0
-offset_right = -16.0
-offset_bottom = 24.0
-grow_horizontal = 0
-theme_override_colors/font_color = Color(0.3, 0.88, 1, 0.78)
-theme_override_font_sizes/font_size = 11
-text = "SECTOR CHRONO & TRANSPONDER ◈"
-horizontal_alignment = 2
+[node name="BitcoinIcon" type="TextureRect" parent="Root/HUD/CurrencyBay/CurrencyRow"]
+custom_minimum_size = Vector2(28, 28)
+layout_mode = 2
+size_flags_vertical = 4
+mouse_filter = 2
+texture = ExtResource("4")
+expand_mode = 1
+stretch_mode = 5
+
+[node name="Stats" type="Label" parent="Root/HUD/CurrencyBay/CurrencyRow" unique_id=802122237]
+unique_name_in_owner = true
+layout_mode = 2
+mouse_filter = 2
+theme_override_colors/font_color = Color(0.92, 0.99, 1, 1)
+theme_override_colors/font_outline_color = Color(0, 0.08, 0.16, 0.95)
+theme_override_constants/outline_size = 4
+theme_override_font_sizes/font_size = 24
+text = "20"
 
 [node name="ReticleRing" type="Panel" parent="Root/HUD" unique_id=445304197]
 layout_mode = 1
@@ -404,20 +352,6 @@ theme_override_colors/font_color = Color(0.35, 0.9, 1, 0.72)
 theme_override_font_sizes/font_size = 11
 text = "◈ MANIPULATOR BAY // KINETIC ACTUATOR ◈"
 horizontal_alignment = 1
-
-[node name="Stats" type="Label" parent="Root/HUD" unique_id=802122237]
-unique_name_in_owner = true
-layout_mode = 0
-offset_left = 28.0
-offset_top = 29.0
-offset_right = 338.0
-offset_bottom = 86.0
-theme_override_colors/font_color = Color(0.75, 0.98, 1, 1)
-theme_override_colors/font_outline_color = Color(0, 0.08, 0.16, 0.95)
-theme_override_constants/outline_size = 4
-theme_override_font_sizes/font_size = 19
-text = "₿20 • STOMACH / HEALTH
-Transfer student"
 
 [node name="Stomach" type="ProgressBar" parent="Root/HUD" unique_id=1455380214]
 unique_name_in_owner = true
