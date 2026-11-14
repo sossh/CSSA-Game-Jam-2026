@@ -19,7 +19,7 @@ Host codes encode IPv4 only. Normal play uses UDP **7777** for gameplay and UDP 
 | Q | Drop |
 | Space while seated | Stand |
 | Space while carried | Struggle; three presses frees you |
-| G | Fart |
+| F | Fart |
 | Tab / F3 | Class register / debug info |
 | Esc | Menu (multiplayer keeps running) |
 | Enter in lobby/game over | Host starts a new run |
@@ -29,7 +29,7 @@ Host codes encode IPv4 only. Normal play uses UDP **7777** for gameplay and UDP 
 
 - Host-authoritative teacher, object physics, NPCs, economy, health, seats, ownership and phases. Player movement and six-body jointed ragdolls are simulated by the owning peer for responsiveness.
 - One held thing, including another player or clone. Charged throws, punches, impact noise, tomato splats, knockback and ragdoll recovery.
-- Preparation **30s**, class **300s**, break **90s**. Edit `config/game_config.tres` in the Inspector; tuning fields are defined in `config/game_config.gd`.
+- Preparation **20s**, class **300s**, break **90s**.
 - One **Stomach / health** bar. Time and shotgun hits deplete it; food restores it. Eating is a timed exposed action. Low stomach growls, delayed burps and noisy consumables feed the teacher.
 - Teacher: away → entering → lecture / warning / checking / investigating / coffee / caught-shot → leaving. Warning precedes normal checks; random checks have a minimum cooldown. Investigation raises future check frequency. Coffee reduces hearing sensitivity. Sleeping tablets increase coffee frequency and duration.
 - **Lecturing can catch students:** severe noise or accumulated suspicion can trigger a shot/investigation even with the teacher's back turned. Sound draws attention to its physical origin. A seen violation identifies its actor; otherwise nearby position, suspicious behavior and a small random component choose the culprit. The teacher does not magically know an unseen thrower's identity.
@@ -45,12 +45,50 @@ Host codes encode IPv4 only. Normal play uses UDP **7777** for gameplay and UDP 
 | Dev | Area | Files |
 |---|---|---|
 | 1 | Network, connection UX, robustness | `autoload/net.gd`, snapshot/RPC section in `autoload/game.gd`, `tests/` |
-| 2 | Player feel, carrying, character art, ragdoll tuning | `player/network_player.{tscn,gd}`, `player/ragdoll.{tscn,gd}`, `core/student_visual.tscn` |
-| 3 | Teacher timing, readability, blame and sound | `teacher/teacher.{tscn,gd}`, `autoload/noise_bus.gd`, `autoload/sfx.gd` |
-| 4 | Items, economy, vending | `items/`, interaction/economy helpers in `world/classroom.gd` |
-| 5 | Room art, HUD/menus, round playtests | `world/classroom.tscn`, `world/props/`, `ui/game_ui.{tscn,gd}`, `config/`, `assets/` |
+| 2 | Player feel, carrying, character art, ragdoll tuning | `characters/player/network_player.{tscn,gd}`, `characters/player/ragdoll.{tscn,gd}`, `characters/shared/student_visual.tscn` |
+| 3 | Teacher timing, readability, blame and sound | `characters/teacher/teacher.{tscn,gd}`, `autoload/noise_bus.gd`, `autoload/sfx.gd` |
+| 4 | Items, economy, vending | `items/`, interaction/economy helpers in `world/classroom/classroom.gd` |
+| 5 | Room art, HUD/menus, round playtests | `world/classroom/classroom.tscn`, `world/classroom/props/`, `ui/game_ui.{tscn,gd}`, `config/`, `assets/` |
 
-`world/classroom.gd` and `autoload/game.gd` are integration points: coordinate edits with their owners. The old `main/testing.tscn`, `worlds/testing-world.tscn`, `player/player.tscn` and outside-project `copy-paste/` remain as prototype reference; the main scene uses the new networked player and classroom.
+`world/classroom/classroom.gd` and `autoload/game.gd` are integration points: coordinate edits with their owners. The original player and test scenes live in `prototypes/`. Standalone snippets are in repository-level `reference/snippets/`.
+
+## Godot project folders
+
+Paths here are relative to [the Godot project](../cssa-game-jam/).
+
+| Folder | Contents |
+|---|---|
+| [main/](../cssa-game-jam/main/) | Entry scene and command-line startup |
+| [autoload/](../cssa-game-jam/autoload/), [config/](../cssa-game-jam/config/) | Global services and tuning resources |
+| [characters/](../cssa-game-jam/characters/) | Network player, ragdoll, clones, teacher state machine and shared student visual |
+| [world/classroom/](../cssa-game-jam/world/classroom/), [world/lunar/](../cssa-game-jam/world/lunar/) | Classroom and hallway props, lunar surface, space backdrop and rocket launch site |
+| [items/](../cssa-game-jam/items/), [assets/](../cssa-game-jam/assets/) | Item prefabs and balance data, imported item models, event audio and branding |
+| [core/](../cssa-game-jam/core/), [effects/](../cssa-game-jam/effects/) | Interaction primitives, state machine types, audio emitters and visual effects |
+| [ui/](../cssa-game-jam/ui/), [tests/](../cssa-game-jam/tests/) | Menus and HUD, smoke and network scenarios |
+
+## Game tuning
+
+Open the relevant `.tres` file in the Godot Inspector.
+
+| File | Settings |
+|---|---|
+| [game_config.tres](../cssa-game-jam/config/game_config.tres) | Round timers, lobby size, stomach and gas, Bitcoin, cloning, loot and HUD feedback |
+| [player_config.tres](../cssa-game-jam/config/player_config.tres) | Walk, sprint, jump, look sensitivity, reach, throw charge, struggle and ragdoll recovery |
+| [teacher_config.tres](../cssa-game-jam/config/teacher_config.tres) | Check and warning timing, hearing, suspicion, blame, coffee, movement and shotgun |
+| [interactions_config.tres](../cssa-game-jam/config/interactions_config.tres) | Eating and action cooldowns, throws and impacts, weapons, props and vending reach |
+| [audio_config.tres](../cssa-game-jam/config/audio_config.tres) | Event folders and clip overrides, playback mix, classroom ambience and lecture chalk |
+| [network_config.tres](../cssa-game-jam/config/network_config.tres) | Gameplay and discovery ports, discovery scan and retry timing |
+| [items/data/](../cssa-game-jam/items/data/) | Per-item price, grade, spawn weight, mass, food, and noise |
+
+Use the same gameplay, item and network resources on every LAN peer. The
+`--prep=`, `--class=`, `--break=`, and `--port=` launch flags override the
+local settings for that session. Edit key and mouse bindings under **Project
+Settings → Input Map**. The in-game control labels show the default bindings.
+
+Sound events use a matching folder under `event_root` by default. Add an
+`event_folders` entry to redirect an event or use `event_streams` to pick an
+exact clip or an AudioStreamRandomizer. An empty folder override silences the
+event. Hearing and gameplay loudness are tuned in the gameplay resources above.
 
 ## Networking contract
 
@@ -74,19 +112,21 @@ Host codes encode IPv4 only. Normal play uses UDP **7777** for gameplay and UDP 
 
 ## Level editing
 
-Open `world/classroom.tscn`: the room, sixteen desk instances, teacher, hallway props, environment, lights and camera already exist in the **Scene dock** and 3D viewport. Open an instanced scene with its scene icon, or enable **Editable Children** for per-instance overrides.
+Open `world/classroom/classroom.tscn`: the room, sixteen desk instances, teacher, hallway props, environment, lights and camera already exist in the **Scene dock** and 3D viewport. Open an instanced scene with its scene icon, or enable **Editable Children** for per-instance overrides.
 
-- `world/props/desk.tscn`: desk/chair meshes, colliders, seat interaction, `SitPoint`, two `LootSpawns`, and a `NavigationObstacle` marker. Moving a desk moves all its gameplay markers. The world reads those marker transforms at startup, so layouts no longer need coordinates edited in GDScript.
-- `TeacherDesk`, `VendingMachine`, and `TransferChute` are reusable scenes with their interaction volumes and spawn/dispense markers visible in the editor. The outdoor rocket and stand are in `world/props/lunar_launch_site.tscn`.
+- `world/classroom/props/desk.tscn`: desk/chair meshes, colliders, seat interaction, `SitPoint`, two `LootSpawns`, and a `NavigationObstacle` marker. Moving a desk moves all its gameplay markers. The world reads those marker transforms at startup, so layouts no longer need coordinates edited in GDScript.
+- `TeacherDesk`, `VendingMachine`, and `TransferChute` are reusable scenes with their interaction volumes and spawn/dispense markers visible in the editor. The outdoor rocket and stand are in `world/lunar/launch_site/lunar_launch_site.tscn`.
 - `TeacherWaypoints` contains the board/lounge positions; `Room` contains open/closed door markers.
 - Grid-pathfinding builds its data from the furniture's `NavigationObstacle` markers. Their Inspector `half_extents` include teacher clearance around each desk.
 - `ui/game_ui.tscn` contains the menu, HUD, pause, vending entries and crawl. Layout is defined by anchors/containers; button connections are saved in the scene. Labels, theme and positions can be edited without changing code.
-- `player/ragdoll.tscn` contains six rigid bodies and five joints, pre-instanced under every network player. The script activates/resets them rather than constructing bodies. Its root is top-level so the player controller can follow the simulated body without moving it.
+- `characters/player/ragdoll.tscn` contains six rigid bodies and five joints, pre-instanced under every network player. The script activates/resets them rather than constructing bodies. Its root is top-level so the player controller can follow the simulated body without moving it.
 - Dynamic players, items, NPCs, sound emitters and effect bursts instantiate their complete `.tscn` prefabs. Gameplay scripts update state and reference existing children using `$`/`%`/`@onready`; they do not construct node hierarchies.
 
 Layers: **1 world, 2 players, 4 objects, 8 teacher/NPCs, 16 interactables** (bit values). Player movement collides with world geometry; host object physics detects player bodies. Seats are explicit interactions, not automatic collision triggers.
 
 ## Verification
+
+The Python runners use `godot` from PATH or the executable set in `GODOT_BIN`.
 
 ```sh
 godot --headless --path cssa-game-jam --editor --import --quit
@@ -94,7 +134,7 @@ python3 cssa-game-jam/tests/run_smoke.py
 python3 cssa-game-jam/tests/run_network.py
 ```
 
-The smoke script launches a real ENet host/client pair and exercises registration, replicated objects, contested pickup, charged throwing, friend carry/ragdoll/recovery, vending, grade locks, coffee drugs, eating/allowance, lecture noise response, check cooldown, death, cloning fee, grade progression, wipe and restart. It fails on engine errors/warnings as well as assertions. `--render` additionally renders the host and saves a screenshot to `/tmp/opencode/cosmic-detention.png`.
+The smoke script launches a real ENet host/client pair and exercises registration, replicated objects, contested pickup, charged throwing, friend carry/ragdoll/recovery, vending, grade locks, coffee drugs, eating/allowance, lecture noise response, check cooldown, death, cloning fee, grade progression, wipe and restart. It fails on engine errors/warnings as well as assertions. `--render` renders the host and saves `cosmic-detention.png` in the system temporary directory.
 
 The network test launches six actual Godot processes, checks automatic phase timers, a mid-class spectator joining and re-cloning, teacher sightline occlusion and shotgun damage, replicated large snapshots, graceful peer departure, and host-disconnect cleanup.
 

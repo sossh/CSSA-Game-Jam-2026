@@ -21,10 +21,12 @@ The current build uses primitive greybox geometry and **no generated audio or fi
 
 ### Model handoff
 
+Repository-level [art-source/](../art-source/) holds original models, Blockbench projects and audio. Place assets prepared for import in the Godot project with the scenes that use them.
+
 - Prefer `.glb`, meters, Y up, character forward **-Z**, applied transforms. Character origin at feet; item origins at their center of mass.
 - Keep visual meshes separate from gameplay colliders and interaction markers. Low-poly, strong silhouette beats detail at this scale.
 - Item models go into `cssa-game-jam/assets/models/items/`. Open the corresponding `items/scenes/*.tscn`, hide/replace its `Visual` mesh, and instance the imported model there. Adjust its collider in the same scene. The resource's `scene` field references the complete throwable scene.
-- Characters share `core/student_visual.tscn`; edit `player/network_player.tscn`, `player/ragdoll.tscn`, `npc/kid.tscn` and `teacher/teacher.tscn` for their bodies, cameras, joints and props. Room geometry and lighting live in `world/classroom.tscn` with reusable furniture in `world/props/`.
+- Characters share `characters/shared/student_visual.tscn`; edit `characters/player/network_player.tscn`, `characters/player/ragdoll.tscn`, `characters/npc/kid.tscn` and `characters/teacher/teacher.tscn` for their bodies, cameras, joints and props. Room geometry and lighting live in `world/classroom/classroom.tscn` with reusable furniture in `world/classroom/props/`.
 
 ## Sounds
 
@@ -49,7 +51,7 @@ The current build uses primitive greybox geometry and **no generated audio or fi
 
 ### Sound handoff
 
-- Put mono positional `.ogg` or `.wav` files in `cssa-game-jam/assets/audio/<event>/`, e.g. `chew/chew_01.ogg`. The loader discovers variations automatically after importing/restarting.
+- Put mono positional `.ogg` or `.wav` files in `cssa-game-jam/assets/audio/<event>/`, e.g. `chew/chew_01.ogg`. The loader discovers variations after importing and restarting. Set per-event replacements, the ambience track, and the chalk track in [audio_config.tres](../cssa-game-jam/config/audio_config.tres).
 - Trim accidental silence, avoid clipping, leave headroom. 44.1/48 kHz mono is fine; stereo is useful for future music.
 - Missing files are silent. Visual warning text and teacher labels currently communicate the important cues.
 - The host's `NoiseBus` decides gameplay loudness independently of audio volume. Quieting the audio mix does not make the player stealthier.

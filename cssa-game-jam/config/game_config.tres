@@ -1,4 +1,60 @@
-[gd_resource type="Resource" script_class="GameConfig" load_steps=2 format=3]
+[gd_resource type="Resource" script_class="GameConfig" load_steps=5 format=3]
+
 [ext_resource type="Script" path="res://config/game_config.gd" id="1"]
+[ext_resource type="Resource" path="res://config/player_config.tres" id="2"]
+[ext_resource type="Resource" path="res://config/teacher_config.tres" id="3"]
+[ext_resource type="Resource" path="res://config/interactions_config.tres" id="4"]
+
 [resource]
 script = ExtResource("1")
+preparation_seconds = 20.0
+class_seconds = 300.0
+break_seconds = 90.0
+maximum_players = 6
+stomach_max = 100.0
+hunger_per_second = 0.7
+hunger_per_grade = 0.06
+growl_stomach_threshold = 25.0
+growl_interval = Vector2(10, 18)
+growl_loudness = 32.0
+gas_capacity = 100.0
+gas_warning_fraction = 0.85
+auto_gas_cooldown = 0.8
+gas_relief = Vector2(40, 50)
+burp_loudness = 45.0
+fart_loudness = 50.0
+starting_bitcoin = 20
+attendance_allowance = 5
+bitcoin_per_food = 0.5
+cloning_fee = 10
+npc_count = 10
+food_spawns_per_player = 5
+base_loot_spawns = 5
+mixed_loot_spawns = 4
+max_loose_items = 90
+food_drop_min_seconds = 6.0
+food_drop_max_seconds = 14.0
+food_drop_marker_scatter = 0.4
+food_drop_player_distance = Vector2(1, 2)
+food_drop_side_scatter = 0.5
+prep_loot_scatter = Vector2(0.25, 0.12)
+prep_loot_base_height = 0.1
+prep_loot_stack_height = 0.3
+npc_first_noise_delay = Vector2(80, 150)
+npc_noise_interval = Vector2(130, 180)
+npc_noise_loudness = Vector2(18, 30)
+clone_mass = 12.0
+clone_return_delay = 6.0
+clone_return_max_speed = 1.5
+fall_out_height = -15.0
+activity_limit = 60
+active_effect_limit = 100
+bell_volume = 100.0
+clone_volume = 55.0
+banner_seconds = 5.0
+hurt_flash_alpha = 0.35
+splat_flash_alpha = 0.65
+flash_fade_per_second = 0.25
+player = ExtResource("2")
+teacher = ExtResource("3")
+interactions = ExtResource("4")

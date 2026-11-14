@@ -45,8 +45,12 @@ are core, not optional polish.
   and friends can be carried/thrown. Keep physical ragdolls and recovery.
 - Single **Stomach / health** bar: time and damage deplete it, food refills it.
   Eating is loud; hunger, burps, impacts, footsteps and punches create noise.
-- Configurable phases, currently **30s preparation / 300s class / 90s break**.
-  Tuning lives in `config/game_config.tres` and its resource script.
+- Configurable phases, currently **20s preparation / 300s class / 90s break**.
+  Round, economy and spawn tuning lives in `config/game_config.tres`. That
+  resource links the player, teacher and interaction settings. Audio paths
+  and mixing live in `config/audio_config.tres`, and LAN ports and discovery
+  timing live in `config/network_config.tres`. Item tuning stays with the
+  item resources under `items/data/`.
 - Teacher states include lecture, warning/check, investigation, coffee and
   caught/shoot, plus entrance/exit. Normal checks have a minimum cooldown and
   a readable warning before the slow turn. Investigations increase alertness.
@@ -75,24 +79,22 @@ All paths below are relative to `cssa-game-jam/`.
 | Authoritative state, phases, economy, RPCs | `autoload/game.gd` |
 | Gameplay noise / positional sound | `autoload/noise_bus.gd`, `autoload/sfx.gd` |
 | Item lookup / resource schema | `autoload/item_db.gd`, `items/item_data.gd` |
-| Classroom layout / integration behaviour | `world/classroom.tscn`, `world/classroom.gd` |
-| Reusable desks and hallway props | `world/props/*.tscn` |
-| Networked player | `player/network_player.tscn`, `player/network_player.gd` |
-| Six-body physical ragdoll | `player/ragdoll.tscn`, `player/ragdoll.gd` |
-| Shared character visual | `core/student_visual.tscn` |
-| Teacher visual / AI | `teacher/teacher.tscn`, `teacher/teacher.gd` |
+| Classroom layout / integration behaviour | `world/classroom/classroom.tscn`, `world/classroom/classroom.gd` |
+| Reusable desks and hallway props | `world/classroom/props/*.tscn` |
+| Networked player | `characters/player/network_player.tscn`, `characters/player/network_player.gd` |
+| Six-body physical ragdoll | `characters/player/ragdoll.tscn`, `characters/player/ragdoll.gd` |
+| Shared character visual | `characters/shared/student_visual.tscn` |
+| Teacher visual / AI | `characters/teacher/teacher.tscn`, `characters/teacher/teacher.gd` |
 | Throwable behaviour / item prefabs | `items/throwable.{tscn,gd}`, `items/scenes/*.tscn` |
-| NPC clone | `npc/kid.tscn` |
+| NPC clone | `characters/npc/kid.tscn` |
 | Item balance / rarity / grade / prefab references | `items/data/*.tres` |
 | Menus / HUD / vending controls | `ui/game_ui.tscn`, `ui/game_ui.gd`, `ui/vending_entry.tscn` |
 | Effect / audio prefabs | `effects/*.tscn` |
 | Automated integration scenarios | `tests/` |
 
-`world/classroom.gd` and `autoload/game.gd` are shared integration hotspots;
+`world/classroom/classroom.gd` and `autoload/game.gd` are shared integration hotspots;
 avoid unrelated edits there and coordinate with whoever is already modifying them.
-The old `main/testing.tscn`, `worlds/testing-world.tscn`, `player/player.tscn`
-and repository-level `copy-paste/` are prototype references, not the active game.
-Do not accidentally implement features only in the prototype.
+The original player and test scenes live in `prototypes/`. Standalone snippets are in repository-level `reference/snippets/`.
 
 ## Multiplayer rules
 
@@ -131,6 +133,8 @@ Collision bit values: **1 world, 2 players, 4 items, 8 teacher/NPCs,
   `used-assets.txt`. Preserve existing credits and import metadata.
 - Prefer `.glb`, meters, Y up, characters facing -Z. Character origins at feet;
   item origins near center of mass. Keep visuals separate from colliders.
+- Source models, Blockbench projects and original audio live in repository-level `art-source/`.
+- Imported item models and their textures live in `assets/models/items/`.
 - Replace item geometry inside `items/scenes/<item>.tscn`, not in code.
 - New item: add an inherited throwable scene and an `items/data/*.tres`
   resource. Match `item_id`/`id`, assign its `scene`, and set price, grade,

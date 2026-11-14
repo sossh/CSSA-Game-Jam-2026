@@ -26,7 +26,7 @@ func run_host() -> void:
 	verify_scene_nodes()
 	verify(Net.decode_code(Net.encode_ip("192.168.1.42")) == "192.168.1.42", "LAN code round trip")
 	verify(Net.decode_code("zzzz-zzzz") == "", "Malformed code rejected")
-	verify(ItemDB.items.size() == 17, "All item resources loaded")
+	verify(ItemDB.items.size() == 39, "All item resources loaded")
 	for attempt in range(100):
 		if Game.players.size() >= 2: break
 		await wait(0.1)
@@ -56,13 +56,13 @@ func run_host() -> void:
 	await wait(0.5)
 	verify(Game.players[client].mode == "ragdoll", "Thrown friend enters ragdoll")
 	verify(Game.players[client].limbs.size() == 6, "Owner transmits six physical ragdoll limb poses")
-	await wait(Game.config.ragdoll_seconds + 0.2)
+	await wait(Game.config.player.ragdoll_seconds + 0.2)
 	verify(Game.players[client].mode == "walk", "Ragdoll recovers")
 	var ragdoll_id: int = Game.world.player_nodes[client].ragdoll.get_instance_id()
 	Game.launch_player(client, Vector3(0, 4, 3))
 	await wait(0.4)
 	verify(Game.world.player_nodes[client].ragdoll.get_instance_id() == ragdoll_id and Game.players[client].limbs.size() == 6, "Existing scene ragdoll resets for another launch")
-	await wait(Game.config.ragdoll_seconds + 0.1)
+	await wait(Game.config.player.ragdoll_seconds + 0.1)
 	teleport(1, Game.world.vending_position + Vector3(0, 0, -2))
 	Game.players[1].money = 100
 	await wait(0.15)
@@ -82,26 +82,26 @@ func run_host() -> void:
 	await wait(0.2)
 	Game.start_class()
 	Game.remaining = 60
-	Game.world.teacher.set_physics_process(false)
+	Game.world.teacher.fsm.set_physics_process(false)
 	Game.players[1].stomach = 50.0
 	var apple = Game.world.spawn_item("apple", Vector3(0, 1.3, 4.5))
 	await wait(0.1)
 	Game.world.interact(1, apple.entity_id)
 	Game.world.use_held(1)
-	await wait(1.7)
+	await wait(Game.config.interactions.eat_seconds + 0.2)
 	verify(Game.players[1].stomach > 70 and Game.players[1].food == 25, "Eating restores stomach and records allowance food")
 	verify(not Game.world.items.has(apple.entity_id) if is_instance_valid(apple) else true, "Eaten item consumed")
 	var teacher = Game.world.teacher
 	teacher.global_position = Vector3(0, 0, -7)
-	teacher.state = ClassroomTeacher.State.LECTURE
+	teacher.fsm.force_change_state("LectureState")
 	teacher.suspicion = 0
 	NoiseBus.emit_noise(Vector3(0, 0, 5), 250, str(1), "gunshot")
-	verify(teacher.state in [ClassroomTeacher.State.SHOOT, ClassroomTeacher.State.INVESTIGATE], "Over-threshold noise catches/investigates during lecture")
-	teacher.state = ClassroomTeacher.State.LECTURE
+	verify(teacher.get_current_state_name() in ["shootstate", "investigatestate"], "Over-threshold noise catches/investigates during lecture")
+	teacher.fsm.force_change_state("LectureState")
 	teacher.suspicion = 0
 	teacher.last_check = Game.elapsed
 	NoiseBus.emit_noise(Vector3(0, 0, 5), 65, str(1), "crunch")
-	verify(teacher.state == ClassroomTeacher.State.LECTURE, "Check cooldown blocks repeated low-noise turns")
+	verify(teacher.get_current_state_name() == "lecturestate", "Check cooldown blocks repeated low-noise turns")
 	var balance: int = Game.players[client].money
 	Game.kill(client, "test clone")
 	verify(Game.phase == "class" and not Game.players[client].alive, "One death spectates while teammate keeps class alive")
@@ -120,20 +120,22 @@ func run_host() -> void:
 	teleport(1, Vector3(0, 0, 5))
 	teleport(client, Vector3(1, 0, 5))
 	await wait(0.5)
-	if DisplayServer.get_name() != "headless":
-		await RenderingServer.frame_post_draw
-		get_viewport().get_texture().get_image().save_png("/tmp/opencode/cosmic-detention.png")
+	for arg in OS.get_cmdline_user_args():
+		if arg.begins_with("--smoke-screenshot="):
+			await RenderingServer.frame_post_draw
+			var path := arg.trim_prefix("--smoke-screenshot=")
+			verify(get_viewport().get_texture().get_image().save_png(path) == OK, "Rendered screenshot saved to " + path)
 	print("SMOKE_HOST_", "FAILED" if failed else "PASSED")
 	await wait(1)
 	get_tree().quit(1 if failed else 0)
 
 func verify_scene_nodes() -> void:
 	# Detached scenes have not run _ready: these nodes must be authored in .tscn.
-	var room = load("res://world/classroom.tscn").instantiate()
+	var room = load("res://world/classroom/classroom.tscn").instantiate()
 	verify(room.get_node("Desks").get_child_count() == 16 and room.has_node("Teacher/Shotgun/Barrel"), "Classroom and teacher are editable before running scripts")
 	verify(room.has_node("Desks/Desk01/SitPoint") and room.has_node("Hallway/VendingMachine/DispensePoint"), "Interaction and spawn markers exist in scene files")
 	room.free()
-	var player = load("res://player/network_player.tscn").instantiate()
+	var player = load("res://characters/player/network_player.tscn").instantiate()
 	verify(player.has_node("Head/Camera") and player.get_node("Ragdoll/Bodies").get_child_count() == 6 and player.get_node("Ragdoll/Joints").get_child_count() == 5, "Player camera, ragdoll bodies and joints are prebuilt")
 	player.free()
 	for data: ItemData in ItemDB.items.values():
@@ -142,7 +144,7 @@ func verify_scene_nodes() -> void:
 		item.free()
 	var ui = get_tree().current_scene.get_node("UI")
 	ui.open_vending()
-	verify(ui.vending_rows.get_child_count() == 17 and ui.vending_panel.visible, "Scene-authored vending controls open and refresh")
+	verify(ui.vending_rows.get_child_count() == ItemDB.items.size() and ui.vending_panel.visible, "Scene-authored vending controls open and refresh")
 	ui.close_vending()
 	verify(ui.has_node("Root/HUD/EventFeed/Content/Entries"), "Incident feed is authored in the HUD scene")
 	for file in ["impact_burst", "eating", "fart", "burp", "footstep", "tomato_splat", "shot", "pop_rocks"]:
@@ -160,8 +162,8 @@ func verify_presentation() -> void:
 	verify("NETWORK_PRESENTATION_MARKER" in get_tree().current_scene.get_node("UI/Root/HUD/EventFeed/Content/Entries").text, "Incident feed updates from authoritative events")
 	await wait(2.7)
 	verify(spawned.all(func(instance): return not is_instance_valid(instance)), "One-shot particle instances clean themselves up")
-	for i in range(65): Game.append_activity("Bounded history test", Game.elapsed)
-	verify(Game.activity_history.size() == Game.ACTIVITY_LIMIT, "Incident history is bounded")
+	for i in range(Game.config.activity_limit + 5): Game.append_activity("Bounded history test", Game.elapsed)
+	verify(Game.activity_history.size() == Game.config.activity_limit, "Incident history is bounded")
 
 func run_client() -> void:
 	for attempt in range(150):

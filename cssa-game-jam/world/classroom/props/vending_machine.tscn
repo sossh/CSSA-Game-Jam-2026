@@ -1,0 +1,55 @@
+[gd_scene load_steps=8 format=3]
+
+[ext_resource type="PackedScene" path="res://world/classroom/props/assets/vending_machine.glb" id="1_model"]
+[ext_resource type="PackedScene" path="res://core/interact/interactable.tscn" id="2_interaction"]
+
+[sub_resource type="BoxShape3D" id="CaseShape"]
+size = Vector3(1.83, 2.59, 0.96)
+
+[sub_resource type="BoxShape3D" id="InteractionShape"]
+size = Vector3(0.52, 0.68, 0.22)
+
+[sub_resource type="StandardMaterial3D" id="TrayMaterial"]
+albedo_color = Color(0.1, 0.14, 0.18, 1)
+roughness = 0.8
+
+[sub_resource type="BoxMesh" id="TrayMesh"]
+material = SubResource("TrayMaterial")
+size = Vector3(0.75, 0.07, 0.66)
+
+[sub_resource type="BoxShape3D" id="TrayShape"]
+size = Vector3(0.75, 0.07, 0.66)
+
+[node name="VendingMachine" type="Node3D"]
+
+[node name="Cabinet" parent="." instance=ExtResource("1_model")]
+position = Vector3(0.046, 0.023, 0.04)
+scale = Vector3(0.74, 0.74, 0.74)
+
+[node name="Case" type="StaticBody3D" parent="."]
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="Case"]
+position = Vector3(0, 1.295, 0.04)
+shape = SubResource("CaseShape")
+
+[node name="PickupTray" type="StaticBody3D" parent="."]
+position = Vector3(-0.62, 0.87, -0.83)
+
+[node name="Mesh" type="MeshInstance3D" parent="PickupTray"]
+mesh = SubResource("TrayMesh")
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="PickupTray"]
+shape = SubResource("TrayShape")
+
+[node name="Keypad" parent="." instance=ExtResource("2_interaction")]
+position = Vector3(-0.63, 1.82, -0.62)
+interaction_id = "vending"
+prompt = "Vending keypad"
+
+[node name="CollisionShape3D" parent="Keypad" index="0"]
+shape = SubResource("InteractionShape")
+
+[node name="DispensePoint" type="Marker3D" parent="."]
+position = Vector3(-0.62, 1.20, -0.85)
+
+[editable path="Keypad"]

@@ -32,12 +32,14 @@ var debug_visible: bool = false
 
 func _ready() -> void:
 	stomach.max_value = Game.config.stomach_max
-	gas_bar.max_value = 100.0
+	gas_bar.max_value = Game.config.gas_capacity
+	charge.max_value = Game.config.player.throw_charge_seconds
 	Game.announcement.connect(show_banner)
 	Game.effect.connect(on_effect)
 	Net.status_changed.connect(func(message): menu_status.text = message)
 	Net.lan_games_found.connect(show_lan_games)
-	menu_status.text = get_tree().get_meta("disconnect_message", "Same LAN • 2–6 students • Host runs the classroom")
+	var lobby_status := "Same LAN • 2–%d students • Host runs the classroom" % Game.config.maximum_players
+	menu_status.text = get_tree().get_meta("disconnect_message", lobby_status)
 	get_tree().remove_meta("disconnect_message")
 	Input.mouse_mode = Input.MOUSE_MODE_VISIBLE
 
@@ -150,7 +152,7 @@ func _input(event: InputEvent) -> void:
 func _process(delta: float) -> void:
 	banner_left -= delta
 	banner.visible = banner_left > 0
-	tint.color.a = maxf(0, tint.color.a - delta * 0.25)
+	tint.color.a = maxf(0, tint.color.a - delta * Game.config.flash_fade_per_second)
 	if crawl_panel.visible:
 		crawl_text.position.y -= delta * 45
 		if crawl_text.position.y < -1100: close_crawl()
@@ -161,10 +163,12 @@ func _process(delta: float) -> void:
 	stomach.value = p.stomach
 	var current_gas: float = float(p.get("gas", 0.0))
 	gas_bar.value = current_gas
-	if current_gas >= 85.0:
-		gas_label.text = "GAS: %d%% • ABOUT TO POP! [F] VENT" % int(current_gas)
+	var gas_fraction := current_gas / Game.config.gas_capacity
+	var gas_percent := int(current_gas * 100.0 / Game.config.gas_capacity)
+	if gas_fraction >= Game.config.gas_warning_fraction:
+		gas_label.text = "GAS: %d%% • ABOUT TO POP! [F] VENT" % gas_percent
 	else:
-		gas_label.text = "GAS: %d%% • [F] VENT" % int(current_gas)
+		gas_label.text = "GAS: %d%% • [F] VENT" % gas_percent
 	var minutes := int(ceil(Game.remaining)) / 60
 	var seconds := int(ceil(Game.remaining)) % 60
 	phase_label.text = "%s • GRADE %d • %02d:%02d\nJOIN %s • %d classes / %d parts" % [Game.phase.to_upper(), Game.grade, minutes, seconds, Net.join_code, Game.survived, Game.rocket_parts]
@@ -173,7 +177,7 @@ func _process(delta: float) -> void:
 	var player = Game.world.player_nodes.get(id)
 	if is_instance_valid(player):
 		prompt.text = player.interaction_text if p.alive else "SPECTATING • Space / Ctrl fly • Re-clone at the bell"
-		if p.mode == "carried": prompt.text = "[SPACE] Struggle! Three presses to escape."
+		if p.mode == "carried": prompt.text = "[SPACE] Struggle! Press %d times to escape." % Game.config.player.struggle_presses
 		if p.mode == "seated":
 			if player.interaction_text == "":
 				prompt.text = "[E] Stand • [SPACE] Stand • [RMB] Eat • [LMB] Throw"
@@ -202,9 +206,9 @@ func _process(delta: float) -> void:
 
 func show_banner(text: String) -> void:
 	banner.text = text
-	banner_left = 5
+	banner_left = Game.config.banner_seconds
 
 func on_effect(kind: String, data: Dictionary) -> void:
 	if kind == "vending" and data.id == multiplayer.get_unique_id(): open_vending(data.get("machine", "vending"))
 	if kind in ["hurt", "splat"] and data.id == multiplayer.get_unique_id():
-		tint.color.a = 0.65 if kind == "splat" else 0.35
+		tint.color.a = Game.config.splat_flash_alpha if kind == "splat" else Game.config.hurt_flash_alpha

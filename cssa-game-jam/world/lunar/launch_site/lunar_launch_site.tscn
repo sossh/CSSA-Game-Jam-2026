@@ -1,0 +1,121 @@
+[gd_scene format=3 uid="uid://dno6gh7m8yift"]
+
+[ext_resource type="PackedScene" uid="uid://b40fe81dl7erl" path="res://world/lunar/launch_site/assets/falcon-9-block-5-first-stage-godot.glb" id="1_booster"]
+[ext_resource type="PackedScene" uid="uid://bd1on6ewydaep" path="res://world/lunar/launch_site/assets/falcon-9-block-5-second-stage-godot.glb" id="2_upper_stage"]
+[ext_resource type="PackedScene" uid="uid://n4o7jmwjshu1" path="res://world/lunar/launch_site/assets/falcon-9-block-5-fairing-godot.glb" id="3_fairing"]
+[ext_resource type="PackedScene" uid="uid://hhwovklylds1" path="res://world/lunar/launch_site/assets/spacex_falcon_9_strongback.glb" id="4_strongback"]
+
+[ext_resource type="Shape3D" path="res://world/lunar/launch_site/strongback_collision.res" id="5_strongback_collision"]
+
+[sub_resource type="StandardMaterial3D" id="PadMaterial"]
+albedo_color = Color(0.23, 0.26, 0.29, 1)
+roughness = 0.9
+
+[sub_resource type="BoxMesh" id="PadMesh"]
+material = SubResource("PadMaterial")
+size = Vector3(25, 10, 20)
+
+[sub_resource type="BoxShape3D" id="PadShape"]
+size = Vector3(25, 10, 20)
+
+[sub_resource type="CylinderMesh" id="MountMesh"]
+material = SubResource("PadMaterial")
+top_radius = 2.35
+bottom_radius = 2.95
+height = 0.9
+
+[sub_resource type="CylinderShape3D" id="MountShape"]
+height = 0.9
+radius = 2.75
+
+[sub_resource type="CylinderShape3D" id="BoosterShape"]
+height = 47.76
+radius = 1.95
+
+[sub_resource type="CylinderShape3D" id="UpperStageShape"]
+height = 9.0
+radius = 1.85
+
+[sub_resource type="CylinderShape3D" id="FairingShape"]
+height = 12.6
+radius = 2.45
+
+[node name="LunarLaunchSite" type="Node3D" unique_id=989988814]
+
+[node name="Platform" type="StaticBody3D" parent="." unique_id=877888675]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -5, -4)
+
+[node name="Mesh" type="MeshInstance3D" parent="Platform" unique_id=836251846]
+mesh = SubResource("PadMesh")
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="Platform" unique_id=1009280135]
+shape = SubResource("PadShape")
+
+[node name="LaunchMount" type="MeshInstance3D" parent="." unique_id=354571867]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.45, 0)
+mesh = SubResource("MountMesh")
+
+[node name="MountBody" type="StaticBody3D" parent="LaunchMount"]
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="LaunchMount/MountBody"]
+shape = SubResource("MountShape")
+
+[node name="Strongback" parent="." unique_id=1910414050 instance=ExtResource("4_strongback")]
+transform = Transform3D(7.54979e-08, 0, 1, 0, 1, 0, -1, 0, 7.54979e-08, 0, 1.668, -6.6)
+
+[node name="StandBody" type="StaticBody3D" parent="Strongback"]
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="Strongback/StandBody"]
+shape = ExtResource("5_strongback_collision")
+
+[node name="Falcon9" type="Node3D" parent="." unique_id=187864234]
+editor_description = "Full-size preview. The upper-stage nozzle nests inside the booster's interstage."
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.9, 0)
+
+[node name="Booster" parent="Falcon9" unique_id=824050850 instance=ExtResource("1_booster")]
+
+[node name="UpperStage" parent="Falcon9" unique_id=1041109272 instance=ExtResource("2_upper_stage")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 41.54, 0)
+
+[node name="Fairing" parent="Falcon9" unique_id=107822437 instance=ExtResource("3_fairing")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 56.7, 0)
+
+[node name="RocketBody" type="StaticBody3D" parent="Falcon9"]
+
+[node name="BoosterCollision" type="CollisionShape3D" parent="Falcon9/RocketBody"]
+position = Vector3(0, 23.88, 0)
+shape = SubResource("BoosterShape")
+
+[node name="UpperStageCollision" type="CollisionShape3D" parent="Falcon9/RocketBody"]
+position = Vector3(0, 52.25, 0)
+shape = SubResource("UpperStageShape")
+
+[node name="FairingCollision" type="CollisionShape3D" parent="Falcon9/RocketBody"]
+position = Vector3(0, 63, 0)
+shape = SubResource("FairingShape")
+
+[node name="Lighting" type="Node3D" parent="." unique_id=1589782689]
+
+[node name="PadFill" type="OmniLight3D" parent="Lighting" unique_id=1433498782]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -7, 8, 9)
+light_color = Color(1, 0.96, 0.91, 1)
+light_energy = 1.7
+light_specular = 0.2
+omni_range = 23.0
+omni_attenuation = 1.3
+
+[node name="BoosterFill" type="OmniLight3D" parent="Lighting" unique_id=1260018905]
+transform = Transform3D(1, 0, 0, 0, 0.9371727, 0.34886575, 0, -0.34886575, 0.9371727, -9, 31, 10)
+light_color = Color(1, 0.97, 0.93, 1)
+light_energy = 2.0
+light_specular = 0.2
+omni_range = 26.08675
+omni_attenuation = 1.3
+
+[node name="UpperStageFill" type="OmniLight3D" parent="Lighting" unique_id=1648879204]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -9, 56, 10)
+light_color = Color(1, 0.97, 0.93, 1)
+light_energy = 2.0
+light_specular = 0.2
+omni_range = 26.0
+omni_attenuation = 1.3

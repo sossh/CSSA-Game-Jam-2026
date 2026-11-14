@@ -1,7 +1,7 @@
 [gd_scene load_steps=4 format=3]
 
 [ext_resource type="PackedScene" path="res://items/throwable.tscn" id="1"]
-[ext_resource type="PackedScene" path="res://assets/edible/waffle.glb" id="2"]
+[ext_resource type="PackedScene" path="res://assets/models/items/waffle.glb" id="2"]
 
 [sub_resource type="BoxShape3D" id="Shape"]
 size = Vector3(0.240, 0.080, 0.240)

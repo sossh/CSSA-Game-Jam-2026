@@ -1,5 +1,6 @@
 #!/usr/bin/env python3
 """Six-process ENet test, including a late join and a peer disconnect."""
+import os
 import pathlib
 import socket
 import subprocess
@@ -7,11 +8,11 @@ import tempfile
 import time
 
 project = pathlib.Path(__file__).resolve().parents[1]
-base = ["godot", "--headless", "--path", str(project), "--", "--network-test", "--skip-intro", "--quit-after=35"]
+base = [os.environ.get("GODOT_BIN", "godot"), "--headless", "--path", str(project), "--", "--network-test", "--skip-intro", "--quit-after=35"]
 with socket.socket(socket.AF_INET, socket.SOCK_DGRAM) as reservation:
     reservation.bind(("127.0.0.1", 0))
     base.append(f"--port={reservation.getsockname()[1]}")
-with tempfile.TemporaryDirectory(prefix="cosmic-network-", dir="/tmp/opencode") as folder:
+with tempfile.TemporaryDirectory(prefix="cosmic-network-") as folder:
     folder = pathlib.Path(folder)
     processes, handles, paths = [], [], []
 
@@ -49,10 +50,10 @@ with tempfile.TemporaryDirectory(prefix="cosmic-network-", dir="/tmp/opencode") 
                 process.wait()
         for handle in handles:
             handle.close()
-    logs = [path.read_text() for path in paths]
-    for path, log in zip(paths, logs):
-        print(path.name)
-        print(log)
+        logs = [path.read_text() for path in paths]
+        for path, log in zip(paths, logs):
+            print(path.name)
+            print(log)
     success = "NETWORK_HOST_PASSED" in logs[0]
     success &= all("NETWORK_CLIENT_PASSED" in log for log in logs[1:])
     success &= all("ERROR:" not in log and "WARNING:" not in log for log in logs)

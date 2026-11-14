@@ -1,0 +1,10 @@
+[gd_resource type="Resource" script_class="NetworkConfig" load_steps=2 format=3]
+
+[ext_resource type="Script" path="res://config/network_config.gd" id="1"]
+
+[resource]
+script = ExtResource("1")
+game_port = 7777
+discovery_port = 7778
+discovery_duration_ms = 1600
+discovery_retry_ms = 400

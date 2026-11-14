@@ -5,7 +5,9 @@ signal state_changed
 signal effect(kind: String, data: Dictionary)
 signal activity_added(line: String)
 
-const ACTIVITY_LIMIT := 60
+const SNAPSHOT_INTERVAL := 0.0667
+const SNAPSHOT_CHUNK_BYTES := 1000
+
 var activity_history: PackedStringArray = []
 
 var config: GameConfig = preload("res://config/game_config.tres")
@@ -58,32 +60,32 @@ func _physics_process(delta: float) -> void:
 		var p: Dictionary = players[id]
 		if not p.alive: continue
 		if phase == "class":
-			p.stomach = maxf(0, p.stomach - config.hunger_per_second * delta * (1.0 + (grade - 1) * 0.06))
+			p.stomach = maxf(0, p.stomach - config.hunger_per_second * delta * (1.0 + (grade - 1) * config.hunger_per_grade))
 			if p.stomach <= 0:
 				kill(id, "starved during alien calculus")
 				continue
-			if p.stomach < 25 and elapsed >= p.growl_at:
-				p.growl_at = elapsed + randf_range(10, 18)
-				NoiseBus.emit_noise(p.position, 32, str(id), "stomach_growl")
+			if p.stomach < config.growl_stomach_threshold and elapsed >= p.growl_at:
+				p.growl_at = elapsed + randf_range(config.growl_interval.x, config.growl_interval.y)
+				NoiseBus.emit_noise(p.position, config.growl_loudness, str(id), "stomach_growl")
 		if p.mode == "ragdoll" and elapsed >= p.recover_at:
 			p.mode = "walk"
 			p.limbs = []
 		if p.eat_until > 0 and elapsed >= p.eat_until:
 			finish_eating(id)
-		if p.get("gas", 0.0) >= 100.0 and allowed(id, "auto_gas", 0.8):
+		if p.get("gas", 0.0) >= config.gas_capacity and allowed(id, "auto_gas", config.auto_gas_cooldown):
 			relieve_gas(id)
 		if p.burp_at > 0 and elapsed >= p.burp_at:
 			p.burp_at = 0.0
-			NoiseBus.emit_noise(p.position, 45, str(id), "burp")
-		if p.pop_until > elapsed and allowed(id, "pop", 0.7):
-			NoiseBus.emit_noise(p.position, 20, str(id), "pop_rocks")
-		if p.position.y < -15:
+			NoiseBus.emit_noise(p.position, config.burp_loudness, str(id), "burp")
+		if p.pop_until > elapsed and allowed(id, "pop", config.interactions.pop_rocks_interval):
+			NoiseBus.emit_noise(p.position, config.interactions.pop_rocks_loudness, str(id), "pop_rocks")
+		if p.position.y < config.fall_out_height:
 			kill(id, "fell out of the curriculum")
 	if is_host() and phase == "class" and next_npc_noise_at > 0.0 and elapsed >= next_npc_noise_at:
-		next_npc_noise_at = elapsed + randf_range(130.0, 180.0)
+		next_npc_noise_at = elapsed + randf_range(config.npc_noise_interval.x, config.npc_noise_interval.y)
 		trigger_npc_noise()
 	sync_time += delta
-	if sync_time >= 0.0667:
+	if sync_time >= SNAPSHOT_INTERVAL:
 		sync_time = 0
 		broadcast_snapshot()
 
@@ -97,9 +99,9 @@ func broadcast_snapshot() -> void:
 	# split below the ENet MTU; never send a giant unreliable fragmented packet.
 	var packed := var_to_bytes(make_snapshot()).compress(FileAccess.COMPRESSION_DEFLATE)
 	snapshot_sequence += 1
-	var count := ceili(packed.size() / 1000.0)
+	var count := ceili(float(packed.size()) / SNAPSHOT_CHUNK_BYTES)
 	for index in range(count):
-		snapshot_chunk.rpc(snapshot_sequence, index, count, packed.slice(index * 1000, (index + 1) * 1000))
+		snapshot_chunk.rpc(snapshot_sequence, index, count, packed.slice(index * SNAPSHOT_CHUNK_BYTES, (index + 1) * SNAPSHOT_CHUNK_BYTES))
 
 @rpc("authority", "call_remote", "unreliable_ordered", 1)
 func snapshot_chunk(sequence: int, index: int, count: int, chunk: PackedByteArray) -> void:
@@ -188,23 +190,23 @@ func handle_action(id: int, action_name: String, data: Dictionary) -> void:
 		return
 	var p: Dictionary = players[id]
 	if not p.alive or phase == "game_over": return
-	if action_name == "wiggle" and p.mode == "carried" and allowed(id, "wiggle", 0.4):
+	if action_name == "wiggle" and p.mode == "carried" and allowed(id, "wiggle", config.player.struggle_interval_seconds):
 		p.recover_at += 1
-		if p.recover_at >= 3:
+		if p.recover_at >= config.player.struggle_presses:
 			if players.has(p.carrier): players[p.carrier].held = ""
-			launch_player(id, Vector3.UP * 4)
+			launch_player(id, Vector3.UP * config.player.struggle_impulse)
 		return
 	if p.mode in ["carried", "ragdoll"]: return
 	match action_name:
 		"interact":
-			if allowed(id, "interact", 0.15): world.interact(id, str(data.get("target", "")))
+			if allowed(id, "interact", config.interactions.interact_cooldown): world.interact(id, str(data.get("target", "")))
 		"throw", "drop":
-			if p.eat_until <= elapsed and allowed(id, "throw", 0.2):
+			if p.eat_until <= elapsed and allowed(id, "throw", config.interactions.throw_cooldown):
 				world.release_hand(id, clampf(float(data.get("charge", 0.0)), 0, 1) if action_name == "throw" else -1.0)
 		"use":
-			if p.eat_until <= elapsed and allowed(id, "use", 0.5): world.use_held(id)
+			if p.eat_until <= elapsed and allowed(id, "use", config.interactions.use_cooldown): world.use_held(id)
 		"punch":
-			if p.held == "" and allowed(id, "punch", 0.6): world.punch(id)
+			if p.held == "" and allowed(id, "punch", config.interactions.punch_cooldown): world.punch(id)
 		"stand":
 			if p.mode == "seated":
 				p.position = world.seat_positions[p.seat] + Vector3(0.95, 0, 0)
@@ -212,13 +214,13 @@ func handle_action(id: int, action_name: String, data: Dictionary) -> void:
 				p.seat = -1
 				p.epoch += 1
 		"fart":
-			if allowed(id, "fart", 0.5): relieve_gas(id)
+			if allowed(id, "fart", config.interactions.fart_cooldown): relieve_gas(id)
 		"step":
-			if p.mode == "walk" and allowed(id, "step", 0.25):
+			if p.mode == "walk" and allowed(id, "step", config.interactions.step_cooldown):
 				var step_pos: Vector3 = data.get("position", p.position)
-				NoiseBus.emit_noise(step_pos, 16 if data.get("sprint", false) else 4, str(id), "footstep")
+				NoiseBus.emit_noise(step_pos, config.player.sprint_step_loudness if data.get("sprint", false) else config.player.walk_step_loudness, str(id), "footstep")
 		"buy":
-			if allowed(id, "buy", 0.2): world.buy(id, str(data.get("item", "")), str(data.get("machine", "vending")))
+			if allowed(id, "buy", config.interactions.buy_cooldown): world.buy(id, str(data.get("item", "")), str(data.get("machine", "vending")))
 
 func allowed(id: int, key: String, interval: float) -> bool:
 	var token := str(id) + ":" + key
@@ -236,7 +238,8 @@ func accept_pose(id: int, position: Vector3, yaw: float, pitch: float, limbs: Ar
 	if p.epoch != pose_epoch: return
 	if p.mode in ["walk", "ragdoll", "dead"]: p.position = position
 	p.yaw = yaw
-	p.pitch = clampf(pitch, -1.5, 1.5)
+	var pitch_limit := config.player.pitch_limit_radians + 0.05
+	p.pitch = clampf(pitch, -pitch_limit, pitch_limit)
 	if p.mode == "ragdoll" and limbs.size() == 6: p.limbs = limbs
 
 func start_run() -> void:
@@ -262,9 +265,9 @@ func start_preparation() -> void:
 func start_class() -> void:
 	phase = "class"
 	remaining = config.class_seconds
-	next_npc_noise_at = elapsed + randf_range(80.0, 150.0)
+	next_npc_noise_at = elapsed + randf_range(config.npc_first_noise_delay.x, config.npc_first_noise_delay.y)
 	world.teacher.start_class()
-	event.rpc("sound", {"position": world.to_global(Vector3(0, 3, -8)), "key": "bell", "loudness": 100.0})
+	event.rpc("sound", {"position": world.bell_origin.global_position, "key": "bell", "loudness": config.bell_volume})
 	event.rpc("banner", {"text": "CLASS STARTED • Sit down. Eat quietly. Blame your friends."})
 	for id in players:
 		if players[id].alive and players[id].position.z > 8.0:
@@ -286,7 +289,7 @@ func start_break() -> void:
 			p.money -= config.cloning_fee
 			respawn(id)
 	grade += 1
-	event.rpc("sound", {"position": world.to_global(Vector3(0, 3, -8)), "key": "bell", "loudness": 100.0})
+	event.rpc("sound", {"position": world.bell_origin.global_position, "key": "bell", "loudness": config.bell_volume})
 	event.rpc("banner", {"text": "RECESS • Allowances paid. Clones cost ₿%d. Vending is open!" % config.cloning_fee})
 	print("PHASE break survived=", survived)
 
@@ -307,7 +310,7 @@ func respawn(id: int) -> void:
 	p.gas = 0.0
 	p.limbs = []
 	p.epoch += 1
-	event.rpc("sound", {"position": p.position, "key": "clone", "loudness": 55.0})
+	event.rpc("sound", {"position": p.position, "key": "clone", "loudness": config.clone_volume})
 
 func damage(id: int, amount: float, reason: String, impulse: Vector3 = Vector3.ZERO) -> void:
 	if not players.has(id) or not players[id].alive: return
@@ -349,7 +352,7 @@ func launch_player(id: int, impulse: Vector3) -> void:
 	p.seat = -1
 	p.mode = "ragdoll"
 	p.launch = impulse
-	p.recover_at = elapsed + config.ragdoll_seconds
+	p.recover_at = elapsed + config.player.ragdoll_seconds
 	p.eat_until = 0.0
 	p.limbs = []
 	p.epoch += 1
@@ -362,11 +365,11 @@ func finish_eating(id: int) -> void:
 	var data: ItemData = item.data
 	p.stomach = minf(config.stomach_max, p.stomach + data.food)
 	if phase == "class": p.food += data.food
-	if data.effect == "speed": p.speed_until = elapsed + 12
-	if data.effect == "pop_rocks": p.pop_until = elapsed + 8
+	if data.effect == "speed": p.speed_until = elapsed + config.player.energy_boost_seconds
+	if data.effect == "pop_rocks": p.pop_until = elapsed + config.interactions.pop_rocks_seconds
 	if data.sound == "can_open" or data.effect == "speed":
-		NoiseBus.emit_noise(p.position, 35, str(id), "crush_can")
-	p.gas = clampf(float(p.get("gas", 0.0)) + data.food, 0.0, 100.0)
+		NoiseBus.emit_noise(p.position, config.interactions.can_crush_loudness, str(id), "crush_can")
+	p.gas = clampf(float(p.get("gas", 0.0)) + data.food, 0.0, config.gas_capacity)
 	p.held = ""
 	world.remove_item(item.entity_id)
 	log_activity("%s finished %s (+%d stomach)." % [p.name, data.display_name, int(data.food)])
@@ -376,8 +379,8 @@ func relieve_gas(id: int) -> void:
 	var p: Dictionary = players[id]
 	if not p.alive: return
 	var kind: String = "fart" if randf() < 0.5 else "burp"
-	var loudness: float = 45.0 if kind == "burp" else 50.0
-	p.gas = maxf(0.0, float(p.get("gas", 0.0)) - randf_range(40.0, 50.0))
+	var loudness: float = config.burp_loudness if kind == "burp" else config.fart_loudness
+	p.gas = maxf(0.0, float(p.get("gas", 0.0)) - randf_range(config.gas_relief.x, config.gas_relief.y))
 	NoiseBus.emit_noise(p.position, loudness, str(id), kind)
 
 func trigger_npc_noise() -> void:
@@ -389,7 +392,7 @@ func trigger_npc_noise() -> void:
 	if seated_kids.is_empty(): return
 	var kid = seated_kids.pick_random()
 	var sound: String = ["chew", "crunch", "sneeze", "fart"].pick_random()
-	NoiseBus.emit_noise(kid.global_position, randf_range(18, 30), kid.entity_id, sound)
+	NoiseBus.emit_noise(kid.global_position, randf_range(config.npc_noise_loudness.x, config.npc_noise_loudness.y), kid.entity_id, sound)
 
 func actor_name(source: String) -> String:
 	if source.is_valid_int() and players.has(int(source)): return players[int(source)].name
@@ -402,7 +405,7 @@ func log_activity(text: String) -> void:
 func append_activity(text: String, time: float) -> void:
 	var line := "[%02d:%02d] %s" % [int(time) / 60, int(time) % 60, text]
 	activity_history.append(line)
-	while activity_history.size() > ACTIVITY_LIMIT: activity_history.remove_at(0)
+	while activity_history.size() > config.activity_limit: activity_history.remove_at(0)
 	activity_added.emit(line)
 
 @rpc("authority", "call_local", "reliable", 0)
@@ -412,5 +415,5 @@ func event(kind: String, data: Dictionary) -> void:
 			announcement.emit(str(data.text))
 			append_activity(str(data.text), float(data.get("time", elapsed)))
 		"activity": append_activity(str(data.text), float(data.get("time", elapsed)))
-		"sound": Sfx.play_at(str(data.key), data.position, float(data.get("loudness", 40)))
+		"sound": Sfx.play_at(str(data.key), data.position, float(data.get("loudness", Sfx.config.default_playback_loudness)))
 	effect.emit(kind, data)

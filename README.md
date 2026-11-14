@@ -12,17 +12,26 @@ snacks and friends, survive, spend Bitcoin, and add to the shared escape rocket.
    The launcher imports new and changed assets before starting the game. It uses
    `godot` from your PATH, or the executable set in `GODOT_BIN`.
 2. One player selects **Host Classroom**. Friends select **Find LAN Games**, choose the host, and select **Join LAN Game**. They can also enter the host's Wi-Fi IP or join code.
-3. Skip the intro; host presses **Enter** to start. Default rounds: 30s preparation,
-   5min class, 90s break. Edit `cssa-game-jam/config/game_config.tres` to tune.
+3. Skip the intro; host presses **Enter** to start. Default rounds: 20s preparation,
+   5min class, 90s break. See the [tuning guide](docs/DEVELOPMENT.md#game-tuning) for gameplay, audio, and LAN settings.
 
 **WASD** move, **mouse** look, **E** grab/sit/interact, **hold/release LMB** throw,
 **LMB empty-handed** punch, **RMB** eat/use, **Q** drop, **Space** jump/stand/escape,
-**Shift** sprint, **G** fart, **Tab** register, **Esc** menu.
+**Shift** sprint, **F** fart, **Tab** register, **Esc** menu.
 
 - [Prioritized 3D, sound, and miscellaneous asset lists](docs/ASSETS.md)
 - [Five-dev handoff, architecture, controls, and tests](docs/DEVELOPMENT.md)
 
-Edit the level in `cssa-game-jam/world/classroom.tscn` and menus/HUD in
+## Repository layout
+
+| Folder | Contents |
+|---|---|
+| [cssa-game-jam/](cssa-game-jam/) | Godot project, playable scenes, runtime assets and tests |
+| [art-source/](art-source/) | Source models, Blockbench projects and original audio |
+| [reference/snippets/](reference/snippets/) | Earlier code and asset experiments |
+| [docs/](docs/) | Development handoff and asset integration guide |
+
+Edit the level in `cssa-game-jam/world/classroom/classroom.tscn` and menus/HUD in
 `cssa-game-jam/ui/game_ui.tscn`. Players, ragdolls, teacher, props and all items
 have editable scene trees; gameplay scripts reference those existing nodes.
 

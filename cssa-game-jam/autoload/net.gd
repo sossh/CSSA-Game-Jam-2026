@@ -5,14 +5,11 @@ signal joined
 signal disconnected(message: String)
 signal lan_games_found(games: Dictionary)
 
-const PORT := 7777
-const DISCOVERY_PORT := 7778
 const DISCOVERY_REQUEST := "cosmic-detention/find/1"
 const DISCOVERY_RESPONSE := "cosmic-detention/host/1:"
-const DISCOVERY_DURATION_MS := 1600
-const DISCOVERY_RETRY_MS := 400
 
-var port: int = PORT
+var config: NetworkConfig = preload("res://config/network_config.tres")
+var port: int = config.game_port
 var active: bool = false
 var player_name: String = "Transfer student"
 var join_code: String = ""
@@ -27,7 +24,7 @@ var discovered_games: Dictionary = {}
 
 func _ready() -> void:
 	multiplayer.connected_to_server.connect(func(): joined.emit())
-	multiplayer.connection_failed.connect(func(): disconnect_session("Could not connect. Check the LAN code and UDP port 7777."))
+	multiplayer.connection_failed.connect(func(): disconnect_session("Could not connect. Check the LAN code and UDP port %d." % port))
 	multiplayer.server_disconnected.connect(func(): disconnect_session("The host left the classroom."))
 	multiplayer.peer_disconnected.connect(func(id):
 		if active and multiplayer.is_server(): Game.remove_player(id))
@@ -52,9 +49,9 @@ func host(display_name: String, address: String = "") -> Error:
 		chosen = addresses[0] if not addresses.is_empty() else "127.0.0.1"
 	join_code = encode_ip(chosen)
 	# Sessions on a custom gameplay port are joined directly, including integration tests.
-	if port == PORT:
+	if port == config.game_port:
 		discovery_listener = PacketPeerUDP.new()
-		if discovery_listener.bind(DISCOVERY_PORT, "0.0.0.0") != OK:
+		if discovery_listener.bind(config.discovery_port, "0.0.0.0") != OK:
 			discovery_listener = null
 			push_warning("Could not start LAN discovery. Direct joins are still available.")
 	joined.emit()
@@ -81,7 +78,7 @@ func join(display_name: String, code: String) -> Error:
 
 func find_lan_games() -> void:
 	if active or closing or discovery_scan != null: return
-	if port != PORT:
+	if port != config.game_port:
 		status_changed.emit("Enter the host's Wi-Fi IP or join code to join on a custom port.")
 		return
 	var socket := PacketPeerUDP.new()
@@ -89,11 +86,11 @@ func find_lan_games() -> void:
 		status_changed.emit("Could not start LAN search. Enter the host's Wi-Fi IP or join code.")
 		return
 	socket.set_broadcast_enabled(true)
-	socket.set_dest_address("255.255.255.255", DISCOVERY_PORT)
+	socket.set_dest_address("255.255.255.255", config.discovery_port)
 	discovery_scan = socket
 	discovered_games.clear()
 	next_discovery_probe = Time.get_ticks_msec()
-	discovery_deadline = next_discovery_probe + DISCOVERY_DURATION_MS
+	discovery_deadline = next_discovery_probe + config.discovery_duration_ms
 	status_changed.emit("Looking for classrooms on your local network…")
 
 func _process(_delta: float) -> void:
@@ -113,7 +110,7 @@ func respond_to_discovery() -> void:
 func poll_lan_scan() -> void:
 	for _packet in range(mini(discovery_scan.get_available_packet_count(), 32)):
 		var packet := discovery_scan.get_packet()
-		if discovery_scan.get_packet_port() != DISCOVERY_PORT or packet.size() > 128: continue
+		if discovery_scan.get_packet_port() != config.discovery_port or packet.size() > 128: continue
 		var response := packet.get_string_from_utf8()
 		if not response.begins_with(DISCOVERY_RESPONSE): continue
 		# Use the sender's address instead of an address chosen on the host.
@@ -124,7 +121,7 @@ func poll_lan_scan() -> void:
 		lan_games_found.emit(discovered_games)
 	elif now >= next_discovery_probe:
 		discovery_scan.put_packet(DISCOVERY_REQUEST.to_utf8_buffer())
-		next_discovery_probe = now + DISCOVERY_RETRY_MS
+		next_discovery_probe = now + config.discovery_retry_ms
 
 func stop_lan_scan() -> void:
 	if discovery_scan == null: return

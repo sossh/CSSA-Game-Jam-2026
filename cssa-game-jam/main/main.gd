@@ -1,7 +1,6 @@
 extends Node
 
 func _ready() -> void:
-	install_inputs()
 	Net.joined.connect(connected)
 	Net.disconnected.connect(disconnected)
 	call_deferred("command_line")
@@ -19,21 +18,6 @@ func disconnected(message: String) -> void:
 	# A fresh scene also clears every replicated entity and local ragdoll.
 	get_tree().set_meta("disconnect_message", message)
 	get_tree().reload_current_scene.call_deferred()
-
-func install_inputs() -> void:
-	var keys := {"interact": KEY_E, "drop_item": KEY_Q, "fart": KEY_F,
-		"sprint": KEY_SHIFT, "crouch": KEY_CTRL, "start_run": KEY_ENTER,
-		"scoreboard": KEY_TAB, "debug_hud": KEY_F3}
-	for action_name in keys:
-		if not InputMap.has_action(action_name): InputMap.add_action(action_name)
-		var event := InputEventKey.new()
-		event.physical_keycode = keys[action_name]
-		InputMap.action_add_event(action_name, event)
-	for action_name in ["throw_item", "use_item"]:
-		if not InputMap.has_action(action_name): InputMap.add_action(action_name)
-		var event := InputEventMouseButton.new()
-		event.button_index = MOUSE_BUTTON_LEFT if action_name == "throw_item" else MOUSE_BUTTON_RIGHT
-		InputMap.action_add_event(action_name, event)
 
 func command_line() -> void:
 	if Net.command_line_used: return

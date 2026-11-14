@@ -1,0 +1,23 @@
+[gd_resource type="Resource" script_class="AudioConfig" load_steps=4 format=3]
+
+[ext_resource type="Script" path="res://config/audio_config.gd" id="1"]
+[ext_resource type="AudioStream" uid="uid://8s6q7oh8m81p" path="res://assets/audio/ambiance/classroom_ambiance.wav" id="2"]
+[ext_resource type="AudioStream" uid="uid://cujjxk1wej3ym" path="res://assets/audio/lecture/chalkboard_40seconds.wav" id="3"]
+
+[resource]
+script = ExtResource("1")
+event_root = "res://assets/audio"
+default_playback_loudness = 40.0
+reference_loudness = 60.0
+minimum_db = -24.0
+maximum_db = 3.0
+event_maximum_db = Dictionary[String, float]({"bell": 8.0, "shotgun": 8.0, "shotgun_pump": 8.0})
+event_unit_size = Dictionary[String, float]({"shotgun": 10.0, "shotgun_pump": 10.0})
+event_max_distance = Dictionary[String, float]({"shotgun": 55.0, "shotgun_pump": 55.0})
+pitch_range = Vector2(0.95, 1.05)
+classroom_ambiance = ExtResource("2")
+classroom_ambiance_db = -26.0
+lecture_chalk = ExtResource("3")
+lecture_chalk_db = 4.0
+lecture_chalk_unit_size = 8.0
+lecture_chalk_max_distance = 35.0
