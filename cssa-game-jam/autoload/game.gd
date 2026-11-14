@@ -215,7 +215,8 @@ func handle_action(id: int, action_name: String, data: Dictionary) -> void:
 			if allowed(id, "fart", 0.5): relieve_gas(id)
 		"step":
 			if p.mode == "walk" and allowed(id, "step", 0.25):
-				NoiseBus.emit_noise(p.position, 16 if data.get("sprint", false) else 4, str(id), "footstep")
+				var step_pos: Vector3 = data.get("position", p.position)
+				NoiseBus.emit_noise(step_pos, 16 if data.get("sprint", false) else 4, str(id), "footstep")
 		"buy":
 			if allowed(id, "buy", 0.2): world.buy(id, str(data.get("item", "")))
 

@@ -4,9 +4,9 @@
 [ext_resource type="Texture2D" uid="uid://cysepihb8s6ah" path="res://teacher/assets/texture/texture.png" id="2_b0u55"]
 [ext_resource type="Script" uid="uid://d1oib0qhkn6pb" path="res://teacher/teacher_visual.gd" id="2_klq84"]
 [ext_resource type="Animation" uid="uid://byvuy17jl2xn" path="res://teacher/assets/teacher-animations/idle-animation.res" id="3_4gjgc"]
-[ext_resource type="Animation" uid="uid://bgrlat6pjfbqk" path="res://teacher/assets/teacher-animations/pointing-teaching-animation.res" id="4_4gjgc"]
-[ext_resource type="Animation" uid="uid://doulm5yhj38ct" path="res://teacher/assets/teacher-animations/run-mad-animation.res" id="5_3nlkx"]
-[ext_resource type="Animation" uid="uid://dgoy4koslbjw5" path="res://teacher/assets/teacher-animations/walk-animation.res" id="7_wyhnd"]
+[ext_resource type="Animation" uid="uid://c0r31x0ns4tcb" path="res://teacher/assets/teacher-animations/pointing-teaching-animation.res" id="4_4gjgc"]
+[ext_resource type="Animation" uid="uid://gcgbpysqaqe1" path="res://teacher/assets/teacher-animations/run-mad-animation.res" id="5_3nlkx"]
+[ext_resource type="Animation" uid="uid://lgk0ujccxsuf" path="res://teacher/assets/teacher-animations/walk-animation.res" id="7_wyhnd"]
 
 [sub_resource type="StandardMaterial3D" id="StandardMaterial3D_3nlkx"]
 albedo_texture = ExtResource("2_b0u55")

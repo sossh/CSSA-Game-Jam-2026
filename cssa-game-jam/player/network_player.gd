@@ -34,7 +34,11 @@ func _unhandled_input(event: InputEvent) -> void:
 	if event is InputEventMouseMotion and Input.mouse_mode == Input.MOUSE_MODE_CAPTURED:
 		rotation.y -= event.relative.x * 0.002
 		pitch = clampf(pitch - event.relative.y * 0.002, -1.45, 1.45)
-	if event.is_action_pressed("interact") and target_id != "": Game.request("interact", {"target": target_id})
+	if event.is_action_pressed("interact"):
+		if p.mode == "seated" and (target_id == "" or target_id == "seat:" + str(p.seat)):
+			Game.request("stand")
+		elif target_id != "":
+			Game.request("interact", {"target": target_id})
 	if event.is_action_pressed("use_item"): Game.request("use")
 	if event.is_action_pressed("drop_item"): Game.request("drop")
 	if event.is_action_pressed("fart"): Game.request("fart")
@@ -64,24 +68,35 @@ func _physics_process(delta: float) -> void:
 			global_position = ragdoll.bodies[0].global_position
 			global_position.y = maxf(0.2, global_position.y)
 		ragdoll.deactivate()
-	visual.visible = not local and mode not in ["dead", "ragdoll"]
-	name_label.visible = not local and mode != "dead"
+	var my_id: int = multiplayer.get_unique_id()
+	var local_is_dead: bool = Game.players.has(my_id) and Game.players[my_id].mode == "dead"
+	var is_other_ghost: bool = not local and mode == "dead" and local_is_dead
+	visual.visible = not local and (mode not in ["dead", "ragdoll"] or is_other_ghost)
+	name_label.visible = not local and (mode != "dead" or is_other_ghost)
+	if is_other_ghost:
+		visual.set_color(Color(0.65, 0.85, 1.0))
+		name_label.text = "👻 " + p.name
+		name_label.modulate = Color(0.7, 0.9, 1.0, 0.85)
+	elif not local and mode != "dead":
+		visual.set_color(color)
+		name_label.text = p.name
+		name_label.modulate = Color.WHITE
 	collision_layer = 0 if mode == "dead" else 2
 	if mode == "carried" and Game.world.player_nodes.has(p.carrier):
 		var carrier = Game.world.player_nodes[p.carrier]
 		global_position = carrier.carry_position() - Vector3(0, 0.9, 0)
 		if Game.is_host(): p.position = global_position
-		visual.rotation.z = PI / 2
+		visual.rotation = Vector3.ZERO
 	elif mode == "seated":
 		global_position = p.position
-		visual.rotation.z = 0
+		visual.rotation = Vector3.ZERO
 	elif mode == "ragdoll":
 		if local: global_position = ragdoll.bodies[0].global_position - Vector3(0, 0.9, 0)
 		else:
 			ragdoll.follow(p.limbs, delta)
 			global_position = p.position
 	elif local:
-		visual.rotation.z = 0
+		visual.rotation = Vector3.ZERO
 		var input := Vector2.ZERO if Game.ui_open else Input.get_vector("move_left", "move_right", "move_forward", "move_backward")
 		var forward_basis := camera.global_basis if mode == "dead" else global_basis
 		var direction := forward_basis * Vector3(input.x, 0, input.y)
@@ -100,8 +115,9 @@ func _physics_process(delta: float) -> void:
 			step_timer -= delta
 			if input.length() > 0.1 and is_on_floor() and step_timer <= 0:
 				step_timer = 0.32 if speed > 4 else 0.5
-				Game.request("step", {"sprint": speed > 4})
+				Game.request("step", {"sprint": speed > 4, "position": global_position})
 	else:
+		visual.rotation = Vector3.ZERO
 		global_position = global_position.lerp(p.position, minf(1, delta * 18))
 	if not local:
 		rotation.y = lerp_angle(rotation.y, p.yaw, minf(1, delta * 20))
@@ -123,14 +139,18 @@ func _physics_process(delta: float) -> void:
 func find_target() -> void:
 	target_id = ""
 	interaction_text = ""
-	if Game.ui_open: return
+	if Game.ui_open or not Game.players.has(peer_id): return
+	var p: Dictionary = Game.players[peer_id]
 	var query := PhysicsRayQueryParameters3D.create(camera.global_position, camera.global_position - camera.global_basis.z * 3.2, 31, [get_rid()])
 	var hit := get_world_3d().direct_space_state.intersect_ray(query)
 	if hit.is_empty(): return
 	var object = hit.collider
 	if object is Interactable:
 		target_id = object.interaction_id
-		interaction_text = object.focus()
+		if p.mode == "seated" and target_id == "seat:" + str(p.seat):
+			interaction_text = "[E] Stand up"
+		else:
+			interaction_text = object.focus()
 	elif object is ClassroomItem and object.holder == 0:
 		target_id = object.entity_id
 		interaction_text = "[E] Grab " + object.display_name()

@@ -2,6 +2,7 @@ extends TeacherState
 
 func enter() -> void:
 	super()
+	teacher.path.clear()
 	var cooldown := randf_range(Game.config.check_min_seconds, Game.config.check_max_seconds)
 	var urgency_modifier := 1.0 + (teacher.alertness * 0.5) + ((Game.grade - 1) * 0.08)
 	teacher.next_check = Game.elapsed + (cooldown / urgency_modifier)

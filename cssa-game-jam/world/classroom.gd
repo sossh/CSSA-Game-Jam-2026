@@ -61,6 +61,7 @@ func _ready() -> void:
 		if node is Interactable: interactions[node.interaction_id] = node
 	teacher.board = $TeacherWaypoints/Board.global_position
 	teacher.lounge = $TeacherWaypoints/Lounge.global_position
+	teacher.desk = $TeacherWaypoints/Desk.global_position
 	teacher.global_position = teacher.lounge
 	teacher.destination = teacher.lounge
 	Game.effect.connect(on_effect)
@@ -212,6 +213,9 @@ func interact(id: int, target: String) -> void:
 		return
 	if target.begins_with("seat:"):
 		var seat := int(target.get_slice(":", 1))
+		if p.mode == "seated" and p.seat == seat:
+			Game.handle_action(id, "stand", {})
+			return
 		for other in Game.players.values():
 			if other.seat == seat: return
 		if p.held.begins_with("player:"): release_hand(id)
@@ -273,7 +277,8 @@ func release_hand(id: int, charge: float = -1) -> void:
 		var other := int(held.get_slice(":", 1))
 		if Game.players.has(other):
 			Game.players[other].position = at - Vector3(0, 0.6, 0)
-			Game.launch_player(other, impulse)
+			var throw_impulse := direction * (12.0 + charge * 18.0) + Vector3.UP * (4.5 + charge * 3.5) if charge >= 0 else direction * 2.0 + Vector3.UP
+			Game.launch_player(other, throw_impulse)
 	if charge >= 0:
 		Game.log_activity("%s throws %s!" % [p.name, held_name])
 		p.violation_until = Game.elapsed + 2
@@ -395,6 +400,7 @@ func on_effect(kind: String, data: Dictionary) -> void:
 	# Bound their count during physics pile-ups; never add noise from particles.
 	if $Effects.get_child_count() >= 100: return
 	var burst: Node3D = scene.instantiate()
+	burst.position = at
 	$Effects.add_child(burst)
 	burst.global_position = at
 	if direction.length_squared() > 0.01:

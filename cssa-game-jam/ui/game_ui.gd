@@ -171,7 +171,11 @@ func _process(delta: float) -> void:
 	if is_instance_valid(player):
 		prompt.text = player.interaction_text if p.alive else "SPECTATING • Space / Ctrl fly • Re-clone at the bell"
 		if p.mode == "carried": prompt.text = "[SPACE] Struggle! Three presses to escape."
-		if p.mode == "seated" and player.interaction_text == "": prompt.text = "[SPACE] Stand • [RMB] Eat • [LMB] Throw"
+		if p.mode == "seated":
+			if player.interaction_text == "":
+				prompt.text = "[E] Stand • [SPACE] Stand • [RMB] Eat • [LMB] Throw"
+			elif player.target_id == "seat:" + str(p.seat):
+				prompt.text = "[E] Stand up • [RMB] Eat • [LMB] Throw"
 		charge.visible = player.charge >= 0
 		charge.value = player.charge
 	held_label.text = "EMPTY HAND • [LMB] Punch • [E] Grab"

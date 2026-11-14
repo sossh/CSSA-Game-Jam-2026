@@ -22,6 +22,7 @@ var desired_yaw: float = 0.0
 var aim_point := Vector3.ZERO
 var board := Vector3(0, 0, -7.0)
 var lounge := Vector3(-7, 0, -8.8)
+var desk := Vector3(3, 0, -7.5)
 
 # --- Combat ---
 var shot_fired: bool = false
@@ -67,6 +68,8 @@ func _physics_process(delta: float) -> void:
 				current_anim = "run-mad" if not path.is_empty() else "idle"
 			"lecturestate":
 				current_anim = "walk" if global_position.distance_to(board) > 0.3 else "pointing-teaching"
+			"coffeestate":
+				current_anim = "walk" if global_position.distance_to(desk) > 0.4 else "idle"
 			"enteringstate", "leavingstate":
 				current_anim = "walk"
 			_:
@@ -78,8 +81,11 @@ func _physics_process(delta: float) -> void:
 
 func _process_client_interpolation(delta: float) -> void:
 	var lerp_speed := minf(1.0, delta * 15.0)
+	var prev_pos := global_position
 	global_position = global_position.lerp(destination, lerp_speed)
 	rotation.y = lerp_angle(rotation.y, desired_yaw, lerp_speed)
+	if global_position.distance_to(destination) > 0.1 and current_anim == "idle":
+		current_anim = "walk"
 
 func _update_visuals() -> void:
 	var current = fsm.current_state
@@ -280,6 +286,12 @@ func walk_to_board(delta: float) -> void:
 			path = Game.world.walk_path(global_position, board)
 		follow_path(delta)
 
+func walk_to_desk(delta: float) -> void:
+	if global_position.distance_to(desk) > 0.85:
+		if path.is_empty():
+			path = Game.world.walk_path(global_position, desk)
+		follow_path(delta)
+
 func serialize() -> Dictionary:
 	return {
 		"position": global_position, 
@@ -287,7 +299,8 @@ func serialize() -> Dictionary:
 		"state_name": get_current_state_name(), 
 		"suspicion": suspicion, 
 		"aim": aim_point, 
-		"drugs": drugs
+		"drugs": drugs,
+		"anim": current_anim
 	}
 
 func receive(data: Dictionary) -> void:
@@ -296,6 +309,8 @@ func receive(data: Dictionary) -> void:
 	suspicion = data.suspicion
 	aim_point = data.aim
 	drugs = data.drugs
+	if data.has("anim"):
+		current_anim = data.anim
 	
 	# Force the client FSM to mirror the host's state so visuals render!
 	if fsm:

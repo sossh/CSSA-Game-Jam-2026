@@ -9,7 +9,7 @@ extends Resource
 @export var npc_count: int = 10
 @export_group("Stomach and economy")
 @export var stomach_max: float = 100.0
-@export var hunger_per_second: float = 0.42
+@export var hunger_per_second: float = 0.70
 @export var starting_bitcoin: int = 20
 @export var attendance_allowance: int = 5
 @export var bitcoin_per_food: float = 0.5
