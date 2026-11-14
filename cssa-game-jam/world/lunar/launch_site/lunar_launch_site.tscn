@@ -11,6 +11,8 @@
 [ext_resource type="PackedScene" path="res://effects/rocket_thruster.tscn" id="9_thruster"]
 [ext_resource type="PackedScene" path="res://effects/rocket_pad_dust.tscn" id="10_pad_dust"]
 [ext_resource type="AudioStream" path="res://assets/audio/rocket_launch/ignition.ogg" id="11_ignition"]
+[ext_resource type="AudioStream" uid="uid://cugqlcn2fx1c3" path="res://assets/audio/rocket_launch/spaceship_takeoff.mp3" id="12_takeoff_sfx"]
+[ext_resource type="AudioStream" uid="uid://dbidsv8aqquei" path="res://assets/audio/rocket_launch/takeoff_music.mp3" id="13_takeoff_music"]
 
 [ext_resource type="Shape3D" path="res://world/lunar/launch_site/strongback_collision.res" id="5_strongback_collision"]
 
@@ -323,6 +325,14 @@ stream = ExtResource("11_ignition")
 volume_db = -10.0
 unit_size = 8.0
 max_distance = 85.0
+
+[node name="TakeoffAudio" type="AudioStreamPlayer" parent="."]
+stream = ExtResource("12_takeoff_sfx")
+volume_db = -1.9
+
+[node name="TakeoffMusic" type="AudioStreamPlayer" parent="."]
+stream = ExtResource("13_takeoff_music")
+volume_db = -7.9
 
 [node name="Flight" type="AnimationPlayer" parent="."]
 libraries = {

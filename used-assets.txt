@@ -41,3 +41,7 @@ https://github.com/spothq/cryptocurrency-icons
 
 Jersey 25 Font (cssa-game-jam/fonts/Jersey_25/Jersey25-Regular.ttf) by The Soft Type Project Authors, SIL Open Font License 1.1.
 https://github.com/scfried/soft-type-jersey
+
+Rocket takeoff audio:
+- cssa-game-jam/assets/audio/rocket_launch/spaceship_takeoff.mp3 (Space shuttle rocket launch audio recording)
+- cssa-game-jam/assets/audio/rocket_launch/takeoff_music.mp3 (Takeoff cinematic score excerpt)

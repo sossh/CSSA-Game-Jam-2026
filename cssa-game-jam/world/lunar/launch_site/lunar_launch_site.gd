@@ -15,6 +15,8 @@ extends Node3D
 @onready var console: Interactable = $LaunchConsole/Interact
 @onready var flight: AnimationPlayer = $Flight
 @onready var ignition: AudioStreamPlayer3D = $IgnitionAudio
+@onready var takeoff_audio: AudioStreamPlayer = $TakeoffAudio
+@onready var takeoff_music: AudioStreamPlayer = $TakeoffMusic
 @onready var launch_camera: Camera3D = $LaunchCamera
 @onready var launch_listener: AudioListener3D = $LaunchCamera/AudioListener3D
 @onready var rocket: Node3D = $Falcon9
@@ -94,16 +96,22 @@ func apply_assembly(parts: PackedStringArray, started_at: float, elapsed: float)
 			flight.play(&"launch")
 			# Peers that join during or after flight go directly to the current pose.
 			var playhead := clampf(elapsed - started_at, 0.0, flight.current_animation_length)
+			var audio_playhead := maxf(0.0, elapsed - started_at)
 			flight.seek(playhead, true)
 			update_launch_camera(playhead)
 			launch_camera.make_current()
 			launch_listener.make_current()
-			if DisplayServer.get_name() != "headless" and playhead < ignition.stream.get_length():
-				ignition.play(playhead)
+			if DisplayServer.get_name() != "headless":
+				if takeoff_audio and audio_playhead < takeoff_audio.stream.get_length():
+					takeoff_audio.play(audio_playhead)
+				if takeoff_music and audio_playhead < takeoff_music.stream.get_length():
+					takeoff_music.play(audio_playhead)
 		else:
 			launch_camera.clear_current(false)
 			launch_listener.clear_current()
 			ignition.stop()
+			if takeoff_audio: takeoff_audio.stop()
+			if takeoff_music: takeoff_music.stop()
 			flight.play(&"RESET")
 			flight.advance(0.0)
 			flight.stop(true)
