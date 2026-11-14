@@ -1,14 +1,19 @@
 [gd_resource type="Resource" script_class="ItemData" load_steps=3 format=3]
+
 [ext_resource type="Script" path="res://items/item_data.gd" id="1"]
 [ext_resource type="PackedScene" path="res://items/scenes/tomato.tscn" id="2"]
+
 [resource]
 script = ExtResource("1")
 id = "tomato"
 display_name = "Suspicious tomato"
 description = "Eat for 12 stomach, or throw for maximum social damage."
 price = 4
+minimum_grade = 1
 food = 12.0
+eating_noise = 40.0
+spawn_weight = 6.0
 effect = "tomato"
 impact_noise = 65.0
-spawn_weight = 6.0
 scene = ExtResource("2")
+sound = "chew"

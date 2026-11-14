@@ -1,0 +1,17 @@
+[gd_resource type="Resource" script_class="ItemData" load_steps=3 format=3]
+
+[ext_resource type="Script" path="res://items/item_data.gd" id="1"]
+[ext_resource type="PackedScene" path="res://items/scenes/meat.tscn" id="2"]
+
+[resource]
+script = ExtResource("1")
+id = "meat"
+display_name = "Mystery meat"
+description = "Very filling. 50 stomach."
+price = 10
+minimum_grade = 3
+food = 50.0
+eating_noise = 45.0
+spawn_weight = 3.0
+scene = ExtResource("2")
+sound = "chew"

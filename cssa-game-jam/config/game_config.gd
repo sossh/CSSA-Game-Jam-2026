@@ -25,3 +25,5 @@ extends Resource
 @export_group("Population")
 @export var food_spawns_per_player: int = 5
 @export var max_loose_items: int = 90
+@export var food_drop_min_seconds: float = 6.0
+@export var food_drop_max_seconds: float = 14.0
