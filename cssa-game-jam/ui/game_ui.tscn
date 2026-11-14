@@ -792,13 +792,6 @@ layout_mode = 2
 [node name="Header" type="HBoxContainer" parent="Root/Vending/Content"]
 layout_mode = 2
 theme_override_constants/separation = 8
-alignment = 2
-
-[node name="BalanceLabel" type="Label" parent="Root/Vending/Content/Header"]
-layout_mode = 2
-theme_override_colors/font_color = Color(0.64, 0.93, 1, 1)
-theme_override_font_sizes/font_size = 30
-text = "Balance"
 
 [node name="BitcoinIcon" type="TextureRect" parent="Root/Vending/Content/Header"]
 custom_minimum_size = Vector2(26, 26)
