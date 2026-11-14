@@ -177,8 +177,11 @@ func _process(delta: float) -> void:
 		wasted_timer -= delta
 		if wasted_timer <= 0.0:
 			wasted_container.visible = false
+			if is_instance_valid(death_filter): death_filter.visible = false
 		else:
-			wasted_container.modulate.a = clampf(wasted_timer / 1.0, 0.0, 1.0)
+			var alpha: float = clampf(wasted_timer / 1.0, 0.0, 1.0)
+			wasted_container.modulate.a = alpha
+			if is_instance_valid(death_filter): death_filter.modulate.a = alpha
 	if crawl_panel.visible:
 		crawl_text.position.y -= delta * 45
 		if crawl_text.position.y < -1100: close_crawl()
@@ -195,7 +198,6 @@ func _process(delta: float) -> void:
 	elif not was_alive and not is_dead:
 		reset_wasted()
 	was_alive = not is_dead
-	death_filter.visible = is_dead
 	stats.text = "%d" % p.money
 	stomach.value = p.stomach
 	var current_gas: float = float(p.get("gas", 0.0))
@@ -244,6 +246,9 @@ func trigger_wasted() -> void:
 	if is_instance_valid(wasted_container):
 		wasted_container.visible = true
 		wasted_container.modulate.a = 1.0
+	if is_instance_valid(death_filter):
+		death_filter.visible = true
+		death_filter.modulate.a = 1.0
 
 func reset_wasted() -> void:
 	wasted_timer = 0.0

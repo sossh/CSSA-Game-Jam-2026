@@ -4,6 +4,7 @@ extends CharacterBody3D
 var peer_id: int
 @onready var head: Node3D = $Head
 @onready var camera: Camera3D = $Head/Camera
+@onready var audio_listener: AudioListener3D = $Head/Camera/AudioListener3D
 @onready var visual: StudentVisual = $Visual
 @onready var name_label: Label3D = $NameLabel
 @onready var ragdoll: StudentRagdoll = $Ragdoll
@@ -25,6 +26,8 @@ func _ready() -> void:
 	visual.set_color(color)
 	visual.visible = not local
 	camera.current = local
+	if local:
+		audio_listener.make_current()
 	name_label.text = str(Game.players[peer_id].name)
 	name_label.visible = not local
 	global_position = Game.players[peer_id].position
@@ -43,7 +46,9 @@ func _unhandled_input(event: InputEvent) -> void:
 			Game.request("interact", {"target": target_id})
 	if event.is_action_pressed("use_item"): Game.request("use")
 	if event.is_action_pressed("drop_item"): Game.request("drop")
-	if event.is_action_pressed("fart"): Game.request("fart")
+	if event.is_action_pressed("fart"):
+		if float(p.get("gas", 0.0)) > 0.0:
+			Game.request("fart")
 	if event.is_action_pressed("jump"):
 		if p.mode == "seated": Game.request("stand")
 		if p.mode == "carried": Game.request("wiggle")

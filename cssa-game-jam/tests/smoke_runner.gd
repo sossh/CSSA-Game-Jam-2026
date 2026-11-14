@@ -99,6 +99,9 @@ func run_host() -> void:
 	await wait(Game.config.interactions.eat_seconds + 0.2)
 	verify(Game.players[1].stomach > 70 and Game.players[1].food == 25, "Eating restores stomach and records allowance food")
 	verify(not Game.world.items.has(apple.entity_id) if is_instance_valid(apple) else true, "Eaten item consumed")
+	Game.players[1].gas = 0.0
+	Game.handle_action(1, "fart", {})
+	verify(Game.players[1].gas == 0.0, "Player with 0% gas cannot fart")
 	var teacher = Game.world.teacher
 	verify(teacher.get_current_state_name() == "lecturestate" and teacher.global_position.distance_to(teacher.board) < 0.2, "Teacher lectures right away at round start")
 	teacher.suspicion = 0
@@ -237,6 +240,7 @@ func verify_rocket_vending_machine() -> void:
 	ui.close_vending()
 	teleport(1, world.get_node("Hallway/VendingMachine").to_global(Vector3(0, 0, -2)))
 	await wait(0.15)
+	item_count = world.items.size()
 	player.money = 1
 	world.buy(1, "rocket")
 	verify(player.money == 1 and world.items.size() == item_count, "Cosmic Crunch rejects rocket parts even with enough money")

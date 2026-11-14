@@ -233,7 +233,7 @@ func handle_action(id: int, action_name: String, data: Dictionary) -> void:
 				p.seat = -1
 				p.epoch += 1
 		"fart":
-			if allowed(id, "fart", config.interactions.fart_cooldown): relieve_gas(id)
+			if float(p.get("gas", 0.0)) > 0.0 and allowed(id, "fart", config.interactions.fart_cooldown): relieve_gas(id)
 		"step":
 			if p.mode == "walk" and allowed(id, "step", config.interactions.step_cooldown):
 				var step_pos: Vector3 = data.get("position", p.position)
@@ -399,7 +399,7 @@ func finish_eating(id: int) -> void:
 func relieve_gas(id: int) -> void:
 	if not players.has(id): return
 	var p: Dictionary = players[id]
-	if not p.alive: return
+	if not p.alive or float(p.get("gas", 0.0)) <= 0.0: return
 	var kind: String = "fart" if randf() < 0.5 else "burp"
 	var loudness: float = config.burp_loudness if kind == "burp" else config.fart_loudness
 	p.gas = maxf(0.0, float(p.get("gas", 0.0)) - randf_range(config.gas_relief.x, config.gas_relief.y))

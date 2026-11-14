@@ -34,7 +34,6 @@ var shoot_aim_held: bool = false
 var current_anim: String = "idle"
 
 # --- Node References ---
-@onready var label: Label3D = $StateLabel
 @onready var gun: Node3D = $Shotgun
 @onready var laser: Node3D = $AimLaser
 @onready var fsm: TeacherFiniteStateMachine = %FSM
@@ -116,8 +115,6 @@ func _update_visuals() -> void:
 		return
 		
 	visible = true
-	label.text = current.display_name + ("  !" if suspicion > 30 else "")
-	label.modulate = Color(1, 0.3, 0.2) if current.is_alert_state else Color.WHITE
 	
 	var state_name := get_current_state_name()
 	if visual:
