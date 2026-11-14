@@ -114,6 +114,27 @@ func run_host() -> void:
 	NoiseBus.emit_noise(Vector3(2, 0, 5), 100, str(client), "crunch")
 	verify(teacher.target == str(1) and teacher.get_current_state_name() == "shootstate", "Player can make noise when teacher actively attacks another student")
 	teacher.fsm.force_change_state("LectureState")
+	# Irritation meter: near noise and hits raise it, far noise raises it less, and it never touches suspicion.
+	teacher.reset_irritation()
+	teacher.suspicion = 0
+	teacher.sound_grace_until = Game.elapsed + 60.0
+	NoiseBus.emit_noise(teacher.global_position + Vector3.BACK * 14.0, 45, str(client), "burp")
+	var far_irritation: float = teacher.irritation
+	teacher.reset_irritation()
+	NoiseBus.emit_noise(teacher.global_position + Vector3.BACK * 1.5, 45, str(client), "burp")
+	verify(teacher.irritation > far_irritation and teacher.irritation > 0.0, "Irritation grows with proximity to the teacher")
+	var seq_before: int = teacher.irritation_seq
+	teacher.provoked(str(client), teacher.global_position, "splat")
+	verify(teacher.irritation_seq > seq_before and teacher.irritation_reason == ClassroomTeacher.Irr.TOMATO, "Hitting the teacher spikes irritation with a reason")
+	teacher.fsm.force_change_state("LectureState")
+	teacher.suspicion = 0
+	teacher.irritate(20.0, ClassroomTeacher.Irr.NOISE)
+	verify(teacher.suspicion == 0.0 and teacher.get_current_state_name() == "lecturestate", "Irritation does not feed teacher suspicion or state")
+	var restored: Dictionary = teacher.serialize()
+	teacher.reset_irritation()
+	teacher.receive(restored)
+	verify(teacher.irritation > 0.0 and teacher.irritation_seq == restored.irr_seq, "Irritation replicates through teacher snapshots")
+	teacher.reset_irritation()
 	teacher.suspicion = 0
 	teacher.sound_grace_until = 0.0
 	teacher.last_check = Game.elapsed
