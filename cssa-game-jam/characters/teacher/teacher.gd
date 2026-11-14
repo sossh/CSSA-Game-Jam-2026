@@ -26,6 +26,8 @@ var desk := Vector3(3, 0, -7.5)
 
 # --- Combat ---
 var shot_fired: bool = false
+var actual_shot_fired: bool = false
+var shoot_aim_held: bool = false
 
 # --- Animation Tracking ---
 var current_anim: String = "idle"
@@ -78,6 +80,8 @@ func _physics_process(delta: float) -> void:
 				current_anim = "walk" if global_position.distance_to(desk) > 0.4 else "idle"
 			"enteringstate", "leavingstate":
 				current_anim = "walk"
+			"shootstate":
+				current_anim = "shoot-animation"
 			_:
 				current_anim = "idle"
 	else:
@@ -113,11 +117,29 @@ func _update_visuals() -> void:
 			laser.scale.z = origin.distance_to(aim_point)
 
 	# Play exactly what the string says
-	play_anim(current_anim)
+	if current_anim == "shoot-animation":
+		if not actual_shot_fired:
+			if not shoot_aim_held:
+				if anim.assigned_animation != "shoot-animation" or (not anim.is_playing() and anim.current_animation_position == 0.0):
+					anim.play("shoot-animation")
+				if anim.current_animation_position >= 1.48:
+					anim.seek(1.48, true)
+					anim.pause()
+					shoot_aim_held = true
+		else:
+			var recoil_speed: float = Game.config.teacher.shotgun_recoil_anim_speed if Game.config and Game.config.teacher else 0.5
+			if shoot_aim_held:
+				shoot_aim_held = false
+				anim.play("shoot-animation", -1, recoil_speed)
+			elif anim.assigned_animation != "shoot-animation":
+				anim.play("shoot-animation", -1, recoil_speed)
+	else:
+		shoot_aim_held = false
+		play_anim(current_anim)
 
 func play_anim(anim_name: String) -> void:
 	if anim and anim.current_animation != anim_name:
-		anim.play(anim_name)
+		anim.play(anim_name, -1, 1.0)
 
 # --- Senses & Interaction ---
 
@@ -126,11 +148,26 @@ func get_current_state_name() -> String:
 		return fsm.current_state.name.to_lower()
 	return ""
 
+func interrupt_shot() -> void:
+	if get_current_state_name() != "shootstate":
+		return
+	shot_fired = true
+	actual_shot_fired = false
+	shoot_aim_held = false
+	current_anim = "idle"
+	if anim and anim.assigned_animation == "shoot-animation":
+		anim.play("idle", -1, 1.0)
+	fsm.force_change_state("InvestigateState")
+
 func hear(at: Vector3, loudness: float, source: String, kind: String) -> void:
 	if kind == "throw":
 		return
 	var current = get_current_state_name()
-	var ignore_states = ["awaystate", "enteringstate", "leavingstate", "shootstate"]
+	if current == "shootstate":
+		if kind in ["gunshot", "firework"]:
+			interrupt_shot()
+		return
+	var ignore_states = ["awaystate", "enteringstate", "leavingstate"]
 	
 	if Game.phase != "class" or current in ignore_states: 
 		return
@@ -201,6 +238,9 @@ func choose_blame(at: Vector3, source: String) -> String:
 	return choice
 
 func provoked(source: String, at: Vector3) -> void:
+	if get_current_state_name() == "shootstate":
+		interrupt_shot()
+		return
 	if Game.phase == "class": 
 		hear(at, Game.config.teacher.provoked_loudness, source, "impact")
 
@@ -220,11 +260,16 @@ func scan(delta: float) -> void:
 
 func catch_target(id: String) -> void:
 	target = id
+	shot_fired = false
+	actual_shot_fired = false
+	shoot_aim_held = false
+	current_anim = "shoot-animation"
 	fsm.force_change_state("ShootState")
 	if Game.is_host():
 		Game.event.rpc("sound", {"position": global_position, "key": "shotgun_pump", "loudness": Game.config.teacher.shotgun_pump_volume})
 
 func fire() -> void:
+	actual_shot_fired = true
 	if not Game.is_host():
 		return
 	var origin := global_position + Vector3(0, 1.55, 0)
@@ -309,7 +354,8 @@ func serialize() -> Dictionary:
 		"suspicion": suspicion, 
 		"aim": aim_point, 
 		"drugs": drugs,
-		"anim": current_anim
+		"anim": current_anim,
+		"shot_fired": actual_shot_fired
 	}
 
 func receive(data: Dictionary) -> void:
@@ -320,6 +366,8 @@ func receive(data: Dictionary) -> void:
 	drugs = data.drugs
 	if data.has("anim"):
 		current_anim = data.anim
+	if data.has("shot_fired"):
+		actual_shot_fired = data.shot_fired
 	
 	# Force the client FSM to mirror the host's state so visuals render!
 	if fsm:

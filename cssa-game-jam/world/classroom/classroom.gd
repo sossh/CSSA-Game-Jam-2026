@@ -467,6 +467,8 @@ func on_effect(kind: String, data: Dictionary) -> void:
 	elif kind == "shot":
 		scene = SHOT_SCENE
 		direction = (data.end - at).normalized()
+		if teacher and teacher.global_position.distance_to(at) < 3.0:
+			teacher.actual_shot_fired = true
 	elif kind == "burst":
 		scene = SPLAT_SCENE if data.get("color", Color.WHITE) == Color.TOMATO else BURST_SCENE
 	else: return

@@ -1,0 +1,14 @@
+[gd_scene load_steps=4 format=3]
+
+[ext_resource type="PackedScene" uid="uid://byqre5pnuw3j3" path="res://characters/teacher/assets/shotgun/PS1Shotgun_SM.fbx" id="1_shotgun"]
+[ext_resource type="Texture2D" uid="uid://cvy6y17ohhe8l" path="res://characters/teacher/assets/shotgun/PS1Shotgun_1K_Pixels.png" id="2_texture"]
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_shotgun"]
+albedo_texture = ExtResource("2_texture")
+roughness = 0.85
+texture_filter = 0
+
+[node name="ShotgunModel" instance=ExtResource("1_shotgun")]
+
+[node name="Box001" parent="." index="0"]
+surface_material_override/0 = SubResource("StandardMaterial3D_shotgun")
