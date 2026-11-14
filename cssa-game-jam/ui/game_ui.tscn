@@ -202,47 +202,22 @@ layout_mode = 2
 theme_override_colors/font_color = Color(0.82, 0.97, 1, 0.9)
 theme_override_colors/font_outline_color = Color(0, 0.08, 0.16, 0.95)
 theme_override_constants/outline_size = 3
-theme_override_font_sizes/font_size = 22
+theme_override_font_sizes/font_size = 24
 text = "Eat. Survive. Frame your friends."
 horizontal_alignment = 1
 
 [node name="NameField" type="LineEdit" parent="Root/Menu/Content" unique_id=151136378]
 unique_name_in_owner = true
 layout_mode = 2
+theme_override_font_sizes/font_size = 23
 placeholder_text = "Student name"
 max_length = 20
 
-[node name="AddressField" type="LineEdit" parent="Root/Menu/Content" unique_id=838490100]
-unique_name_in_owner = true
-layout_mode = 2
-placeholder_text = "Host Wi-Fi IP (optional, for sharing a code)"
-
 [node name="Host" type="Button" parent="Root/Menu/Content" unique_id=1652830039]
-custom_minimum_size = Vector2(0, 42)
+custom_minimum_size = Vector2(0, 46)
 layout_mode = 2
+theme_override_font_sizes/font_size = 23
 text = "HOST CLASSROOM"
-
-[node name="LANRow" type="HBoxContainer" parent="Root/Menu/Content" unique_id=48256227]
-layout_mode = 2
-
-[node name="FindLAN" type="Button" parent="Root/Menu/Content/LANRow" unique_id=1444174719]
-custom_minimum_size = Vector2(0, 42)
-layout_mode = 2
-text = "FIND LAN GAMES"
-
-[node name="LANGames" type="OptionButton" parent="Root/Menu/Content/LANRow" unique_id=588775490]
-unique_name_in_owner = true
-visible = false
-layout_mode = 2
-size_flags_horizontal = 3
-fit_to_longest_item = false
-
-[node name="JoinLAN" type="Button" parent="Root/Menu/Content/LANRow" unique_id=586062531]
-unique_name_in_owner = true
-visible = false
-custom_minimum_size = Vector2(0, 42)
-layout_mode = 2
-text = "JOIN LAN GAME"
 
 [node name="JoinRow" type="HBoxContainer" parent="Root/Menu/Content" unique_id=1403926460]
 layout_mode = 2
@@ -251,39 +226,75 @@ layout_mode = 2
 unique_name_in_owner = true
 layout_mode = 2
 size_flags_horizontal = 3
+theme_override_font_sizes/font_size = 23
 placeholder_text = "Host IP or join code"
 
 [node name="Join" type="Button" parent="Root/Menu/Content/JoinRow" unique_id=995362861]
-custom_minimum_size = Vector2(0, 42)
+custom_minimum_size = Vector2(0, 46)
 layout_mode = 2
+theme_override_font_sizes/font_size = 23
 text = "JOIN"
 
 [node name="MenuStatus" type="Label" parent="Root/Menu/Content" unique_id=335902947]
 unique_name_in_owner = true
 layout_mode = 2
 theme_override_colors/font_color = Color(0.55, 0.95, 1, 0.92)
-theme_override_font_sizes/font_size = 17
+theme_override_font_sizes/font_size = 20
 text = "Same LAN • 2–6 students • Host runs the classroom"
 horizontal_alignment = 1
 autowrap_mode = 3
 
-[node name="Controls" type="Label" parent="Root/Menu/Content" unique_id=1468424898]
+[node name="Controls" type="PanelContainer" parent="Root/Menu/Content" unique_id=1468424898]
 layout_mode = 2
+theme_override_styles/panel = SubResource("HudBottomConsole")
+
+[node name="Columns" type="HBoxContainer" parent="Root/Menu/Content/Controls"]
+layout_mode = 2
+theme_override_constants/separation = 20
+
+[node name="MovementControls" type="Label" parent="Root/Menu/Content/Controls/Columns"]
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 0
 theme_override_colors/font_color = Color(0.68, 0.88, 0.95, 0.9)
 theme_override_colors/font_outline_color = Color(0, 0.08, 0.16, 0.95)
 theme_override_constants/line_spacing = 4
 theme_override_constants/outline_size = 3
-theme_override_font_sizes/font_size = 17
-theme_override_styles/normal = SubResource("HudBottomConsole")
-text = "[WASD] Move   •   [Shift] Sprint   •   [Space] Jump / Stand / Escape
-[E] Grab / Sit / Interact   •   [Q] Drop   •   [F] Vent Gas
-[Left-click] Punch / Hold to Throw   •   [Right-click] Eat / Use
-[Tab] Class Register   •   [H] Incident Feed   •   [Esc] Pause Menu"
-horizontal_alignment = 1
+theme_override_font_sizes/font_size = 20
+text = "[WASD] Move
+[Shift] Sprint
+[Space] Jump / Stand / Escape
+[E] Grab / Sit / Interact
+[Q] Drop"
+autowrap_mode = 2
+
+[node name="ActionControls" type="Label" parent="Root/Menu/Content/Controls/Columns"]
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 0
+theme_override_colors/font_color = Color(0.68, 0.88, 0.95, 0.9)
+theme_override_colors/font_outline_color = Color(0, 0.08, 0.16, 0.95)
+theme_override_constants/line_spacing = 4
+theme_override_constants/outline_size = 3
+theme_override_font_sizes/font_size = 20
+text = "[Left-click] Punch / Hold to Throw
+[Right-click] Eat / Use
+[F] Vent Gas
+[Tab] Class Register
+[H] Incident Feed
+[Esc] Pause Menu"
+autowrap_mode = 2
+
+[node name="QuitSpacing" type="Control" parent="Root/Menu/Content"]
+custom_minimum_size = Vector2(0, 10)
+layout_mode = 2
+size_flags_vertical = 3
+mouse_filter = 2
 
 [node name="Quit" type="Button" parent="Root/Menu/Content" unique_id=1706002822]
-custom_minimum_size = Vector2(0, 42)
+custom_minimum_size = Vector2(0, 46)
 layout_mode = 2
+theme_override_font_sizes/font_size = 23
 text = "QUIT"
 
 [node name="MenuMusic" type="AudioStreamPlayer" parent="Root/Menu" unique_id=1492837480]
@@ -898,8 +909,6 @@ grow_vertical = 0
 text = "SKIP INTRO [Space / Esc]"
 
 [connection signal="pressed" from="Root/Menu/Content/Host" to="." method="host_pressed"]
-[connection signal="pressed" from="Root/Menu/Content/LANRow/FindLAN" to="." method="find_lan_pressed"]
-[connection signal="pressed" from="Root/Menu/Content/LANRow/JoinLAN" to="." method="join_lan_pressed"]
 [connection signal="text_submitted" from="Root/Menu/Content/JoinRow/CodeField" to="." method="join_pressed"]
 [connection signal="pressed" from="Root/Menu/Content/JoinRow/Join" to="." method="join_pressed"]
 [connection signal="pressed" from="Root/Menu/Content/Quit" to="." method="quit_pressed"]

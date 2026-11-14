@@ -5,9 +5,6 @@ extends CanvasLayer
 @onready var menu_status: Label = %MenuStatus
 @onready var name_field: LineEdit = %NameField
 @onready var code_field: LineEdit = %CodeField
-@onready var address_field: LineEdit = %AddressField
-@onready var lan_games: OptionButton = %LANGames
-@onready var join_lan_button: Button = %JoinLAN
 @onready var hud: Control = %HUD
 @onready var helmet_visor: ColorRect = %HelmetVisor
 @onready var stats: Label = %Stats
@@ -47,7 +44,6 @@ func _ready() -> void:
 	Game.announcement.connect(show_banner)
 	Game.effect.connect(on_effect)
 	Net.status_changed.connect(func(message): menu_status.text = message)
-	Net.lan_games_found.connect(show_lan_games)
 	var lobby_status := "Same LAN • 2–%d students • Host runs the classroom" % Game.config.maximum_players
 	menu_status.text = get_tree().get_meta("disconnect_message", lobby_status)
 	get_tree().remove_meta("disconnect_message")
@@ -58,35 +54,10 @@ func _ready() -> void:
 	Input.mouse_mode = Input.MOUSE_MODE_VISIBLE
 
 func host_pressed() -> void:
-	var address := address_field.text.strip_edges()
-	if address != "" and (not address.is_valid_ip_address() or ":" in address):
-		menu_status.text = "Host address must be IPv4."
-		return
-	Net.host(name_field.text, address)
+	Net.host(name_field.text)
 
 func join_pressed(_text: String = "") -> void:
 	Net.join(name_field.text, code_field.text)
-
-func find_lan_pressed() -> void:
-	Net.find_lan_games()
-
-func join_lan_pressed() -> void:
-	if lan_games.selected >= 0:
-		Net.join(name_field.text, lan_games.get_item_metadata(lan_games.selected))
-
-func show_lan_games(games: Dictionary) -> void:
-	lan_games.clear()
-	for address in games:
-		lan_games.add_item("%s (%s)" % [games[address], address])
-		lan_games.set_item_metadata(lan_games.item_count - 1, address)
-	var found := not games.is_empty()
-	lan_games.visible = found
-	join_lan_button.visible = found
-	if found:
-		lan_games.select(0)
-		menu_status.text = "Choose a classroom and select Join LAN Game."
-	else:
-		menu_status.text = "No classrooms found. Check that the host is running, or enter their Wi-Fi IP."
 
 func quit_pressed() -> void:
 	get_tree().quit()
