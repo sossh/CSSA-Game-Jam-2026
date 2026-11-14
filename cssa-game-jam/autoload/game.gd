@@ -89,8 +89,6 @@ func _physics_process(delta: float) -> void:
 		if p.burp_at > 0 and elapsed >= p.burp_at:
 			p.burp_at = 0.0
 			NoiseBus.emit_noise(p.position, config.burp_loudness, str(id), "burp")
-		if p.pop_until > elapsed and allowed(id, "pop", config.interactions.pop_rocks_interval):
-			NoiseBus.emit_noise(p.position, config.interactions.pop_rocks_loudness, str(id), "pop_rocks")
 		if p.position.y < config.fall_out_height:
 			kill(id, "fell out of the curriculum")
 	if is_host() and phase == "class" and next_npc_noise_at > 0.0 and elapsed >= next_npc_noise_at:
@@ -163,7 +161,7 @@ func register(display_name: String) -> void:
 		"position": world.chute_position(players.size()), "yaw": 0.0, "pitch": 0.0,
 		"mode": "walk" if alive else "dead", "seat": -1, "held": "", "carrier": 0,
 		"eat_until": 0.0, "violation_until": 0.0, "speed_until": 0.0, "recover_at": 0.0,
-		"burp_at": 0.0, "growl_at": elapsed + 15, "pop_until": 0.0, "gas": 0.0,
+		"burp_at": 0.0, "growl_at": elapsed + 15, "gas": 0.0,
 		"epoch": 0, "limbs": [], "launch": Vector3.ZERO}
 	world.ensure_players()
 	if id != 1:
@@ -202,6 +200,14 @@ func handle_action(id: int, action_name: String, data: Dictionary) -> void:
 		start_run()
 		return
 	var p: Dictionary = players[id]
+	if action_name == "buy":
+		var purchased := false
+		if p.alive and p.mode not in ["carried", "ragdoll"] and allowed(id, "buy", config.interactions.buy_cooldown):
+			purchased = world.buy(id, str(data.get("item", "")), str(data.get("machine", "vending")))
+		var request_id := int(data.get("request_id", 0))
+		if request_id > 0:
+			event.rpc_id(id, "vending_result", {"id": id, "request_id": request_id, "purchased": purchased, "balance": p.money})
+		return
 	if not p.alive or phase == "game_over": return
 	if action_name == "wiggle" and p.mode == "carried" and allowed(id, "wiggle", config.player.struggle_interval_seconds):
 		p.recover_at += 1
@@ -232,8 +238,6 @@ func handle_action(id: int, action_name: String, data: Dictionary) -> void:
 			if p.mode == "walk" and allowed(id, "step", config.interactions.step_cooldown):
 				var step_pos: Vector3 = data.get("position", p.position)
 				NoiseBus.emit_noise(step_pos, config.player.sprint_step_loudness if data.get("sprint", false) else config.player.walk_step_loudness, str(id), "footstep")
-		"buy":
-			if allowed(id, "buy", config.interactions.buy_cooldown): world.buy(id, str(data.get("item", "")), str(data.get("machine", "vending")))
 
 func allowed(id: int, key: String, interval: float) -> bool:
 	var token := str(id) + ":" + key
@@ -263,7 +267,6 @@ func start_run() -> void:
 	rocket_launch_started_at = -1.0
 	if is_instance_valid(world): world.update_rocket_assembly()
 	world.clear_items()
-	world.teacher.drugs = 0
 	for id in players:
 		players[id].money = config.starting_bitcoin
 		respawn(id)
@@ -275,7 +278,7 @@ func start_preparation() -> void:
 	warning_bell_fired = false
 	world.prepare_class()
 	for id in players: players[id].food = 0.0
-	event.rpc("banner", {"text": "GRADE %d • Drug the coffee. Find food. Take a seat." % grade})
+	event.rpc("banner", {"text": "GRADE %d • Find food. Take a seat." % grade})
 	print("PHASE preparation grade=", grade)
 
 func start_class() -> void:
@@ -299,7 +302,6 @@ func start_break() -> void:
 	warning_bell_fired = false
 	next_npc_noise_at = 0.0
 	world.teacher.leave()
-	world.teacher.drugs = 0
 	world.prepare_class()
 	for id in players:
 		var p: Dictionary = players[id]
@@ -324,7 +326,6 @@ func respawn(id: int) -> void:
 	p.carrier = 0
 	p.eat_until = 0.0
 	p.burp_at = 0.0
-	p.pop_until = 0.0
 	p.speed_until = 0.0
 	p.violation_until = 0.0
 	p.gas = 0.0
@@ -388,7 +389,6 @@ func finish_eating(id: int) -> void:
 	p.stomach = minf(config.stomach_max, p.stomach + data.food)
 	if phase == "class": p.food += data.food
 	if data.effect == "speed": p.speed_until = elapsed + config.player.energy_boost_seconds
-	if data.effect == "pop_rocks": p.pop_until = elapsed + config.interactions.pop_rocks_seconds
 	if data.sound == "can_open" or data.effect == "speed":
 		NoiseBus.emit_noise(p.position, config.interactions.can_crush_loudness, str(id), "crush_can")
 	p.gas = clampf(float(p.get("gas", 0.0)) + data.food, 0.0, config.gas_capacity)

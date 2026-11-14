@@ -13,11 +13,9 @@ const PARTICLE_SCENES := {
 	"sneeze": preload("res://effects/burp.tscn"),
 	"fart": preload("res://effects/fart.tscn"),
 	"footstep": preload("res://effects/footstep.tscn"),
-	"pop_rocks": preload("res://effects/pop_rocks.tscn"),
 	"impact": BURST_SCENE,
 	"splat": preload("res://effects/tomato_splat.tscn"),
 	"punch": BURST_SCENE,
-	"firework": preload("res://effects/pop_rocks.tscn"),
 	"vending_dispense": BURST_SCENE,
 }
 const SHOT_SCENE := preload("res://effects/shot.tscn")
@@ -38,7 +36,6 @@ var serial: int = 0
 var next_food_drop: float = 0.0
 @onready var launch_site: Node3D = $LunarLaunchSite
 @onready var vending_position: Vector3 = $Hallway/VendingMachine.global_position
-@onready var coffee_position: Vector3 = $TeacherDesk/Coffee.global_position
 
 func _enter_tree() -> void:
 	Game.world = self
@@ -185,7 +182,7 @@ func spawn_item(id: String, at: Vector3, kid: bool = false, dead: bool = false, 
 	serial += 1
 	var chosen_skin := skin if skin > 0 else (randi_range(1, 4) if kid else 0)
 	return create_item("item:" + str(serial), {"item": id, "transform": Transform3D(Basis.IDENTITY, at), "holder": 0,
-		"kid": kid, "dead": dead, "seated": kid and not dead and seat >= 0, "home": seat, "uses": ItemDB.get_item(id).uses, "skin": chosen_skin})
+		"kid": kid, "dead": dead, "seated": kid and not dead and seat >= 0, "home": seat, "skin": chosen_skin})
 
 func create_item(entity_id: String, state: Dictionary) -> ClassroomItem:
 	var scene: PackedScene = KID_SCENE if state.kid else ItemDB.get_item(state.item).scene
@@ -249,7 +246,6 @@ func prepare_class() -> void:
 		var height := Game.config.prep_loot_base_height + int(i / float(spawn_positions.size())) * Game.config.prep_loot_stack_height
 		point += Vector3(randf_range(-scatter.x, scatter.x), height, randf_range(-scatter.y, scatter.y))
 		spawn_item(ItemDB.random_item(Game.grade, i < count - Game.config.mixed_loot_spawns), point)
-	spawn_item("drug", $Hallway/StarterSpawns/Drug.global_position)
 	spawn_item("tomato", $Hallway/StarterSpawns/Tomato.global_position)
 
 func free_seat(preferred: int = -1) -> int:
@@ -280,14 +276,6 @@ func interact(id: int, target: String) -> void:
 	if target in ItemDB.VENDING_MACHINES:
 		if Game.phase in ["lobby", "preparation", "break"]: Game.event.rpc("vending", {"id": id, "machine": target})
 		return
-	if target == "coffee":
-		if Game.phase not in ["lobby", "preparation", "break"]: return
-		if items.has(p.held) and items[p.held].data.effect == "drug":
-			Game.log_activity("%s adds extra 'decaf' to the teacher's coffee." % p.name)
-			remove_item(p.held)
-			teacher.drugs = mini(Game.config.teacher.maximum_tablets, teacher.drugs + 1)
-			Game.event.rpc("banner", {"text": "Coffee enhanced. Professor X-PEL will be very sleepy."})
-		return
 	if target.begins_with("seat:"):
 		var seat := int(target.get_slice(":", 1))
 		if p.mode == "seated" and p.seat == seat:
@@ -299,8 +287,6 @@ func interact(id: int, target: String) -> void:
 		for item in items.values():
 			if item.kid and item.seated and item.home_seat == seat:
 				item.release(item.global_position + Vector3.UP, Vector3(1, 4, 2), str(id))
-			if item.data.effect == "cushion" and item.global_position.distance_to(at) < Game.config.interactions.cushion_seat_radius:
-				NoiseBus.emit_noise(at, Game.config.interactions.cushion_seat_loudness, str(id), "fart")
 		p.mode = "seated"
 		p.seat = seat
 		p.position = seat_positions[seat]
@@ -413,32 +399,6 @@ func use_held(id: int) -> void:
 		p.eat_until = Game.elapsed + tuning.eat_seconds
 		NoiseBus.emit_noise(p.position, data.eating_noise, str(id), data.sound)
 		return
-	match data.effect:
-		"cushion": NoiseBus.emit_noise(p.position, tuning.cushion_use_loudness, str(id), "fart")
-		"gun", "nerf", "knife":
-			if item.uses <= 0: return
-			Game.log_activity("%s uses %s!" % [p.name, data.display_name])
-			if data.effect != "knife": item.uses -= 1
-			var origin: Vector3 = p.position + Vector3(0, 1.5, 0)
-			var direction := aim_direction(id)
-			var distance := tuning.knife_reach if data.effect == "knife" else tuning.gun_range
-			var hit := get_world_3d().direct_space_state.intersect_ray(PhysicsRayQueryParameters3D.create(origin, origin + direction * distance, 15, [player_nodes[id].get_rid()]))
-			NoiseBus.emit_noise(origin, tuning.gun_loudness if data.effect == "gun" else tuning.weapon_other_loudness, str(id), "gunshot" if data.effect == "gun" else "punch")
-			Game.event.rpc("shot", {"position": origin, "end": origin + direction * distance if hit.is_empty() else hit.position})
-			if not hit.is_empty():
-				var damage := tuning.nerf_damage if data.effect == "nerf" else tuning.weapon_damage
-				var impulse := direction * tuning.weapon_impulse + Vector3.UP * tuning.weapon_lift
-				hit_body(hit.collider, damage, impulse, "became a group project casualty")
-		"loot_box":
-			Game.log_activity("%s opens a mystery lunchbox." % p.name)
-			remove_item(item.entity_id)
-			spawn_item(ItemDB.random_item(Game.grade + 1), p.position + Vector3.UP)
-		"firework":
-			if item.fuse_at > 0: return
-			Game.log_activity("%s lights an INDOOR firework. Excellent judgement." % p.name)
-			item.fuse_at = Game.elapsed + tuning.firework_fuse
-			item.thrower = str(id)
-			Game.event.rpc("banner", {"text": "Firework lit. Three seconds. Throw it!"})
 
 func aim_direction(id: int) -> Vector3:
 	var p: Dictionary = Game.players[id]
@@ -464,19 +424,20 @@ func hit_body(body: Node, damage: float, impulse: Vector3, reason: String) -> vo
 		body.release(body.global_position, impulse, "")
 	elif body is ClassroomTeacher: body.provoked("", body.global_position)
 
-func buy(id: int, item_id: String, machine_id: String = "vending") -> void:
-	if Game.phase not in ["lobby", "preparation", "break"] or not ItemDB.sells(item_id, machine_id): return
-	if not interactions.has(machine_id): return
+func buy(id: int, item_id: String, machine_id: String = "vending") -> bool:
+	if Game.phase not in ["lobby", "preparation", "break"] or not ItemDB.sells(item_id, machine_id): return false
+	if not interactions.has(machine_id): return false
 	var p: Dictionary = Game.players[id]
 	var data: ItemData = ItemDB.get_item(item_id)
 	var machine: Node3D = interactions[machine_id].get_parent()
-	if p.position.distance_to(machine.global_position) > Game.config.interactions.vending_reach or p.money < data.price: return
-	if items.size() >= Game.config.max_loose_items: return
+	if p.position.distance_to(machine.global_position) > Game.config.interactions.vending_reach or p.money < data.price: return false
+	if items.size() >= Game.config.max_loose_items: return false
 	p.money -= data.price
 	Game.log_activity("%s buys %s for ₿%d." % [p.name, data.display_name, data.price])
 	var dispense_point: Marker3D = machine.get_node("DispensePoint")
 	var item := spawn_item(item_id, dispense_point.global_position)
 	NoiseBus.emit_noise(item.global_position, Game.config.interactions.vending_loudness, str(id), "vending_dispense")
+	return true
 
 func spawn_corpse(id: int, impulse: Vector3) -> void:
 	var p: Dictionary = Game.players[id]
@@ -511,7 +472,7 @@ func on_effect(kind: String, data: Dictionary) -> void:
 		var key: String = data.key
 		scene = PARTICLE_SCENES.get(key)
 		if scene == null: return
-		if key in ["chew", "crunch", "slurp", "can_open", "burp", "sneeze", "pop_rocks"]:
+		if key in ["chew", "crunch", "slurp", "can_open", "burp", "sneeze"]:
 			at += Vector3.UP * (1.40 if data.get("seated", false) else 1.55) + direction * 0.35
 		elif key == "fart": at += Vector3.UP * 0.65 - direction * 0.25
 		elif key == "footstep": at += Vector3.UP * 0.08

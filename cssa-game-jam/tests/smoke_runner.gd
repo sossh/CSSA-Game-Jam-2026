@@ -26,7 +26,7 @@ func run_host() -> void:
 	verify_scene_nodes()
 	verify(Net.decode_code(Net.encode_ip("192.168.1.42")) == "192.168.1.42", "LAN code round trip")
 	verify(Net.decode_code("zzzz-zzzz") == "", "Malformed code rejected")
-	verify(ItemDB.items.size() == 41, "All item resources loaded")
+	verify(ItemDB.items.size() == 32, "All item resources loaded")
 	for attempt in range(100):
 		if Game.players.size() >= 2: break
 		await wait(0.1)
@@ -75,17 +75,11 @@ func run_host() -> void:
 	var count: int = Game.world.items.size()
 	Game.world.buy(1, "chips")
 	verify(Game.players[1].money == 93 and Game.world.items.size() == count + 1, "Vending charges once and spawns a physical purchase")
-	Game.world.buy(1, "gun")
-	verify(Game.players[1].money == 38 and Game.world.items.size() == count + 2, "Grade one can buy previously locked stock")
+	Game.world.buy(1, "meat")
+	verify(Game.players[1].money == 83 and Game.world.items.size() == count + 2, "Grade one can buy previously locked stock")
 	await verify_second_vending_machine()
 	await verify_rocket_vending_machine()
 	await verify_rocket_assembly()
-	teleport(1, Game.world.to_global(Vector3(2, 0, -5.2)))
-	var drug = Game.world.spawn_item("drug", Game.world.to_global(Vector3(2, 1.2, -5.2)))
-	await wait(0.1)
-	Game.world.interact(1, drug.entity_id)
-	Game.world.interact(1, "coffee")
-	verify(Game.world.teacher.drugs == 1 and Game.players[1].held == "", "Drug is consumed into coffee")
 	teleport(1, Game.world.to_global(Vector3(0, 0, 5)))
 	teleport(client, Game.world.to_global(Vector3(1, 0, 5)))
 	await wait(0.2)
@@ -110,7 +104,7 @@ func run_host() -> void:
 	teacher.suspicion = 0
 	NoiseBus.emit_noise(teacher.global_position + Vector3.BACK * 3.0, 70, str(client), "burp")
 	verify(teacher.suspicion == 0 and teacher.get_current_state_name() == "lecturestate", "Round start sound grace period ignores student noise")
-	NoiseBus.emit_noise(teacher.global_position + Vector3.BACK * 3.0, 250, str(1), "gunshot")
+	NoiseBus.emit_noise(teacher.global_position + Vector3.BACK * 3.0, 250, str(1), "impact")
 	verify(teacher.get_current_state_name() in ["shootstate", "investigatestate"], "Over-threshold noise catches/investigates during lecture")
 	teacher.fsm.force_change_state("ShootState")
 	teacher.target = str(1)
@@ -212,23 +206,23 @@ func verify_rocket_vending_machine() -> void:
 	teleport(1, machine.to_global(Vector3(0, 0, -2)))
 	await wait(0.15)
 	world.interact(1, ItemDB.ROCKET_VENDING)
-	var rows: Array = ui.vending_rows.get_children().filter(func(row): return row.visible)
-	verify(ui.vending_panel.visible and rows.map(func(row): return row.item_id) == ["rocket", "rocket_second_stage", "rocket_fairing"],
-		"Falcon keypad offers the three stages in code order")
+	var cards: Array = ui.vending_grid.get_children()
+	verify(ui.vending_panel.visible and ui.vending_grid.columns == 3 and cards.all(func(card): return card.custom_minimum_size.y == 344.0)
+		and cards.map(func(card): return card.item_id) == ItemDB.FALCON_STOCK,
+		"Falcon grid shows exactly three rocket parts in one row")
 	var item_count: int = world.items.size()
 	world.buy(1, "chips", ItemDB.ROCKET_VENDING)
 	verify(player.money == 3 and world.items.size() == item_count, "Falcon cabinet rejects snack purchases")
-	for index in range(rows.size()):
-		var entry = rows[index]
-		var code := "A%02d" % (index + 1)
-		verify(not entry.disabled and entry.text.begins_with(code + " • ₿1 • "), "Falcon menu offers " + code + " for one Bitcoin")
-		var item_id: String = entry.item_id
+	for item_id in ItemDB.FALCON_STOCK:
+		var card: VendingCard = ui.vending_grid.get_children().filter(func(entry): return entry.item_id == item_id)[0]
+		verify(not card.disabled and card.price == 1, "Falcon card offers " + item_id + " for one Bitcoin")
 		var existing_items: Array = world.items.keys()
 		var money: int = player.money
-		ui.buy_code(code)
+		card.pressed.emit()
+		verify(not ui.vending_panel.visible, "Successful card purchase closes the menu")
 		var purchases: Array = world.items.keys().filter(func(id): return not id in existing_items)
 		verify(purchases.size() == 1 and player.money == money - 1,
-			"Falcon keypad charges once and dispenses one item for " + code)
+			"Falcon card charges once and dispenses one item for " + item_id)
 		if purchases.size() != 1: continue
 		var item: ClassroomItem = world.items[purchases[0]]
 		verify(item.item_id == item_id and item.global_position.is_equal_approx(point.global_position),
@@ -238,15 +232,28 @@ func verify_rocket_vending_machine() -> void:
 		verify(absf(landing.x) < 0.4 and absf(landing.z) < 0.4 and landing.y > 0.035 and landing.y < 0.38,
 			"Falcon purchase lands on the pickup tray")
 		world.remove_item(purchases[0])
+		world.interact(1, ItemDB.ROCKET_VENDING)
+	verify(ui.vending_grid.get_children().all(func(card): return card.disabled), "Unaffordable Falcon cards are disabled")
 	ui.close_vending()
 	teleport(1, world.get_node("Hallway/VendingMachine").to_global(Vector3(0, 0, -2)))
 	await wait(0.15)
-	var remaining_money: int = player.money
+	player.money = 1
 	world.buy(1, "rocket")
-	verify(player.money == remaining_money and world.items.size() == item_count, "Cosmic Crunch rejects Falcon stock")
+	verify(player.money == 1 and world.items.size() == item_count, "Cosmic Crunch rejects rocket parts even with enough money")
+	player.money = 0
 	world.interact(1, "vending")
-	var regular_rows: Array = ui.vending_rows.get_children().filter(func(row): return row.visible)
-	verify(regular_rows.size() == ItemDB.stock().size() and regular_rows.all(func(row): return not row.disabled), "Cosmic Crunch offers every regular item at grade one")
+	var regular_rows: Array = ui.vending_grid.get_children()
+	verify(regular_rows.size() == ItemDB.stock().size() and regular_rows.all(func(card): return card.disabled), "Cosmic Crunch lists all stock and disables unaffordable cards")
+	var first_menu := regular_rows.map(func(card): return card.item_id)
+	ui.open_vending("vending:2")
+	verify(first_menu.size() == ItemDB.items.size() - ItemDB.FALCON_STOCK.size() and first_menu == ui.vending_grid.get_children().map(func(card): return card.item_id),
+		"Both Cosmic Crunch menus offer the same regular stock")
+	var displayed := {}
+	for path in ["Hallway/VendingMachine/SnackDisplay", "Hallway/VendingMachine2/DrinkDisplay"]:
+		for slot in world.get_node(path).get_children():
+			displayed[slot.get_meta("item_id")] = slot.has_node("Visual")
+	verify(displayed.size() == first_menu.size() and first_menu.all(func(id): return displayed.get(id, false)),
+		"Cosmic Crunch shelves display every regular item and no rocket parts")
 	ui.close_vending()
 	player.money = balance
 
@@ -322,10 +329,10 @@ func verify_scene_nodes() -> void:
 		item.free()
 	var ui = get_tree().current_scene.get_node("UI")
 	ui.open_vending()
-	verify(ui.vending_rows.get_child_count() == ItemDB.items.size() and ui.vending_panel.visible, "Scene-authored vending controls open and refresh")
+	verify(ui.vending_grid.get_child_count() == ItemDB.stock().size() and ui.vending_panel.visible, "Scene-authored vending controls open and refresh")
 	ui.close_vending()
 	verify(ui.has_node("Root/HUD/EventFeed/Content/Entries"), "Incident feed is authored in the HUD scene")
-	for file in ["impact_burst", "eating", "fart", "burp", "footstep", "tomato_splat", "shot", "pop_rocks"]:
+	for file in ["impact_burst", "eating", "fart", "burp", "footstep", "tomato_splat", "shot"]:
 		var scene = load("res://effects/" + file + ".tscn").instantiate()
 		verify(scene.get_node("Particles") is CPUParticles3D and scene.has_node("Cleanup"), file + " uses scene-authored Godot particles and cleanup")
 		scene.free()
@@ -333,9 +340,11 @@ func verify_scene_nodes() -> void:
 func verify_presentation() -> void:
 	Game.log_activity("NETWORK_PRESENTATION_MARKER")
 	var effects := Game.world.get_node("Effects")
-	for key in ["chew", "impact", "burp", "fart", "footstep", "splat", "pop_rocks"]:
+	var cues := ["chew", "impact", "burp", "fart", "footstep", "splat"]
+	var before: int = effects.get_child_count()
+	for key in cues:
 		NoiseBus.emit_noise(Vector3(0, 0, 5), 0, "1", key)
-	verify(effects.get_child_count() >= 7, "Gameplay events spawn particle scene instances")
+	verify(effects.get_child_count() >= before + cues.size(), "Gameplay events spawn particle scene instances")
 	var spawned: Array = effects.get_children()
 	verify("NETWORK_PRESENTATION_MARKER" in get_tree().current_scene.get_node("UI/Root/HUD/EventFeed/Content/Entries").text, "Incident feed updates from authoritative events")
 	await wait(2.7)

@@ -1,7 +1,6 @@
 [gd_scene format=3 uid="uid://ys8psrs51ue3"]
 
 [ext_resource type="Script" uid="uid://cwsrc05ernper" path="res://ui/game_ui.gd" id="1"]
-[ext_resource type="PackedScene" path="res://ui/vending_entry.tscn" id="2"]
 [ext_resource type="PackedScene" path="res://ui/event_feed.tscn" id="3"]
 [ext_resource type="Shader" path="res://ui/death_filter.gdshader" id="4_death_shader"]
 
@@ -721,246 +720,46 @@ grow_vertical = 2
 [node name="Content" type="VBoxContainer" parent="Root/Vending" unique_id=347941449]
 layout_mode = 2
 
-[node name="VendingTitle" type="Label" parent="Root/Vending/Content" unique_id=1676467454]
-unique_name_in_owner = true
+[node name="Header" type="HBoxContainer" parent="Root/Vending/Content"]
 layout_mode = 2
-theme_override_font_sizes/font_size = 30
-text = "COSMIC CRUNCH • KEYPAD"
+theme_override_constants/separation = 12
 
-[node name="VendingStatus" type="Label" parent="Root/Vending/Content" unique_id=990606012]
-unique_name_in_owner = true
-layout_mode = 2
-theme_override_font_sizes/font_size = 17
-text = "Purchases drop into the tray. One hand. No inventory."
-
-[node name="Scroll" type="ScrollContainer" parent="Root/Vending/Content" unique_id=238840483]
-custom_minimum_size = Vector2(0, 390)
-layout_mode = 2
-size_flags_vertical = 3
-
-[node name="VendingRows" type="VBoxContainer" parent="Root/Vending/Content/Scroll" unique_id=1632040591]
+[node name="VendingBalance" type="Label" parent="Root/Vending/Content/Header"]
 unique_name_in_owner = true
 layout_mode = 2
 size_flags_horizontal = 3
+theme_override_colors/font_color = Color(0.64, 0.93, 1, 1)
+theme_override_font_sizes/font_size = 30
+text = "Balance ₿0"
 
-[node name="Slurpee" parent="Root/Vending/Content/Scroll/VendingRows" unique_id=1359671943 instance=ExtResource("2")]
+[node name="Exit" type="Button" parent="Root/Vending/Content/Header"]
+custom_minimum_size = Vector2(96, 40)
 layout_mode = 2
-text = "A01 • ₿2 • Slurpee (10% remaining)"
-item_id = "slurpee"
+text = "Exit"
 
-[node name="Rock" parent="Root/Vending/Content/Scroll/VendingRows" unique_id=2035099210 instance=ExtResource("2")]
+[node name="Divider" type="HSeparator" parent="Root/Vending/Content"]
 layout_mode = 2
-text = "A02 • ₿3 • Moon rock"
-item_id = "rock"
 
-[node name="Carrot" parent="Root/Vending/Content/Scroll/VendingRows" unique_id=200313848 instance=ExtResource("2")]
-layout_mode = 2
-text = "A03 • ₿4 • Carrot"
-item_id = "carrot"
-
-[node name="Tomato" parent="Root/Vending/Content/Scroll/VendingRows" unique_id=1983215911 instance=ExtResource("2")]
-layout_mode = 2
-text = "A04 • ₿4 • Tomato"
-item_id = "tomato"
-
-[node name="Apple" parent="Root/Vending/Content/Scroll/VendingRows" unique_id=1617707390 instance=ExtResource("2")]
-layout_mode = 2
-text = "A05 • ₿5 • Apple"
-
-[node name="Chocolate" parent="Root/Vending/Content/Scroll/VendingRows" unique_id=1866059511 instance=ExtResource("2")]
-layout_mode = 2
-text = "A06 • ₿6 • Chocolate"
-item_id = "chocolate"
-
-[node name="Chips" parent="Root/Vending/Content/Scroll/VendingRows" unique_id=1007882409 instance=ExtResource("2")]
-layout_mode = 2
-text = "A07 • ₿7 • Chips"
-item_id = "chips"
-
-[node name="Cushion" parent="Root/Vending/Content/Scroll/VendingRows" unique_id=1858236294 instance=ExtResource("2")]
-layout_mode = 2
-text = "A08 • ₿8 • Whoopee cushion"
-item_id = "cushion"
-
-[node name="PopRocks" parent="Root/Vending/Content/Scroll/VendingRows" unique_id=678617627 instance=ExtResource("2")]
-layout_mode = 2
-text = "A09 • ₿8 • Pop Rocks"
-item_id = "pop_rocks"
-
-[node name="Drug" parent="Root/Vending/Content/Scroll/VendingRows" unique_id=972439595 instance=ExtResource("2")]
-layout_mode = 2
-text = "A10 • ₿10 • Sleeping tablets"
-item_id = "drug"
-
-[node name="Monster" parent="Root/Vending/Content/Scroll/VendingRows" unique_id=165019585 instance=ExtResource("2")]
-layout_mode = 2
-text = "A11 • ₿12 • White Monster"
-item_id = "monster"
-
-[node name="LootBox" parent="Root/Vending/Content/Scroll/VendingRows" unique_id=1260083019 instance=ExtResource("2")]
-layout_mode = 2
-text = "A12 • ₿15 • Mystery lunchbox"
-item_id = "loot_box"
-
-[node name="Nerf" parent="Root/Vending/Content/Scroll/VendingRows" unique_id=483278537 instance=ExtResource("2")]
-layout_mode = 2
-text = "A13 • ₿18 • Foam gun"
-item_id = "nerf"
-
-[node name="Firework" parent="Root/Vending/Content/Scroll/VendingRows" unique_id=1801912095 instance=ExtResource("2")]
-layout_mode = 2
-text = "A14 • ₿25 • Firework"
-item_id = "firework"
-
-[node name="Knife" parent="Root/Vending/Content/Scroll/VendingRows" unique_id=1390111125 instance=ExtResource("2")]
-layout_mode = 2
-text = "A15 • ₿30 • Karambit"
-item_id = "knife"
-
-[node name="Gun" parent="Root/Vending/Content/Scroll/VendingRows" unique_id=705225067 instance=ExtResource("2")]
-layout_mode = 2
-text = "A16 • ₿55 • Gun"
-item_id = "gun"
-
-[node name="FirstStage" parent="Root/Vending/Content/Scroll/VendingRows" instance=ExtResource("2")]
-layout_mode = 2
-text = "A01 • ₿1 • First Stage"
-item_id = "rocket"
-
-[node name="SecondStage" parent="Root/Vending/Content/Scroll/VendingRows" instance=ExtResource("2")]
-layout_mode = 2
-text = "A02 • ₿1 • Second Stage"
-item_id = "rocket_second_stage"
-
-[node name="PayloadFairing" parent="Root/Vending/Content/Scroll/VendingRows" instance=ExtResource("2")]
-layout_mode = 2
-text = "A03 • ₿1 • Payload Fairing"
-item_id = "rocket_fairing"
-
-[node name="EnergyGreen" parent="Root/Vending/Content/Scroll/VendingRows" unique_id=92943114 instance=ExtResource("2")]
-layout_mode = 2
-text = "EnergyGreen"
-item_id = "energy_green"
-
-[node name="Banana" parent="Root/Vending/Content/Scroll/VendingRows" unique_id=1200317029 instance=ExtResource("2")]
-layout_mode = 2
-text = "Banana"
-item_id = "banana"
-
-[node name="BubbleTea" parent="Root/Vending/Content/Scroll/VendingRows" unique_id=997925308 instance=ExtResource("2")]
-layout_mode = 2
-text = "BubbleTea"
-item_id = "bubble_tea"
-
-[node name="Burrito" parent="Root/Vending/Content/Scroll/VendingRows" unique_id=848103048 instance=ExtResource("2")]
-layout_mode = 2
-text = "Burrito"
-item_id = "burrito"
-
-[node name="CerealBowl" parent="Root/Vending/Content/Scroll/VendingRows" unique_id=190959214 instance=ExtResource("2")]
-layout_mode = 2
-text = "CerealBowl"
-item_id = "cereal_bowl"
-
-[node name="Cheese" parent="Root/Vending/Content/Scroll/VendingRows" unique_id=1845601739 instance=ExtResource("2")]
-layout_mode = 2
-text = "Cheese"
-item_id = "cheese"
-
-[node name="Nuggets" parent="Root/Vending/Content/Scroll/VendingRows" unique_id=1912648531 instance=ExtResource("2")]
-layout_mode = 2
-text = "Nuggets"
-item_id = "nuggets"
-
-[node name="Chili" parent="Root/Vending/Content/Scroll/VendingRows" unique_id=1191096027 instance=ExtResource("2")]
-layout_mode = 2
-text = "Chili"
-item_id = "chili"
-
-[node name="CornDog" parent="Root/Vending/Content/Scroll/VendingRows" unique_id=711593818 instance=ExtResource("2")]
-layout_mode = 2
-text = "CornDog"
-item_id = "corn_dog"
-
-[node name="Egg" parent="Root/Vending/Content/Scroll/VendingRows" unique_id=907450321 instance=ExtResource("2")]
-layout_mode = 2
-text = "Egg"
-item_id = "egg"
-
-[node name="FrenchFries" parent="Root/Vending/Content/Scroll/VendingRows" unique_id=1064347401 instance=ExtResource("2")]
-layout_mode = 2
-text = "FrenchFries"
-item_id = "french_fries"
-
-[node name="Matcha" parent="Root/Vending/Content/Scroll/VendingRows" unique_id=399446115 instance=ExtResource("2")]
-layout_mode = 2
-text = "Matcha"
-item_id = "matcha"
-
-[node name="Meat" parent="Root/Vending/Content/Scroll/VendingRows" unique_id=544807927 instance=ExtResource("2")]
-layout_mode = 2
-text = "Meat"
-item_id = "meat"
-
-[node name="Pizza" parent="Root/Vending/Content/Scroll/VendingRows" unique_id=1605994481 instance=ExtResource("2")]
-layout_mode = 2
-text = "Pizza"
-item_id = "pizza"
-
-[node name="Popsicle" parent="Root/Vending/Content/Scroll/VendingRows" unique_id=930723289 instance=ExtResource("2")]
-layout_mode = 2
-text = "Popsicle"
-item_id = "popsicle"
-
-[node name="Pudding" parent="Root/Vending/Content/Scroll/VendingRows" unique_id=1256769494 instance=ExtResource("2")]
-layout_mode = 2
-text = "Pudding"
-item_id = "pudding"
-
-[node name="Ramen" parent="Root/Vending/Content/Scroll/VendingRows" unique_id=2008846312 instance=ExtResource("2")]
-layout_mode = 2
-text = "Ramen"
-item_id = "ramen"
-
-[node name="Soda" parent="Root/Vending/Content/Scroll/VendingRows" unique_id=701882497 instance=ExtResource("2")]
-layout_mode = 2
-text = "Soda"
-item_id = "soda"
-
-[node name="Taco" parent="Root/Vending/Content/Scroll/VendingRows" unique_id=1467360404 instance=ExtResource("2")]
-layout_mode = 2
-text = "Taco"
-item_id = "taco"
-
-[node name="Taiyaki" parent="Root/Vending/Content/Scroll/VendingRows" unique_id=2041305275 instance=ExtResource("2")]
-layout_mode = 2
-text = "Taiyaki"
-item_id = "taiyaki"
-
-[node name="Waffle" parent="Root/Vending/Content/Scroll/VendingRows" unique_id=282225598 instance=ExtResource("2")]
-layout_mode = 2
-text = "Waffle"
-item_id = "waffle"
-
-[node name="Sandwich" parent="Root/Vending/Content/Scroll/VendingRows" unique_id=948533259 instance=ExtResource("2")]
-layout_mode = 2
-text = "Sandwich"
-item_id = "sandwich"
-
-[node name="Keypad" type="LineEdit" parent="Root/Vending/Content" unique_id=361534554]
+[node name="VendingScroll" type="ScrollContainer" parent="Root/Vending/Content"]
 unique_name_in_owner = true
 layout_mode = 2
-placeholder_text = "Enter item code (e.g. A01), then Enter"
+size_flags_vertical = 3
+horizontal_scroll_mode = 0
+vertical_scroll_mode = 4
 
-[node name="Dispense" type="Button" parent="Root/Vending/Content" unique_id=75021294]
-custom_minimum_size = Vector2(0, 42)
+[node name="VendingGridLayout" type="VBoxContainer" parent="Root/Vending/Content/VendingScroll"]
+unique_name_in_owner = true
 layout_mode = 2
-text = "DISPENSE"
+size_flags_horizontal = 3
+size_flags_vertical = 3
 
-[node name="Close" type="Button" parent="Root/Vending/Content" unique_id=596612331]
-custom_minimum_size = Vector2(0, 42)
+[node name="VendingGrid" type="GridContainer" parent="Root/Vending/Content/VendingScroll/VendingGridLayout"]
+unique_name_in_owner = true
 layout_mode = 2
-text = "CLOSE [Esc]"
+size_flags_horizontal = 3
+theme_override_constants/h_separation = 10
+theme_override_constants/v_separation = 10
+columns = 4
 
 [node name="Crawl" type="Control" parent="Root" unique_id=1722826484]
 unique_name_in_owner = true
@@ -1032,7 +831,5 @@ text = "SKIP INTRO [Space / Esc]"
 [connection signal="pressed" from="Root/Pause/Content/Resume" to="." method="resume_pressed"]
 [connection signal="pressed" from="Root/Pause/Content/CopyCode" to="." method="copy_code_pressed"]
 [connection signal="pressed" from="Root/Pause/Content/QuitToMenu" to="." method="quit_to_menu_pressed"]
-[connection signal="text_submitted" from="Root/Vending/Content/Keypad" to="." method="buy_code"]
-[connection signal="pressed" from="Root/Vending/Content/Dispense" to="." method="dispense_pressed"]
-[connection signal="pressed" from="Root/Vending/Content/Close" to="." method="close_vending"]
 [connection signal="pressed" from="Root/Crawl/Skip" to="." method="close_crawl"]
+[connection signal="pressed" from="Root/Vending/Content/Header/Exit" to="." method="close_vending"]

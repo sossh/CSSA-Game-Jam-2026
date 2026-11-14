@@ -34,6 +34,6 @@ func physics_update(delta: float) -> void:
 	var coffee_duration := teacher.get_coffee_duration()
 	if drink_time >= coffee_duration:
 		var delay := randf_range(tuning.coffee_delay.x, tuning.coffee_delay.y)
-		teacher.next_coffee = Game.elapsed + delay / (1.0 + teacher.drugs * tuning.coffee_tablet_scale)
+		teacher.next_coffee = Game.elapsed + delay
 		teacher.path.clear()
 		state_transition.emit(self, "LectureState")

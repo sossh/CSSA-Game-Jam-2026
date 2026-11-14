@@ -53,13 +53,9 @@ extends Resource
 @export var first_coffee_delay: Vector2 = Vector2(20, 35)
 @export var coffee_delay: Vector2 = Vector2(30, 50)
 @export var coffee_seconds: float = 5.0
-@export var coffee_extra_seconds_per_tablet: float = 3.0
-@export var first_coffee_tablet_scale: float = 0.5
-@export var coffee_tablet_scale: float = 0.7
 @export var coffee_travel_timeout: float = 3.5
 @export var coffee_blocked_timeout: float = 1.0
 @export var coffee_turn_speed: float = 3.0
-@export var maximum_tablets: int = 3
 
 @export_group("Movement")
 @export var walk_speed: float = 2.5

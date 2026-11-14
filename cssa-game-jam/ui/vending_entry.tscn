@@ -1,8 +1,94 @@
-[gd_scene load_steps=2 format=3]
+[gd_scene load_steps=7 format=3]
+
 [ext_resource type="Script" path="res://ui/vending_entry.gd" id="1"]
+
+[sub_resource type="StyleBoxFlat" id="Normal"]
+bg_color = Color(0.052, 0.1, 0.18, 1)
+border_width_left = 1
+border_width_top = 1
+border_width_right = 1
+border_width_bottom = 1
+border_color = Color(0.2, 0.42, 0.56, 1)
+content_margin_left = 8.0
+content_margin_right = 8.0
+content_margin_top = 98.0
+content_margin_bottom = 8.0
+
+[sub_resource type="StyleBoxFlat" id="Hover"]
+bg_color = Color(0.075, 0.18, 0.27, 1)
+border_width_left = 1
+border_width_top = 1
+border_width_right = 1
+border_width_bottom = 1
+border_color = Color(0.42, 0.85, 0.95, 1)
+content_margin_left = 8.0
+content_margin_right = 8.0
+content_margin_top = 98.0
+content_margin_bottom = 8.0
+
+[sub_resource type="StyleBoxFlat" id="Disabled"]
+bg_color = Color(0.095, 0.106, 0.13, 1)
+border_width_left = 1
+border_width_top = 1
+border_width_right = 1
+border_width_bottom = 1
+border_color = Color(0.25, 0.28, 0.34, 1)
+content_margin_left = 8.0
+content_margin_right = 8.0
+content_margin_top = 98.0
+content_margin_bottom = 8.0
+
+[sub_resource type="StyleBoxFlat" id="Focus"]
+draw_center = false
+border_width_left = 2
+border_width_top = 2
+border_width_right = 2
+border_width_bottom = 2
+border_color = Color(0.52, 0.9, 1, 1)
+
+[sub_resource type="Environment" id="PreviewEnvironment"]
+ambient_light_source = 2
+ambient_light_color = Color(0.86, 0.91, 1, 1)
+ambient_light_energy = 0.8
+
 [node name="VendingEntry" type="Button"]
-custom_minimum_size = Vector2(0, 42)
+custom_minimum_size = Vector2(160, 166)
 size_flags_horizontal = 3
-text = "A01 • Item"
+theme_override_colors/font_color = Color(0.92, 0.97, 1, 1)
+theme_override_colors/font_disabled_color = Color(0.62, 0.65, 0.7, 1)
+theme_override_font_sizes/font_size = 16
+theme_override_styles/normal = SubResource("Normal")
+theme_override_styles/hover = SubResource("Hover")
+theme_override_styles/pressed = SubResource("Hover")
+theme_override_styles/disabled = SubResource("Disabled")
+theme_override_styles/focus = SubResource("Focus")
+autowrap_mode = 3
+text_overrun_behavior = 0
 script = ExtResource("1")
-[connection signal="pressed" from="." to="." method="purchase"]
+
+[node name="Thumbnail" type="SubViewportContainer" parent="."]
+layout_mode = 1
+anchor_right = 1.0
+offset_left = 6.0
+offset_top = 6.0
+offset_right = -6.0
+offset_bottom = 102.0
+mouse_filter = 2
+stretch = true
+
+[node name="Preview" type="SubViewport" parent="Thumbnail"]
+own_world_3d = true
+transparent_bg = true
+handle_input_locally = false
+size = Vector2i(148, 96)
+render_target_update_mode = 0
+
+[node name="Camera" type="Camera3D" parent="Thumbnail/Preview"]
+environment = SubResource("PreviewEnvironment")
+current = true
+projection = 1
+near = 0.01
+
+[node name="KeyLight" type="DirectionalLight3D" parent="Thumbnail/Preview"]
+rotation = Vector3(-0.67, 0.6, 0.0)
+light_energy = 1.0

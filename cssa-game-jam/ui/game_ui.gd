@@ -21,10 +21,10 @@ extends CanvasLayer
 @onready var debug: Label = %Debug
 @onready var pause_panel: PanelContainer = %Pause
 @onready var vending_panel: PanelContainer = %Vending
-@onready var vending_rows: VBoxContainer = %VendingRows
-@onready var vending_title: Label = %VendingTitle
-@onready var keypad: LineEdit = %Keypad
-@onready var vending_status: Label = %VendingStatus
+@onready var vending_grid_layout: VBoxContainer = %VendingGridLayout
+@onready var vending_grid: GridContainer = %VendingGrid
+@onready var vending_scroll: ScrollContainer = %VendingScroll
+@onready var vending_balance: Label = %VendingBalance
 @onready var tint: ColorRect = %DamageTint
 @onready var death_filter: ColorRect = %DeathFilter
 @onready var wasted_container: CenterContainer = %WastedContainer
@@ -93,46 +93,52 @@ func copy_code_pressed() -> void:
 func quit_to_menu_pressed() -> void:
 	Net.disconnect_session()
 
+const VENDING_CARD := preload("res://ui/vending_entry.tscn")
+
+var vending_machine_id := "vending"
+var vending_sequence := 0
+var pending_purchase := 0
+
 func close_vending() -> void:
+	pending_purchase = 0
 	vending_panel.hide()
 	update_mouse()
 
-func dispense_pressed() -> void:
-	buy_code(keypad.text)
-
-var vending_machine_id := "vending"
-
 func open_vending(machine_id: String = "vending") -> void:
 	vending_machine_id = machine_id
+	pending_purchase = 0
+	for card in vending_grid.get_children():
+		vending_grid.remove_child(card)
+		card.queue_free()
+	var balance := int(Game.players.get(multiplayer.get_unique_id(), {}).get("money", 0))
 	var stock := ItemDB.stock(machine_id)
-	vending_title.text = "FALCON 9 • KEYPAD" if machine_id == ItemDB.ROCKET_VENDING else "COSMIC CRUNCH • KEYPAD"
-	var entries := {}
-	for entry in vending_rows.get_children():
-		entries[entry.item_id] = entry
-		entry.hide()
-	for index in range(stock.size()):
-		var entry: Button = entries.get(stock[index].id)
-		if entry == null: continue
-		entry.refresh(index + 1, machine_id)
-		vending_rows.move_child(entry, index)
-		entry.show()
-	vending_rows.get_parent().scroll_vertical = 0
+	vending_grid.columns = clampi(stock.size(), 1, 4)
+	var falcon := machine_id == ItemDB.ROCKET_VENDING
+	vending_grid_layout.alignment = BoxContainer.ALIGNMENT_CENTER if falcon else BoxContainer.ALIGNMENT_BEGIN
+	for data: ItemData in stock:
+		var card := VENDING_CARD.instantiate() as VendingCard
+		vending_grid.add_child(card)
+		card.configure(data, falcon)
+		card.pressed.connect(purchase_item.bind(data.id))
+	vending_scroll.scroll_vertical = 0
+	update_vending_balance(balance)
 	vending_panel.show()
 	update_mouse()
-	keypad.grab_focus()
 
-func buy_code(code: String) -> void:
-	var value := code.strip_edges().to_upper().trim_prefix("A")
-	if not value.is_valid_int():
-		vending_status.text = "Use a code such as A01."
-		return
-	var index := int(value) - 1
-	var stock := ItemDB.stock(vending_machine_id)
-	if index < 0 or index >= stock.size():
-		vending_status.text = "Unknown item code."
-		return
-	Game.request("buy", {"item": stock[index].id, "machine": vending_machine_id})
-	keypad.clear()
+func update_vending_balance(balance: int) -> void:
+	vending_balance.text = "Balance ₿%d" % balance
+	for card: VendingCard in vending_grid.get_children():
+		card.update_affordability(balance, pending_purchase != 0)
+
+func purchase_item(item_id: String) -> void:
+	if not vending_panel.visible or pending_purchase != 0: return
+	var player: Dictionary = Game.players.get(multiplayer.get_unique_id(), {})
+	if player.is_empty() or not ItemDB.sells(item_id, vending_machine_id): return
+	if player.money < ItemDB.get_item(item_id).price: return
+	vending_sequence += 1
+	pending_purchase = vending_sequence
+	update_vending_balance(player.money)
+	Game.request("buy", {"item": item_id, "machine": vending_machine_id, "request_id": pending_purchase})
 
 func connected() -> void:
 	reset_wasted()
@@ -157,7 +163,7 @@ func _input(event: InputEvent) -> void:
 		return
 	if not Net.active: return
 	if event.is_action_pressed("ui_cancel"):
-		if vending_panel.visible: vending_panel.hide()
+		if vending_panel.visible: close_vending()
 		else: pause_panel.visible = not pause_panel.visible
 		update_mouse()
 		get_viewport().set_input_as_handled()
@@ -178,6 +184,7 @@ func _process(delta: float) -> void:
 		crawl_text.position.y -= delta * 45
 		if crawl_text.position.y < -1100: close_crawl()
 	if not Net.active or not Game.players.has(multiplayer.get_unique_id()):
+		if vending_panel.visible: close_vending()
 		if is_instance_valid(death_filter): death_filter.visible = false
 		if is_instance_valid(wasted_container): wasted_container.visible = false
 		return
@@ -234,8 +241,8 @@ func _process(delta: float) -> void:
 		teacher_state_name = Game.world.teacher.fsm.current_state.display_name
 	debug.text = "FPS %d | Teacher %s | Suspicion %.1f | Items %d" % [Engine.get_frames_per_second(), teacher_state_name, Game.world.teacher.suspicion, Game.world.items.size()]
 	if vending_panel.visible:
-		vending_status.text = "Balance: ₿%d • Grade %d • Purchases fall into the tray" % [p.money, Game.grade]
-		if not p.alive or Game.phase == "class": close_vending()
+		update_vending_balance(p.money)
+		if not p.alive or Game.phase not in ["lobby", "preparation", "break"]: close_vending()
 
 func trigger_wasted() -> void:
 	wasted_timer = 1.6
@@ -255,6 +262,12 @@ func show_banner(text: String) -> void:
 	banner_left = Game.config.banner_seconds
 
 func on_effect(kind: String, data: Dictionary) -> void:
+	if kind == "vending_result" and pending_purchase != 0 and data.id == multiplayer.get_unique_id() and data.request_id == pending_purchase:
+		if data.purchased:
+			close_vending()
+		else:
+			pending_purchase = 0
+			update_vending_balance(data.balance)
 	if kind == "vending" and data.id == multiplayer.get_unique_id(): open_vending(data.get("machine", "vending"))
 	if kind == "killed" and data.id == multiplayer.get_unique_id(): trigger_wasted()
 	if kind in ["hurt", "splat"] and data.id == multiplayer.get_unique_id():

@@ -12,7 +12,7 @@ Host codes encode IPv4 only. Normal play uses UDP **7777** for gameplay and UDP 
 |---|---|
 | WASD / mouse | Move / look |
 | Shift / Space | Sprint / jump |
-| E | Grab, sit, coffee, vending |
+| E | Grab, sit, vending |
 | LMB with empty hand | Punch |
 | Hold/release LMB with object/friend | Charge and throw |
 | RMB | Eat / use held object |
@@ -31,12 +31,12 @@ Host codes encode IPv4 only. Normal play uses UDP **7777** for gameplay and UDP 
 - One held thing, including another player or clone. Charged throws, punches, impact noise, tomato splats, knockback and ragdoll recovery.
 - Preparation **20s**, class **120s**, break **90s**.
 - One **Stomach / health** bar. Time and shotgun hits deplete it; food restores it. Eating is a timed exposed action. Low stomach growls, delayed burps and noisy consumables feed the teacher.
-- Teacher: away → entering → lecture / warning / checking / investigating / coffee / caught-shot → leaving. Warning precedes normal checks; random checks have a minimum cooldown. Investigation raises future check frequency. Coffee reduces hearing sensitivity. Sleeping tablets increase coffee frequency and duration.
+- Teacher: away → entering → lecture / warning / checking / investigating / coffee / caught-shot → leaving. Warning precedes normal checks; random checks have a minimum cooldown. Investigation raises future check frequency. Coffee reduces hearing sensitivity.
 - **Lecturing can catch students:** severe noise or accumulated suspicion can trigger a shot/investigation even with the teacher's back turned. Sound draws attention to its physical origin. A seen violation identifies its actor; otherwise nearby position, suspicious behavior and a small random component choose the culprit. The teacher does not magically know an unseen thrower's identity.
 - Ten simple NPC clones; weighted, grade-gated classroom loot; sixteen seats. Players can evict seated NPCs. Out-of-seat / eating / recent stealing or throwing can be seen during checks.
 - Allowance is ₿5 attendance + half the food value eaten during class, rounded down. Death waits until the class ends. Re-cloning costs ₿10; a negative balance is debt, **not** elimination. All humans dead simultaneously ends the run. New run resets progression.
 - Endless shared score: classes survived. Increasing grades raise hunger/check pressure and unlock classroom loot. Bring each Falcon 9 part to the console on the lunar launch pad and press E to install the held part. When all three parts are installed, press E again with an empty hand to launch. The rocket climbs straight above the tower and gradually banks toward Earth. The whole lobby sees the same launch, and the pad resets when a new run begins.
-- Physical vending purchases use keypad codes and drop into the pickup tray. The two Cosmic Crunch machines share stock. The Falcon 9 machine across the hallway sells the First Stage, Second Stage and Payload Fairing.
+- Click an affordable item card to buy it. The menu closes after the host dispenses the item into the pickup tray. Both Cosmic Crunch machines share the regular catalog, with different models on their shelves. The Falcon 9 machine across the hallway sells the First Stage, Second Stage and Payload Fairing.
 - Menu, LAN code, skippable opening crawl, HUD, scoreboard, pause/quit and restart. Late join during class spectates until the next bell.
 - Human art/audio replacement hooks; silent missing audio. Geometry is a replaceable greybox. Roulette/gambling table remains stretch scope.
 
@@ -108,7 +108,7 @@ event. Hearing and gameplay loudness are tuned in the gameplay resources above.
 - `Game.damage(peer_id, amount, reason, impulse)` — host damage and optional ragdoll.
 - `Game.launch_player(peer_id, velocity)` — host orders physical tumble.
 - `Game.event.rpc(kind, data)` — reliable visual/audio/UI event; game state belongs in snapshots.
-- Item additions: duplicate a resource in `items/data/` and an inherited throwable scene in `items/scenes/`. Set a unique `id`, price/rarity/grade/effect, and assign the complete scene to the resource's `scene` field. Set that scene's `item_id` to match. ItemDB discovers `.tres` resources through Godot's resource-aware listing, including exported builds. Add a `vending_entry.tscn` instance under `VendingRows` in the UI scene and set its `item_id` to expose a new button; keypad codes follow the active machine's stock.
+- Item additions: duplicate a resource in `items/data/` and an inherited throwable scene in `items/scenes/`. Set a unique `id`, price/rarity/grade/effect, and assign the complete scene to the resource's `scene` field. Set that scene's `item_id` to match. ItemDB discovers `.tres` resources through Godot's resource-aware listing, including exported builds. The vending grid uses the active machine’s stock from ItemDB and renders thumbnails from each item’s Visual node.
 
 ## Level editing
 
@@ -125,7 +125,7 @@ Open `world/classroom/classroom.tscn`: the room, sixteen desk instances, teacher
 
 - The building exterior is `world/classroom/props/exterior_shell.tscn`, instanced as `Room/Exterior`. It is visual only: hull cladding just outside the greybox walls, window frame and mullions, roof caps, the hazard-striped exit frame, signs and corner beacons. Hull panels use `world/classroom/materials/hull_panel.gdshader` in world space, so boxes can be resized without UV work; the foundation and ramp use the same shader through `hull_foundation.tres` and `hull_ramp.tres`. Do not add dynamic lights outside: in the Compatibility renderer each light that reaches the moon mesh redraws all of it.
 - Outdoor dressing is `world/lunar/outpost/lunar_outpost.tscn` (instanced as `LunarOutpost`), built from reusable prop scenes in the same folder. Each prop is a `StaticBody3D` with its origin at ground level and a collision shape baked from the mesh into `outpost/collision/`. Prop heights follow the baked terrain, so re-check them if the surface moves. The west compound is placed so it shows through the observation window.
-- The terrain uses `world/lunar/materials/regolith.{gdshader,tres}` (world-space noise, slope darkening, derivative bump) and the sky is the procedural `world/lunar/materials/starfield.gdshader` through `space_sky.tres`. Ambient light is set to an explicit colour in the classroom `Environment`, so the black sky does not darken shadowed surfaces.
+- The terrain uses `world/lunar/materials/regolith.{gdshader,tres}` (world-space noise, slope darkening, derivative bump). The Moon mesh uses 750,000 triangles, with the original terrain geometry preserved across the walkable cap. The sky is the procedural `world/lunar/materials/starfield.gdshader` through `space_sky.tres`. Ambient light is set to an explicit colour in the classroom `Environment`, so the black sky does not darken shadowed surfaces.
 - Kit `.glb` files import through `assets/models/school_kit/merge_static_meshes.gd`, which merges each model to one mesh with one surface per texture (a 79-piece teacher desk becomes 3 draw calls). New kit models should use the same import script, VRAM-compressed textures capped at 1024 px, and `animation/import=false`.
 - `ui/game_ui.tscn` contains the menu, HUD, pause, vending entries and crawl. Layout is defined by anchors/containers; button connections are saved in the scene. Labels, theme and positions can be edited without changing code.
 - `characters/player/ragdoll.tscn` contains six rigid bodies and five joints, pre-instanced under every network player. The script activates/resets them rather than constructing bodies. Its root is top-level so the player controller can follow the simulated body without moving it.
@@ -143,7 +143,7 @@ python3 cssa-game-jam/tests/run_smoke.py
 python3 cssa-game-jam/tests/run_network.py
 ```
 
-The smoke script launches a real ENet host/client pair and exercises registration, replicated objects, contested pickup, charged throwing, friend carry/ragdoll/recovery, vending, grade-one purchases, coffee drugs, eating/allowance, lecture noise response, check cooldown, death, cloning fee, grade progression, wipe and restart. It fails on engine errors/warnings as well as assertions. `--render` renders the host and saves `cosmic-detention.png` in the system temporary directory.
+The smoke script launches a real ENet host/client pair and exercises registration, replicated objects, contested pickup, charged throwing, friend carry/ragdoll/recovery, vending, grade-one purchases, eating/allowance, lecture noise response, check cooldown, death, cloning fee, grade progression, wipe and restart. It fails on engine errors/warnings as well as assertions. `--render` renders the host and saves `cosmic-detention.png` in the system temporary directory.
 
 The network test launches six actual Godot processes, checks automatic phase timers, a mid-class spectator joining and re-cloning, teacher sightline occlusion and shotgun damage, replicated large snapshots, graceful peer departure, and host-disconnect cleanup.
 

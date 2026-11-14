@@ -824,9 +824,6 @@ transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 13.8)
 
 [node name="StarterSpawns" type="Node3D" parent="Hallway" unique_id=1590607564]
 
-[node name="Drug" type="Marker3D" parent="Hallway/StarterSpawns" unique_id=765330557]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.5, 0.3, 11)
-
 [node name="Tomato" type="Marker3D" parent="Hallway/StarterSpawns" unique_id=1155585005]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.5, 0.3, 11)
 

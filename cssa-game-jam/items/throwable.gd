@@ -13,7 +13,6 @@ var entity_id: String
 var data: ItemData
 var holder: int = 0
 var thrower: String = ""
-var uses: int = 1
 @export var kid: bool = false
 @export var skin_variant: int = 0
 @export var kid_seated_y_offset: float = 0.32
@@ -25,7 +24,6 @@ var home_seat: int = -1
 var seated: bool = false
 var noise_at: float = 0
 var return_at: float = 0
-var fuse_at: float = 0
 var last_impact: float = -10
 var old_velocity := Vector3.ZERO
 var destination := Transform3D.IDENTITY
@@ -34,7 +32,6 @@ var destination := Transform3D.IDENTITY
 
 func _ready() -> void:
 	data = ItemDB.get_item(item_id)
-	uses = data.uses
 	mass = Game.config.clone_mass if kid else data.mass
 	freeze = not Game.is_host() or seated
 	if kid:
@@ -58,9 +55,6 @@ func display_name() -> String:
 func _physics_process(delta: float) -> void:
 	if kid:
 		_update_kid_animation()
-	if Game.is_host() and fuse_at > 0 and Game.elapsed >= fuse_at:
-		detonate()
-		return
 	if holder != 0:
 		freeze = true
 		collision_layer = 0
@@ -88,16 +82,6 @@ func _physics_process(delta: float) -> void:
 			rotation = Vector3.ZERO
 			seated = true
 			freeze = true
-
-func detonate() -> void:
-	fuse_at = 0
-	var tuning := Game.config.interactions
-	NoiseBus.emit_noise(global_position, tuning.firework_loudness, thrower, "firework")
-	Game.event.rpc("burst", {"position": global_position, "color": Color.ORANGE})
-	for id in Game.players:
-		if Game.players[id].position.distance_to(global_position) < tuning.firework_radius:
-			Game.damage(id, tuning.firework_damage, "failed fireworks safety", Vector3.UP * tuning.firework_lift)
-	Game.world.remove_item(entity_id)
 
 func _impact(body: Node) -> void:
 	if not Game.is_host() or holder != 0 or seated: return
@@ -127,7 +111,6 @@ func resolve_impact(body: Node, speed: float, hit_velocity: Vector3) -> void:
 			Game.event.rpc("splat", {"id": body.peer_id})
 			Game.event.rpc("burst", {"position": global_position, "color": Color.TOMATO})
 			Game.world.remove_item(entity_id)
-		elif not kid and data.effect == "knife": Game.damage(body.peer_id, tuning.thrown_knife_damage, "was introduced to cutlery", impulse)
 		elif speed > tuning.ragdoll_impact_speed: Game.launch_player(body.peer_id, impulse)
 	elif body is ClassroomTeacher:
 		body.provoked(thrower, global_position)
@@ -159,14 +142,13 @@ func release(at: Vector3, impulse: Vector3, source: String) -> void:
 
 func serialize() -> Dictionary:
 	return {"item": item_id, "transform": global_transform, "holder": holder, "kid": kid,
-		"dead": dead, "seated": seated, "home": home_seat, "uses": uses, "skin": skin_variant}
+		"dead": dead, "seated": seated, "home": home_seat, "skin": skin_variant}
 
 func receive(state: Dictionary) -> void:
 	destination = state.transform
 	holder = state.holder
 	dead = state.dead
 	seated = state.seated
-	uses = state.uses
 	if state.has("skin") and state.skin != skin_variant:
 		set_skin_variant(state.skin)
 	if kid:

@@ -56,7 +56,7 @@ are core, not optional polish.
   a readable warning before the slow turn. Investigations increase alertness.
 - **Lecture is not immunity:** over-threshold noise can get a student caught
   while the teacher's back is turned. Checks are more sensitive; coffee is
-  less sensitive, not deaf. Sleeping tablets increase coffee opportunities.
+  less sensitive, not deaf.
 - Mixed blame: sound location draws suspicion; visible violations identify
   actors, otherwise proximity, behaviour and limited randomness can frame a
   nearby student. Do not make the teacher omniscient about unseen throwers.

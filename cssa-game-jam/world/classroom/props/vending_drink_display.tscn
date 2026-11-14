@@ -1,79 +1,70 @@
-[gd_scene load_steps=13 format=3]
+[gd_scene load_steps=2 format=3]
 
-[ext_resource type="PackedScene" path="res://assets/models/items/soda.glb" id="1"]
-[ext_resource type="PackedScene" path="res://assets/models/items/bubble_tea.glb" id="2"]
-[ext_resource type="PackedScene" path="res://assets/models/items/matcha.glb" id="3"]
-[ext_resource type="PackedScene" path="res://assets/models/items/energy_green.glb" id="4"]
-[ext_resource type="PackedScene" path="res://assets/models/items/pudding.glb" id="5"]
-[ext_resource type="PackedScene" path="res://assets/models/items/popsicle.glb" id="6"]
-[ext_resource type="PackedScene" path="res://assets/models/items/waffle.glb" id="7"]
-[ext_resource type="PackedScene" path="res://assets/models/items/chocolate.glb" id="8"]
-[ext_resource type="PackedScene" path="res://assets/models/items/taiyaki.glb" id="9"]
-[ext_resource type="PackedScene" path="res://assets/models/items/apple.glb" id="10"]
-[ext_resource type="PackedScene" path="res://assets/models/items/french_fries.glb" id="11"]
-[ext_resource type="PackedScene" path="res://assets/models/items/banana.glb" id="12"]
+[ext_resource type="Script" path="res://world/classroom/props/vending_shelf_display.gd" id="1"]
 
 [node name="DrinkDisplay" type="Node3D"]
-editor_description = "Shelf display meshes. Purchases use the vending keypad and pickup tray."
+script = ExtResource("1")
 
-[node name="Soda" parent="." instance=ExtResource("1")]
-position = Vector3(-0.19, 2.1525, 0.12)
-scale = Vector3(1.55, 1.55, 1.55)
+[node name="Soda01" type="Marker3D" parent="."]
+position = Vector3(-0.18, 2.15, 0.035)
+metadata/item_id = "soda"
 
-[node name="BubbleTea" parent="." instance=ExtResource("2")]
-position = Vector3(0.085, 2.1525, 0.12)
-scale = Vector3(1.12, 1.12, 1.12)
+[node name="BubbleTea02" type="Marker3D" parent="."]
+position = Vector3(0.095, 2.15, 0.035)
+metadata/item_id = "bubble_tea"
 
-[node name="Matcha" parent="." instance=ExtResource("3")]
-position = Vector3(0.363, 2.1525, 0.12)
-scale = Vector3(1.55, 1.55, 1.55)
+[node name="Matcha03" type="Marker3D" parent="."]
+position = Vector3(0.37, 2.15, 0.035)
+metadata/item_id = "matcha"
 
-[node name="EnergyDrink" parent="." instance=ExtResource("4")]
-position = Vector3(-0.19, 1.73288, 0.28824)
-scale = Vector3(0.92, 0.92, 0.92)
+[node name="EnergyGreen04" type="Marker3D" parent="."]
+position = Vector3(0.645, 2.15, 0.035)
+metadata/item_id = "energy_green"
 
-[node name="Pudding" parent="." instance=ExtResource("5")]
-position = Vector3(0.085, 1.73625, 0.12)
-scale = Vector3(1.25, 1.25, 1.25)
+[node name="Pudding05" type="Marker3D" parent="."]
+position = Vector3(-0.18, 1.735, 0.035)
+metadata/item_id = "pudding"
 
-[node name="Popsicle" parent="." instance=ExtResource("6")]
-position = Vector3(0.363, 1.73625, 0.12)
-scale = Vector3(1.45, 1.45, 1.45)
+[node name="Popsicle06" type="Marker3D" parent="."]
+position = Vector3(0.095, 1.735, 0.035)
+metadata/item_id = "popsicle"
 
-[node name="Waffle" parent="." instance=ExtResource("7")]
-position = Vector3(-0.19, 1.32, 0.12)
-scale = Vector3(1.5, 1.5, 1.5)
+[node name="Waffle07" type="Marker3D" parent="."]
+position = Vector3(0.37, 1.735, 0.035)
+metadata/item_id = "waffle"
 
-[node name="Chocolate" parent="." instance=ExtResource("8")]
-position = Vector3(0.0817, 1.32, 0.12)
-scale = Vector3(1.32, 1.32, 1.32)
+[node name="Chocolate08" type="Marker3D" parent="."]
+position = Vector3(0.645, 1.735, 0.035)
+metadata/item_id = "chocolate"
 
-[node name="Taiyaki" parent="." instance=ExtResource("9")]
-position = Vector3(0.363, 1.32, 0.12)
+[node name="Chili09" type="Marker3D" parent="."]
+position = Vector3(-0.18, 1.32, 0.035)
+metadata/item_id = "chili"
 
-[node name="Apple" parent="." instance=ExtResource("10")]
-position = Vector3(-0.19, 0.90657, 0.09)
-scale = Vector3(1.25, 1.25, 1.25)
+[node name="Rock10" type="Marker3D" parent="."]
+position = Vector3(0.095, 1.32, 0.035)
+metadata/item_id = "rock"
 
-[node name="Fries" parent="." instance=ExtResource("11")]
-position = Vector3(0.085, 0.90375, 0.09)
-scale = Vector3(1.45, 1.45, 1.45)
+[node name="BubbleTea11" type="Marker3D" parent="."]
+position = Vector3(0.37, 1.32, 0.035)
+metadata/item_id = "bubble_tea"
 
-[node name="Banana" parent="." instance=ExtResource("12")]
-position = Vector3(0.360827, 0.90375, 0.08244)
+[node name="Monster12" type="Marker3D" parent="."]
+position = Vector3(0.645, 1.32, 0.035)
+metadata/item_id = "monster"
 
-[node name="LeftPopsicle" parent="." instance=ExtResource("6")]
-position = Vector3(0.641, 2.1525, 0.055)
-scale = Vector3(1.45, 1.45, 1.45)
+[node name="CornDog13" type="Marker3D" parent="."]
+position = Vector3(-0.18, 0.905, 0.035)
+metadata/item_id = "corn_dog"
 
-[node name="LeftMatcha" parent="." instance=ExtResource("3")]
-position = Vector3(0.641, 1.73625, 0.055)
-scale = Vector3(1.55, 1.55, 1.55)
+[node name="Nuggets14" type="Marker3D" parent="."]
+position = Vector3(0.095, 0.905, 0.035)
+metadata/item_id = "nuggets"
 
-[node name="LeftSoda" parent="." instance=ExtResource("1")]
-position = Vector3(0.641, 1.32, 0.055)
-scale = Vector3(1.55, 1.55, 1.55)
+[node name="Taiyaki15" type="Marker3D" parent="."]
+position = Vector3(0.37, 0.905, 0.035)
+metadata/item_id = "taiyaki"
 
-[node name="LeftFries" parent="." instance=ExtResource("11")]
-position = Vector3(0.641, 0.90375, 0.055)
-scale = Vector3(1.45, 1.45, 1.45)
+[node name="Soda16" type="Marker3D" parent="."]
+position = Vector3(0.645, 0.905, 0.035)
+metadata/item_id = "soda"

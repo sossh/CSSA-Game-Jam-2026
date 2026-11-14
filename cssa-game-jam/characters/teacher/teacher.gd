@@ -4,7 +4,6 @@ extends CharacterBody3D
 # --- Attributes ---
 var suspicion: float = 0.0
 var alertness: float = 0.0
-var drugs: int = 0
 
 # --- Timers & Cooldowns ---
 var next_check: float = 0.0
@@ -67,7 +66,7 @@ func start_class() -> void:
 	rotation.y = 0.0
 	var tuning := Game.config.teacher
 	var delay := randf_range(tuning.first_coffee_delay.x, tuning.first_coffee_delay.y)
-	next_coffee = Game.elapsed + delay / (1.0 + drugs * tuning.first_coffee_tablet_scale)
+	next_coffee = Game.elapsed + delay
 	last_check = Game.elapsed
 	sound_grace_until = Game.elapsed + tuning.round_start_sound_grace_seconds
 	fsm.force_change_state("LectureState")
@@ -165,7 +164,7 @@ func play_anim(anim_name: String) -> void:
 func get_coffee_duration() -> float:
 	var tuning := Game.config.teacher if Game.config else null
 	if tuning:
-		return tuning.coffee_seconds + drugs * tuning.coffee_extra_seconds_per_tablet
+		return tuning.coffee_seconds
 	return 5.0
 
 func get_drink_anim_speed() -> float:
@@ -203,8 +202,6 @@ func hear(at: Vector3, loudness: float, source: String, kind: String) -> void:
 		return
 	var current = get_current_state_name()
 	if current == "shootstate":
-		if kind in ["gunshot", "firework"]:
-			interrupt_shot()
 		return
 	var ignore_states = ["awaystate", "enteringstate", "leavingstate"]
 	
@@ -216,7 +213,7 @@ func hear(at: Vector3, loudness: float, source: String, kind: String) -> void:
 
 	var tuning := Game.config.teacher
 	if Game.elapsed < sound_grace_until:
-		if not (kind in ["gunshot", "firework"] or loudness >= tuning.lecture_extreme_loudness):
+		if loudness < tuning.lecture_extreme_loudness:
 			return
 
 	var multiplier := 1.0
@@ -240,7 +237,7 @@ func hear(at: Vector3, loudness: float, source: String, kind: String) -> void:
 	
 	# If in lecture with back turned, don't blind snap-shoot behind back unless catastrophic explosion
 	if current == "lecturestate":
-		if (kind in ["gunshot", "firework"] or loudness >= tuning.lecture_extreme_loudness) and perceived >= tuning.hearing_threshold * tuning.lecture_hearing_scale:
+		if loudness >= tuning.lecture_extreme_loudness and perceived >= tuning.hearing_threshold * tuning.lecture_hearing_scale:
 			fsm.force_change_state("InvestigateState")
 		elif suspicion >= tuning.warning_suspicion and check_cooldown_met:
 			fsm.force_change_state("WarningState")
@@ -410,7 +407,6 @@ func serialize() -> Dictionary:
 		"state_name": get_current_state_name(), 
 		"suspicion": suspicion, 
 		"aim": aim_point, 
-		"drugs": drugs,
 		"anim": current_anim,
 		"shot_fired": actual_shot_fired
 	}
@@ -420,7 +416,6 @@ func receive(data: Dictionary) -> void:
 	desired_yaw = data.yaw
 	suspicion = data.suspicion
 	aim_point = data.aim
-	drugs = data.drugs
 	if data.has("anim"):
 		current_anim = data.anim
 	if data.has("shot_fired"):
