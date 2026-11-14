@@ -4,7 +4,7 @@
 [ext_resource type="PackedScene" path="res://assets/edible/cereal_bowl.glb" id="2"]
 
 [sub_resource type="BoxShape3D" id="Shape"]
-size = Vector3(0.160, 0.090, 0.165)
+size = Vector3(0.320, 0.180, 0.330)
 
 [node name="CerealBowl" instance=ExtResource("1")]
 item_id = "cereal_bowl"
@@ -17,4 +17,4 @@ mesh = null
 material_override = null
 
 [node name="Model" parent="Visual" index="0" instance=ExtResource("2")]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.000, -0.045, 0.004)
+transform = Transform3D(2, 0, 0, 0, 2, 0, 0, 0, 2, -0.000, -0.090, 0.008)

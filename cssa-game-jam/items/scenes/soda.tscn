@@ -4,7 +4,7 @@
 [ext_resource type="PackedScene" path="res://assets/edible/soda.glb" id="2"]
 
 [sub_resource type="BoxShape3D" id="Shape"]
-size = Vector3(0.067, 0.123, 0.067)
+size = Vector3(0.134, 0.246, 0.134)
 
 [node name="Soda" instance=ExtResource("1")]
 item_id = "soda"
@@ -17,4 +17,4 @@ mesh = null
 material_override = null
 
 [node name="Model" parent="Visual" index="0" instance=ExtResource("2")]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.000, -0.061, -0.000)
+transform = Transform3D(2, 0, 0, 0, 2, 0, 0, 0, 2, -0.000, -0.122, -0.000)

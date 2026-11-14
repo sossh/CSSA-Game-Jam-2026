@@ -4,7 +4,7 @@
 [ext_resource type="PackedScene" path="res://assets/edible/meat.glb" id="2"]
 
 [sub_resource type="BoxShape3D" id="Shape"]
-size = Vector3(0.310, 0.209, 0.209)
+size = Vector3(0.620, 0.418, 0.418)
 
 [node name="Meat" instance=ExtResource("1")]
 item_id = "meat"
@@ -17,4 +17,4 @@ mesh = null
 material_override = null
 
 [node name="Model" parent="Visual" index="0" instance=ExtResource("2")]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.094, -0.105, 0.000)
+transform = Transform3D(2, 0, 0, 0, 2, 0, 0, 0, 2, 0.188, -0.210, 0.000)

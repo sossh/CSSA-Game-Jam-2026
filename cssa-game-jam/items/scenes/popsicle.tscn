@@ -4,7 +4,7 @@
 [ext_resource type="PackedScene" path="res://assets/edible/popsicle.glb" id="2"]
 
 [sub_resource type="BoxShape3D" id="Shape"]
-size = Vector3(0.052, 0.153, 0.040)
+size = Vector3(0.104, 0.306, 0.080)
 
 [node name="Popsicle" instance=ExtResource("1")]
 item_id = "popsicle"
@@ -17,4 +17,4 @@ mesh = null
 material_override = null
 
 [node name="Model" parent="Visual" index="0" instance=ExtResource("2")]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.000, -0.076, -0.000)
+transform = Transform3D(2, 0, 0, 0, 2, 0, 0, 0, 2, -0.000, -0.152, -0.000)

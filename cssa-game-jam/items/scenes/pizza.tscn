@@ -4,7 +4,7 @@
 [ext_resource type="PackedScene" path="res://assets/edible/pizza.glb" id="2"]
 
 [sub_resource type="BoxShape3D" id="Shape"]
-size = Vector3(0.395, 0.040, 0.395)
+size = Vector3(0.790, 0.080, 0.790)
 
 [node name="Pizza" instance=ExtResource("1")]
 item_id = "pizza"
@@ -17,4 +17,4 @@ mesh = null
 material_override = null
 
 [node name="Model" parent="Visual" index="0" instance=ExtResource("2")]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.000, -0.014, -0.000)
+transform = Transform3D(2, 0, 0, 0, 2, 0, 0, 0, 2, -0.000, -0.028, -0.000)

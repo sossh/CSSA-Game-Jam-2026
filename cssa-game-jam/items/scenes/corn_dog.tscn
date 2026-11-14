@@ -4,7 +4,7 @@
 [ext_resource type="PackedScene" path="res://assets/edible/corn_dog.glb" id="2"]
 
 [sub_resource type="BoxShape3D" id="Shape"]
-size = Vector3(0.048, 0.195, 0.051)
+size = Vector3(0.096, 0.390, 0.102)
 
 [node name="CornDog" instance=ExtResource("1")]
 item_id = "corn_dog"
@@ -17,4 +17,4 @@ mesh = null
 material_override = null
 
 [node name="Model" parent="Visual" index="0" instance=ExtResource("2")]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.000, -0.097, -0.000)
+transform = Transform3D(2, 0, 0, 0, 2, 0, 0, 0, 2, -0.000, -0.194, -0.000)

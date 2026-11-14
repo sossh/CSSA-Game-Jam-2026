@@ -4,7 +4,7 @@
 [ext_resource type="PackedScene" path="res://assets/edible/egg.glb" id="2"]
 
 [sub_resource type="BoxShape3D" id="Shape"]
-size = Vector3(0.067, 0.081, 0.070)
+size = Vector3(0.134, 0.162, 0.140)
 
 [node name="Egg" instance=ExtResource("1")]
 item_id = "egg"
@@ -17,4 +17,4 @@ mesh = null
 material_override = null
 
 [node name="Model" parent="Visual" index="0" instance=ExtResource("2")]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.000, -0.038, -0.000)
+transform = Transform3D(2, 0, 0, 0, 2, 0, 0, 0, 2, 0.000, -0.076, -0.000)

@@ -122,8 +122,16 @@ func update_food_drops() -> void:
 		point += Vector3(randf_range(-0.4, 0.4), 0, randf_range(-0.4, 0.4))
 	else:
 		var target: Node3D = targets[randi() % targets.size()]
-		# On the floor, 1.5m ahead of where they face (floor top is y=0).
-		point = target.global_position - target.global_basis.z * 1.5
+		# On the floor 1-2m in front of OR behind them (random), with a little
+		# sideways scatter (floor top is y=0).
+		var forward := -target.global_basis.z
+		forward.y = 0
+		forward = forward.normalized()
+		var side := forward.cross(Vector3.UP)
+		var along := randf_range(1.0, 2.0) * (1.0 if randf() < 0.5 else -1.0)
+		point = target.global_position + forward * along + side * randf_range(-0.5, 0.5)
+		point.x = clampf(point.x, -8.0, 8.0)
+		point.z = clampf(point.z, -9.0, 7.0)
 		point.y = 0.3
 	var item := spawn_item(ItemDB.random_item(Game.grade, true), point)
 	Game.event.rpc("burst", {"position": point, "color": Color.WHITE})
