@@ -1,6 +1,13 @@
 class_name ClassroomItem
 extends RigidBody3D
 
+const KID_VISUAL_SCENES: Array[PackedScene] = [
+	preload("res://characters/kid_visual.tscn"),
+	preload("res://characters/kid_visual_2.tscn"),
+	preload("res://characters/kid_visual_3.tscn"),
+	preload("res://characters/kid_visual_4.tscn")
+]
+
 var entity_id: String
 @export var item_id: String = "apple"
 var data: ItemData
@@ -8,6 +15,7 @@ var holder: int = 0
 var thrower: String = ""
 var uses: int = 1
 @export var kid: bool = false
+@export var skin_variant: int = 0
 @export var kid_seated_y_offset: float = 0.32
 @export var kid_seated_x_offset: float = 0
 @export var kid_seated_z_offset: float = -0.15
@@ -33,6 +41,9 @@ func _ready() -> void:
 		var kv: Node3D = get_node_or_null("KidVisual")
 		if kv:
 			default_visual_pos = kv.position
+		if skin_variant == 0:
+			skin_variant = randi_range(1, 4)
+		set_skin_variant(skin_variant)
 		if has_node("CloneVisual") and $CloneVisual.has_method("set_color"):
 			$CloneVisual.set_color(Color(0.62, 0.65, 0.8) if not dead else Color(0.5, 0.3, 0.4))
 		_update_kid_animation()
@@ -148,7 +159,7 @@ func release(at: Vector3, impulse: Vector3, source: String) -> void:
 
 func serialize() -> Dictionary:
 	return {"item": item_id, "transform": global_transform, "holder": holder, "kid": kid,
-		"dead": dead, "seated": seated, "home": home_seat, "uses": uses}
+		"dead": dead, "seated": seated, "home": home_seat, "uses": uses, "skin": skin_variant}
 
 func receive(state: Dictionary) -> void:
 	destination = state.transform
@@ -156,8 +167,29 @@ func receive(state: Dictionary) -> void:
 	dead = state.dead
 	seated = state.seated
 	uses = state.uses
+	if state.has("skin") and state.skin != skin_variant:
+		set_skin_variant(state.skin)
 	if kid:
 		_update_kid_animation()
+
+func set_skin_variant(variant: int) -> void:
+	if not kid:
+		return
+	skin_variant = clampi(variant, 1, 4)
+	var old_kv: Node3D = get_node_or_null("KidVisual")
+	if old_kv and old_kv.get_meta("skin_variant", 1) == skin_variant:
+		return
+	var new_scene: PackedScene = KID_VISUAL_SCENES[skin_variant - 1]
+	var new_kv: Node3D = new_scene.instantiate()
+	new_kv.name = "KidVisual"
+	new_kv.set_meta("skin_variant", skin_variant)
+	if old_kv:
+		new_kv.transform = old_kv.transform
+		old_kv.name = "OldKidVisual"
+		old_kv.queue_free()
+	add_child(new_kv)
+	default_visual_pos = new_kv.position
+	_update_kid_animation()
 
 func _update_kid_animation() -> void:
 	if not kid:

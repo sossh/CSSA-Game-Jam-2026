@@ -181,10 +181,11 @@ func ensure_players() -> void:
 			player_nodes[id].queue_free()
 			player_nodes.erase(id)
 
-func spawn_item(id: String, at: Vector3, kid: bool = false, dead: bool = false, seat: int = -1) -> ClassroomItem:
+func spawn_item(id: String, at: Vector3, kid: bool = false, dead: bool = false, seat: int = -1, skin: int = 0) -> ClassroomItem:
 	serial += 1
+	var chosen_skin := skin if skin > 0 else (randi_range(1, 4) if kid else 0)
 	return create_item("item:" + str(serial), {"item": id, "transform": Transform3D(Basis.IDENTITY, at), "holder": 0,
-		"kid": kid, "dead": dead, "seated": kid and not dead and seat >= 0, "home": seat, "uses": ItemDB.get_item(id).uses})
+		"kid": kid, "dead": dead, "seated": kid and not dead and seat >= 0, "home": seat, "uses": ItemDB.get_item(id).uses, "skin": chosen_skin})
 
 func create_item(entity_id: String, state: Dictionary) -> ClassroomItem:
 	var scene: PackedScene = KID_SCENE if state.kid else ItemDB.get_item(state.item).scene
@@ -196,6 +197,8 @@ func create_item(entity_id: String, state: Dictionary) -> ClassroomItem:
 	item.dead = state.dead
 	item.seated = state.seated
 	item.home_seat = state.home
+	if state.has("skin"):
+		item.skin_variant = state.skin
 	item.transform = $Items.global_transform.affine_inverse() * state.transform
 	$Items.add_child(item)
 	item.receive(state)
