@@ -5,6 +5,13 @@
 [ext_resource type="PackedScene" uid="uid://n4o7jmwjshu1" path="res://world/lunar/launch_site/assets/falcon-9-block-5-fairing-godot.glb" id="3_fairing"]
 [ext_resource type="PackedScene" uid="uid://hhwovklylds1" path="res://world/lunar/launch_site/assets/spacex_falcon_9_strongback.glb" id="4_strongback"]
 
+[ext_resource type="Script" path="res://world/lunar/launch_site/lunar_launch_site.gd" id="6_assembly"]
+[ext_resource type="Script" path="res://core/interact/interactable.gd" id="7_interaction"]
+[ext_resource type="PackedScene" path="res://world/lunar/launch_site/assets/spacecraft_control_terminal_console_follow_me.glb" id="8_console"]
+[ext_resource type="PackedScene" path="res://effects/rocket_thruster.tscn" id="9_thruster"]
+[ext_resource type="PackedScene" path="res://effects/rocket_pad_dust.tscn" id="10_pad_dust"]
+[ext_resource type="AudioStream" path="res://assets/audio/rocket_launch/ignition.ogg" id="11_ignition"]
+
 [ext_resource type="Shape3D" path="res://world/lunar/launch_site/strongback_collision.res" id="5_strongback_collision"]
 
 [sub_resource type="StandardMaterial3D" id="PadMaterial"]
@@ -40,7 +47,173 @@ radius = 1.85
 height = 12.6
 radius = 2.45
 
+[sub_resource type="BoxShape3D" id="ConsoleInteractionShape"]
+size = Vector3(1.8, 3.1, 1.55)
+
+[sub_resource type="BoxShape3D" id="ConsoleBaseShape"]
+size = Vector3(1.4, 1.45, 1.1)
+
+[sub_resource type="Animation" id="ResetFlight"]
+resource_name = "RESET"
+length = 0.001
+tracks/0/type = "value"
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/path = NodePath(".:flight_progress")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/keys = {
+"times": PackedFloat32Array(0),
+"transitions": PackedFloat32Array(1),
+"update": 0,
+"values": [0.0]
+}
+tracks/1/type = "value"
+tracks/1/imported = false
+tracks/1/enabled = true
+tracks/1/path = NodePath("Falcon9:visible")
+tracks/1/interp = 1
+tracks/1/loop_wrap = true
+tracks/1/keys = {
+"times": PackedFloat32Array(0),
+"transitions": PackedFloat32Array(1),
+"update": 1,
+"values": [true]
+}
+tracks/2/type = "value"
+tracks/2/imported = false
+tracks/2/enabled = true
+tracks/2/path = NodePath("Falcon9/Thruster/Core:emitting")
+tracks/2/interp = 1
+tracks/2/loop_wrap = true
+tracks/2/keys = {
+"times": PackedFloat32Array(0),
+"transitions": PackedFloat32Array(1),
+"update": 1,
+"values": [false]
+}
+tracks/3/type = "value"
+tracks/3/imported = false
+tracks/3/enabled = true
+tracks/3/path = NodePath("Falcon9/Thruster/Exhaust:emitting")
+tracks/3/interp = 1
+tracks/3/loop_wrap = true
+tracks/3/keys = {
+"times": PackedFloat32Array(0),
+"transitions": PackedFloat32Array(1),
+"update": 1,
+"values": [false]
+}
+tracks/4/type = "value"
+tracks/4/imported = false
+tracks/4/enabled = true
+tracks/4/path = NodePath("Falcon9/Thruster/Glow:light_energy")
+tracks/4/interp = 1
+tracks/4/loop_wrap = true
+tracks/4/keys = {
+"times": PackedFloat32Array(0),
+"transitions": PackedFloat32Array(1),
+"update": 0,
+"values": [0.0]
+}
+tracks/5/type = "value"
+tracks/5/imported = false
+tracks/5/enabled = true
+tracks/5/path = NodePath("PadDust:emitting")
+tracks/5/interp = 1
+tracks/5/loop_wrap = true
+tracks/5/keys = {
+"times": PackedFloat32Array(0),
+"transitions": PackedFloat32Array(1),
+"update": 1,
+"values": [false]
+}
+
+[sub_resource type="Animation" id="LaunchFlight"]
+resource_name = "launch"
+length = 12.0
+tracks/0/type = "value"
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/path = NodePath(".:flight_progress")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/keys = {
+"times": PackedFloat32Array(0, 1.35, 5.15, 12),
+"transitions": PackedFloat32Array(1, 2, 1, 1),
+"update": 0,
+"values": [0.0, 0.0, 1.0, 2.0]
+}
+tracks/1/type = "value"
+tracks/1/imported = false
+tracks/1/enabled = true
+tracks/1/path = NodePath("Falcon9:visible")
+tracks/1/interp = 1
+tracks/1/loop_wrap = true
+tracks/1/keys = {
+"times": PackedFloat32Array(0, 11.88),
+"transitions": PackedFloat32Array(1, 1),
+"update": 1,
+"values": [true, false]
+}
+tracks/2/type = "value"
+tracks/2/imported = false
+tracks/2/enabled = true
+tracks/2/path = NodePath("Falcon9/Thruster/Core:emitting")
+tracks/2/interp = 1
+tracks/2/loop_wrap = true
+tracks/2/keys = {
+"times": PackedFloat32Array(0, 0.12, 11.65),
+"transitions": PackedFloat32Array(1, 1, 1),
+"update": 1,
+"values": [false, true, false]
+}
+tracks/3/type = "value"
+tracks/3/imported = false
+tracks/3/enabled = true
+tracks/3/path = NodePath("Falcon9/Thruster/Exhaust:emitting")
+tracks/3/interp = 1
+tracks/3/loop_wrap = true
+tracks/3/keys = {
+"times": PackedFloat32Array(0, 0.33, 11.45),
+"transitions": PackedFloat32Array(1, 1, 1),
+"update": 1,
+"values": [false, true, false]
+}
+tracks/4/type = "value"
+tracks/4/imported = false
+tracks/4/enabled = true
+tracks/4/path = NodePath("Falcon9/Thruster/Glow:light_energy")
+tracks/4/interp = 1
+tracks/4/loop_wrap = true
+tracks/4/keys = {
+"times": PackedFloat32Array(0, 0.12, 0.34, 1, 1.37, 2.55, 5, 11.45, 12),
+"transitions": PackedFloat32Array(1, 1, 1, 1, 1, 1, 1, 1, 1),
+"update": 0,
+"values": [0.0, 0.0, 1.65, 1.25, 2.25, 1.6, 0.85, 0.55, 0.0]
+}
+tracks/5/type = "value"
+tracks/5/imported = false
+tracks/5/enabled = true
+tracks/5/path = NodePath("PadDust:emitting")
+tracks/5/interp = 1
+tracks/5/loop_wrap = true
+tracks/5/keys = {
+"times": PackedFloat32Array(0, 0.39, 3.35),
+"transitions": PackedFloat32Array(1, 1, 1),
+"update": 1,
+"values": [false, true, false]
+}
+
+[sub_resource type="AnimationLibrary" id="FlightAnimations"]
+_data = {
+&"RESET": SubResource("ResetFlight"),
+&"launch": SubResource("LaunchFlight")
+}
+
 [node name="LunarLaunchSite" type="Node3D" unique_id=989988814]
+
+script = ExtResource("6_assembly")
 
 [node name="Platform" type="StaticBody3D" parent="." unique_id=877888675]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -5, -4)
@@ -68,16 +241,56 @@ transform = Transform3D(7.54979e-08, 0, 1, 0, 1, 0, -1, 0, 7.54979e-08, 0, 1.668
 [node name="CollisionShape3D" type="CollisionShape3D" parent="Strongback/StandBody"]
 shape = ExtResource("5_strongback_collision")
 
+[node name="LaunchConsole" type="Node3D" parent="."]
+position = Vector3(-9, 0, 2.6)
+rotation = Vector3(0, -0.34, 0)
+
+[node name="Model" parent="LaunchConsole" instance=ExtResource("8_console")]
+position = Vector3(-0.96, 1.59, 0.92)
+scale = Vector3(2.2, 2.2, 2.2)
+
+[node name="Base" type="StaticBody3D" parent="LaunchConsole"]
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="LaunchConsole/Base"]
+position = Vector3(0, 0.73, 0)
+shape = SubResource("ConsoleBaseShape")
+
+[node name="Interact" type="StaticBody3D" parent="LaunchConsole"]
+position = Vector3(0, 2.2, 0)
+collision_layer = 16
+collision_mask = 0
+script = ExtResource("7_interaction")
+interaction_id = "rocket_console"
+prompt = "Install held rocket part"
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="LaunchConsole/Interact"]
+position = Vector3(0, -0.65, 0)
+shape = SubResource("ConsoleInteractionShape")
+
+[node name="Status" type="Label3D" parent="LaunchConsole"]
+position = Vector3(0, 3.65, 0.3)
+pixel_size = 0.01
+text = "FALCON 9 ASSEMBLY
+0 / 3 INSTALLED"
+font_size = 32
+outline_size = 8
+
 [node name="Falcon9" type="Node3D" parent="." unique_id=187864234]
-editor_description = "Full-size preview. The upper-stage nozzle nests inside the booster's interstage."
+editor_description = "Assembly anchor for the three Falcon stages. Flight animates this origin at the engine bells."
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.9, 0)
 
+[node name="Thruster" parent="Falcon9" instance=ExtResource("9_thruster")]
+position = Vector3(0, -0.15, 0)
+
 [node name="Booster" parent="Falcon9" unique_id=824050850 instance=ExtResource("1_booster")]
+visible = false
 
 [node name="UpperStage" parent="Falcon9" unique_id=1041109272 instance=ExtResource("2_upper_stage")]
+visible = false
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 41.54, 0)
 
 [node name="Fairing" parent="Falcon9" unique_id=107822437 instance=ExtResource("3_fairing")]
+visible = false
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 56.7, 0)
 
 [node name="RocketBody" type="StaticBody3D" parent="Falcon9"]
@@ -85,37 +298,72 @@ transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 56.7, 0)
 [node name="BoosterCollision" type="CollisionShape3D" parent="Falcon9/RocketBody"]
 position = Vector3(0, 23.88, 0)
 shape = SubResource("BoosterShape")
+disabled = true
 
 [node name="UpperStageCollision" type="CollisionShape3D" parent="Falcon9/RocketBody"]
 position = Vector3(0, 52.25, 0)
 shape = SubResource("UpperStageShape")
+disabled = true
 
 [node name="FairingCollision" type="CollisionShape3D" parent="Falcon9/RocketBody"]
 position = Vector3(0, 63, 0)
 shape = SubResource("FairingShape")
+disabled = true
+
+[node name="PadDust" parent="." instance=ExtResource("10_pad_dust")]
+position = Vector3(0, 0.8, 0)
+
+[node name="TowerClearance" type="Marker3D" parent="."]
+editor_description = "The engines climb to this height before the rocket pitches toward Earth."
+position = Vector3(0, 86, 0)
+
+[node name="IgnitionAudio" type="AudioStreamPlayer3D" parent="."]
+position = Vector3(0, 1, 0)
+stream = ExtResource("11_ignition")
+volume_db = -10.0
+unit_size = 8.0
+max_distance = 85.0
+
+[node name="Flight" type="AnimationPlayer" parent="."]
+libraries = {
+&"": SubResource("FlightAnimations")
+}
 
 [node name="Lighting" type="Node3D" parent="." unique_id=1589782689]
+editor_description = "An angled warm fill lights the classroom-facing side of the rocket. A softer cool rim separates it from the sky. The lunar terrain is excluded."
 
 [node name="PadFill" type="OmniLight3D" parent="Lighting" unique_id=1433498782]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -7, 8, 9)
-light_color = Color(1, 0.96, 0.91, 1)
-light_energy = 1.7
-light_specular = 0.2
-omni_range = 23.0
-omni_attenuation = 1.3
+position = Vector3(-11, 10, -11)
+light_color = Color(1, 0.95, 0.88, 1)
+light_energy = 0.78
+light_specular = 0.36
+light_cull_mask = 1
+omni_range = 29.0
+omni_attenuation = 0.65
 
 [node name="BoosterFill" type="OmniLight3D" parent="Lighting" unique_id=1260018905]
-transform = Transform3D(1, 0, 0, 0, 0.9371727, 0.34886575, 0, -0.34886575, 0.9371727, -9, 31, 10)
-light_color = Color(1, 0.97, 0.93, 1)
-light_energy = 2.0
-light_specular = 0.2
-omni_range = 26.08675
-omni_attenuation = 1.3
+position = Vector3(-13, 31, -12)
+light_color = Color(1, 0.95, 0.87, 1)
+light_energy = 1.22
+light_specular = 0.36
+light_cull_mask = 1
+omni_range = 33.0
+omni_attenuation = 0.65
 
 [node name="UpperStageFill" type="OmniLight3D" parent="Lighting" unique_id=1648879204]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -9, 56, 10)
-light_color = Color(1, 0.97, 0.93, 1)
-light_energy = 2.0
-light_specular = 0.2
-omni_range = 26.0
-omni_attenuation = 1.3
+position = Vector3(-12, 57, -11)
+light_color = Color(1, 0.95, 0.87, 1)
+light_energy = 1.05
+light_specular = 0.36
+light_cull_mask = 1
+omni_range = 32.0
+omni_attenuation = 0.65
+
+[node name="CoolRim" type="OmniLight3D" parent="Lighting"]
+position = Vector3(10, 36, 8)
+light_color = Color(0.73, 0.83, 1, 1)
+light_energy = 0.68
+light_specular = 0.18
+light_cull_mask = 1
+omni_range = 44.0
+omni_attenuation = 0.65

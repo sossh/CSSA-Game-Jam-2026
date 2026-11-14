@@ -28,6 +28,7 @@
 [ext_resource type="Material" path="res://world/classroom/materials/hull_foundation.tres" id="25_foundation"]
 [ext_resource type="Material" path="res://world/classroom/materials/hull_ramp.tres" id="26_ramp"]
 [ext_resource type="Sky" path="res://world/lunar/materials/space_sky.tres" id="27_sky"]
+[ext_resource type="PackedScene" path="res://world/classroom/props/rocket_vending_machine.tscn" id="23_rocket_vending"]
 
 [sub_resource type="StandardMaterial3D" id="FloorMaterial"]
 albedo_color = Color(0.18, 0.22, 0.3, 1)
@@ -99,8 +100,8 @@ size = Vector3(0.16, 1.6, 0.16)
 background_mode = 2
 sky = ExtResource("27_sky")
 ambient_light_source = 2
-ambient_light_color = Color(0.86, 0.84, 0.8, 1)
-ambient_light_energy = 0.55
+ambient_light_color = Color(0.83, 0.87, 0.94, 1)
+ambient_light_energy = 0.48
 tonemap_mode = 3
 tonemap_exposure = 1.0
 
@@ -110,21 +111,40 @@ script = ExtResource("1")
 [node name="PlanetSurface" parent="." unique_id=806728454 instance=ExtResource("10")]
 transform = Transform3D(1.7169118, 0, 0, 0, 1.7169118, 0, 0, 0, 1.7169118, 0, -1.1192179, 0)
 
-[node name="LunarLaunchSite" parent="." unique_id=2097573954 instance=ExtResource("11_launch_site")]
+[node name="LunarLaunchSite" parent="." unique_id=2097573954 node_paths=PackedStringArray("earth") instance=ExtResource("11_launch_site")]
 transform = Transform3D(-0.44936123, 0, 0.034460206, 0, 0.4506805, 0, -0.034460206, 0, -0.44936123, -7.443264, -8.662841, 55.50866)
+earth = NodePath("../SpaceBackdrop/Earth")
 
 [node name="LunarOutpost" parent="." instance=ExtResource("24_outpost")]
 
 [node name="Room" type="Node3D" parent="." unique_id=1281839070]
 
 [node name="SchoolLighting" type="Node3D" parent="Room"]
+editor_description = "Classroom fixtures light the room and its contents on visual layer 1. The lunar terrain uses visual layer 2."
+
+[node name="FrontFill" type="OmniLight3D" parent="Room/SchoolLighting"]
+position = Vector3(0, 3.65, -5.5)
+light_color = Color(0.92, 0.95, 1, 1)
+light_energy = 0.38
+light_specular = 0.0
+light_cull_mask = 1
+omni_range = 10.0
+
+[node name="RearFill" type="OmniLight3D" parent="Room/SchoolLighting"]
+position = Vector3(0, 3.65, 3)
+light_color = Color(0.92, 0.95, 1, 1)
+light_energy = 0.38
+light_specular = 0.0
+light_cull_mask = 1
+omni_range = 10.0
 
 [node name="FrontLeft" type="SpotLight3D" parent="Room/SchoolLighting"]
 position = Vector3(-4.5, 4.65, -5.5)
 rotation = Vector3(-1.5707963, 0, 0)
 light_color = Color(1, 0.96, 0.89, 1)
-light_energy = 1.35
-light_specular = 0.2
+light_energy = 1.6
+light_specular = 0.1
+light_cull_mask = 1
 spot_range = 8.5
 spot_attenuation = 1.25
 spot_angle = 57.0
@@ -134,8 +154,9 @@ spot_angle_attenuation = 0.65
 position = Vector3(4.5, 4.65, -5.5)
 rotation = Vector3(-1.5707963, 0, 0)
 light_color = Color(1, 0.96, 0.89, 1)
-light_energy = 1.35
-light_specular = 0.2
+light_energy = 1.6
+light_specular = 0.1
+light_cull_mask = 1
 spot_range = 8.5
 spot_attenuation = 1.25
 spot_angle = 57.0
@@ -145,8 +166,9 @@ spot_angle_attenuation = 0.65
 position = Vector3(-4.5, 4.65, 3.0)
 rotation = Vector3(-1.5707963, 0, 0)
 light_color = Color(1, 0.96, 0.89, 1)
-light_energy = 1.35
-light_specular = 0.2
+light_energy = 1.6
+light_specular = 0.1
+light_cull_mask = 1
 spot_range = 8.5
 spot_attenuation = 1.25
 spot_angle = 57.0
@@ -156,8 +178,9 @@ spot_angle_attenuation = 0.65
 position = Vector3(4.5, 4.65, 3.0)
 rotation = Vector3(-1.5707963, 0, 0)
 light_color = Color(1, 0.96, 0.89, 1)
-light_energy = 1.35
-light_specular = 0.2
+light_energy = 1.6
+light_specular = 0.1
+light_cull_mask = 1
 spot_range = 8.5
 spot_attenuation = 1.25
 spot_angle = 57.0
@@ -601,8 +624,9 @@ cast_shadow = 0
 [node name="RoomFill" type="OmniLight3D" parent="Hallway/CafeLighting/WestFixture"]
 position = Vector3(0, -1.65, 0)
 light_color = Color(1, 0.95, 0.88, 1)
-light_energy = 1.9
-light_specular = 0.15
+light_energy = 1.4
+light_specular = 0.1
+light_cull_mask = 1
 omni_range = 6.5
 omni_attenuation = 0.8
 
@@ -615,8 +639,9 @@ cast_shadow = 0
 position = Vector3(0, -0.13, 0)
 rotation = Vector3(-1.5707963, 0, 0)
 light_color = Color(1, 0.94, 0.84, 1)
-light_energy = 2.35
-light_specular = 0.2
+light_energy = 1.7
+light_specular = 0.1
+light_cull_mask = 1
 spot_range = 6.1
 spot_attenuation = 1.0
 spot_angle = 52.0
@@ -635,8 +660,9 @@ cast_shadow = 0
 [node name="RoomFill" type="OmniLight3D" parent="Hallway/CafeLighting/CenterFixture"]
 position = Vector3(0, -1.65, 0)
 light_color = Color(1, 0.95, 0.88, 1)
-light_energy = 1.9
-light_specular = 0.15
+light_energy = 1.4
+light_specular = 0.1
+light_cull_mask = 1
 omni_range = 6.5
 omni_attenuation = 0.8
 
@@ -649,8 +675,9 @@ cast_shadow = 0
 position = Vector3(0, -0.13, 0)
 rotation = Vector3(-1.5707963, 0, 0)
 light_color = Color(1, 0.94, 0.84, 1)
-light_energy = 2.35
-light_specular = 0.2
+light_energy = 1.7
+light_specular = 0.1
+light_cull_mask = 1
 spot_range = 6.1
 spot_attenuation = 1.0
 spot_angle = 52.0
@@ -669,8 +696,9 @@ cast_shadow = 0
 [node name="RoomFill" type="OmniLight3D" parent="Hallway/CafeLighting/EastFixture"]
 position = Vector3(0, -1.65, 0)
 light_color = Color(1, 0.95, 0.88, 1)
-light_energy = 1.9
-light_specular = 0.15
+light_energy = 1.4
+light_specular = 0.1
+light_cull_mask = 1
 omni_range = 6.5
 omni_attenuation = 0.8
 
@@ -683,8 +711,9 @@ cast_shadow = 0
 position = Vector3(0, -0.13, 0)
 rotation = Vector3(-1.5707963, 0, 0)
 light_color = Color(1, 0.94, 0.84, 1)
-light_energy = 2.35
-light_specular = 0.2
+light_energy = 1.7
+light_specular = 0.1
+light_cull_mask = 1
 spot_range = 6.1
 spot_attenuation = 1.0
 spot_angle = 52.0
@@ -710,6 +739,10 @@ rotation = Vector3(0, -1.5707963, 0)
 interaction_id = "vending:2"
 
 [node name="DrinkDisplay" parent="Hallway/VendingMachine2" instance=ExtResource("22_vending_drinks")]
+
+[node name="RocketVendingMachine" parent="Hallway" instance=ExtResource("23_rocket_vending")]
+position = Vector3(8.25, 0, 12.1)
+rotation = Vector3(0, 1.5707963, 0)
 
 [node name="TransferChute" parent="Hallway" unique_id=1288543665 instance=ExtResource("7")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 13.8)
@@ -778,7 +811,8 @@ environment = SubResource("Environment")
 
 [node name="Sun" type="DirectionalLight3D" parent="." unique_id=891201531]
 transform = Transform3D(0.90630794, 0.38302198, -0.17860606, 0, 0.42261824, 0.9063078, 0.42261797, -0.82139397, 0.38302228, 0, 0, 0)
-light_energy = 1.1
+light_energy = 0.42
+light_specular = 0.15
 shadow_enabled = true
 
 [node name="MenuCamera" type="Camera3D" parent="." unique_id=18181629]

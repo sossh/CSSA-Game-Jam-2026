@@ -1,0 +1,16 @@
+[gd_resource type="Resource" script_class="ItemData" format=3]
+
+[ext_resource type="Script" path="res://items/item_data.gd" id="1_data"]
+[ext_resource type="PackedScene" path="res://items/scenes/rocket_fairing.tscn" id="2_item"]
+
+[resource]
+script = ExtResource("1_data")
+id = "rocket_fairing"
+display_name = "Payload Fairing"
+description = "The Falcon 9 nose cone that protects the payload."
+price = 1
+minimum_grade = 2
+spawn_weight = 0.0
+mass = 3.0
+effect = "rocket"
+scene = ExtResource("2_item")

@@ -721,7 +721,8 @@ grow_vertical = 2
 [node name="Content" type="VBoxContainer" parent="Root/Vending" unique_id=347941449]
 layout_mode = 2
 
-[node name="Title" type="Label" parent="Root/Vending/Content" unique_id=1676467454]
+[node name="VendingTitle" type="Label" parent="Root/Vending/Content" unique_id=1676467454]
+unique_name_in_owner = true
 layout_mode = 2
 theme_override_font_sizes/font_size = 30
 text = "COSMIC CRUNCH • KEYPAD"
@@ -821,10 +822,20 @@ layout_mode = 2
 text = "A16 • ₿55 • Gun"
 item_id = "gun"
 
-[node name="Rocket" parent="Root/Vending/Content/Scroll/VendingRows" unique_id=690715737 instance=ExtResource("2")]
+[node name="FirstStage" parent="Root/Vending/Content/Scroll/VendingRows" instance=ExtResource("2")]
 layout_mode = 2
-text = "A17 • ₿75 • Rocket part"
+text = "A01 • ₿1 • First Stage"
 item_id = "rocket"
+
+[node name="SecondStage" parent="Root/Vending/Content/Scroll/VendingRows" instance=ExtResource("2")]
+layout_mode = 2
+text = "A02 • ₿1 • Second Stage"
+item_id = "rocket_second_stage"
+
+[node name="PayloadFairing" parent="Root/Vending/Content/Scroll/VendingRows" instance=ExtResource("2")]
+layout_mode = 2
+text = "A03 • ₿1 • Payload Fairing"
+item_id = "rocket_fairing"
 
 [node name="EnergyGreen" parent="Root/Vending/Content/Scroll/VendingRows" unique_id=92943114 instance=ExtResource("2")]
 layout_mode = 2

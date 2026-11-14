@@ -22,6 +22,7 @@ extends CanvasLayer
 @onready var pause_panel: PanelContainer = %Pause
 @onready var vending_panel: PanelContainer = %Vending
 @onready var vending_rows: VBoxContainer = %VendingRows
+@onready var vending_title: Label = %VendingTitle
 @onready var keypad: LineEdit = %Keypad
 @onready var vending_status: Label = %VendingStatus
 @onready var tint: ColorRect = %DamageTint
@@ -103,11 +104,19 @@ var vending_machine_id := "vending"
 
 func open_vending(machine_id: String = "vending") -> void:
 	vending_machine_id = machine_id
-	var stock := ItemDB.stock()
+	var stock := ItemDB.stock(machine_id)
+	vending_title.text = "FALCON 9 • KEYPAD" if machine_id == ItemDB.ROCKET_VENDING else "COSMIC CRUNCH • KEYPAD"
+	var entries := {}
 	for entry in vending_rows.get_children():
-		var index := stock.find(ItemDB.get_item(entry.item_id))
+		entries[entry.item_id] = entry
+		entry.hide()
+	for index in range(stock.size()):
+		var entry: Button = entries.get(stock[index].id)
+		if entry == null: continue
 		entry.refresh(index + 1, machine_id)
 		vending_rows.move_child(entry, index)
+		entry.show()
+	vending_rows.get_parent().scroll_vertical = 0
 	vending_panel.show()
 	update_mouse()
 	keypad.grab_focus()
@@ -118,7 +127,7 @@ func buy_code(code: String) -> void:
 		vending_status.text = "Use a code such as A01."
 		return
 	var index := int(value) - 1
-	var stock := ItemDB.stock()
+	var stock := ItemDB.stock(vending_machine_id)
 	if index < 0 or index >= stock.size():
 		vending_status.text = "Unknown item code."
 		return

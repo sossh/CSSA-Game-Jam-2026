@@ -1,0 +1,22 @@
+[gd_scene format=3]
+
+[ext_resource type="PackedScene" path="res://items/throwable.tscn" id="1_throwable"]
+[ext_resource type="PackedScene" path="res://world/lunar/launch_site/assets/falcon-9-block-5-second-stage-godot.glb" id="2_model"]
+
+[sub_resource type="CylinderShape3D" id="Shape"]
+height = 0.478
+radius = 0.093
+
+[node name="SecondStage" instance=ExtResource("1_throwable")]
+item_id = "rocket_second_stage"
+
+[node name="CollisionShape3D" parent="." index="0"]
+shape = SubResource("Shape")
+
+[node name="Visual" parent="." index="1"]
+mesh = null
+material_override = null
+
+[node name="Model" parent="Visual" index="0" instance=ExtResource("2_model")]
+position = Vector3(0.001122, -0.42862, 0.002011)
+scale = Vector3(0.044, 0.044, 0.044)

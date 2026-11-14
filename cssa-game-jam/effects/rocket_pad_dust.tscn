@@ -1,0 +1,44 @@
+[gd_scene format=3]
+
+[ext_resource type="Texture2D" path="res://assets/particles/rocket/smoke_04.png" id="1_smoke"]
+
+[sub_resource type="StandardMaterial3D" id="DustMaterial"]
+transparency = 1
+shading_mode = 0
+vertex_color_use_as_albedo = true
+albedo_texture = ExtResource("1_smoke")
+billboard_mode = 3
+
+[sub_resource type="QuadMesh" id="DustQuad"]
+material = SubResource("DustMaterial")
+size = Vector2(4.8, 3.0)
+
+[sub_resource type="Gradient" id="DustColor"]
+offsets = PackedFloat32Array(0, 0.13, 0.55, 1)
+colors = PackedColorArray(0.81, 0.62, 0.47, 0, 0.67, 0.63, 0.58, 0.39, 0.58, 0.56, 0.54, 0.19, 0.45, 0.44, 0.42, 0)
+
+[sub_resource type="Curve" id="DustSize"]
+_data = [Vector2(0, 0.48), 0.0, 0.0, 0, 0, Vector2(1, 1), 0.0, 0.0, 0, 0]
+point_count = 2
+
+[node name="RocketPadDust" type="CPUParticles3D"]
+cast_shadow = 0
+emitting = false
+amount = 66
+lifetime = 2.35
+randomness = 0.55
+mesh = SubResource("DustQuad")
+emission_shape = 1
+emission_sphere_radius = 1.2
+direction = Vector3(0, 1, 0)
+spread = 89.0
+flatness = 0.0
+gravity = Vector3(0, -1.1, 0)
+initial_velocity_min = 4.8
+initial_velocity_max = 11.5
+damping_min = 1.8
+damping_max = 2.6
+scale_amount_min = 0.78
+scale_amount_max = 1.65
+scale_amount_curve = SubResource("DustSize")
+color_ramp = SubResource("DustColor")

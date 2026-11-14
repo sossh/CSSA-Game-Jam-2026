@@ -17,7 +17,10 @@ var phase: String = "menu"
 var remaining: float = 0.0
 var grade: int = 1
 var survived: int = 0
-var rocket_parts: int = 0
+var installed_rocket_parts := PackedStringArray()
+var rocket_parts: int:
+	get: return installed_rocket_parts.size()
+var rocket_launch_started_at := -1.0
 var ui_open: bool = true
 var elapsed: float = 0.0
 var sync_time: float = 0.0
@@ -40,7 +43,9 @@ func reset() -> void:
 	remaining = 0
 	grade = 1
 	survived = 0
-	rocket_parts = 0
+	installed_rocket_parts.clear()
+	rocket_launch_started_at = -1.0
+	if is_instance_valid(world): world.update_rocket_assembly()
 	cooldowns.clear()
 	next_npc_noise_at = 0.0
 	epoch = 0
@@ -98,8 +103,8 @@ func _physics_process(delta: float) -> void:
 
 func make_snapshot() -> Dictionary:
 	return {"epoch": epoch, "players": players, "phase": phase, "remaining": remaining,
-		"grade": grade, "survived": survived, "rocket_parts": rocket_parts, "elapsed": elapsed,
-		"world": world.serialize()}
+		"grade": grade, "survived": survived, "installed_rocket_parts": installed_rocket_parts, "elapsed": elapsed,
+		"rocket_launch_started_at": rocket_launch_started_at, "world": world.serialize()}
 
 func broadcast_snapshot() -> void:
 	# Full snapshots repair lost updates and make late joins simple. Compress and
@@ -139,7 +144,8 @@ func apply_snapshot(data: Dictionary) -> void:
 	remaining = data.remaining
 	grade = data.grade
 	survived = data.survived
-	rocket_parts = data.rocket_parts
+	installed_rocket_parts = data.get("installed_rocket_parts", PackedStringArray())
+	rocket_launch_started_at = float(data.get("rocket_launch_started_at", -1.0))
 	elapsed = data.elapsed
 	world.reconcile(data.world)
 	state_changed.emit()
@@ -253,7 +259,9 @@ func start_run() -> void:
 	epoch += 1
 	grade = 1
 	survived = 0
-	rocket_parts = 0
+	installed_rocket_parts.clear()
+	rocket_launch_started_at = -1.0
+	if is_instance_valid(world): world.update_rocket_assembly()
 	world.clear_items()
 	world.teacher.drugs = 0
 	for id in players:
@@ -428,6 +436,8 @@ func event(kind: String, data: Dictionary) -> void:
 		"banner":
 			announcement.emit(str(data.text))
 			append_activity(str(data.text), float(data.get("time", elapsed)))
+		"rocket_console":
+			if int(data.id) == multiplayer.get_unique_id(): announcement.emit(str(data.text))
 		"activity": append_activity(str(data.text), float(data.get("time", elapsed)))
 		"sound": Sfx.play_at(str(data.key), data.position, float(data.get("loudness", Sfx.config.default_playback_loudness)))
 	effect.emit(kind, data)

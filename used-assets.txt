@@ -25,3 +25,13 @@ Integrated in cssa-game-jam/world/classroom/ (classroom.tscn and props/). Walls 
 Galactic Frontier (low-poly moon base pack): habitat, fuel tanks, rover, solar array, comms tower, crates, ore drill, landed shuttle, boulder, canister and dish models.
 Creator, source URL and license: NOT YET RECORDED - please fill in before release.
 Copied unmodified to cssa-game-jam/assets/models/galactic_frontier/; used by world/lunar/outpost/. Lamp materials are swapped in the import settings for dimmer copies.
+
+Spacecraft Control Terminal Console FOLLOW ME by AutisFon (DOM), CC BY 4.0.
+https://sketchfab.com/3d-models/spacecraft-control-terminal-console-follow-me-3e45923d316e48efb7b0650ebe6c9411
+https://creativecommons.org/licenses/by/4.0/
+
+Kenney Particle Pack by Kenney, CC0 1.0. Uses flame_01.png and smoke_04.png for the rocket exhaust and pad dust.
+https://kenney.nl/assets/particle-pack
+Rocket launch by Sanderboah, CC0 1.0. Trimmed to 10 seconds, mixed to mono, and faded for the lunar launch.
+https://freesound.org/people/Sanderboah/sounds/803852/
+https://creativecommons.org/publicdomain/zero/1.0/

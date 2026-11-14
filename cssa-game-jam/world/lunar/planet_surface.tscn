@@ -12,6 +12,14 @@ size = Vector3(101, 150, 1)
 
 [node name="PlanetSurface" type="Node3D"]
 
+[node name="LunarDaylight" type="DirectionalLight3D" parent="."]
+editor_description = "Daylight follows the original Moon scene's sun angle. The regolith material provides a low textured fill in shadow."
+rotation = Vector3(-1.134464, -0.436332, 0)
+light_color = Color(0.96, 0.98, 1, 1)
+light_energy = 0.085
+light_specular = 0.0
+light_cull_mask = 2
+
 [node name="Ground" type="StaticBody3D" parent="."]
 position = Vector3(0, -101.19, 3)
 
@@ -19,6 +27,7 @@ position = Vector3(0, -101.19, 3)
 scale = Vector3(102, 102, 102)
 
 [node name="Sphere" parent="Ground/Moon" index="0"]
+layers = 2
 material_override = ExtResource("4_regolith")
 
 [node name="SurfaceCollision" type="CollisionShape3D" parent="Ground"]

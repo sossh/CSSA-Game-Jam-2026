@@ -35,8 +35,8 @@ Host codes encode IPv4 only. Normal play uses UDP **7777** for gameplay and UDP 
 - **Lecturing can catch students:** severe noise or accumulated suspicion can trigger a shot/investigation even with the teacher's back turned. Sound draws attention to its physical origin. A seen violation identifies its actor; otherwise nearby position, suspicious behavior and a small random component choose the culprit. The teacher does not magically know an unseen thrower's identity.
 - Ten simple NPC clones; weighted, grade-gated classroom loot; sixteen seats. Players can evict seated NPCs. Out-of-seat / eating / recent stealing or throwing can be seen during checks.
 - Allowance is ₿5 attendance + half the food value eaten during class, rounded down. Death waits until the class ends. Re-cloning costs ₿10; a negative balance is debt, **not** elimination. All humans dead simultaneously ends the run. New run resets progression.
-- Endless shared score: classes survived. Increasing grades unlock stock and raise hunger/check pressure. The assembled rocket on the lunar surface is a visual preview.
-- Physical vending purchases with keypad codes. Seventeen resource-defined items, including the requested foods, energy drink, drugs, cushion, weapons, mystery box, firework and rocket part.
+- Endless shared score: classes survived. Increasing grades raise hunger/check pressure and unlock classroom loot. Bring each Falcon 9 part to the console on the lunar launch pad and press E to install the held part. When all three parts are installed, press E again with an empty hand to launch. The rocket climbs straight above the tower and gradually banks toward Earth. The whole lobby sees the same launch, and the pad resets when a new run begins.
+- Physical vending purchases use keypad codes and drop into the pickup tray. The two Cosmic Crunch machines share stock. The Falcon 9 machine across the hallway sells the First Stage, Second Stage and Payload Fairing.
 - Menu, LAN code, skippable opening crawl, HUD, scoreboard, pause/quit and restart. Late join during class spectates until the next bell.
 - Human art/audio replacement hooks; silent missing audio. Geometry is a replaceable greybox. Roulette/gambling table remains stretch scope.
 
@@ -93,7 +93,7 @@ event. Hearing and gameplay loudness are tuned in the gameplay resources above.
 ## Networking contract
 
 - All RPCs live at `/root/Game`; scene creation is driven by stable entity IDs in snapshots. No dependency on peer-local node instance IDs.
-- Reliable channel 0: requests, presentation events, registration/initial snapshot. Host validates ownership, alive state, distance, phase, prices, grade and cooldowns before applying actions.
+- Reliable channel 0: requests, presentation events, registration/initial snapshot. Host validates ownership, alive state, distance, phase, prices and cooldowns before applying actions.
 - Unreliable ordered channel 1: 15Hz compressed complete snapshots, chunked into <=1,000-byte payloads. Apply only a complete matching sequence. A lost chunk is repaired by a later full snapshot; no partial world is applied.
 - Unreliable ordered channel 2: owner pose updates at about 30Hz. State epochs reject old movement packets after teleports, seating, carrying, ragdoll launches and respawns.
 - Host simulated `RigidBody3D` items; clients use frozen bodies and interpolate. Held objects are positioned locally from the holder's pose to avoid round-trip hand lag.
@@ -108,7 +108,7 @@ event. Hearing and gameplay loudness are tuned in the gameplay resources above.
 - `Game.damage(peer_id, amount, reason, impulse)` — host damage and optional ragdoll.
 - `Game.launch_player(peer_id, velocity)` — host orders physical tumble.
 - `Game.event.rpc(kind, data)` — reliable visual/audio/UI event; game state belongs in snapshots.
-- Item additions: duplicate a resource in `items/data/` and an inherited throwable scene in `items/scenes/`. Set a unique `id`, price/rarity/grade/effect, and assign the complete scene to the resource's `scene` field. Set that scene's `item_id` to match. ItemDB discovers `.tres` resources through Godot's resource-aware listing, including exported builds. Add a `vending_entry.tscn` instance under `VendingRows` in the UI scene and set its `item_id` to expose a new button; keypad codes follow the sorted stock.
+- Item additions: duplicate a resource in `items/data/` and an inherited throwable scene in `items/scenes/`. Set a unique `id`, price/rarity/grade/effect, and assign the complete scene to the resource's `scene` field. Set that scene's `item_id` to match. ItemDB discovers `.tres` resources through Godot's resource-aware listing, including exported builds. Add a `vending_entry.tscn` instance under `VendingRows` in the UI scene and set its `item_id` to expose a new button; keypad codes follow the active machine's stock.
 
 ## Level editing
 
@@ -143,7 +143,7 @@ python3 cssa-game-jam/tests/run_smoke.py
 python3 cssa-game-jam/tests/run_network.py
 ```
 
-The smoke script launches a real ENet host/client pair and exercises registration, replicated objects, contested pickup, charged throwing, friend carry/ragdoll/recovery, vending, grade locks, coffee drugs, eating/allowance, lecture noise response, check cooldown, death, cloning fee, grade progression, wipe and restart. It fails on engine errors/warnings as well as assertions. `--render` renders the host and saves `cosmic-detention.png` in the system temporary directory.
+The smoke script launches a real ENet host/client pair and exercises registration, replicated objects, contested pickup, charged throwing, friend carry/ragdoll/recovery, vending, grade-one purchases, coffee drugs, eating/allowance, lecture noise response, check cooldown, death, cloning fee, grade progression, wipe and restart. It fails on engine errors/warnings as well as assertions. `--render` renders the host and saves `cosmic-detention.png` in the system temporary directory.
 
 The network test launches six actual Godot processes, checks automatic phase timers, a mid-class spectator joining and re-cloning, teacher sightline occlusion and shotgun damage, replicated large snapshots, graceful peer departure, and host-disconnect cleanup.
 

@@ -1,6 +1,17 @@
 [gd_scene format=3]
 
 [ext_resource type="PackedScene" path="res://world/lunar/assets/EarthClouds_1_12756.glb" id="1_earth"]
+[ext_resource type="Texture2D" path="res://world/lunar/assets/EarthClouds_1_12756_earthClouds_diff.png" id="2_earth_color"]
+[ext_resource type="Shader" path="res://world/lunar/assets/earth_daylight.gdshader" id="3_earth_daylight"]
+
+[sub_resource type="ShaderMaterial" id="EarthMaterial"]
+shader = ExtResource("3_earth_daylight")
+shader_parameter/surface_color = ExtResource("2_earth_color")
+shader_parameter/sunlight_direction = Vector3(0.95, 0.28, 0.15)
+shader_parameter/daylight = 1.32
+shader_parameter/reflected_light = 0.32
+shader_parameter/atmosphere_color = Color(0.24, 0.52, 0.96, 1)
+shader_parameter/atmosphere_strength = 0.26
 
 [node name="SpaceBackdrop" type="Node3D"]
 
@@ -9,9 +20,8 @@ position = Vector3(-310, 83, -8)
 rotation = Vector3(0, 0.55, -0.23)
 scale = Vector3(0.056, 0.056, 0.056)
 
-[node name="EarthLight" type="OmniLight3D" parent="."]
-position = Vector3(-225, 110, 32)
-light_color = Color(0.89, 0.94, 1, 1)
-light_energy = 4.0
-omni_range = 160.0
-omni_attenuation = 0.35
+[node name="Cube_001" parent="Earth" index="0"]
+layers = 4
+material_override = SubResource("EarthMaterial")
+
+[editable path="Earth"]

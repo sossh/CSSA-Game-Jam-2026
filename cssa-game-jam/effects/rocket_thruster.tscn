@@ -1,0 +1,96 @@
+[gd_scene format=3]
+
+[ext_resource type="Texture2D" path="res://assets/particles/rocket/flame_01.png" id="1_flame"]
+[ext_resource type="Texture2D" path="res://assets/particles/rocket/smoke_04.png" id="2_smoke"]
+
+[sub_resource type="StandardMaterial3D" id="FlameMaterial"]
+transparency = 1
+blend_mode = 1
+shading_mode = 0
+vertex_color_use_as_albedo = true
+albedo_texture = ExtResource("1_flame")
+billboard_mode = 3
+
+[sub_resource type="QuadMesh" id="FlameQuad"]
+material = SubResource("FlameMaterial")
+size = Vector2(2.6, 5.0)
+
+[sub_resource type="Gradient" id="CoreColor"]
+offsets = PackedFloat32Array(0, 0.12, 0.38, 0.8, 1)
+colors = PackedColorArray(1, 1, 0.87, 0.78, 1, 0.85, 0.52, 0.63, 1, 0.42, 0.13, 0.34, 0.98, 0.16, 0.06, 0.11, 0.98, 0.12, 0.06, 0)
+
+[sub_resource type="Curve" id="CoreSize"]
+_data = [Vector2(0, 0.56), 0.0, 0.0, 0, 0, Vector2(0.55, 1.0), 0.0, 0.0, 0, 0, Vector2(1, 0.85), 0.0, 0.0, 0, 0]
+point_count = 3
+
+[sub_resource type="StandardMaterial3D" id="ExhaustMaterial"]
+transparency = 1
+blend_mode = 1
+shading_mode = 0
+vertex_color_use_as_albedo = true
+albedo_texture = ExtResource("2_smoke")
+billboard_mode = 3
+
+[sub_resource type="QuadMesh" id="ExhaustQuad"]
+material = SubResource("ExhaustMaterial")
+size = Vector2(5.6, 5.6)
+
+[sub_resource type="Gradient" id="ExhaustColor"]
+offsets = PackedFloat32Array(0, 0.19, 0.55, 1)
+colors = PackedColorArray(1, 0.72, 0.34, 0, 1, 0.59, 0.29, 0.32, 0.9, 0.3, 0.13, 0.16, 0.62, 0.25, 0.16, 0)
+
+[sub_resource type="Curve" id="ExhaustSize"]
+_data = [Vector2(0, 0.4), 0.0, 0.0, 0, 0, Vector2(1, 1.0), 0.0, 0.0, 0, 0]
+point_count = 2
+
+[node name="Thruster" type="Node3D"]
+
+[node name="Core" type="CPUParticles3D" parent="."]
+cast_shadow = 0
+emitting = false
+amount = 74
+lifetime = 0.52
+randomness = 0.36
+local_coords = true
+mesh = SubResource("FlameQuad")
+emission_shape = 1
+emission_sphere_radius = 0.47
+direction = Vector3(0, -1, 0)
+spread = 11.0
+gravity = Vector3(0, -4, 0)
+initial_velocity_min = 12.5
+initial_velocity_max = 21.5
+scale_amount_min = 0.7
+scale_amount_max = 1.2
+scale_amount_curve = SubResource("CoreSize")
+color_ramp = SubResource("CoreColor")
+
+[node name="Exhaust" type="CPUParticles3D" parent="."]
+cast_shadow = 0
+emitting = false
+amount = 58
+lifetime = 0.95
+randomness = 0.5
+local_coords = true
+mesh = SubResource("ExhaustQuad")
+emission_shape = 1
+emission_sphere_radius = 0.5
+direction = Vector3(0, -1, 0)
+spread = 18.0
+gravity = Vector3(0, -3.5, 0)
+initial_velocity_min = 11.0
+initial_velocity_max = 20.0
+angle_min = -180.0
+angle_max = 180.0
+scale_amount_min = 0.68
+scale_amount_max = 1.4
+scale_amount_curve = SubResource("ExhaustSize")
+color_ramp = SubResource("ExhaustColor")
+
+[node name="Glow" type="OmniLight3D" parent="."]
+position = Vector3(0, -0.25, 0)
+light_color = Color(1, 0.60, 0.26, 1)
+light_energy = 0.0
+light_specular = 0.5
+omni_range = 9.0
+omni_attenuation = 1.1

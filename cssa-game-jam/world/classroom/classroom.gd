@@ -36,6 +36,7 @@ var spawn_positions: Array[Vector3] = []
 var grid: AStarGrid2D
 var serial: int = 0
 var next_food_drop: float = 0.0
+@onready var launch_site: Node3D = $LunarLaunchSite
 @onready var vending_position: Vector3 = $Hallway/VendingMachine.global_position
 @onready var coffee_position: Vector3 = $TeacherDesk/Coffee.global_position
 
@@ -225,6 +226,7 @@ func reconcile(state: Dictionary) -> void:
 	for id in items.keys():
 		if not state.items.has(id): remove_item(id)
 	teacher.receive(state.teacher)
+	update_rocket_assembly()
 
 func prepare_class() -> void:
 	for id in items.keys():
@@ -269,7 +271,10 @@ func interact(id: int, target: String) -> void:
 	if p.position.distance_to(at) > Game.config.player.interaction_reach: return
 	if not has_reach(id, at): return
 	if p.eat_until > Game.elapsed: return
-	if target == "vending" or target == "vending:2":
+	if target == "rocket_console":
+		use_rocket_console(id)
+		return
+	if target in ItemDB.VENDING_MACHINES:
 		if Game.phase in ["lobby", "preparation", "break"]: Game.event.rpc("vending", {"id": id, "machine": target})
 		return
 	if target == "coffee":
@@ -320,6 +325,35 @@ func interact(id: int, target: String) -> void:
 		Game.log_activity("%s picks up %s. Friendship is now luggage." % [p.name, other.name])
 	p.violation_until = Game.elapsed + Game.config.interactions.pickup_violation_seconds
 	NoiseBus.emit_noise(p.position, Game.config.interactions.pickup_loudness, str(id), "pickup")
+
+func update_rocket_assembly() -> void:
+	launch_site.apply_assembly(Game.installed_rocket_parts, Game.rocket_launch_started_at, Game.elapsed)
+
+func use_rocket_console(id: int) -> void:
+	var player: Dictionary = Game.players[id]
+	if Game.rocket_launch_started_at >= 0.0:
+		Game.event.rpc("rocket_console", {"id": id, "text": "Falcon 9 has already launched."})
+		return
+	if Game.rocket_parts == ItemDB.FALCON_STOCK.size() and player.held.is_empty():
+		Game.rocket_launch_started_at = Game.elapsed
+		update_rocket_assembly()
+		Game.event.rpc("banner", {"text": "Falcon 9 ignition. Stand clear of the launch pad!"})
+		return
+	var item: ClassroomItem = items.get(player.held)
+	if item == null or item.holder != id or item.item_id not in ItemDB.FALCON_STOCK:
+		Game.event.rpc("rocket_console", {"id": id, "text": "Hold a Falcon 9 part to install it."})
+		return
+	if item.item_id in Game.installed_rocket_parts:
+		Game.event.rpc("rocket_console", {"id": id, "text": "%s is already installed." % item.data.display_name})
+		return
+	var part_name := item.data.display_name
+	Game.installed_rocket_parts.append(item.item_id)
+	remove_item(item.entity_id)
+	update_rocket_assembly()
+	var status := "%s installed • %d/%d parts" % [part_name, Game.rocket_parts, ItemDB.FALCON_STOCK.size()]
+	if Game.rocket_parts == ItemDB.FALCON_STOCK.size():
+		status += " • Press E with an empty hand to launch"
+	Game.event.rpc("banner", {"text": status})
 
 func has_reach(id: int, at: Vector3) -> bool:
 	var eye: Vector3 = Game.players[id].position + Vector3(0, 1.40 if Game.players[id].mode == "seated" else 1.55, 0)
@@ -428,12 +462,12 @@ func hit_body(body: Node, damage: float, impulse: Vector3, reason: String) -> vo
 	elif body is ClassroomTeacher: body.provoked("", body.global_position)
 
 func buy(id: int, item_id: String, machine_id: String = "vending") -> void:
-	if Game.phase not in ["lobby", "preparation", "break"] or not ItemDB.items.has(item_id): return
+	if Game.phase not in ["lobby", "preparation", "break"] or not ItemDB.sells(item_id, machine_id): return
+	if not interactions.has(machine_id): return
 	var p: Dictionary = Game.players[id]
 	var data: ItemData = ItemDB.get_item(item_id)
-	if machine_id != "vending" and machine_id != "vending:2": return
 	var machine: Node3D = interactions[machine_id].get_parent()
-	if p.position.distance_to(machine.global_position) > Game.config.interactions.vending_reach or data.minimum_grade > Game.grade or p.money < data.price: return
+	if p.position.distance_to(machine.global_position) > Game.config.interactions.vending_reach or p.money < data.price: return
 	if items.size() >= Game.config.max_loose_items: return
 	p.money -= data.price
 	Game.log_activity("%s buys %s for ₿%d." % [p.name, data.display_name, data.price])

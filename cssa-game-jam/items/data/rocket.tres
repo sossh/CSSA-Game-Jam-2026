@@ -1,14 +1,16 @@
-[gd_resource type="Resource" script_class="ItemData" load_steps=3 format=3]
-[ext_resource type="Script" path="res://items/item_data.gd" id="1"]
-[ext_resource type="PackedScene" path="res://items/scenes/rocket.tscn" id="2"]
+[gd_resource type="Resource" script_class="ItemData" format=3]
+
+[ext_resource type="Script" path="res://items/item_data.gd" id="1_data"]
+[ext_resource type="PackedScene" path="res://items/scenes/rocket.tscn" id="2_item"]
+
 [resource]
-script = ExtResource("1")
+script = ExtResource("1_data")
 id = "rocket"
-display_name = "Rocket part"
-description = "Carry to the hallway launch pad. Adds to shared endless score."
-price = 75
+display_name = "First Stage"
+description = "The Falcon 9 booster with nine engines."
+price = 1
 minimum_grade = 2
-effect = "rocket"
-mass = 3.0
 spawn_weight = 0.1
-scene = ExtResource("2")
+mass = 3.0
+effect = "rocket"
+scene = ExtResource("2_item")
