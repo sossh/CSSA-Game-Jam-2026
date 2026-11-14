@@ -8,6 +8,5 @@
 script = ExtResource("1")
 
 [node name="Classroom" parent="." unique_id=1075652336 instance=ExtResource("2")]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -22.046356, 13.197212, -20.814121)
 
 [node name="UI" parent="." unique_id=516329596 instance=ExtResource("3")]

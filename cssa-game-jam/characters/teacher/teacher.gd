@@ -157,7 +157,7 @@ func hear(at: Vector3, loudness: float, source: String, kind: String) -> void:
 	
 	# If in lecture with back turned, don't blind snap-shoot behind back unless catastrophic explosion
 	if current == "lecturestate":
-		if (kind in ["gunshot", "firework"] or loudness >= tuning.lecture_extreme_loudness) and perceived >= tuning.hearing_threshold:
+		if (kind in ["gunshot", "firework"] or loudness >= tuning.lecture_extreme_loudness) and perceived >= tuning.hearing_threshold * tuning.lecture_hearing_scale:
 			fsm.force_change_state("InvestigateState")
 		elif suspicion >= tuning.warning_suspicion and check_cooldown_met:
 			fsm.force_change_state("WarningState")
