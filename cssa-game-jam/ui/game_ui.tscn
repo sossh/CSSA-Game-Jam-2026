@@ -8,29 +8,13 @@
 [ext_resource type="Shader" path="res://ui/death_filter.gdshader" id="4_death_shader"]
 [ext_resource type="PackedScene" path="res://ui/irritation_meter.tscn" id="5_irritation"]
 [ext_resource type="FontFile" uid="uid://bddrcfhrb4gvj" path="res://fonts/Jersey_25/Jersey25-Regular.ttf" id="7_font"]
+[ext_resource type="Theme" path="res://ui/menu_theme.tres" id="8_theme"]
 
 [sub_resource type="ShaderMaterial" id="DeathFilterMat"]
 shader = ExtResource("4_death_shader")
 shader_parameter/desaturation = 0.92
 shader_parameter/tint_color = Color(0.48, 0.52, 0.6, 1)
 shader_parameter/vignette_strength = 0.75
-
-[sub_resource type="StyleBoxFlat" id="PanelStyle"]
-content_margin_left = 24.0
-content_margin_top = 20.0
-content_margin_right = 24.0
-content_margin_bottom = 20.0
-bg_color = Color(0.025, 0.04, 0.09, 0.96)
-border_width_left = 2
-border_width_top = 2
-border_width_right = 2
-border_width_bottom = 2
-border_color = Color(0.3, 0.7, 0.8, 1)
-
-[sub_resource type="Theme" id="UITheme"]
-default_font = ExtResource("7_font")
-default_font_size = 20
-PanelContainer/styles/panel = SubResource("PanelStyle")
 
 [sub_resource type="StyleBoxFlat" id="HudBayLeft"]
 content_margin_left = 12.0
@@ -204,19 +188,20 @@ anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
 mouse_filter = 2
-theme = SubResource("UITheme")
+theme = ExtResource("8_theme")
 
 [node name="Menu" type="PanelContainer" parent="Root" unique_id=1945357025]
 unique_name_in_owner = true
-layout_mode = 0
+layout_mode = 1
+anchors_preset = 8
 anchor_left = 0.5
 anchor_top = 0.5
 anchor_right = 0.5
 anchor_bottom = 0.5
-offset_left = -315.0
-offset_top = -285.0
-offset_right = 315.0
-offset_bottom = 285.0
+offset_left = -330.0
+offset_top = -305.0
+offset_right = 330.0
+offset_bottom = 305.0
 grow_horizontal = 2
 grow_vertical = 2
 
@@ -225,15 +210,22 @@ layout_mode = 2
 theme_override_constants/separation = 10
 
 [node name="Title" type="Label" parent="Root/Menu/Content" unique_id=125092282]
-modulate = Color(0.5, 0.95, 1, 1)
 layout_mode = 2
-theme_override_font_sizes/font_size = 42
+theme_override_colors/font_color = Color(0.35, 0.95, 1, 1)
+theme_override_colors/font_outline_color = Color(0, 0.08, 0.16, 0.95)
+theme_override_constants/outline_size = 4
+theme_override_font_sizes/font_size = 44
 text = "COSMIC DETENTION"
+horizontal_alignment = 1
 
 [node name="Subtitle" type="Label" parent="Root/Menu/Content" unique_id=1180339448]
 layout_mode = 2
-theme_override_font_sizes/font_size = 23
+theme_override_colors/font_color = Color(0.82, 0.97, 1, 0.9)
+theme_override_colors/font_outline_color = Color(0, 0.08, 0.16, 0.95)
+theme_override_constants/outline_size = 3
+theme_override_font_sizes/font_size = 22
 text = "Eat. Survive. Frame your friends."
+horizontal_alignment = 1
 
 [node name="NameField" type="LineEdit" parent="Root/Menu/Content" unique_id=151136378]
 unique_name_in_owner = true
@@ -290,17 +282,25 @@ text = "JOIN"
 [node name="MenuStatus" type="Label" parent="Root/Menu/Content" unique_id=335902947]
 unique_name_in_owner = true
 layout_mode = 2
-theme_override_font_sizes/font_size = 16
+theme_override_colors/font_color = Color(0.55, 0.95, 1, 0.92)
+theme_override_font_sizes/font_size = 17
 text = "Same LAN • 2–6 students • Host runs the classroom"
+horizontal_alignment = 1
 autowrap_mode = 3
 
 [node name="Controls" type="Label" parent="Root/Menu/Content" unique_id=1468424898]
 layout_mode = 2
+theme_override_colors/font_color = Color(0.84, 0.97, 1, 0.95)
+theme_override_colors/font_outline_color = Color(0, 0.08, 0.16, 0.95)
+theme_override_constants/line_spacing = 4
+theme_override_constants/outline_size = 3
 theme_override_font_sizes/font_size = 17
-text = "WASD move • Mouse look • E grab / sit / interact
-LMB hold + release: throw • LMB empty: punch
-RMB eat / use • Q drop • Space jump / stand / escape
-Shift sprint • G fart • Tab scoreboard • Esc menu"
+theme_override_styles/normal = SubResource("HudBottomConsole")
+text = "[WASD] Move   •   [Shift] Sprint   •   [Space] Jump / Stand / Escape
+[E] Grab / Sit / Interact   •   [Q] Drop   •   [F] Vent Gas
+[Left-click] Punch / Hold to Throw   •   [Right-click] Eat / Use
+[Tab] Class Register   •   [H] Incident Feed   •   [Esc] Pause Menu"
+horizontal_alignment = 1
 
 [node name="Quit" type="Button" parent="Root/Menu/Content" unique_id=1706002822]
 custom_minimum_size = Vector2(0, 42)
@@ -675,7 +675,7 @@ theme_override_colors/font_color = Color(0.88, 0.99, 1, 1)
 theme_override_colors/font_outline_color = Color(0, 0.08, 0.16, 0.95)
 theme_override_constants/outline_size = 3
 theme_override_font_sizes/font_size = 15
-text = "EMPTY HAND • [LMB] Punch • [E] Grab"
+text = "EMPTY HAND • [Left-click] Punch • [E] Grab"
 horizontal_alignment = 1
 autowrap_mode = 3
 

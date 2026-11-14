@@ -211,20 +211,20 @@ func _process(delta: float) -> void:
 		if p.mode == "carried": prompt.text = "[SPACE] Struggle! Press %d times to escape." % Game.config.player.struggle_presses
 		if p.mode == "seated":
 			if player.interaction_text == "":
-				prompt.text = "[E] Stand • [SPACE] Stand • [RMB] Eat • [LMB] Throw"
+				prompt.text = "[E] Stand • [SPACE] Stand • [Right-click] Eat • [Left-click] Throw"
 			elif player.target_id == "seat:" + str(p.seat):
-				prompt.text = "[E] Stand up • [RMB] Eat • [LMB] Throw"
+				prompt.text = "[E] Stand up • [Right-click] Eat • [Left-click] Throw"
 		elif p.alive and player.interaction_text == "" and Game.phase in ["break", "preparation"] and Game.remaining <= Game.config.warning_bell_seconds and Game.remaining > 0.0:
 			prompt.text = "WARNING BELL! Get to your chair! [%02d]" % int(ceil(Game.remaining))
 		charge.visible = player.charge >= 0
 		charge.value = player.charge
 		if charge.material is ShaderMaterial:
 			charge.material.set_shader_parameter("progress", clampf(player.charge / maxf(0.001, charge.max_value), 0.0, 1.0))
-	held_label.text = "EMPTY HAND • [LMB] Punch • [E] Grab"
-	if p.held.begins_with("player:"): held_label.text = "HOLDING YOUR FRIEND • Hold LMB to throw • Q drop"
+	held_label.text = "EMPTY HAND • [Left-click] Punch • [E] Grab"
+	if p.held.begins_with("player:"): held_label.text = "HOLDING YOUR FRIEND • Hold Left-click to throw • Q drop"
 	elif Game.world.items.has(p.held):
 		var item = Game.world.items[p.held]
-		held_label.text = item.display_name() + " • [RMB] Use / eat • Hold LMB to throw • Q drop"
+		held_label.text = item.display_name() + " • [Right-click] Use / eat • Hold Left-click to throw • Q drop"
 	if p.eat_until > Game.elapsed: held_label.text = "CHOMP CHOMP CHOMP…"
 	scoreboard.visible = Input.is_action_pressed("scoreboard")
 	if scoreboard.visible:
