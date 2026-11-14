@@ -47,18 +47,6 @@ corner_radius_bottom_left = 3
 shadow_color = Color(0, 0.8, 1, 0.18)
 shadow_size = 10
 
-[sub_resource type="StyleBoxFlat" id="ReticleRing"]
-bg_color = Color(0, 0.85, 1, 0.03)
-border_width_left = 1
-border_width_top = 1
-border_width_right = 1
-border_width_bottom = 1
-border_color = Color(0.25, 0.95, 1, 0.28)
-corner_radius_top_left = 48
-corner_radius_top_right = 48
-corner_radius_bottom_right = 48
-corner_radius_bottom_left = 48
-
 [sub_resource type="StyleBoxFlat" id="HudBottomConsole"]
 content_margin_left = 14.0
 content_margin_top = 10.0
@@ -130,19 +118,23 @@ corner_radius_bottom_left = 2
 [sub_resource type="StyleBoxFlat" id="ChargeFill"]
 bg_color = Color(1, 1, 1, 1)
 
+[sub_resource type="StyleBoxEmpty" id="ChargeEmpty"]
+
 [sub_resource type="Shader" id="CircularChargeShader"]
 code = "shader_type canvas_item;
 uniform float progress : hint_range(0.0, 1.0) = 0.65;
 void fragment() {
 	vec2 p = UV * 2.0 - vec2(1.0);
 	float r = length(p);
-	float ring = smoothstep(0.76, 0.80, r) * (1.0 - smoothstep(0.92, 0.96, r));
-	float angle = fract(atan(p.x, -p.y) / 6.2831853 + 1.0);
-	float arc = 1.0 - smoothstep(progress - 0.01, progress + 0.01, angle);
-	vec4 track_col = vec4(0.01, 0.08, 0.16, 0.45);
+	float ring = smoothstep(0.79, 0.815, r) * (1.0 - smoothstep(0.845, 0.87, r));
+	float deg = degrees(atan(p.x, -p.y));
+	float in_semi = step(-45.0, deg) * step(deg, 135.0);
+	float t = clamp((deg + 45.0) / 180.0, 0.0, 1.0);
+	float arc = 1.0 - smoothstep(progress - 0.015, progress + 0.015, t);
+	vec4 track_col = vec4(0.02, 0.12, 0.22, 0.4);
 	vec4 fill_col = vec4(0.18, 0.95, 1.0, 0.95);
 	vec4 col = mix(track_col, fill_col, arc * step(0.001, progress));
-	COLOR = vec4(col.rgb, col.a * ring);
+	COLOR = vec4(col.rgb, col.a * ring * in_semi);
 }
 "
 
@@ -355,22 +347,6 @@ theme_override_constants/outline_size = 4
 theme_override_font_sizes/font_size = 24
 text = "20"
 
-[node name="ReticleRing" type="Panel" parent="Root/HUD" unique_id=445304197]
-layout_mode = 1
-anchors_preset = 8
-anchor_left = 0.5
-anchor_top = 0.5
-anchor_right = 0.5
-anchor_bottom = 0.5
-offset_left = -46.0
-offset_top = -46.0
-offset_right = 46.0
-offset_bottom = 46.0
-grow_horizontal = 2
-grow_vertical = 2
-mouse_filter = 2
-theme_override_styles/panel = SubResource("ReticleRing")
-
 [node name="Stomach" type="ProgressBar" parent="Root/HUD" unique_id=1455380214]
 unique_name_in_owner = true
 layout_mode = 1
@@ -487,15 +463,15 @@ anchor_left = 0.5
 anchor_top = 0.5
 anchor_right = 0.5
 anchor_bottom = 0.5
-offset_left = -46.0
-offset_top = -46.0
-offset_right = 46.0
-offset_bottom = 46.0
+offset_left = -42.0
+offset_top = -42.0
+offset_right = 42.0
+offset_bottom = 42.0
 grow_horizontal = 2
 grow_vertical = 2
 mouse_filter = 2
 theme_override_styles/background = SubResource("ChargeFill")
-theme_override_styles/fill = SubResource("ChargeFill")
+theme_override_styles/fill = SubResource("ChargeEmpty")
 max_value = 1.0
 show_percentage = false
 
