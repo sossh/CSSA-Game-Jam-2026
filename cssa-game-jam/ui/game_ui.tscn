@@ -16,53 +16,64 @@ border_width_right = 2
 border_width_bottom = 2
 border_color = Color(0.3, 0.7, 0.8, 1)
 
+[sub_resource type="Theme" id="UITheme"]
+default_font_size = 20
+PanelContainer/styles/panel = SubResource("PanelStyle")
+
+[sub_resource type="StyleBoxFlat" id="HudTopVisor"]
+bg_color = Color(0.007843138, 0.02745098, 0.05882353, 0.3647059)
+border_width_left = 2
+border_width_top = 2
+border_width_right = 2
+border_width_bottom = 2
+border_color = Color(0.2, 0.88, 1, 0.65)
+shadow_color = Color(0, 0.8, 1, 0.18039216)
+shadow_size = 10
+
 [sub_resource type="StyleBoxFlat" id="HudBayLeft"]
-bg_color = Color(0.008, 0.028, 0.06, 0.82)
-skew = Vector2(-0.06, 0)
-border_width_left = 4
-border_width_top = 1
-border_width_right = 1
+bg_color = Color(0.007843138, 0.02745098, 0.05882353, 0.3647059)
+border_width_left = 2
+border_width_top = 2
+border_width_right = 2
 border_width_bottom = 2
 border_color = Color(0.18, 0.92, 1, 0.9)
-corner_radius_top_right = 8
-corner_radius_bottom_right = 14
 shadow_color = Color(0, 0.8, 1, 0.18)
 shadow_size = 10
 
 [sub_resource type="StyleBoxFlat" id="HudBayRight"]
-bg_color = Color(0.008, 0.028, 0.06, 0.82)
-skew = Vector2(0.06, 0)
-border_width_left = 1
-border_width_top = 1
-border_width_right = 4
-border_width_bottom = 2
-border_color = Color(0.18, 0.92, 1, 0.9)
-corner_radius_top_left = 8
-corner_radius_bottom_left = 14
-shadow_color = Color(0, 0.8, 1, 0.18)
-shadow_size = 10
-
-[sub_resource type="StyleBoxFlat" id="HudTopVisor"]
-bg_color = Color(0.005, 0.022, 0.05, 0.72)
-border_width_bottom = 2
-border_color = Color(0.2, 0.88, 1, 0.65)
-corner_radius_bottom_right = 18
-corner_radius_bottom_left = 18
-
-[sub_resource type="StyleBoxFlat" id="HudBottomConsole"]
-bg_color = Color(0.008, 0.028, 0.06, 0.84)
+bg_color = Color(0.007843138, 0.02745098, 0.05882353, 0.3647059)
 border_width_left = 2
 border_width_top = 2
 border_width_right = 2
+border_width_bottom = 2
+border_color = Color(0.18, 0.92, 1, 0.9)
+shadow_color = Color(0, 0.8, 1, 0.18)
+shadow_size = 10
+
+[sub_resource type="StyleBoxFlat" id="ReticleRing"]
+bg_color = Color(0, 0.85, 1, 0.03)
+border_width_left = 1
+border_width_top = 1
+border_width_right = 1
+border_width_bottom = 1
+border_color = Color(0.25, 0.95, 1, 0.28)
+corner_radius_top_left = 48
+corner_radius_top_right = 48
+corner_radius_bottom_right = 48
+corner_radius_bottom_left = 48
+
+[sub_resource type="StyleBoxFlat" id="HudBottomConsole"]
+bg_color = Color(0.007843138, 0.02745098, 0.05882353, 0.3647059)
+border_width_left = 2
+border_width_top = 2
+border_width_right = 2
+border_width_bottom = 2
 border_color = Color(0.2, 0.92, 1, 0.85)
-corner_radius_top_left = 16
-corner_radius_top_right = 16
 shadow_color = Color(0, 0.8, 1, 0.16)
 shadow_size = 10
 
 [sub_resource type="StyleBoxFlat" id="BarBg"]
 bg_color = Color(0.01, 0.04, 0.08, 0.92)
-skew = Vector2(-0.12, 0)
 border_width_left = 1
 border_width_top = 1
 border_width_right = 1
@@ -75,9 +86,6 @@ corner_radius_bottom_left = 2
 
 [sub_resource type="StyleBoxFlat" id="StomachFill"]
 bg_color = Color(0.12, 0.95, 0.72, 0.92)
-skew = Vector2(-0.12, 0)
-border_width_top = 2
-border_width_right = 2
 border_color = Color(0.75, 1, 0.95, 0.95)
 corner_radius_top_left = 2
 corner_radius_top_right = 2
@@ -86,7 +94,6 @@ corner_radius_bottom_left = 2
 
 [sub_resource type="StyleBoxFlat" id="GasFill"]
 bg_color = Color(1, 0.62, 0.14, 0.92)
-skew = Vector2(-0.12, 0)
 border_width_top = 2
 border_width_right = 2
 border_color = Color(1, 0.92, 0.6, 0.95)
@@ -101,36 +108,6 @@ skew = Vector2(-0.12, 0)
 border_width_top = 2
 border_width_right = 2
 border_color = Color(0.85, 1, 1, 1)
-
-[sub_resource type="StyleBoxFlat" id="ReticleBracketL"]
-bg_color = Color(0, 0, 0, 0)
-border_width_left = 2
-border_width_top = 2
-border_width_bottom = 2
-border_color = Color(0.25, 0.95, 1, 0.55)
-corner_radius_top_left = 6
-corner_radius_bottom_left = 6
-
-[sub_resource type="StyleBoxFlat" id="ReticleBracketR"]
-bg_color = Color(0, 0, 0, 0)
-border_width_top = 2
-border_width_right = 2
-border_width_bottom = 2
-border_color = Color(0.25, 0.95, 1, 0.55)
-corner_radius_top_right = 6
-corner_radius_bottom_right = 6
-
-[sub_resource type="StyleBoxFlat" id="ReticleRing"]
-bg_color = Color(0, 0.85, 1, 0.03)
-border_width_left = 1
-border_width_top = 1
-border_width_right = 1
-border_width_bottom = 1
-border_color = Color(0.25, 0.95, 1, 0.28)
-corner_radius_top_left = 48
-corner_radius_top_right = 48
-corner_radius_bottom_right = 48
-corner_radius_bottom_left = 48
 
 [sub_resource type="StyleBoxFlat" id="BannerStyle"]
 content_margin_left = 20.0
@@ -166,10 +143,6 @@ corner_radius_bottom_right = 10
 shadow_color = Color(0, 0.8, 1, 0.2)
 shadow_size = 12
 
-[sub_resource type="Theme" id="UITheme"]
-default_font_size = 20
-PanelContainer/styles/panel = SubResource("PanelStyle")
-
 [node name="UI" type="CanvasLayer" unique_id=1907831806]
 script = ExtResource("1")
 
@@ -185,6 +158,7 @@ theme = SubResource("UITheme")
 
 [node name="Menu" type="PanelContainer" parent="Root" unique_id=1945357025]
 unique_name_in_owner = true
+visible = false
 layout_mode = 0
 anchor_left = 0.5
 anchor_top = 0.5
@@ -286,7 +260,6 @@ text = "QUIT"
 
 [node name="HUD" type="Control" parent="Root" unique_id=1650783509]
 unique_name_in_owner = true
-visible = false
 layout_mode = 1
 anchors_preset = 15
 anchor_right = 1.0
@@ -295,27 +268,26 @@ grow_horizontal = 2
 grow_vertical = 2
 mouse_filter = 2
 
-[node name="TopVisorBar" type="Panel" parent="Root/HUD"]
+[node name="TopVisorBar" type="Panel" parent="Root/HUD" unique_id=476950910]
 layout_mode = 1
 anchors_preset = 5
 anchor_left = 0.5
 anchor_right = 0.5
 offset_left = -290.0
-offset_top = 0.0
-offset_right = 290.0
-offset_bottom = 34.0
+offset_top = 12.0
+offset_right = 272.0
+offset_bottom = 46.0
 grow_horizontal = 2
 mouse_filter = 2
 theme_override_styles/panel = SubResource("HudTopVisor")
 
-[node name="CompassReadout" type="Label" parent="Root/HUD/TopVisorBar"]
+[node name="CompassReadout" type="Label" parent="Root/HUD/TopVisorBar" unique_id=689184618]
 layout_mode = 1
 anchors_preset = 15
 anchor_right = 1.0
 anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
-mouse_filter = 2
 theme_override_colors/font_color = Color(0.45, 0.95, 1, 0.9)
 theme_override_colors/font_outline_color = Color(0, 0.08, 0.16, 0.95)
 theme_override_constants/outline_size = 3
@@ -324,40 +296,39 @@ text = "SYS // ORBITAL DETENTION DECK 04   [ 045°  •  090°  ▲  135°  • 
 horizontal_alignment = 1
 vertical_alignment = 1
 
-[node name="LeftTelemetryBay" type="Panel" parent="Root/HUD"]
+[node name="LeftTelemetryBay" type="Panel" parent="Root/HUD" unique_id=393595346]
 layout_mode = 0
 offset_left = 14.0
 offset_top = 12.0
-offset_right = 348.0
+offset_right = 344.0
 offset_bottom = 176.0
 mouse_filter = 2
 theme_override_styles/panel = SubResource("HudBayLeft")
 
-[node name="BayHeader" type="Label" parent="Root/HUD/LeftTelemetryBay"]
+[node name="BayHeader" type="Label" parent="Root/HUD/LeftTelemetryBay" unique_id=1362974603]
 layout_mode = 0
 offset_left = 14.0
 offset_top = 6.0
 offset_right = 310.0
 offset_bottom = 24.0
-mouse_filter = 2
 theme_override_colors/font_color = Color(0.3, 0.88, 1, 0.78)
 theme_override_font_sizes/font_size = 11
 text = "◈ BIO-TELEMETRY // LIFE SUPPORT"
 
-[node name="RightTelemetryBay" type="Panel" parent="Root/HUD"]
+[node name="RightTelemetryBay" type="Panel" parent="Root/HUD" unique_id=1470056257]
 layout_mode = 1
 anchors_preset = 1
 anchor_left = 1.0
 anchor_right = 1.0
-offset_left = -464.0
+offset_left = -363.0
 offset_top = 12.0
 offset_right = -14.0
-offset_bottom = 126.0
+offset_bottom = 91.0
 grow_horizontal = 0
 mouse_filter = 2
 theme_override_styles/panel = SubResource("HudBayRight")
 
-[node name="BayHeader" type="Label" parent="Root/HUD/RightTelemetryBay"]
+[node name="BayHeader" type="Label" parent="Root/HUD/RightTelemetryBay" unique_id=274111431]
 layout_mode = 1
 anchors_preset = 1
 anchor_left = 1.0
@@ -367,13 +338,12 @@ offset_top = 6.0
 offset_right = -16.0
 offset_bottom = 24.0
 grow_horizontal = 0
-mouse_filter = 2
 theme_override_colors/font_color = Color(0.3, 0.88, 1, 0.78)
 theme_override_font_sizes/font_size = 11
 text = "SECTOR CHRONO & TRANSPONDER ◈"
 horizontal_alignment = 2
 
-[node name="ReticleRing" type="Panel" parent="Root/HUD"]
+[node name="ReticleRing" type="Panel" parent="Root/HUD" unique_id=445304197]
 layout_mode = 1
 anchors_preset = 8
 anchor_left = 0.5
@@ -389,39 +359,7 @@ grow_vertical = 2
 mouse_filter = 2
 theme_override_styles/panel = SubResource("ReticleRing")
 
-[node name="ReticleBracketLeft" type="Panel" parent="Root/HUD"]
-layout_mode = 1
-anchors_preset = 8
-anchor_left = 0.5
-anchor_top = 0.5
-anchor_right = 0.5
-anchor_bottom = 0.5
-offset_left = -68.0
-offset_top = -24.0
-offset_right = -52.0
-offset_bottom = 24.0
-grow_horizontal = 2
-grow_vertical = 2
-mouse_filter = 2
-theme_override_styles/panel = SubResource("ReticleBracketL")
-
-[node name="ReticleBracketRight" type="Panel" parent="Root/HUD"]
-layout_mode = 1
-anchors_preset = 8
-anchor_left = 0.5
-anchor_top = 0.5
-anchor_right = 0.5
-anchor_bottom = 0.5
-offset_left = 52.0
-offset_top = -24.0
-offset_right = 68.0
-offset_bottom = 24.0
-grow_horizontal = 2
-grow_vertical = 2
-mouse_filter = 2
-theme_override_styles/panel = SubResource("ReticleBracketR")
-
-[node name="BottomConsoleBay" type="Panel" parent="Root/HUD"]
+[node name="BottomConsoleBay" type="Panel" parent="Root/HUD" unique_id=1575651211]
 layout_mode = 1
 anchors_preset = 7
 anchor_left = 0.5
@@ -429,22 +367,21 @@ anchor_top = 1.0
 anchor_right = 0.5
 anchor_bottom = 1.0
 offset_left = -330.0
-offset_top = -98.0
+offset_top = -70.0
 offset_right = 330.0
-offset_bottom = 0.0
+offset_bottom = -11.0
 grow_horizontal = 2
 grow_vertical = 0
 mouse_filter = 2
 theme_override_styles/panel = SubResource("HudBottomConsole")
 
-[node name="BayHeader" type="Label" parent="Root/HUD/BottomConsoleBay"]
+[node name="BayHeader" type="Label" parent="Root/HUD/BottomConsoleBay" unique_id=242449355]
 layout_mode = 1
 anchors_preset = 10
 anchor_right = 1.0
 offset_top = 5.0
 offset_bottom = 21.0
 grow_horizontal = 2
-mouse_filter = 2
 theme_override_colors/font_color = Color(0.35, 0.9, 1, 0.72)
 theme_override_font_sizes/font_size = 11
 text = "◈ MANIPULATOR BAY // KINETIC ACTUATOR ◈"
@@ -454,9 +391,9 @@ horizontal_alignment = 1
 unique_name_in_owner = true
 layout_mode = 0
 offset_left = 28.0
-offset_top = 26.0
+offset_top = 29.0
 offset_right = 338.0
-offset_bottom = 82.0
+offset_bottom = 86.0
 theme_override_colors/font_color = Color(0.75, 0.98, 1, 1)
 theme_override_colors/font_outline_color = Color(0, 0.08, 0.16, 0.95)
 theme_override_constants/outline_size = 4
@@ -480,7 +417,7 @@ theme_override_styles/background = SubResource("BarBg")
 theme_override_styles/fill = SubResource("StomachFill")
 value = 100.0
 
-[node name="GasLabel" type="Label" parent="Root/HUD"]
+[node name="GasLabel" type="Label" parent="Root/HUD" unique_id=1216963209]
 unique_name_in_owner = true
 layout_mode = 0
 offset_left = 28.0
@@ -493,7 +430,7 @@ theme_override_constants/outline_size = 3
 theme_override_font_sizes/font_size = 13
 text = "GAS: 0% • [F] TO VENT"
 
-[node name="Gas" type="ProgressBar" parent="Root/HUD"]
+[node name="Gas" type="ProgressBar" parent="Root/HUD" unique_id=228781182]
 unique_name_in_owner = true
 layout_mode = 0
 offset_left = 28.0
@@ -503,7 +440,6 @@ offset_bottom = 158.0
 mouse_filter = 2
 theme_override_styles/background = SubResource("BarBg")
 theme_override_styles/fill = SubResource("GasFill")
-value = 0.0
 show_percentage = false
 
 [node name="PhaseLabel" type="Label" parent="Root/HUD" unique_id=170845364]
@@ -515,7 +451,7 @@ anchor_right = 1.0
 offset_left = -450.0
 offset_top = 26.0
 offset_right = -30.0
-offset_bottom = 116.0
+offset_bottom = 124.0
 grow_horizontal = 0
 theme_override_colors/font_color = Color(0.72, 0.96, 1, 1)
 theme_override_colors/font_outline_color = Color(0, 0.08, 0.16, 0.95)
@@ -574,9 +510,9 @@ anchor_top = 1.0
 anchor_right = 1.0
 anchor_bottom = 1.0
 offset_left = 24.0
-offset_top = -74.0
+offset_top = -45.0
 offset_right = -24.0
-offset_bottom = -42.0
+offset_bottom = -13.0
 grow_horizontal = 2
 grow_vertical = 0
 theme_override_colors/font_color = Color(0.78, 0.98, 1, 1)
@@ -611,7 +547,7 @@ show_percentage = false
 unique_name_in_owner = true
 visible = false
 layout_mode = 1
-anchors_preset = 10
+anchors_preset = -1
 anchor_left = 0.18
 anchor_right = 0.82
 offset_top = 135.0
@@ -655,9 +591,15 @@ theme_override_font_sizes/font_size = 15
 
 [node name="EventFeed" parent="Root/HUD" unique_id=2025136264 instance=ExtResource("3")]
 layout_mode = 1
+anchors_preset = 3
+offset_left = -406.0
+offset_top = -205.0
+offset_right = 0.0
+offset_bottom = 0.0
 
 [node name="DamageTint" type="ColorRect" parent="Root" unique_id=1046034552]
 unique_name_in_owner = true
+visible = false
 layout_mode = 1
 anchors_preset = 15
 anchor_right = 1.0
@@ -828,93 +770,115 @@ layout_mode = 2
 text = "A17 • ₿75 • Rocket part"
 item_id = "rocket"
 
-[node name="EnergyGreen" parent="Root/Vending/Content/Scroll/VendingRows" instance=ExtResource("2")]
-item_id = "energy_green"
+[node name="EnergyGreen" parent="Root/Vending/Content/Scroll/VendingRows" unique_id=92943114 instance=ExtResource("2")]
+layout_mode = 2
 text = "EnergyGreen"
+item_id = "energy_green"
 
-[node name="Banana" parent="Root/Vending/Content/Scroll/VendingRows" instance=ExtResource("2")]
-item_id = "banana"
+[node name="Banana" parent="Root/Vending/Content/Scroll/VendingRows" unique_id=1200317029 instance=ExtResource("2")]
+layout_mode = 2
 text = "Banana"
+item_id = "banana"
 
-[node name="BubbleTea" parent="Root/Vending/Content/Scroll/VendingRows" instance=ExtResource("2")]
-item_id = "bubble_tea"
+[node name="BubbleTea" parent="Root/Vending/Content/Scroll/VendingRows" unique_id=997925308 instance=ExtResource("2")]
+layout_mode = 2
 text = "BubbleTea"
+item_id = "bubble_tea"
 
-[node name="Burrito" parent="Root/Vending/Content/Scroll/VendingRows" instance=ExtResource("2")]
-item_id = "burrito"
+[node name="Burrito" parent="Root/Vending/Content/Scroll/VendingRows" unique_id=848103048 instance=ExtResource("2")]
+layout_mode = 2
 text = "Burrito"
+item_id = "burrito"
 
-[node name="CerealBowl" parent="Root/Vending/Content/Scroll/VendingRows" instance=ExtResource("2")]
-item_id = "cereal_bowl"
+[node name="CerealBowl" parent="Root/Vending/Content/Scroll/VendingRows" unique_id=190959214 instance=ExtResource("2")]
+layout_mode = 2
 text = "CerealBowl"
+item_id = "cereal_bowl"
 
-[node name="Cheese" parent="Root/Vending/Content/Scroll/VendingRows" instance=ExtResource("2")]
-item_id = "cheese"
+[node name="Cheese" parent="Root/Vending/Content/Scroll/VendingRows" unique_id=1845601739 instance=ExtResource("2")]
+layout_mode = 2
 text = "Cheese"
+item_id = "cheese"
 
-[node name="Nuggets" parent="Root/Vending/Content/Scroll/VendingRows" instance=ExtResource("2")]
-item_id = "nuggets"
+[node name="Nuggets" parent="Root/Vending/Content/Scroll/VendingRows" unique_id=1912648531 instance=ExtResource("2")]
+layout_mode = 2
 text = "Nuggets"
+item_id = "nuggets"
 
-[node name="Chili" parent="Root/Vending/Content/Scroll/VendingRows" instance=ExtResource("2")]
-item_id = "chili"
+[node name="Chili" parent="Root/Vending/Content/Scroll/VendingRows" unique_id=1191096027 instance=ExtResource("2")]
+layout_mode = 2
 text = "Chili"
+item_id = "chili"
 
-[node name="CornDog" parent="Root/Vending/Content/Scroll/VendingRows" instance=ExtResource("2")]
-item_id = "corn_dog"
+[node name="CornDog" parent="Root/Vending/Content/Scroll/VendingRows" unique_id=711593818 instance=ExtResource("2")]
+layout_mode = 2
 text = "CornDog"
+item_id = "corn_dog"
 
-[node name="Egg" parent="Root/Vending/Content/Scroll/VendingRows" instance=ExtResource("2")]
-item_id = "egg"
+[node name="Egg" parent="Root/Vending/Content/Scroll/VendingRows" unique_id=907450321 instance=ExtResource("2")]
+layout_mode = 2
 text = "Egg"
+item_id = "egg"
 
-[node name="FrenchFries" parent="Root/Vending/Content/Scroll/VendingRows" instance=ExtResource("2")]
-item_id = "french_fries"
+[node name="FrenchFries" parent="Root/Vending/Content/Scroll/VendingRows" unique_id=1064347401 instance=ExtResource("2")]
+layout_mode = 2
 text = "FrenchFries"
+item_id = "french_fries"
 
-[node name="Matcha" parent="Root/Vending/Content/Scroll/VendingRows" instance=ExtResource("2")]
-item_id = "matcha"
+[node name="Matcha" parent="Root/Vending/Content/Scroll/VendingRows" unique_id=399446115 instance=ExtResource("2")]
+layout_mode = 2
 text = "Matcha"
+item_id = "matcha"
 
-[node name="Meat" parent="Root/Vending/Content/Scroll/VendingRows" instance=ExtResource("2")]
-item_id = "meat"
+[node name="Meat" parent="Root/Vending/Content/Scroll/VendingRows" unique_id=544807927 instance=ExtResource("2")]
+layout_mode = 2
 text = "Meat"
+item_id = "meat"
 
-[node name="Pizza" parent="Root/Vending/Content/Scroll/VendingRows" instance=ExtResource("2")]
-item_id = "pizza"
+[node name="Pizza" parent="Root/Vending/Content/Scroll/VendingRows" unique_id=1605994481 instance=ExtResource("2")]
+layout_mode = 2
 text = "Pizza"
+item_id = "pizza"
 
-[node name="Popsicle" parent="Root/Vending/Content/Scroll/VendingRows" instance=ExtResource("2")]
-item_id = "popsicle"
+[node name="Popsicle" parent="Root/Vending/Content/Scroll/VendingRows" unique_id=930723289 instance=ExtResource("2")]
+layout_mode = 2
 text = "Popsicle"
+item_id = "popsicle"
 
-[node name="Pudding" parent="Root/Vending/Content/Scroll/VendingRows" instance=ExtResource("2")]
-item_id = "pudding"
+[node name="Pudding" parent="Root/Vending/Content/Scroll/VendingRows" unique_id=1256769494 instance=ExtResource("2")]
+layout_mode = 2
 text = "Pudding"
+item_id = "pudding"
 
-[node name="Ramen" parent="Root/Vending/Content/Scroll/VendingRows" instance=ExtResource("2")]
-item_id = "ramen"
+[node name="Ramen" parent="Root/Vending/Content/Scroll/VendingRows" unique_id=2008846312 instance=ExtResource("2")]
+layout_mode = 2
 text = "Ramen"
+item_id = "ramen"
 
-[node name="Soda" parent="Root/Vending/Content/Scroll/VendingRows" instance=ExtResource("2")]
-item_id = "soda"
+[node name="Soda" parent="Root/Vending/Content/Scroll/VendingRows" unique_id=701882497 instance=ExtResource("2")]
+layout_mode = 2
 text = "Soda"
+item_id = "soda"
 
-[node name="Taco" parent="Root/Vending/Content/Scroll/VendingRows" instance=ExtResource("2")]
-item_id = "taco"
+[node name="Taco" parent="Root/Vending/Content/Scroll/VendingRows" unique_id=1467360404 instance=ExtResource("2")]
+layout_mode = 2
 text = "Taco"
+item_id = "taco"
 
-[node name="Taiyaki" parent="Root/Vending/Content/Scroll/VendingRows" instance=ExtResource("2")]
-item_id = "taiyaki"
+[node name="Taiyaki" parent="Root/Vending/Content/Scroll/VendingRows" unique_id=2041305275 instance=ExtResource("2")]
+layout_mode = 2
 text = "Taiyaki"
+item_id = "taiyaki"
 
-[node name="Waffle" parent="Root/Vending/Content/Scroll/VendingRows" instance=ExtResource("2")]
-item_id = "waffle"
+[node name="Waffle" parent="Root/Vending/Content/Scroll/VendingRows" unique_id=282225598 instance=ExtResource("2")]
+layout_mode = 2
 text = "Waffle"
+item_id = "waffle"
 
-[node name="Sandwich" parent="Root/Vending/Content/Scroll/VendingRows" instance=ExtResource("2")]
-item_id = "sandwich"
+[node name="Sandwich" parent="Root/Vending/Content/Scroll/VendingRows" unique_id=948533259 instance=ExtResource("2")]
+layout_mode = 2
 text = "Sandwich"
+item_id = "sandwich"
 
 [node name="Keypad" type="LineEdit" parent="Root/Vending/Content" unique_id=361534554]
 unique_name_in_owner = true
