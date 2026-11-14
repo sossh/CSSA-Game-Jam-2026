@@ -17,6 +17,17 @@ var step_timer: float = 0.0
 var charge: float = -1.0
 var target_id: String = ""
 var interaction_text: String = ""
+var base_fov: float = 82.0
+var bob_phase: float = 0.0
+var bob_amount: float = 0.0
+var strafe_roll: float = 0.0
+var fov_boost: float = 0.0
+var land_offset: float = 0.0
+var land_velocity: float = 0.0
+var kick_pitch: float = 0.0
+var kick_velocity: float = 0.0
+var fall_speed: float = 0.0
+var was_on_floor: bool = true
 
 func _ready() -> void:
 	floor_snap_length = Game.config.player.floor_snap_length
@@ -25,6 +36,7 @@ func _ready() -> void:
 	visual.set_color(color)
 	visual.visible = not local
 	camera.current = local
+	base_fov = camera.fov
 	name_label.text = str(Game.players[peer_id].name)
 	name_label.visible = not local
 	global_position = Game.players[peer_id].position
@@ -142,6 +154,48 @@ func _physics_process(delta: float) -> void:
 			if Game.is_host(): Game.accept_pose(peer_id, global_position, rotation.y, pitch, limbs, applied_epoch)
 			else: Game.pose.rpc_id(1, global_position, rotation.y, pitch, limbs, applied_epoch)
 	last_mode = mode
+
+func update_camera_feel(delta: float, mode: String) -> void:
+	# Purely cosmetic offsets on the Camera node (child of Head). Head, pitch and
+	# replicated poses are untouched, so aim and networking are unaffected.
+	var cfg := Game.config.player
+	var walking: bool = cfg.camera_feel_enabled and mode not in ["ragdoll", "dead", "seated", "carried"]
+	var on_floor := is_on_floor()
+	var horizontal := Vector2(velocity.x, velocity.z).length()
+	var intensity: float = cfg.camera_feel_intensity
+	var smooth := 1.0 - exp(-cfg.camera_feel_smoothing * delta)
+	var moving: bool = walking and on_floor and horizontal > 0.3
+	# 0..1 for walk, up to ~1.6 at sprint speed
+	var speed_ratio: float = clampf(horizontal / cfg.walk_speed, 0.0, 1.8) if moving else 0.0
+	bob_amount = lerpf(bob_amount, speed_ratio, smooth)
+	if moving:
+		bob_phase = fmod(bob_phase + horizontal * cfg.bob_cycles_per_meter * TAU * delta, TAU * 1000.0)
+	# Landing impact and jump kick via light damped springs
+	if walking:
+		if on_floor and not was_on_floor and fall_speed > 2.0:
+			land_velocity -= clampf(fall_speed, 0.0, 14.0) * cfg.landing_dip * 4.0
+			kick_velocity += clampf(fall_speed, 0.0, 14.0) * 3.0
+		if was_on_floor and not on_floor and velocity.y > 1.0:
+			kick_velocity -= cfg.jump_kick_degrees * 14.0
+	fall_speed = maxf(0.0, -velocity.y) if not on_floor else 0.0
+	was_on_floor = on_floor
+	land_velocity += (-170.0 * land_offset - 18.0 * land_velocity) * delta
+	land_offset += land_velocity * delta
+	kick_velocity += (-170.0 * kick_pitch - 18.0 * kick_velocity) * delta
+	kick_pitch += kick_velocity * delta
+	var strafe_input := 0.0
+	if walking and not Game.ui_open:
+		strafe_input = Input.get_axis("move_left", "move_right")
+	strafe_roll = lerpf(strafe_roll, strafe_input * clampf(bob_amount, 0.0, 1.5), smooth)
+	var sprinting: bool = walking and on_floor and horizontal > cfg.walk_speed * 1.2
+	fov_boost = lerpf(fov_boost, cfg.sprint_fov_boost if sprinting else 0.0, 1.0 - exp(-6.0 * delta))
+	# Two bob cycles per step pair: vertical at 2x lateral frequency
+	var vertical := -absf(sin(bob_phase * 0.5)) * cfg.bob_vertical * bob_amount
+	var sway := sin(bob_phase * 0.5) * cfg.bob_horizontal * bob_amount
+	var roll := sin(bob_phase * 0.5) * deg_to_rad(cfg.bob_roll_degrees) * bob_amount - strafe_roll * deg_to_rad(cfg.strafe_roll_degrees)
+	camera.position = Vector3(sway, vertical + land_offset, 0.0) * intensity
+	camera.rotation = Vector3(deg_to_rad(kick_pitch), 0.0, roll * intensity)
+	camera.fov = base_fov + fov_boost
 
 func find_target() -> void:
 	target_id = ""
