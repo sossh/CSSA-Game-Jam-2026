@@ -91,11 +91,7 @@ func _physics_process(delta: float) -> void:
 			"lecturestate":
 				current_anim = "walk" if global_position.distance_to(board) > 0.3 else "pointing-teaching"
 			"coffeestate":
-				var coffee = fsm.current_state
-				if (coffee and "drank" in coffee and coffee.drank) or global_position.distance_to(desk) <= 0.85:
-					current_anim = "drink-animation"
-				else:
-					current_anim = "walk"
+				current_anim = "drink-animation"
 			"enteringstate", "leavingstate":
 				current_anim = "walk"
 			"shootstate":

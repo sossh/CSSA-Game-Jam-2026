@@ -8,7 +8,7 @@
 [ext_resource type="Animation" uid="uid://gcgbpysqaqe1" path="res://characters/teacher/assets/teacher-animations/run-mad-animation.res" id="5_3nlkx"]
 [ext_resource type="Animation" uid="uid://832x4sleu5sa" path="res://characters/teacher/assets/teacher-animations/drink-animation.res" id="5_r285e"]
 [ext_resource type="Animation" uid="uid://lgk0ujccxsuf" path="res://characters/teacher/assets/teacher-animations/walk-animation.res" id="7_wyhnd"]
-[ext_resource type="Animation" path="res://characters/teacher/assets/teacher-animations/shoot-animation.res" id="8_r285e"]
+[ext_resource type="Animation" uid="uid://d4bbtft8j4ow8" path="res://characters/teacher/assets/teacher-animations/shoot-animation.res" id="8_r285e"]
 [ext_resource type="PackedScene" path="res://characters/teacher/assets/shotgun/shotgun.tscn" id="8_shotgun"]
 [ext_resource type="PackedScene" path="res://world/classroom/props/coffee_mug.tscn" id="9_coffeemug"]
 
@@ -96,7 +96,7 @@ bone_name = "RightHand"
 bone_idx = 22
 
 [node name="Shotgun" parent="GeneralSkeleton/RightHandAttachment" index="0" unique_id=1287745103 instance=ExtResource("8_shotgun")]
-transform = Transform3D(0.005401689, 0.0054088444, 0.0023593334, -0.0027613156, -0.00050990994, 0.007491032, 0.005215089, -0.005872367, 0.0015226427, -4.5863882e-05, 0.0013983445, 0.0007069906)
+transform = Transform3D(0.0054016905, 0.0054088463, 0.0023593346, -0.002761316, -0.0005099101, 0.0074910354, 0.0052150902, -0.0058723693, 0.0015226434, -4.586429e-05, 0.0013983455, 0.00070699025)
 
 [node name="LeftHandAttachment" type="BoneAttachment3D" parent="GeneralSkeleton" index="2" unique_id=900776975]
 transform = Transform3D(-0.7058328, -0.6868045, -0.17349267, -0.67471236, 0.577207, 0.45999497, -0.21578526, 0.44173732, -0.8708073, -0.0022197738, 0.014847558, 0.0019561413)

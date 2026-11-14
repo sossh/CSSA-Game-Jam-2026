@@ -8,6 +8,10 @@ var holder: int = 0
 var thrower: String = ""
 var uses: int = 1
 @export var kid: bool = false
+@export var kid_seated_y_offset: float = 0.32
+@export var kid_seated_x_offset: float = 0
+@export var kid_seated_z_offset: float = -0.15
+var default_visual_pos := Vector3(0, -0.8, 0)
 var dead: bool = false
 var home_seat: int = -1
 var seated: bool = false
@@ -26,7 +30,12 @@ func _ready() -> void:
 	mass = Game.config.clone_mass if kid else data.mass
 	freeze = not Game.is_host() or seated
 	if kid:
-		$CloneVisual.set_color(Color(0.62, 0.65, 0.8) if not dead else Color(0.5, 0.3, 0.4))
+		var kv: Node3D = get_node_or_null("KidVisual")
+		if kv:
+			default_visual_pos = kv.position
+		if has_node("CloneVisual") and $CloneVisual.has_method("set_color"):
+			$CloneVisual.set_color(Color(0.62, 0.65, 0.8) if not dead else Color(0.5, 0.3, 0.4))
+		_update_kid_animation()
 	label.text = display_name()
 	noise_at = Game.elapsed + randf_range(25, 60)
 	destination = global_transform
@@ -36,6 +45,8 @@ func display_name() -> String:
 	return data.display_name if data else item_id
 
 func _physics_process(delta: float) -> void:
+	if kid:
+		_update_kid_animation()
 	if Game.is_host() and fuse_at > 0 and Game.elapsed >= fuse_at:
 		detonate()
 		return
@@ -145,3 +156,42 @@ func receive(state: Dictionary) -> void:
 	dead = state.dead
 	seated = state.seated
 	uses = state.uses
+	if kid:
+		_update_kid_animation()
+
+func _update_kid_animation() -> void:
+	if not kid:
+		return
+	var kv: Node3D = get_node_or_null("KidVisual")
+	if not kv:
+		return
+	var anim_player: AnimationPlayer = kv.get_node_or_null("AnimationPlayer")
+	if not anim_player:
+		return
+
+	var target_anim: String = "idle"
+	if dead:
+		target_anim = "death"
+	elif seated:
+		target_anim = "sit"
+	else:
+		target_anim = "idle"
+
+	if target_anim == "sit":
+		kv.position = default_visual_pos + Vector3(kid_seated_x_offset, kid_seated_y_offset, kid_seated_z_offset)
+	else:
+		kv.position = default_visual_pos
+
+	if target_anim == "death":
+		if anim_player.assigned_animation != "death":
+			anim_player.play("death")
+	elif anim_player.current_animation != target_anim:
+		if target_anim == "sit" and anim_player.has_animation("sit"):
+			var sit_anim: Animation = anim_player.get_animation("sit")
+			if sit_anim and sit_anim.loop_mode != Animation.LOOP_LINEAR:
+				sit_anim.loop_mode = Animation.LOOP_LINEAR
+		elif target_anim == "idle" and anim_player.has_animation("idle"):
+			var idle_anim: Animation = anim_player.get_animation("idle")
+			if idle_anim and idle_anim.loop_mode != Animation.LOOP_LINEAR:
+				idle_anim.loop_mode = Animation.LOOP_LINEAR
+		anim_player.play(target_anim)
