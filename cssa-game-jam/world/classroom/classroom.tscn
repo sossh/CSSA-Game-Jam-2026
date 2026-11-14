@@ -28,6 +28,7 @@
 [ext_resource type="Material" path="res://world/classroom/materials/hull_foundation.tres" id="25_foundation"]
 [ext_resource type="Material" path="res://world/classroom/materials/hull_ramp.tres" id="26_ramp"]
 [ext_resource type="Sky" uid="uid://b1vvfc7ur7k7l" path="res://world/lunar/materials/space_sky.tres" id="27_sky"]
+[ext_resource type="PackedScene" path="res://world/classroom/props/wall_tv.tscn" id="28_wall_tv"]
 
 [sub_resource type="ShaderMaterial" id="CafeFloorMaterial"]
 shader = ExtResource("14_cafe_floor")
@@ -771,6 +772,9 @@ spot_angle_attenuation = 0.55
 [node name="SpaceTravelPainting" parent="Hallway" instance=ExtResource("20_travel_painting")]
 position = Vector3(5.25, 2.35, 8.22)
 scale = Vector3(0.72, 0.72, 0.72)
+
+[node name="WallTV" parent="Hallway" instance=ExtResource("28_wall_tv")]
+transform = Transform3D(-1.3, 0, -1.1365e-07, 0, 1.3, 0, 1.1365e-07, 0, -1.3, -4.5, 2.75, 15.77)
 
 [node name="VendingMachine" parent="Hallway" unique_id=869019490 instance=ExtResource("5")]
 transform = Transform3D(7.54979e-08, 0, -1, 0, 1, 0, 1, 0, 7.54979e-08, -8.25, 0, 13.9)
