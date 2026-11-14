@@ -264,7 +264,7 @@ func start_class() -> void:
 	remaining = config.class_seconds
 	next_npc_noise_at = elapsed + randf_range(80.0, 150.0)
 	world.teacher.start_class()
-	event.rpc("sound", {"position": Vector3(0, 3, -8), "key": "bell", "loudness": 100.0})
+	event.rpc("sound", {"position": world.to_global(Vector3(0, 3, -8)), "key": "bell", "loudness": 100.0})
 	event.rpc("banner", {"text": "CLASS STARTED • Sit down. Eat quietly. Blame your friends."})
 	for id in players:
 		if players[id].alive and players[id].position.z > 8.0:
@@ -286,7 +286,7 @@ func start_break() -> void:
 			p.money -= config.cloning_fee
 			respawn(id)
 	grade += 1
-	event.rpc("sound", {"position": Vector3(0, 3, -8), "key": "bell", "loudness": 100.0})
+	event.rpc("sound", {"position": world.to_global(Vector3(0, 3, -8)), "key": "bell", "loudness": 100.0})
 	event.rpc("banner", {"text": "RECESS • Allowances paid. Clones cost ₿%d. Vending is open!" % config.cloning_fee})
 	print("PHASE break survived=", survived)
 

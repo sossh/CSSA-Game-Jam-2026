@@ -56,9 +56,9 @@ func _ready() -> void:
 		for marker: Marker3D in desk.get_node("LootSpawns").get_children():
 			spawn_positions.append(marker.global_position)
 		var obstacle = desk.get_node("NavigationObstacle")
-		mark_obstacle(obstacle.global_position, obstacle.half_extents)
+		mark_obstacle(to_local(obstacle.global_position), obstacle.half_extents)
 	var obstacle = $TeacherDesk/NavigationObstacle
-	mark_obstacle(obstacle.global_position, obstacle.half_extents)
+	mark_obstacle(to_local(obstacle.global_position), obstacle.half_extents)
 	spawn_positions.append($TeacherDesk/LootSpawn.global_position)
 	for node in find_children("*", "StaticBody3D", true, false):
 		if node is Interactable: interactions[node.interaction_id] = node
@@ -76,10 +76,10 @@ func mark_obstacle(pos: Vector3, half_size: Vector2) -> void:
 		if absf(point.x - pos.x) < half_size.x and absf(point.y - pos.z) < half_size.y: grid.set_point_solid(id)
 
 func walk_path(from: Vector3, to: Vector3) -> PackedVector3Array:
-	var start := nearest_walkable(from)
-	var end := nearest_walkable(to)
+	var start := nearest_walkable(to_local(from))
+	var end := nearest_walkable(to_local(to))
 	var result := PackedVector3Array()
-	for point in grid.get_point_path(start, end): result.append(Vector3(point.x, 0, point.y))
+	for point in grid.get_point_path(start, end): result.append(to_global(Vector3(point.x, 0, point.y)))
 	return result
 
 func nearest_walkable(point: Vector3) -> Vector2i:
@@ -132,9 +132,11 @@ func update_food_drops() -> void:
 		var side := forward.cross(Vector3.UP)
 		var along := randf_range(1.0, 2.0) * (1.0 if randf() < 0.5 else -1.0)
 		point = target.global_position + forward * along + side * randf_range(-0.5, 0.5)
-		point.x = clampf(point.x, -8.0, 8.0)
-		point.z = clampf(point.z, -9.0, 7.0)
-		point.y = 0.3
+		var local_point := to_local(point)
+		local_point.x = clampf(local_point.x, -8.0, 8.0)
+		local_point.z = clampf(local_point.z, -9.0, 7.0)
+		local_point.y = 0.3
+		point = to_global(local_point)
 	var item := spawn_item(ItemDB.random_item(Game.grade, true), point)
 	Game.event.rpc("burst", {"position": point, "color": Color.WHITE})
 	Game.log_activity("Food dropped from the ceiling: %s." % item.display_name())
@@ -172,7 +174,7 @@ func create_item(entity_id: String, state: Dictionary) -> ClassroomItem:
 	item.dead = state.dead
 	item.seated = state.seated
 	item.home_seat = state.home
-	item.transform = state.transform
+	item.transform = $Items.global_transform.affine_inverse() * state.transform
 	$Items.add_child(item)
 	item.receive(state)
 	items[entity_id] = item
@@ -396,7 +398,7 @@ func buy(id: int, item_id: String, machine_id: String = "vending") -> void:
 	p.money -= data.price
 	Game.log_activity("%s buys %s for ₿%d." % [p.name, data.display_name, data.price])
 	var dispense_point: Marker3D = machine.get_node("DispensePoint")
-	var item := spawn_item(item_id, $Items.to_local(dispense_point.global_position))
+	var item := spawn_item(item_id, dispense_point.global_position)
 	NoiseBus.emit_noise(item.global_position, 25, str(id), "vending_dispense")
 
 func spawn_corpse(id: int, impulse: Vector3) -> void:
