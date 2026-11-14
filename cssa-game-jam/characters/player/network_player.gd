@@ -93,12 +93,15 @@ func _physics_process(delta: float) -> void:
 	elif mode == "seated":
 		global_position = p.position
 		visual.rotation = Vector3.ZERO
-	elif mode in ["ragdoll", "dead"] and ragdoll.active:
-		if local and mode == "ragdoll":
+	elif mode == "ragdoll" and ragdoll.active:
+		if local:
 			global_position = ragdoll.bodies[0].global_position - Vector3(0, 0.9, 0)
-		elif not local:
+		else:
 			ragdoll.follow(p.limbs, delta)
 			global_position = p.position
+	elif not local and mode == "dead" and ragdoll.active:
+		ragdoll.follow(p.limbs, delta)
+		global_position = p.position
 	elif local:
 		visual.rotation = Vector3.ZERO
 		var input := Vector2.ZERO if Game.ui_open else Input.get_vector("move_left", "move_right", "move_forward", "move_backward")
