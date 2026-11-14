@@ -366,54 +366,70 @@ anchor_right = 0.5
 offset_left = -140.0
 offset_top = 18.0
 offset_right = 140.0
-offset_bottom = 66.0
+offset_bottom = 84.0
 grow_horizontal = 2
 mouse_filter = 2
 theme_override_styles/panel = SubResource("HudBayLeft")
 
-[node name="Schematic" type="Control" parent="Root/HUD/RocketTracker" unique_id=1492837466]
+[node name="Content" type="VBoxContainer" parent="Root/HUD/RocketTracker" unique_id=1492837476]
+layout_mode = 2
+mouse_filter = 2
+theme_override_constants/separation = 2
+alignment = 1
+
+[node name="Title" type="Label" parent="Root/HUD/RocketTracker/Content" unique_id=1492837477]
+layout_mode = 2
+mouse_filter = 2
+theme_override_colors/font_color = Color(0.35, 0.95, 1, 1)
+theme_override_colors/font_outline_color = Color(0, 0.08, 0.16, 0.95)
+theme_override_constants/outline_size = 3
+theme_override_font_sizes/font_size = 15
+text = "Rocket Progress"
+horizontal_alignment = 1
+
+[node name="Schematic" type="Control" parent="Root/HUD/RocketTracker/Content" unique_id=1492837466]
 custom_minimum_size = Vector2(246, 30)
 layout_mode = 2
 size_flags_horizontal = 4
 size_flags_vertical = 4
 mouse_filter = 2
 
-[node name="RocketStage1" type="Node2D" parent="Root/HUD/RocketTracker/Schematic" unique_id=1492837467]
+[node name="RocketStage1" type="Node2D" parent="Root/HUD/RocketTracker/Content/Schematic" unique_id=1492837467]
 unique_name_in_owner = true
 
-[node name="Fill" type="Polygon2D" parent="Root/HUD/RocketTracker/Schematic/RocketStage1" unique_id=1492837468]
+[node name="Fill" type="Polygon2D" parent="Root/HUD/RocketTracker/Content/Schematic/RocketStage1" unique_id=1492837468]
 color = Color(0.01, 0.05, 0.1, 0.25)
 polygon = PackedVector2Array(6, 9, 14, 7, 16, 4, 28, 8, 122, 8, 122, 22, 28, 22, 16, 26, 14, 23, 6, 21)
 
-[node name="Outline" type="Line2D" parent="Root/HUD/RocketTracker/Schematic/RocketStage1" unique_id=1492837469]
+[node name="Outline" type="Line2D" parent="Root/HUD/RocketTracker/Content/Schematic/RocketStage1" unique_id=1492837469]
 points = PackedVector2Array(6, 9, 14, 7, 16, 4, 28, 8, 122, 8, 122, 22, 28, 22, 16, 26, 14, 23, 6, 21)
 closed = true
 width = 2.0
 default_color = Color(0.18, 0.92, 1, 0.55)
 joint_mode = 2
 
-[node name="RocketStage2" type="Node2D" parent="Root/HUD/RocketTracker/Schematic" unique_id=1492837470]
+[node name="RocketStage2" type="Node2D" parent="Root/HUD/RocketTracker/Content/Schematic" unique_id=1492837470]
 unique_name_in_owner = true
 
-[node name="Fill" type="Polygon2D" parent="Root/HUD/RocketTracker/Schematic/RocketStage2" unique_id=1492837471]
+[node name="Fill" type="Polygon2D" parent="Root/HUD/RocketTracker/Content/Schematic/RocketStage2" unique_id=1492837471]
 color = Color(0.01, 0.05, 0.1, 0.25)
 polygon = PackedVector2Array(128, 10, 133, 8, 184, 8, 184, 22, 133, 22, 128, 20)
 
-[node name="Outline" type="Line2D" parent="Root/HUD/RocketTracker/Schematic/RocketStage2" unique_id=1492837472]
+[node name="Outline" type="Line2D" parent="Root/HUD/RocketTracker/Content/Schematic/RocketStage2" unique_id=1492837472]
 points = PackedVector2Array(128, 10, 133, 8, 184, 8, 184, 22, 133, 22, 128, 20)
 closed = true
 width = 2.0
 default_color = Color(0.18, 0.92, 1, 0.55)
 joint_mode = 2
 
-[node name="RocketStage3" type="Node2D" parent="Root/HUD/RocketTracker/Schematic" unique_id=1492837473]
+[node name="RocketStage3" type="Node2D" parent="Root/HUD/RocketTracker/Content/Schematic" unique_id=1492837473]
 unique_name_in_owner = true
 
-[node name="Fill" type="Polygon2D" parent="Root/HUD/RocketTracker/Schematic/RocketStage3" unique_id=1492837474]
+[node name="Fill" type="Polygon2D" parent="Root/HUD/RocketTracker/Content/Schematic/RocketStage3" unique_id=1492837474]
 color = Color(0.01, 0.05, 0.1, 0.25)
 polygon = PackedVector2Array(190, 8, 195, 6, 216, 6, 230, 9, 240, 15, 230, 21, 216, 24, 195, 24, 190, 22)
 
-[node name="Outline" type="Line2D" parent="Root/HUD/RocketTracker/Schematic/RocketStage3" unique_id=1492837475]
+[node name="Outline" type="Line2D" parent="Root/HUD/RocketTracker/Content/Schematic/RocketStage3" unique_id=1492837475]
 points = PackedVector2Array(190, 8, 195, 6, 216, 6, 230, 9, 240, 15, 230, 21, 216, 24, 195, 24, 190, 22)
 closed = true
 width = 2.0
