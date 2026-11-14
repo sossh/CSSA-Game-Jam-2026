@@ -53,7 +53,7 @@ _data = {
 
 [node name="PlayerVisual" unique_id=1706436324 instance=ExtResource("1_dnpie")]
 script = ExtResource("1_script")
-transform = Transform3D(120, 0, 0, 0, 120, 0, 0, 0, 120, 0, 0, 0)
+transform = Transform3D(-120, 0, -1.0490733e-05, 0, 120, 0, 1.0490733e-05, 0, -120, 0, 0, 0)
 
 [node name="GeneralSkeleton" parent="." index="0" unique_id=590756097]
 bones/0/position = Vector3(-0.00022179115, 0.007013142, -0.00026565732)

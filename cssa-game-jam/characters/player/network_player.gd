@@ -34,13 +34,19 @@ var fall_speed: float = 0.0
 var was_on_floor: bool = true
 var remote_velocity: Vector3 = Vector3.ZERO
 var prev_remote_position: Vector3 = Vector3.ZERO
+var default_visual_rotation := Vector3(0, PI, 0)
 
 func _ready() -> void:
 	floor_snap_length = Game.config.player.floor_snap_length
 	local = peer_id == multiplayer.get_unique_id()
 	color = Color.from_hsv(fmod(peer_id * 0.173, 1.0), 0.55, 0.95)
-	visual.set_color(color)
-	visual.visible = not local
+	if visual:
+		default_visual_rotation = visual.rotation
+		if absf(default_visual_rotation.y) < 0.001:
+			default_visual_rotation = Vector3(0, PI, 0)
+			visual.rotation = default_visual_rotation
+		visual.set_color(color)
+		visual.visible = not local
 	camera.current = local and not Game.launch_cinematic_active
 	base_fov = camera.fov
 	if camera.current:
@@ -121,10 +127,10 @@ func _physics_process(delta: float) -> void:
 		var carrier = Game.world.player_nodes[p.carrier]
 		global_position = carrier.carry_position() - Vector3(0, 0.9, 0)
 		if Game.is_host(): p.position = global_position
-		visual.rotation = Vector3.ZERO
+		visual.rotation = default_visual_rotation
 	elif mode == "seated":
 		global_position = p.position
-		visual.rotation = Vector3.ZERO
+		visual.rotation = default_visual_rotation
 	elif mode == "ragdoll" and ragdoll.active:
 		if local:
 			global_position = ragdoll.bodies[0].global_position - Vector3(0, 0.9, 0)
@@ -135,7 +141,7 @@ func _physics_process(delta: float) -> void:
 		ragdoll.follow(p.limbs, delta)
 		global_position = p.position
 	elif local:
-		visual.rotation = Vector3.ZERO
+		visual.rotation = default_visual_rotation
 		var input := Vector2.ZERO if Game.ui_open else Input.get_vector("move_left", "move_right", "move_forward", "move_backward")
 		var forward_basis := camera.global_basis if mode == "dead" else global_basis
 		var direction := forward_basis * Vector3(input.x, 0, input.y)
@@ -161,6 +167,7 @@ func _physics_process(delta: float) -> void:
 				velocity.y -= movement.gravity * gravity_ratio * delta
 			elif not Game.ui_open and Input.is_action_just_pressed("jump"):
 				velocity.y = movement.lunar_jump_speed if on_moon else movement.jump_speed
+				visual.trigger_jump()
 			elif on_moon and has_movement and step_timer <= 0:
 				velocity.y = movement.lunar_step_hop_speed
 				hop = true
@@ -169,7 +176,7 @@ func _physics_process(delta: float) -> void:
 				step_timer = movement.sprint_step_seconds if speed > movement.walk_speed else movement.walk_step_seconds
 				Game.request("step", {"sprint": speed > movement.walk_speed, "position": global_position})
 	else:
-		visual.rotation = Vector3.ZERO
+		visual.rotation = default_visual_rotation
 		var pos_delta: Vector3 = p.position - prev_remote_position
 		if delta > 0.0001:
 			remote_velocity = remote_velocity.lerp(pos_delta / delta, minf(1.0, delta * 15.0))
@@ -185,6 +192,8 @@ func _physics_process(delta: float) -> void:
 		visual.update_motion(is_on_floor(), velocity, is_sprinting, mode, delta)
 	else:
 		var remote_on_floor: bool = absf(remote_velocity.y) < 0.2 and p.position.y <= 0.25
+		if not remote_on_floor and remote_velocity.y > 2.5:
+			visual.trigger_jump()
 		var remote_speed: float = Vector2(remote_velocity.x, remote_velocity.z).length()
 		var remote_sprinting: bool = remote_speed > (Game.config.player.walk_speed + Game.config.player.sprint_speed) * 0.5
 		visual.update_motion(remote_on_floor, remote_velocity, remote_sprinting, mode, delta)
