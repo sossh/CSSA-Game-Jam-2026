@@ -1,6 +1,6 @@
-[gd_resource type="ShaderMaterial" load_steps=4 format=3]
+[gd_resource type="ShaderMaterial" format=3 uid="uid://c34aeermissqv"]
 
-[ext_resource type="Shader" path="res://world/lunar/materials/regolith.gdshader" id="1"]
+[ext_resource type="Shader" uid="uid://ckhydawpc06dh" path="res://world/lunar/materials/regolith.gdshader" id="1"]
 
 [sub_resource type="FastNoiseLite" id="Noise"]
 seed = 7
@@ -8,11 +8,19 @@ frequency = 0.012
 fractal_octaves = 4
 
 [sub_resource type="NoiseTexture2D" id="Grain"]
-width = 512
-height = 512
-seamless = true
 noise = SubResource("Noise")
+seamless = true
 
 [resource]
+render_priority = 0
 shader = ExtResource("1")
 shader_parameter/grain = SubResource("Grain")
+shader_parameter/light_dust = Color(0.5, 0.49, 0.475, 1)
+shader_parameter/dark_dust = Color(0.33, 0.33, 0.33, 1)
+shader_parameter/rock_color = Color(0.25, 0.245, 0.24, 1)
+shader_parameter/macro_scale = 0.013
+shader_parameter/mid_scale = 0.09
+shader_parameter/fine_scale = 0.6
+shader_parameter/bump_strength = 0.35
+shader_parameter/slope_start = 0.18
+shader_parameter/slope_end = 0.45

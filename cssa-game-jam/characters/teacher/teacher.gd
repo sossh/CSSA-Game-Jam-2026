@@ -39,6 +39,7 @@ var current_anim: String = "idle"
 @onready var gun: Node3D = $Shotgun
 @onready var laser: Node3D = $AimLaser
 @onready var fsm: TeacherFiniteStateMachine = %FSM
+@onready var visual: TeacherVisual = %Visual
 @onready var anim: AnimationPlayer = $Visual.animation_player
 @onready var chalk_audio: AudioStreamPlayer3D = %ChalkAudio
 var step_timer: float = 0.0
@@ -90,7 +91,11 @@ func _physics_process(delta: float) -> void:
 			"lecturestate":
 				current_anim = "walk" if global_position.distance_to(board) > 0.3 else "pointing-teaching"
 			"coffeestate":
-				current_anim = "walk" if global_position.distance_to(desk) > 0.4 else "idle"
+				var coffee = fsm.current_state
+				if (coffee and "drank" in coffee and coffee.drank) or global_position.distance_to(desk) <= 0.85:
+					current_anim = "drink-animation"
+				else:
+					current_anim = "walk"
 			"enteringstate", "leavingstate":
 				current_anim = "walk"
 			"shootstate":
@@ -119,6 +124,11 @@ func _update_visuals() -> void:
 	label.text = current.display_name + ("  !" if suspicion > 30 else "")
 	label.modulate = Color(1, 0.3, 0.2) if current.is_alert_state else Color.WHITE
 	
+	var state_name := get_current_state_name()
+	if visual:
+		visual.set_gun_visible(state_name in ["investigatestate", "shootstate"])
+		visual.set_coffee_mug_visible(state_name == "coffeestate")
+
 	laser.visible = (current.name.to_lower() == "shootstate")
 	if laser.visible:
 		var origin := global_position + Vector3(0, 1.5, 0)
@@ -151,7 +161,25 @@ func _update_visuals() -> void:
 
 func play_anim(anim_name: String) -> void:
 	if anim and anim.current_animation != anim_name:
-		anim.play(anim_name, -1, 1.0)
+		if anim_name == "drink-animation":
+			anim.play("drink-animation", -1, get_drink_anim_speed())
+		else:
+			anim.play(anim_name, -1, 1.0)
+
+func get_coffee_duration() -> float:
+	var tuning := Game.config.teacher if Game.config else null
+	if tuning:
+		return tuning.coffee_seconds + drugs * tuning.coffee_extra_seconds_per_tablet
+	return 5.0
+
+func get_drink_anim_speed() -> float:
+	var duration: float = get_coffee_duration()
+	var anim_len: float = 8.866667
+	if anim and anim.has_animation("drink-animation"):
+		var anim_res: Animation = anim.get_animation("drink-animation")
+		if anim_res:
+			anim_len = anim_res.length
+	return anim_len / maxf(0.01, duration)
 
 # --- Senses & Interaction ---
 

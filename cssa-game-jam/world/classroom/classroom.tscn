@@ -6,29 +6,28 @@
 [ext_resource type="PackedScene" path="res://world/classroom/props/teacher_desk.tscn" id="4"]
 [ext_resource type="PackedScene" path="res://world/classroom/props/vending_machine.tscn" id="5"]
 [ext_resource type="PackedScene" path="res://world/classroom/props/transfer_chute.tscn" id="7"]
-[ext_resource type="PackedScene" path="res://characters/teacher/teacher.tscn" id="8"]
+[ext_resource type="PackedScene" uid="uid://df0mru1uqre67" path="res://characters/teacher/teacher.tscn" id="8"]
 [ext_resource type="PackedScene" path="res://world/lunar/space_backdrop.tscn" id="9"]
 [ext_resource type="PackedScene" path="res://world/lunar/planet_surface.tscn" id="10"]
-[ext_resource type="PackedScene" path="res://world/lunar/launch_site/lunar_launch_site.tscn" id="11_launch_site"]
+[ext_resource type="PackedScene" uid="uid://dno6gh7m8yift" path="res://world/lunar/launch_site/lunar_launch_site.tscn" id="11_launch_site"]
 [ext_resource type="PackedScene" path="res://world/classroom/props/school_wall.tscn" id="12_kit_wall"]
-[ext_resource type="PackedScene" path="res://assets/models/school_kit/architecture/Floor_Wood_4x4.glb" id="13_kit_wood_floor"]
-[ext_resource type="PackedScene" path="res://assets/models/school_kit/architecture/Floor_Tiles_4x4.glb" id="14_kit_tile_floor"]
-[ext_resource type="PackedScene" path="res://assets/models/school_kit/furniture/Chalkboard.glb" id="15_kit_chalkboard"]
-[ext_resource type="PackedScene" path="res://assets/models/school_kit/props/School_Bell.glb" id="16_kit_bell"]
+[ext_resource type="PackedScene" uid="uid://b8p7oomrygqsy" path="res://assets/models/school_kit/architecture/Floor_Wood_4x4.glb" id="13_kit_wood_floor"]
+[ext_resource type="PackedScene" uid="uid://d3jlclyio4j0n" path="res://assets/models/school_kit/architecture/Floor_Tiles_4x4.glb" id="14_kit_tile_floor"]
+[ext_resource type="PackedScene" uid="uid://c0vovm3ke4mfp" path="res://assets/models/school_kit/furniture/Chalkboard.glb" id="15_kit_chalkboard"]
+[ext_resource type="PackedScene" uid="uid://cl3yky71vovoe" path="res://assets/models/school_kit/props/School_Bell.glb" id="16_kit_bell"]
 [ext_resource type="PackedScene" path="res://world/classroom/props/bookcase_tall.tscn" id="17_bookcase_tall"]
 [ext_resource type="PackedScene" path="res://world/classroom/props/bookcase_short.tscn" id="18_bookcase_short"]
 [ext_resource type="PackedScene" path="res://world/classroom/props/tv_cart.tscn" id="19_tv_cart"]
 [ext_resource type="PackedScene" path="res://world/classroom/props/locker_bank.tscn" id="20_locker_bank"]
 [ext_resource type="PackedScene" path="res://world/classroom/props/observatory_roof.tscn" id="21_roof"]
-
 [ext_resource type="PackedScene" path="res://world/classroom/props/vending_snack_display.tscn" id="21_vending_snacks"]
 [ext_resource type="PackedScene" path="res://world/classroom/props/vending_drink_display.tscn" id="22_vending_drinks"]
 [ext_resource type="PackedScene" path="res://world/classroom/props/exterior_shell.tscn" id="23_exterior"]
+[ext_resource type="PackedScene" path="res://world/classroom/props/rocket_vending_machine.tscn" id="23_rocket_vending"]
 [ext_resource type="PackedScene" path="res://world/lunar/outpost/lunar_outpost.tscn" id="24_outpost"]
 [ext_resource type="Material" path="res://world/classroom/materials/hull_foundation.tres" id="25_foundation"]
 [ext_resource type="Material" path="res://world/classroom/materials/hull_ramp.tres" id="26_ramp"]
 [ext_resource type="Sky" path="res://world/lunar/materials/space_sky.tres" id="27_sky"]
-[ext_resource type="PackedScene" path="res://world/classroom/props/rocket_vending_machine.tscn" id="23_rocket_vending"]
 
 [sub_resource type="StandardMaterial3D" id="FloorMaterial"]
 albedo_color = Color(0.18, 0.22, 0.3, 1)
@@ -41,6 +40,11 @@ roughness = 0.85
 [sub_resource type="BoxMesh" id="ObservationWallMesh"]
 material = SubResource("ObservationWallMaterial")
 
+[sub_resource type="StandardMaterial3D" id="ObservationFrameMaterial"]
+albedo_color = Color(0.3, 0.33, 0.36, 1)
+metallic = 0.35
+roughness = 0.45
+
 [sub_resource type="StandardMaterial3D" id="ObservationGlass"]
 transparency = 1
 shading_mode = 0
@@ -51,15 +55,6 @@ albedo_color = Color(0.33, 0.36, 0.38, 1)
 metallic = 0.6
 roughness = 0.45
 
-[sub_resource type="StandardMaterial3D" id="ObservationFrameMaterial"]
-albedo_color = Color(0.3, 0.33, 0.36, 1)
-metallic = 0.35
-roughness = 0.45
-
-[sub_resource type="StandardMaterial3D" id="CeilingBandMaterial"]
-albedo_color = Color(0.72, 0.7, 0.64, 1)
-roughness = 0.9
-
 [sub_resource type="StandardMaterial3D" id="ClockPanelMaterial"]
 albedo_color = Color(0.07, 0.07, 0.08, 1)
 metallic = 0.3
@@ -69,7 +64,13 @@ roughness = 0.35
 material = SubResource("ClockPanelMaterial")
 size = Vector3(1.35, 0.6, 0.08)
 
+[sub_resource type="StandardMaterial3D" id="CafeCeilingMaterial"]
+albedo_color = Color(0.78, 0.76, 0.7, 1)
+roughness = 0.85
 
+[sub_resource type="StandardMaterial3D" id="CeilingBandMaterial"]
+albedo_color = Color(0.72, 0.7, 0.64, 1)
+roughness = 0.9
 
 [sub_resource type="StandardMaterial3D" id="LobbyFixtureMaterial"]
 albedo_color = Color(0.17, 0.24, 0.29, 1)
@@ -80,6 +81,10 @@ roughness = 0.45
 material = SubResource("LobbyFixtureMaterial")
 size = Vector3(4.5, 0.16, 0.62)
 
+[sub_resource type="BoxMesh" id="CafeFixtureSupportMesh"]
+material = SubResource("LobbyFixtureMaterial")
+size = Vector3(0.16, 1.6, 0.16)
+
 [sub_resource type="StandardMaterial3D" id="LobbyDiffuserMaterial"]
 shading_mode = 0
 albedo_color = Color(1, 0.92, 0.78, 1)
@@ -88,14 +93,6 @@ albedo_color = Color(1, 0.92, 0.78, 1)
 material = SubResource("LobbyDiffuserMaterial")
 size = Vector3(4.25, 0.04, 0.42)
 
-[sub_resource type="StandardMaterial3D" id="CafeCeilingMaterial"]
-albedo_color = Color(0.78, 0.76, 0.7, 1)
-roughness = 0.85
-
-[sub_resource type="BoxMesh" id="CafeFixtureSupportMesh"]
-material = SubResource("LobbyFixtureMaterial")
-size = Vector3(0.16, 1.6, 0.16)
-
 [sub_resource type="Environment" id="Environment"]
 background_mode = 2
 sky = ExtResource("27_sky")
@@ -103,7 +100,6 @@ ambient_light_source = 2
 ambient_light_color = Color(0.83, 0.87, 0.94, 1)
 ambient_light_energy = 0.48
 tonemap_mode = 3
-tonemap_exposure = 1.0
 
 [node name="Classroom" type="Node3D" unique_id=1350988650]
 script = ExtResource("1")
@@ -115,32 +111,31 @@ transform = Transform3D(1.7169118, 0, 0, 0, 1.7169118, 0, 0, 0, 1.7169118, 0, -1
 transform = Transform3D(-0.44936123, 0, 0.034460206, 0, 0.4506805, 0, -0.034460206, 0, -0.44936123, -7.443264, -8.662841, 55.50866)
 earth = NodePath("../SpaceBackdrop/Earth")
 
-[node name="LunarOutpost" parent="." instance=ExtResource("24_outpost")]
+[node name="LunarOutpost" parent="." unique_id=705771223 instance=ExtResource("24_outpost")]
 
 [node name="Room" type="Node3D" parent="." unique_id=1281839070]
 
-[node name="SchoolLighting" type="Node3D" parent="Room"]
+[node name="SchoolLighting" type="Node3D" parent="Room" unique_id=92926134]
 editor_description = "Classroom fixtures light the room and its contents on visual layer 1. The lunar terrain uses visual layer 2."
 
-[node name="FrontFill" type="OmniLight3D" parent="Room/SchoolLighting"]
-position = Vector3(0, 3.65, -5.5)
+[node name="FrontFill" type="OmniLight3D" parent="Room/SchoolLighting" unique_id=604912111]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 3.65, -5.5)
 light_color = Color(0.92, 0.95, 1, 1)
 light_energy = 0.38
 light_specular = 0.0
 light_cull_mask = 1
 omni_range = 10.0
 
-[node name="RearFill" type="OmniLight3D" parent="Room/SchoolLighting"]
-position = Vector3(0, 3.65, 3)
+[node name="RearFill" type="OmniLight3D" parent="Room/SchoolLighting" unique_id=609383374]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 3.65, 3)
 light_color = Color(0.92, 0.95, 1, 1)
 light_energy = 0.38
 light_specular = 0.0
 light_cull_mask = 1
 omni_range = 10.0
 
-[node name="FrontLeft" type="SpotLight3D" parent="Room/SchoolLighting"]
-position = Vector3(-4.5, 4.65, -5.5)
-rotation = Vector3(-1.5707963, 0, 0)
+[node name="FrontLeft" type="SpotLight3D" parent="Room/SchoolLighting" unique_id=1873831109]
+transform = Transform3D(1, 0, 0, 0, 7.54979e-08, 1, 0, -1, 7.54979e-08, -4.5, 4.65, -5.5)
 light_color = Color(1, 0.96, 0.89, 1)
 light_energy = 1.6
 light_specular = 0.1
@@ -150,9 +145,8 @@ spot_attenuation = 1.25
 spot_angle = 57.0
 spot_angle_attenuation = 0.65
 
-[node name="FrontRight" type="SpotLight3D" parent="Room/SchoolLighting"]
-position = Vector3(4.5, 4.65, -5.5)
-rotation = Vector3(-1.5707963, 0, 0)
+[node name="FrontRight" type="SpotLight3D" parent="Room/SchoolLighting" unique_id=1753815619]
+transform = Transform3D(1, 0, 0, 0, 7.54979e-08, 1, 0, -1, 7.54979e-08, 4.5, 4.65, -5.5)
 light_color = Color(1, 0.96, 0.89, 1)
 light_energy = 1.6
 light_specular = 0.1
@@ -162,9 +156,8 @@ spot_attenuation = 1.25
 spot_angle = 57.0
 spot_angle_attenuation = 0.65
 
-[node name="RearLeft" type="SpotLight3D" parent="Room/SchoolLighting"]
-position = Vector3(-4.5, 4.65, 3.0)
-rotation = Vector3(-1.5707963, 0, 0)
+[node name="RearLeft" type="SpotLight3D" parent="Room/SchoolLighting" unique_id=1888695459]
+transform = Transform3D(1, 0, 0, 0, 7.54979e-08, 1, 0, -1, 7.54979e-08, -4.5, 4.65, 3)
 light_color = Color(1, 0.96, 0.89, 1)
 light_energy = 1.6
 light_specular = 0.1
@@ -174,9 +167,8 @@ spot_attenuation = 1.25
 spot_angle = 57.0
 spot_angle_attenuation = 0.65
 
-[node name="RearRight" type="SpotLight3D" parent="Room/SchoolLighting"]
-position = Vector3(4.5, 4.65, 3.0)
-rotation = Vector3(-1.5707963, 0, 0)
+[node name="RearRight" type="SpotLight3D" parent="Room/SchoolLighting" unique_id=1265167457]
+transform = Transform3D(1, 0, 0, 0, 7.54979e-08, 1, 0, -1, 7.54979e-08, 4.5, 4.65, 3)
 light_color = Color(1, 0.96, 0.89, 1)
 light_energy = 1.6
 light_specular = 0.1
@@ -199,7 +191,7 @@ material_override = ExtResource("25_foundation")
 mesh = SubResource("ObservationWallMesh")
 
 [node name="SurfaceRamp" parent="Room" unique_id=324533511 instance=ExtResource("2")]
-transform = Transform3D(3, 0, 0, 0, 0.23883413, -4.46826, 0, 0.073880054, 14.44308, 3, -2.344289, 23.172526)
+transform = Transform3D(3, 0, 0, 0, 0.23883413, -4.46826, 0, 0.073880054, 14.44308, 3, -2.344289, 23.172525)
 
 [node name="Mesh" parent="Room/SurfaceRamp" index="0"]
 material_override = ExtResource("26_ramp")
@@ -326,185 +318,183 @@ Today's lesson: SURVIVE"
 font_size = 64
 outline_size = 0
 
-[node name="ClockPanel" type="MeshInstance3D" parent="Room"]
+[node name="ClockPanel" type="MeshInstance3D" parent="Room" unique_id=1652171237]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 6, 3.8, -9.81)
 mesh = SubResource("ClockPanelMesh")
 
 [node name="Clock" type="Label3D" parent="Room" unique_id=996481012]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 6, 3.8, -9.6)
-
 text = "02:00"
-
 font_size = 64
 outline_size = 5
 
-[node name="BellSoundOrigin" type="Marker3D" parent="Room"]
-position = Vector3(0, 3, -8)
+[node name="BellSoundOrigin" type="Marker3D" parent="Room" unique_id=150614055]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 3, -8)
 
-[node name="SchoolBell" parent="Room" instance=ExtResource("16_kit_bell")]
+[node name="SchoolBell" parent="Room" unique_id=1639875006 instance=ExtResource("16_kit_bell")]
 transform = Transform3D(1.6, 0, 0, 0, 1.6, 0, 0, 0, 1.6, 6, 4.55, -9.785)
 
-[node name="Finish" type="Node3D" parent="Room"]
+[node name="Finish" type="Node3D" parent="Room" unique_id=650105363]
 editor_description = "School Kit visuals only. Collision stays on the greybox StaticBoxes (meshes hidden)."
 
-[node name="ClassroomFloor" type="Node3D" parent="Room/Finish"]
+[node name="ClassroomFloor" type="Node3D" parent="Room/Finish" unique_id=1181000440]
 
-[node name="Wood01" parent="Room/Finish/ClassroomFloor" instance=ExtResource("13_kit_wood_floor")]
+[node name="Wood01" parent="Room/Finish/ClassroomFloor" unique_id=700256607 instance=ExtResource("13_kit_wood_floor")]
 transform = Transform3D(1.125, 0, 0, 0, 1, 0, 0, 0, 1.125, -6.75, -0.135, -7.75)
 
-[node name="Wood02" parent="Room/Finish/ClassroomFloor" instance=ExtResource("13_kit_wood_floor")]
+[node name="Wood02" parent="Room/Finish/ClassroomFloor" unique_id=2043534319 instance=ExtResource("13_kit_wood_floor")]
 transform = Transform3D(1.125, 0, 0, 0, 1, 0, 0, 0, 1.125, -2.25, -0.135, -7.75)
 
-[node name="Wood03" parent="Room/Finish/ClassroomFloor" instance=ExtResource("13_kit_wood_floor")]
+[node name="Wood03" parent="Room/Finish/ClassroomFloor" unique_id=260092183 instance=ExtResource("13_kit_wood_floor")]
 transform = Transform3D(1.125, 0, 0, 0, 1, 0, 0, 0, 1.125, 2.25, -0.135, -7.75)
 
-[node name="Wood04" parent="Room/Finish/ClassroomFloor" instance=ExtResource("13_kit_wood_floor")]
+[node name="Wood04" parent="Room/Finish/ClassroomFloor" unique_id=942105597 instance=ExtResource("13_kit_wood_floor")]
 transform = Transform3D(1.125, 0, 0, 0, 1, 0, 0, 0, 1.125, 6.75, -0.135, -7.75)
 
-[node name="Wood05" parent="Room/Finish/ClassroomFloor" instance=ExtResource("13_kit_wood_floor")]
+[node name="Wood05" parent="Room/Finish/ClassroomFloor" unique_id=1116850202 instance=ExtResource("13_kit_wood_floor")]
 transform = Transform3D(1.125, 0, 0, 0, 1, 0, 0, 0, 1.125, -6.75, -0.135, -3.25)
 
-[node name="Wood06" parent="Room/Finish/ClassroomFloor" instance=ExtResource("13_kit_wood_floor")]
+[node name="Wood06" parent="Room/Finish/ClassroomFloor" unique_id=170914301 instance=ExtResource("13_kit_wood_floor")]
 transform = Transform3D(1.125, 0, 0, 0, 1, 0, 0, 0, 1.125, -2.25, -0.135, -3.25)
 
-[node name="Wood07" parent="Room/Finish/ClassroomFloor" instance=ExtResource("13_kit_wood_floor")]
+[node name="Wood07" parent="Room/Finish/ClassroomFloor" unique_id=213668307 instance=ExtResource("13_kit_wood_floor")]
 transform = Transform3D(1.125, 0, 0, 0, 1, 0, 0, 0, 1.125, 2.25, -0.135, -3.25)
 
-[node name="Wood08" parent="Room/Finish/ClassroomFloor" instance=ExtResource("13_kit_wood_floor")]
+[node name="Wood08" parent="Room/Finish/ClassroomFloor" unique_id=870308515 instance=ExtResource("13_kit_wood_floor")]
 transform = Transform3D(1.125, 0, 0, 0, 1, 0, 0, 0, 1.125, 6.75, -0.135, -3.25)
 
-[node name="Wood09" parent="Room/Finish/ClassroomFloor" instance=ExtResource("13_kit_wood_floor")]
+[node name="Wood09" parent="Room/Finish/ClassroomFloor" unique_id=1486546060 instance=ExtResource("13_kit_wood_floor")]
 transform = Transform3D(1.125, 0, 0, 0, 1, 0, 0, 0, 1.125, -6.75, -0.135, 1.25)
 
-[node name="Wood10" parent="Room/Finish/ClassroomFloor" instance=ExtResource("13_kit_wood_floor")]
+[node name="Wood10" parent="Room/Finish/ClassroomFloor" unique_id=1796956079 instance=ExtResource("13_kit_wood_floor")]
 transform = Transform3D(1.125, 0, 0, 0, 1, 0, 0, 0, 1.125, -2.25, -0.135, 1.25)
 
-[node name="Wood11" parent="Room/Finish/ClassroomFloor" instance=ExtResource("13_kit_wood_floor")]
+[node name="Wood11" parent="Room/Finish/ClassroomFloor" unique_id=1612476931 instance=ExtResource("13_kit_wood_floor")]
 transform = Transform3D(1.125, 0, 0, 0, 1, 0, 0, 0, 1.125, 2.25, -0.135, 1.25)
 
-[node name="Wood12" parent="Room/Finish/ClassroomFloor" instance=ExtResource("13_kit_wood_floor")]
+[node name="Wood12" parent="Room/Finish/ClassroomFloor" unique_id=97265944 instance=ExtResource("13_kit_wood_floor")]
 transform = Transform3D(1.125, 0, 0, 0, 1, 0, 0, 0, 1.125, 6.75, -0.135, 1.25)
 
-[node name="Wood13" parent="Room/Finish/ClassroomFloor" instance=ExtResource("13_kit_wood_floor")]
+[node name="Wood13" parent="Room/Finish/ClassroomFloor" unique_id=1918960079 instance=ExtResource("13_kit_wood_floor")]
 transform = Transform3D(1.125, 0, 0, 0, 1, 0, 0, 0, 1.125, -6.75, -0.135, 5.75)
 
-[node name="Wood14" parent="Room/Finish/ClassroomFloor" instance=ExtResource("13_kit_wood_floor")]
+[node name="Wood14" parent="Room/Finish/ClassroomFloor" unique_id=1782748021 instance=ExtResource("13_kit_wood_floor")]
 transform = Transform3D(1.125, 0, 0, 0, 1, 0, 0, 0, 1.125, -2.25, -0.135, 5.75)
 
-[node name="Wood15" parent="Room/Finish/ClassroomFloor" instance=ExtResource("13_kit_wood_floor")]
+[node name="Wood15" parent="Room/Finish/ClassroomFloor" unique_id=1798219478 instance=ExtResource("13_kit_wood_floor")]
 transform = Transform3D(1.125, 0, 0, 0, 1, 0, 0, 0, 1.125, 2.25, -0.135, 5.75)
 
-[node name="Wood16" parent="Room/Finish/ClassroomFloor" instance=ExtResource("13_kit_wood_floor")]
+[node name="Wood16" parent="Room/Finish/ClassroomFloor" unique_id=141556480 instance=ExtResource("13_kit_wood_floor")]
 transform = Transform3D(1.125, 0, 0, 0, 1, 0, 0, 0, 1.125, 6.75, -0.135, 5.75)
 
-[node name="HallwayFloor" type="Node3D" parent="Room/Finish"]
+[node name="HallwayFloor" type="Node3D" parent="Room/Finish" unique_id=442742349]
 
-[node name="Tile01" parent="Room/Finish/HallwayFloor" instance=ExtResource("14_kit_tile_floor")]
+[node name="Tile01" parent="Room/Finish/HallwayFloor" unique_id=645630798 instance=ExtResource("14_kit_tile_floor")]
 transform = Transform3D(1.125, 0, 0, 0, 1, 0, 0, 0, 1, -6.75, -0.135, 10)
 
-[node name="Tile02" parent="Room/Finish/HallwayFloor" instance=ExtResource("14_kit_tile_floor")]
+[node name="Tile02" parent="Room/Finish/HallwayFloor" unique_id=1241285347 instance=ExtResource("14_kit_tile_floor")]
 transform = Transform3D(1.125, 0, 0, 0, 1, 0, 0, 0, 1, -2.25, -0.135, 10)
 
-[node name="Tile03" parent="Room/Finish/HallwayFloor" instance=ExtResource("14_kit_tile_floor")]
+[node name="Tile03" parent="Room/Finish/HallwayFloor" unique_id=1593621860 instance=ExtResource("14_kit_tile_floor")]
 transform = Transform3D(1.125, 0, 0, 0, 1, 0, 0, 0, 1, 2.25, -0.135, 10)
 
-[node name="Tile04" parent="Room/Finish/HallwayFloor" instance=ExtResource("14_kit_tile_floor")]
+[node name="Tile04" parent="Room/Finish/HallwayFloor" unique_id=1047018536 instance=ExtResource("14_kit_tile_floor")]
 transform = Transform3D(1.125, 0, 0, 0, 1, 0, 0, 0, 1, 6.75, -0.135, 10)
 
-[node name="Tile05" parent="Room/Finish/HallwayFloor" instance=ExtResource("14_kit_tile_floor")]
+[node name="Tile05" parent="Room/Finish/HallwayFloor" unique_id=407529197 instance=ExtResource("14_kit_tile_floor")]
 transform = Transform3D(1.125, 0, 0, 0, 1, 0, 0, 0, 1, -6.75, -0.135, 14)
 
-[node name="Tile06" parent="Room/Finish/HallwayFloor" instance=ExtResource("14_kit_tile_floor")]
+[node name="Tile06" parent="Room/Finish/HallwayFloor" unique_id=1060798614 instance=ExtResource("14_kit_tile_floor")]
 transform = Transform3D(1.125, 0, 0, 0, 1, 0, 0, 0, 1, -2.25, -0.135, 14)
 
-[node name="Tile07" parent="Room/Finish/HallwayFloor" instance=ExtResource("14_kit_tile_floor")]
+[node name="Tile07" parent="Room/Finish/HallwayFloor" unique_id=1656993283 instance=ExtResource("14_kit_tile_floor")]
 transform = Transform3D(1.125, 0, 0, 0, 1, 0, 0, 0, 1, 2.25, -0.135, 14)
 
-[node name="Tile08" parent="Room/Finish/HallwayFloor" instance=ExtResource("14_kit_tile_floor")]
+[node name="Tile08" parent="Room/Finish/HallwayFloor" unique_id=1843342091 instance=ExtResource("14_kit_tile_floor")]
 transform = Transform3D(1.125, 0, 0, 0, 1, 0, 0, 0, 1, 6.75, -0.135, 14)
 
-[node name="Walls" type="Node3D" parent="Room/Finish"]
+[node name="Walls" type="Node3D" parent="Room/Finish" unique_id=1552390129]
 
-[node name="Front1" parent="Room/Finish/Walls" instance=ExtResource("12_kit_wall")]
+[node name="Front1" parent="Room/Finish/Walls" unique_id=1583860551 instance=ExtResource("12_kit_wall")]
 transform = Transform3D(1.10625, 0, 0, 0, 1.66667, 0, 0, 0, 0.69767, -6.6375, 0, -10)
 
-[node name="Front2" parent="Room/Finish/Walls" instance=ExtResource("12_kit_wall")]
+[node name="Front2" parent="Room/Finish/Walls" unique_id=1909148471 instance=ExtResource("12_kit_wall")]
 transform = Transform3D(1.10625, 0, 0, 0, 1.66667, 0, 0, 0, 0.69767, -2.2125, 0, -10)
 
-[node name="Front3" parent="Room/Finish/Walls" instance=ExtResource("12_kit_wall")]
+[node name="Front3" parent="Room/Finish/Walls" unique_id=1329992050 instance=ExtResource("12_kit_wall")]
 transform = Transform3D(1.10625, 0, 0, 0, 1.66667, 0, 0, 0, 0.69767, 2.2125, 0, -10)
 
-[node name="Front4" parent="Room/Finish/Walls" instance=ExtResource("12_kit_wall")]
+[node name="Front4" parent="Room/Finish/Walls" unique_id=1282243849 instance=ExtResource("12_kit_wall")]
 transform = Transform3D(1.10625, 0, 0, 0, 1.66667, 0, 0, 0, 0.69767, 6.6375, 0, -10)
 
-[node name="RightClass1" parent="Room/Finish/Walls" instance=ExtResource("12_kit_wall")]
+[node name="RightClass1" parent="Room/Finish/Walls" unique_id=991880044 instance=ExtResource("12_kit_wall")]
 transform = Transform3D(0, 0, 0.69767, 0, 1.66667, 0, -1.125, 0, 0, 9, 0, -7.9)
 
-[node name="RightClass2" parent="Room/Finish/Walls" instance=ExtResource("12_kit_wall")]
+[node name="RightClass2" parent="Room/Finish/Walls" unique_id=381367411 instance=ExtResource("12_kit_wall")]
 transform = Transform3D(0, 0, 0.69767, 0, 1.66667, 0, -1.125, 0, 0, 9, 0, -3.4)
 
-[node name="RightClass3" parent="Room/Finish/Walls" instance=ExtResource("12_kit_wall")]
+[node name="RightClass3" parent="Room/Finish/Walls" unique_id=268446522 instance=ExtResource("12_kit_wall")]
 transform = Transform3D(0, 0, 0.69767, 0, 1.66667, 0, -1.125, 0, 0, 9, 0, 1.1)
 
-[node name="RightClass4" parent="Room/Finish/Walls" instance=ExtResource("12_kit_wall")]
+[node name="RightClass4" parent="Room/Finish/Walls" unique_id=1873289735 instance=ExtResource("12_kit_wall")]
 transform = Transform3D(0, 0, 0.69767, 0, 1.66667, 0, -1.125, 0, 0, 9, 0, 5.6)
 
-[node name="RightHall1" parent="Room/Finish/Walls" instance=ExtResource("12_kit_wall")]
+[node name="RightHall1" parent="Room/Finish/Walls" unique_id=1321110811 instance=ExtResource("12_kit_wall")]
 transform = Transform3D(0, 0, 0.69767, 0, 1.66667, 0, -1, 0, 0, 9, 0, 10.15)
 
-[node name="RightHall2" parent="Room/Finish/Walls" instance=ExtResource("12_kit_wall")]
+[node name="RightHall2" parent="Room/Finish/Walls" unique_id=1755848036 instance=ExtResource("12_kit_wall")]
 transform = Transform3D(0, 0, 0.69767, 0, 1.66667, 0, -1, 0, 0, 9, 0, 14.15)
 
-[node name="PartitionLeft1" parent="Room/Finish/Walls" instance=ExtResource("12_kit_wall")]
+[node name="PartitionLeft1" parent="Room/Finish/Walls" unique_id=1161654562 instance=ExtResource("12_kit_wall")]
 transform = Transform3D(0.98125, 0, 0, 0, 1.66667, 0, 0, 0, 0.69767, -6.8875, 0, 8)
 
-[node name="PartitionLeft2" parent="Room/Finish/Walls" instance=ExtResource("12_kit_wall")]
+[node name="PartitionLeft2" parent="Room/Finish/Walls" unique_id=1600323588 instance=ExtResource("12_kit_wall")]
 transform = Transform3D(0.98125, 0, 0, 0, 1.66667, 0, 0, 0, 0.69767, -2.9625, 0, 8)
 
-[node name="PartitionRight1" parent="Room/Finish/Walls" instance=ExtResource("12_kit_wall")]
+[node name="PartitionRight1" parent="Room/Finish/Walls" unique_id=1159145475 instance=ExtResource("12_kit_wall")]
 transform = Transform3D(0.98125, 0, 0, 0, 1.66667, 0, 0, 0, 0.69767, 2.9625, 0, 8)
 
-[node name="PartitionRight2" parent="Room/Finish/Walls" instance=ExtResource("12_kit_wall")]
+[node name="PartitionRight2" parent="Room/Finish/Walls" unique_id=335093703 instance=ExtResource("12_kit_wall")]
 transform = Transform3D(0.98125, 0, 0, 0, 1.66667, 0, 0, 0, 0.69767, 6.8875, 0, 8)
 
-[node name="CornerRightPartition" parent="Room/Finish/Walls" instance=ExtResource("12_kit_wall")]
+[node name="CornerRightPartition" parent="Room/Finish/Walls" unique_id=1399052954 instance=ExtResource("12_kit_wall")]
 editor_description = "Fills the 0.3 m column where the east wall meets the partition so the corner seam cannot crack open. Sits 1 cm proud of both wall faces."
 transform = Transform3D(0.08, 0, 0, 0, 1.66667, 0, 0, 0, 0.744186, 9, 0, 8)
 
-[node name="CornerLeftPartition" parent="Room/Finish/Walls" instance=ExtResource("12_kit_wall")]
+[node name="CornerLeftPartition" parent="Room/Finish/Walls" unique_id=825482472 instance=ExtResource("12_kit_wall")]
 editor_description = "Mirror of CornerRightPartition for the west wall and partition corner."
 transform = Transform3D(0.08, 0, 0, 0, 1.66667, 0, 0, 0, 0.744186, -9, 0, 8)
 
-[node name="DoorLintel" parent="Room/Finish/Walls" instance=ExtResource("12_kit_wall")]
+[node name="DoorLintel" parent="Room/Finish/Walls" unique_id=1712813930 instance=ExtResource("12_kit_wall")]
 transform = Transform3D(0.5, 0, 0, 0, 0.5, 0, 0, 0, 0.69767, 0, 3.5, 8)
 
-[node name="HallBackLeft1" parent="Room/Finish/Walls" instance=ExtResource("12_kit_wall")]
+[node name="HallBackLeft1" parent="Room/Finish/Walls" unique_id=754034588 instance=ExtResource("12_kit_wall")]
 transform = Transform3D(1.29375, 0, 0, 0, 1.66667, 0, 0, 0, 0.69767, -6.2625, 0, 16)
 
-[node name="HallBackLeft2" parent="Room/Finish/Walls" instance=ExtResource("12_kit_wall")]
+[node name="HallBackLeft2" parent="Room/Finish/Walls" unique_id=891363503 instance=ExtResource("12_kit_wall")]
 transform = Transform3D(1.29375, 0, 0, 0, 1.66667, 0, 0, 0, 0.69767, -1.0875, 0, 16)
 
-[node name="HallBackRight1" parent="Room/Finish/Walls" instance=ExtResource("12_kit_wall")]
+[node name="HallBackRight1" parent="Room/Finish/Walls" unique_id=2142202163 instance=ExtResource("12_kit_wall")]
 transform = Transform3D(1.0875, 0, 0, 0, 1.66667, 0, 0, 0, 0.69767, 6.675, 0, 16)
 
-[node name="SurfaceExitLintel" parent="Room/Finish/Walls" instance=ExtResource("12_kit_wall")]
+[node name="SurfaceExitLintel" parent="Room/Finish/Walls" unique_id=400609067 instance=ExtResource("12_kit_wall")]
 transform = Transform3D(0.75, 0, 0, 0, 0.73333, 0, 0, 0, 0.69767, 3, 2.8, 16)
 
-[node name="LeftFront1" parent="Room/Finish/Walls" instance=ExtResource("12_kit_wall")]
+[node name="LeftFront1" parent="Room/Finish/Walls" unique_id=1422162712 instance=ExtResource("12_kit_wall")]
 transform = Transform3D(0, 0, 0.72093, 0, 1.66667, 0, -0.7875, 0, 0, -9, 0, -8.575)
 
-[node name="LeftBack1" parent="Room/Finish/Walls" instance=ExtResource("12_kit_wall")]
+[node name="LeftBack1" parent="Room/Finish/Walls" unique_id=989469297 instance=ExtResource("12_kit_wall")]
 transform = Transform3D(0, 0, 0.72093, 0, 1.66667, 0, -0.2125, 0, 0, -9, 0, 7.425)
 
-[node name="LeftHall1" parent="Room/Finish/Walls" instance=ExtResource("12_kit_wall")]
+[node name="LeftHall1" parent="Room/Finish/Walls" unique_id=1821939123 instance=ExtResource("12_kit_wall")]
 transform = Transform3D(0, 0, 0.72093, 0, 1.66667, 0, -1, 0, 0, -9, 0, 10.15)
 
-[node name="LeftHall2" parent="Room/Finish/Walls" instance=ExtResource("12_kit_wall")]
+[node name="LeftHall2" parent="Room/Finish/Walls" unique_id=1329223288 instance=ExtResource("12_kit_wall")]
 transform = Transform3D(0, 0, 0.72093, 0, 1.66667, 0, -1, 0, 0, -9, 0, 14.15)
 
-[node name="Roof" parent="Room" instance=ExtResource("21_roof")]
+[node name="Roof" parent="Room" unique_id=840986214 instance=ExtResource("21_roof")]
 
-[node name="Exterior" parent="Room" instance=ExtResource("23_exterior")]
+[node name="Exterior" parent="Room" unique_id=1288806594 instance=ExtResource("23_exterior")]
 
 [node name="Desks" type="Node3D" parent="." unique_id=622476237]
 
@@ -556,22 +546,22 @@ transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 1.8, 0, 4.3)
 [node name="Desk16" parent="Desks" unique_id=962288593 instance=ExtResource("3")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 5.4, 0, 4.3)
 
-[node name="Decor" type="Node3D" parent="."]
+[node name="Decor" type="Node3D" parent="." unique_id=175812796]
 editor_description = "Solid classroom dressing. Each child has a NavigationObstacle marker that classroom.gd adds to the teacher grid."
 
-[node name="BookcaseTallLeft" parent="Decor" instance=ExtResource("17_bookcase_tall")]
+[node name="BookcaseTallLeft" parent="Decor" unique_id=15594941 instance=ExtResource("17_bookcase_tall")]
 transform = Transform3D(-1, 0, 0, 0, 1, 0, 0, 0, -1, -6.6, 0, 7.58)
 
-[node name="BookcaseShortLeft" parent="Decor" instance=ExtResource("18_bookcase_short")]
+[node name="BookcaseShortLeft" parent="Decor" unique_id=1955403868 instance=ExtResource("18_bookcase_short")]
 transform = Transform3D(-1, 0, 0, 0, 1, 0, 0, 0, -1, -4.85, 0, 7.58)
 
-[node name="BookcaseShortRight" parent="Decor" instance=ExtResource("18_bookcase_short")]
+[node name="BookcaseShortRight" parent="Decor" unique_id=1668458643 instance=ExtResource("18_bookcase_short")]
 transform = Transform3D(-1, 0, 0, 0, 1, 0, 0, 0, -1, 4.85, 0, 7.58)
 
-[node name="BookcaseTallRight" parent="Decor" instance=ExtResource("17_bookcase_tall")]
+[node name="BookcaseTallRight" parent="Decor" unique_id=1792568647 instance=ExtResource("17_bookcase_tall")]
 transform = Transform3D(-1, 0, 0, 0, 1, 0, 0, 0, -1, 6.6, 0, 7.58)
 
-[node name="TVCart" parent="Decor" instance=ExtResource("19_tv_cart")]
+[node name="TVCart" parent="Decor" unique_id=1334164009 instance=ExtResource("19_tv_cart")]
 transform = Transform3D(0.70710677, 0, -0.70710677, 0, 1, 0, 0.70710677, 0, 0.70710677, 7.7, 0, -8.6)
 
 [node name="TeacherDesk" parent="." unique_id=119392584 instance=ExtResource("4")]
@@ -579,50 +569,50 @@ transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 3, 0, -6.5)
 
 [node name="Hallway" type="Node3D" parent="." unique_id=713640567]
 
-[node name="CafeCeiling" parent="Hallway" instance=ExtResource("2")]
+[node name="CafeCeiling" parent="Hallway" unique_id=1027746059 instance=ExtResource("2")]
 transform = Transform3D(18, 0, 0, 0, 0.25, 0, 0, 0, 8.3, 0, 6.575, 12)
 
 [node name="Mesh" parent="Hallway/CafeCeiling" index="0"]
 material_override = SubResource("CafeCeilingMaterial")
 
-[node name="CeilingFront" parent="Hallway" instance=ExtResource("2")]
+[node name="CeilingFront" parent="Hallway" unique_id=1086435713 instance=ExtResource("2")]
 transform = Transform3D(18, 0, 0, 0, 1.45, 0, 0, 0, 0.3, 0, 5.725, 8)
 
 [node name="Mesh" parent="Hallway/CeilingFront" index="0"]
 material_override = SubResource("CeilingBandMaterial")
 
-[node name="CeilingBack" parent="Hallway" instance=ExtResource("2")]
+[node name="CeilingBack" parent="Hallway" unique_id=1750673723 instance=ExtResource("2")]
 transform = Transform3D(18, 0, 0, 0, 1.45, 0, 0, 0, 0.3, 0, 5.725, 16)
 
 [node name="Mesh" parent="Hallway/CeilingBack" index="0"]
 material_override = SubResource("CeilingBandMaterial")
 
-[node name="CeilingWest" parent="Hallway" instance=ExtResource("2")]
+[node name="CeilingWest" parent="Hallway" unique_id=1280887329 instance=ExtResource("2")]
 transform = Transform3D(0.3, 0, 0, 0, 1.45, 0, 0, 0, 7.7, -9, 5.725, 12)
 
 [node name="Mesh" parent="Hallway/CeilingWest" index="0"]
 material_override = SubResource("CeilingBandMaterial")
 
-[node name="CeilingEast" parent="Hallway" instance=ExtResource("2")]
+[node name="CeilingEast" parent="Hallway" unique_id=479906500 instance=ExtResource("2")]
 transform = Transform3D(0.3, 0, 0, 0, 1.45, 0, 0, 0, 7.7, 9, 5.725, 12)
 
 [node name="Mesh" parent="Hallway/CeilingEast" index="0"]
 material_override = SubResource("CeilingBandMaterial")
 
-[node name="CafeLighting" type="Node3D" parent="Hallway"]
+[node name="CafeLighting" type="Node3D" parent="Hallway" unique_id=144304036]
 
-[node name="WestFixture" type="MeshInstance3D" parent="Hallway/CafeLighting"]
-position = Vector3(-5.25, 4.8, 11.7)
+[node name="WestFixture" type="MeshInstance3D" parent="Hallway/CafeLighting" unique_id=1345995968]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -5.25, 4.8, 11.7)
+cast_shadow = 0
 mesh = SubResource("LobbyFixtureMesh")
-cast_shadow = 0
 
-[node name="Support" type="MeshInstance3D" parent="Hallway/CafeLighting/WestFixture"]
-position = Vector3(0, 0.87, 0)
+[node name="Support" type="MeshInstance3D" parent="Hallway/CafeLighting/WestFixture" unique_id=75992639]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.87, 0)
+cast_shadow = 0
 mesh = SubResource("CafeFixtureSupportMesh")
-cast_shadow = 0
 
-[node name="RoomFill" type="OmniLight3D" parent="Hallway/CafeLighting/WestFixture"]
-position = Vector3(0, -1.65, 0)
+[node name="RoomFill" type="OmniLight3D" parent="Hallway/CafeLighting/WestFixture" unique_id=1514843123]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -1.65, 0)
 light_color = Color(1, 0.95, 0.88, 1)
 light_energy = 1.4
 light_specular = 0.1
@@ -630,35 +620,33 @@ light_cull_mask = 1
 omni_range = 6.5
 omni_attenuation = 0.8
 
-[node name="Diffuser" type="MeshInstance3D" parent="Hallway/CafeLighting/WestFixture"]
-position = Vector3(0, -0.085, 0)
-mesh = SubResource("LobbyDiffuserMesh")
+[node name="Diffuser" type="MeshInstance3D" parent="Hallway/CafeLighting/WestFixture" unique_id=1694504106]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -0.085, 0)
 cast_shadow = 0
+mesh = SubResource("LobbyDiffuserMesh")
 
-[node name="Downlight" type="SpotLight3D" parent="Hallway/CafeLighting/WestFixture"]
-position = Vector3(0, -0.13, 0)
-rotation = Vector3(-1.5707963, 0, 0)
+[node name="Downlight" type="SpotLight3D" parent="Hallway/CafeLighting/WestFixture" unique_id=1536896928]
+transform = Transform3D(1, 0, 0, 0, 7.54979e-08, 1, 0, -1, 7.54979e-08, 0, -0.13, 0)
 light_color = Color(1, 0.94, 0.84, 1)
 light_energy = 1.7
 light_specular = 0.1
 light_cull_mask = 1
 spot_range = 6.1
-spot_attenuation = 1.0
 spot_angle = 52.0
 spot_angle_attenuation = 0.55
 
-[node name="CenterFixture" type="MeshInstance3D" parent="Hallway/CafeLighting"]
-position = Vector3(0, 4.8, 11.7)
+[node name="CenterFixture" type="MeshInstance3D" parent="Hallway/CafeLighting" unique_id=487971324]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 4.8, 11.7)
+cast_shadow = 0
 mesh = SubResource("LobbyFixtureMesh")
-cast_shadow = 0
 
-[node name="Support" type="MeshInstance3D" parent="Hallway/CafeLighting/CenterFixture"]
-position = Vector3(0, 0.87, 0)
+[node name="Support" type="MeshInstance3D" parent="Hallway/CafeLighting/CenterFixture" unique_id=1299570145]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.87, 0)
+cast_shadow = 0
 mesh = SubResource("CafeFixtureSupportMesh")
-cast_shadow = 0
 
-[node name="RoomFill" type="OmniLight3D" parent="Hallway/CafeLighting/CenterFixture"]
-position = Vector3(0, -1.65, 0)
+[node name="RoomFill" type="OmniLight3D" parent="Hallway/CafeLighting/CenterFixture" unique_id=1939430509]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -1.65, 0)
 light_color = Color(1, 0.95, 0.88, 1)
 light_energy = 1.4
 light_specular = 0.1
@@ -666,35 +654,33 @@ light_cull_mask = 1
 omni_range = 6.5
 omni_attenuation = 0.8
 
-[node name="Diffuser" type="MeshInstance3D" parent="Hallway/CafeLighting/CenterFixture"]
-position = Vector3(0, -0.085, 0)
-mesh = SubResource("LobbyDiffuserMesh")
+[node name="Diffuser" type="MeshInstance3D" parent="Hallway/CafeLighting/CenterFixture" unique_id=1678905512]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -0.085, 0)
 cast_shadow = 0
+mesh = SubResource("LobbyDiffuserMesh")
 
-[node name="Downlight" type="SpotLight3D" parent="Hallway/CafeLighting/CenterFixture"]
-position = Vector3(0, -0.13, 0)
-rotation = Vector3(-1.5707963, 0, 0)
+[node name="Downlight" type="SpotLight3D" parent="Hallway/CafeLighting/CenterFixture" unique_id=597331643]
+transform = Transform3D(1, 0, 0, 0, 7.54979e-08, 1, 0, -1, 7.54979e-08, 0, -0.13, 0)
 light_color = Color(1, 0.94, 0.84, 1)
 light_energy = 1.7
 light_specular = 0.1
 light_cull_mask = 1
 spot_range = 6.1
-spot_attenuation = 1.0
 spot_angle = 52.0
 spot_angle_attenuation = 0.55
 
-[node name="EastFixture" type="MeshInstance3D" parent="Hallway/CafeLighting"]
-position = Vector3(5.25, 4.8, 11.7)
+[node name="EastFixture" type="MeshInstance3D" parent="Hallway/CafeLighting" unique_id=387835104]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 5.25, 4.8, 11.7)
+cast_shadow = 0
 mesh = SubResource("LobbyFixtureMesh")
-cast_shadow = 0
 
-[node name="Support" type="MeshInstance3D" parent="Hallway/CafeLighting/EastFixture"]
-position = Vector3(0, 0.87, 0)
+[node name="Support" type="MeshInstance3D" parent="Hallway/CafeLighting/EastFixture" unique_id=409898874]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.87, 0)
+cast_shadow = 0
 mesh = SubResource("CafeFixtureSupportMesh")
-cast_shadow = 0
 
-[node name="RoomFill" type="OmniLight3D" parent="Hallway/CafeLighting/EastFixture"]
-position = Vector3(0, -1.65, 0)
+[node name="RoomFill" type="OmniLight3D" parent="Hallway/CafeLighting/EastFixture" unique_id=1778181360]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -1.65, 0)
 light_color = Color(1, 0.95, 0.88, 1)
 light_energy = 1.4
 light_specular = 0.1
@@ -702,47 +688,64 @@ light_cull_mask = 1
 omni_range = 6.5
 omni_attenuation = 0.8
 
-[node name="Diffuser" type="MeshInstance3D" parent="Hallway/CafeLighting/EastFixture"]
-position = Vector3(0, -0.085, 0)
-mesh = SubResource("LobbyDiffuserMesh")
+[node name="Diffuser" type="MeshInstance3D" parent="Hallway/CafeLighting/EastFixture" unique_id=720813569]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -0.085, 0)
 cast_shadow = 0
+mesh = SubResource("LobbyDiffuserMesh")
 
-[node name="Downlight" type="SpotLight3D" parent="Hallway/CafeLighting/EastFixture"]
-position = Vector3(0, -0.13, 0)
-rotation = Vector3(-1.5707963, 0, 0)
+[node name="Downlight" type="SpotLight3D" parent="Hallway/CafeLighting/EastFixture" unique_id=1842735200]
+transform = Transform3D(1, 0, 0, 0, 7.54979e-08, 1, 0, -1, 7.54979e-08, 0, -0.13, 0)
 light_color = Color(1, 0.94, 0.84, 1)
 light_energy = 1.7
 light_specular = 0.1
 light_cull_mask = 1
 spot_range = 6.1
-spot_attenuation = 1.0
 spot_angle = 52.0
 spot_angle_attenuation = 0.55
 
-[node name="LockersLeft" parent="Hallway" instance=ExtResource("20_locker_bank")]
+[node name="LockersLeft" parent="Hallway" unique_id=1485181818 instance=ExtResource("20_locker_bank")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -6.95, 0, 8.45)
 
-[node name="LockersRight" parent="Hallway" instance=ExtResource("20_locker_bank")]
+[node name="LockersRight" parent="Hallway" unique_id=1083419770 instance=ExtResource("20_locker_bank")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 6.95, 0, 8.45)
 
 [node name="VendingMachine" parent="Hallway" unique_id=869019490 instance=ExtResource("5")]
-position = Vector3(-8.25, 0, 13.9)
-rotation = Vector3(0, -1.5707963, 0)
+transform = Transform3D(7.54979e-08, 0, -1, 0, 1, 0, 1, 0, 7.54979e-08, -8.25, 0, 13.9)
 
-[node name="SnackDisplay" parent="Hallway/VendingMachine" instance=ExtResource("21_vending_snacks")]
+[node name="SnackDisplay" parent="Hallway/VendingMachine" unique_id=401405476 instance=ExtResource("21_vending_snacks")]
 
-[node name="VendingMachine2" parent="Hallway" instance=ExtResource("5")]
-position = Vector3(-8.25, 0, 10.3)
-rotation = Vector3(0, -1.5707963, 0)
+[node name="VendingMachine2" parent="Hallway" unique_id=1640858605 instance=ExtResource("5")]
+transform = Transform3D(7.54979e-08, 0, -1, 0, 1, 0, 1, 0, 7.54979e-08, -8.25, 0, 10.3)
+
+[node name="Cabinet" parent="Hallway/VendingMachine2" index="0"]
+transform = Transform3D(0.74, 0, 0, 0, 0.74, 0, 0, 0, 0.74, 0.046, 0.023, 0.04)
+
+[node name="CollisionShape3D" parent="Hallway/VendingMachine2/Case" index="0"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.285, 0.04)
+
+[node name="PickupTray" parent="Hallway/VendingMachine2" index="2"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.62, 0.87, -0.92)
+
+[node name="FrontLip" parent="Hallway/VendingMachine2/PickupTray" index="2"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.075, -0.445)
+
+[node name="LeftLip" parent="Hallway/VendingMachine2/PickupTray" index="3"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.445, 0.075, 0.025)
+
+[node name="RightLip" parent="Hallway/VendingMachine2/PickupTray" index="4"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.445, 0.075, 0.025)
 
 [node name="Keypad" parent="Hallway/VendingMachine2" index="3"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.63, 1.82, -0.62)
 interaction_id = "vending:2"
 
-[node name="DrinkDisplay" parent="Hallway/VendingMachine2" instance=ExtResource("22_vending_drinks")]
+[node name="DispensePoint" parent="Hallway/VendingMachine2" index="4"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.62, 1.25, -0.925)
 
-[node name="RocketVendingMachine" parent="Hallway" instance=ExtResource("23_rocket_vending")]
-position = Vector3(8.25, 0, 12.1)
-rotation = Vector3(0, 1.5707963, 0)
+[node name="DrinkDisplay" parent="Hallway/VendingMachine2" unique_id=405781238 instance=ExtResource("22_vending_drinks")]
+
+[node name="RocketVendingMachine" parent="Hallway" unique_id=1480728923 instance=ExtResource("23_rocket_vending")]
+transform = Transform3D(7.54979e-08, 0, 1, 0, 1, 0, -1, 0, 7.54979e-08, 8.25, 0, 12.1)
 
 [node name="TransferChute" parent="Hallway" unique_id=1288543665 instance=ExtResource("7")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 13.8)
@@ -756,7 +759,7 @@ transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.5, 0.3, 11)
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.5, 0.3, 11)
 
 [node name="Teacher" parent="." unique_id=1303671591 instance=ExtResource("8")]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -7, 0, -8.8)
+transform = Transform3D(1.5, 0, 0, 0, 1.5, 0, 0, 0, 1.5, -7, 0, -8.8)
 
 [node name="TeacherWaypoints" type="Node3D" parent="." unique_id=2125615284]
 
@@ -769,33 +772,33 @@ transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -7, 0, -8.8)
 [node name="Desk" type="Marker3D" parent="TeacherWaypoints" unique_id=214833648]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 1.9, 0, -6.5)
 
-[node name="FoodDrops" type="Node3D" parent="."]
+[node name="FoodDrops" type="Node3D" parent="." unique_id=996125081]
 
-[node name="Drop01" type="Marker3D" parent="FoodDrops"]
+[node name="Drop01" type="Marker3D" parent="FoodDrops" unique_id=1203912787]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -3.6, 2.5, -2.45)
 
-[node name="Drop02" type="Marker3D" parent="FoodDrops"]
+[node name="Drop02" type="Marker3D" parent="FoodDrops" unique_id=561413024]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -3.6, 2.5, 0.25)
 
-[node name="Drop03" type="Marker3D" parent="FoodDrops"]
+[node name="Drop03" type="Marker3D" parent="FoodDrops" unique_id=1028953810]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -3.6, 2.5, 2.95)
 
-[node name="Drop04" type="Marker3D" parent="FoodDrops"]
+[node name="Drop04" type="Marker3D" parent="FoodDrops" unique_id=1838691983]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 2.5, -2.45)
 
-[node name="Drop05" type="Marker3D" parent="FoodDrops"]
+[node name="Drop05" type="Marker3D" parent="FoodDrops" unique_id=98284900]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 2.5, 0.25)
 
-[node name="Drop06" type="Marker3D" parent="FoodDrops"]
+[node name="Drop06" type="Marker3D" parent="FoodDrops" unique_id=1276138027]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 2.5, 2.95)
 
-[node name="Drop07" type="Marker3D" parent="FoodDrops"]
+[node name="Drop07" type="Marker3D" parent="FoodDrops" unique_id=1781495208]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 3.6, 2.5, -2.45)
 
-[node name="Drop08" type="Marker3D" parent="FoodDrops"]
+[node name="Drop08" type="Marker3D" parent="FoodDrops" unique_id=504711134]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 3.6, 2.5, 0.25)
 
-[node name="Drop09" type="Marker3D" parent="FoodDrops"]
+[node name="Drop09" type="Marker3D" parent="FoodDrops" unique_id=589862025]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 3.6, 2.5, 2.95)
 
 [node name="Players" type="Node3D" parent="." unique_id=2106170529]
@@ -821,13 +824,10 @@ current = true
 
 [node name="AmbiancePlayer" type="AudioStreamPlayer" parent="." unique_id=1849182041]
 
-[editable path="Hallway/VendingMachine2"]
-[editable path="Hallway/CafeCeiling"]
 [editable path="Room/Floor"]
 [editable path="Room/SurfaceRamp"]
-[editable path="Room/LeftWall"]
-[editable path="Room/Door"]
 [editable path="Room/FrontWall"]
+[editable path="Room/LeftWall"]
 [editable path="Room/RightWall"]
 [editable path="Room/HallBackWallLeft"]
 [editable path="Room/HallBackWallRight"]
@@ -835,7 +835,11 @@ current = true
 [editable path="Room/HallPartitionLeft"]
 [editable path="Room/HallPartitionRight"]
 [editable path="Room/DoorLintel"]
+[editable path="Room/Door"]
+[editable path="Hallway/CafeCeiling"]
 [editable path="Hallway/CeilingFront"]
 [editable path="Hallway/CeilingBack"]
 [editable path="Hallway/CeilingWest"]
 [editable path="Hallway/CeilingEast"]
+[editable path="Hallway/VendingMachine2"]
+[editable path="Hallway/VendingMachine2/Keypad"]
