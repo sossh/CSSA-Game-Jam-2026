@@ -448,7 +448,7 @@ mesh = SubResource("ClockPanelMesh")
 
 [node name="Clock" type="Label3D" parent="Room" unique_id=996481012]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 6, 3.8, -9.6)
-text = "02:00"
+text = "00:00"
 font_size = 64
 outline_size = 5
 
