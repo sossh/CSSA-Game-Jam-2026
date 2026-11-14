@@ -155,7 +155,9 @@ func run_host() -> void:
 	verify(teacher.get_current_state_name() == "lecturestate", "Check cooldown blocks repeated low-noise turns")
 	var before_stomach: float = Game.players[client].stomach
 	Game.damage(client, 30, "was expelled by shotgun", Vector3(0, 5, 5))
-	verify(Game.players[client].stomach < before_stomach and Game.players[client].mode != "ragdoll", "Non-lethal shot does not ragdoll immediately")
+	verify(Game.players[client].stomach < before_stomach and Game.players[client].mode == "ragdoll", "Non-lethal shotgun hit launches the player into ragdoll")
+	await wait(0.3)
+	verify(Game.world.player_nodes[client].ragdoll.active and Game.players[client].limbs.size() == 6, "Shotgun victim simulates and replicates all six ragdoll limbs")
 	teacher.student_shot_grace[str(client)] = Game.elapsed + 6.0
 	verify(teacher.student_shot_grace.get(str(client), 0.0) > Game.elapsed, "Teacher respects shot grace period before shooting again")
 	var balance: int = Game.players[client].money

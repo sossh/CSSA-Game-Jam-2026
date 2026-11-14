@@ -66,7 +66,8 @@ func run_host() -> void:
 	var stomach: float = Game.players[1].stomach
 	Game.world.teacher.aim_point = Game.world.to_global(Vector3(0, 1, -5))
 	Game.world.teacher.fire()
-	verify(Game.players[1].stomach < stomach - 60 and Game.players[1].mode == "walk", "Shotgun ray damages visible student without premature ragdoll")
+	await wait(0.1)
+	verify(Game.players[1].stomach < stomach - 60 and Game.players[1].mode == "ragdoll" and Game.world.player_nodes[1].ragdoll.active, "Shotgun ray damages the student and activates the physical ragdoll")
 	# Return host to a desk to avoid a second lethal roll-call shot.
 	Game.players[1].stomach = 100.0
 	Game.players[1].mode = "seated"

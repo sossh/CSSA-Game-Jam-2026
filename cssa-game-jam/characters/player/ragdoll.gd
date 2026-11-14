@@ -4,6 +4,16 @@ extends Node3D
 ## Six physical bodies joined with PinJoint3D. The owning player simulates;
 ## peers render the transmitted limb transforms. No skeleton asset required.
 const GRAVITY_LAYER := 32
+# Torso takes the hit first while the head and limbs lag behind.
+const IMPACT_RESPONSE := [1.15, 0.85, 0.65, 0.75, 0.45, 0.55]
+const LIMB_SPIN := [
+	Vector3(1.8, 0.3, 0.5),
+	Vector3(-1.0, 0.5, -0.4),
+	Vector3(-3.5, 1.0, -3.0),
+	Vector3(-2.5, -0.8, 3.5),
+	Vector3(2.8, -0.4, -0.8),
+	Vector3(-1.8, 0.6, 1.0),
+]
 
 var bodies: Array[RigidBody3D] = []
 var simulating: bool = false
@@ -21,13 +31,15 @@ func activate(color: Color, origin: Vector3, yaw: float, simulate: bool, impulse
 	active = true
 	show()
 	global_transform = Transform3D(Basis(Vector3.UP, yaw), origin)
+	var impact_strength := clampf(impulse.length() / 10.0, 0.0, 1.5)
 	for i in range(bodies.size()):
 		var body := bodies[i]
 		body.transform = rest_poses[i]
 		var material: StandardMaterial3D = body.get_node("Mesh").material_override
 		material.albedo_color = color.lightened(0.2) if i == 1 else color
-		body.linear_velocity = impulse
-		body.angular_velocity = Vector3(2, 1, -3) if simulate else Vector3.ZERO
+		body.linear_velocity = impulse * IMPACT_RESPONSE[i] if simulate else Vector3.ZERO
+		body.angular_velocity = global_basis * LIMB_SPIN[i] * impact_strength if simulate else Vector3.ZERO
+		body.sleeping = false
 		body.collision_layer = GRAVITY_LAYER if simulate else 0
 		body.collision_mask = 1 if simulate else 0
 		body.freeze = not simulate
