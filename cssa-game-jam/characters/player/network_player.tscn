@@ -1,6 +1,6 @@
 [gd_scene load_steps=5 format=3]
 [ext_resource type="Script" path="res://characters/player/network_player.gd" id="1"]
-[ext_resource type="PackedScene" path="res://characters/shared/student_visual.tscn" id="2"]
+[ext_resource type="PackedScene" path="res://characters/player/player_visual.tscn" id="2"]
 [ext_resource type="PackedScene" path="res://characters/player/ragdoll.tscn" id="3"]
 [sub_resource type="CapsuleShape3D" id="PlayerShape"]
 radius = 0.3

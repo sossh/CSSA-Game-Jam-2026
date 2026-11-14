@@ -8,7 +8,7 @@ var default_gravity := float(ProjectSettings.get_setting("physics/3d/default_gra
 @onready var head: Node3D = $Head
 @onready var camera: Camera3D = $Head/Camera
 @onready var audio_listener: AudioListener3D = $Head/Camera/AudioListener3D
-@onready var visual: StudentVisual = $Visual
+@onready var visual: PlayerVisual = $Visual
 @onready var name_label: Label3D = $NameLabel
 @onready var ragdoll: StudentRagdoll = $Ragdoll
 var color: Color
@@ -32,6 +32,8 @@ var kick_pitch: float = 0.0
 var kick_velocity: float = 0.0
 var fall_speed: float = 0.0
 var was_on_floor: bool = true
+var remote_velocity: Vector3 = Vector3.ZERO
+var prev_remote_position: Vector3 = Vector3.ZERO
 
 func _ready() -> void:
 	floor_snap_length = Game.config.player.floor_snap_length
@@ -50,6 +52,8 @@ func _ready() -> void:
 	rotation.y = p.yaw
 	pitch = p.pitch
 	head.rotation.x = pitch
+	prev_remote_position = global_position
+	Game.effect.connect(_on_game_effect)
 
 func _unhandled_input(event: InputEvent) -> void:
 	if not local or Game.ui_open or Game.launch_cinematic_active or not Game.players.has(peer_id): return
@@ -75,8 +79,11 @@ func _unhandled_input(event: InputEvent) -> void:
 		if p.held == "": Game.request("punch")
 		else: charge = 0
 	if event.is_action_released("throw_item") and charge >= 0:
+		if p.mode == "seated":
+			Game.request("stand")
 		Game.request("throw", {"charge": minf(charge / Game.config.player.throw_charge_seconds, 1.0)})
 		charge = -1
+		visual.trigger_throw()
 
 func _physics_process(delta: float) -> void:
 	if Game.launch_cinematic_active or not Game.players.has(peer_id): return
@@ -165,12 +172,26 @@ func _physics_process(delta: float) -> void:
 				Game.request("step", {"sprint": speed > movement.walk_speed, "position": global_position})
 	else:
 		visual.rotation = Vector3.ZERO
+		var pos_delta: Vector3 = p.position - prev_remote_position
+		if delta > 0.0001:
+			remote_velocity = remote_velocity.lerp(pos_delta / delta, minf(1.0, delta * 15.0))
+		prev_remote_position = p.position
 		global_position = global_position.lerp(p.position, minf(1, delta * 18))
 	if not local:
 		rotation.y = lerp_angle(rotation.y, p.yaw, minf(1, delta * 20))
 		pitch = lerpf(pitch, p.pitch, minf(1, delta * 20))
 	head.rotation.x = pitch
 	head.position.y = 1.40 if mode == "seated" else STANDING_EYE_HEIGHT
+	if local:
+		var is_sprinting: bool = Input.is_action_pressed("sprint")
+		visual.update_motion(is_on_floor(), velocity, is_sprinting, mode, delta)
+	else:
+		var remote_on_floor: bool = absf(remote_velocity.y) < 0.2 and p.position.y <= 0.25
+		var remote_speed: float = Vector2(remote_velocity.x, remote_velocity.z).length()
+		var remote_sprinting: bool = remote_speed > (Game.config.player.walk_speed + Game.config.player.sprint_speed) * 0.5
+		visual.update_motion(remote_on_floor, remote_velocity, remote_sprinting, mode, delta)
+	if last_mode == "seated" and mode != "seated":
+		visual.trigger_stand_up()
 	if local:
 		if charge >= 0: charge += delta
 		if Game.ui_open: charge = -1
@@ -297,3 +318,8 @@ func held_transform(big: bool = false) -> Transform3D:
 
 	transform_out.origin += head.global_basis * Vector3(0.35, -0.3, -0.85)
 	return transform_out
+
+func _on_game_effect(kind: String, data: Dictionary) -> void:
+	if kind == "sound" and data.get("key") == "throw" and str(data.get("source", "")) == str(peer_id):
+		if not local:
+			visual.trigger_throw()
