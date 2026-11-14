@@ -202,7 +202,9 @@ func _process(delta: float) -> void:
 			close_crawl()
 			reset_wasted()
 			tint.color.a = 0.0
-		if not victory_panel.visible:
+		var site = Game.world.launch_site if is_instance_valid(Game.world) else null
+		var reached_earth: bool = is_instance_valid(site) and (site.flight_progress >= 1.99 or (site.flight_duration > 0.0 and Game.elapsed - Game.rocket_launch_started_at >= site.flight_duration))
+		if reached_earth and not victory_panel.visible:
 			pause_panel.hide()
 			victory_panel.show()
 			update_mouse()

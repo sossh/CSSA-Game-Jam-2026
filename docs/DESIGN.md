@@ -143,7 +143,7 @@ All live gameplay HUD nodes reside under `Root/HUD`:
   - Action buttons: `RESUME`, `COPY JOIN CODE`, `QUIT TO MAIN MENU`.
 
 ### Victory Popup (`Root/Victory`)
-- Centered `PanelContainer` (`590x360`, `offset = (-295, -180, 295, 180)`) displayed automatically when the Falcon 9 rocket launches (`Game.launch_cinematic_active`).
+- Centered `PanelContainer` (`590x360`, `offset = (-295, -180, 295, 180)`) displayed automatically once the launched Falcon 9 rocket completes its flight and reaches Earth (`site.flight_progress >= 1.99`).
 - **Ornate Gold Sci-Fi Styling**:
   - Outer panel (`VictoryOuterStyle`): Dark obsidian-gold translucent fill (`Color(0.032, 0.022, 0.005, 0.88)`), `3px` metallic gold border (`Color(1.0, 0.84, 0.28, 0.98)`), `6px` corner radius, and warm golden glow (`shadow_size = 24`).
   - Inner double-frame (`InnerFrame` with `VictoryInnerStyle`): `1px` champagne-gold inner border (`Color(1.0, 0.92, 0.55, 0.65)`) framing ornate gold dividers (`TopOrnament`, `MidOrnament`, `BottomOrnament`), `CONGRATULATIONS!` heading, `YOU'RE RETURNING HOME` subtitle, and a gold-styled `QUIT TO MAIN MENU` button.
