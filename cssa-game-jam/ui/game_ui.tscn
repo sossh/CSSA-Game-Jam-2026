@@ -13,6 +13,7 @@
 [sub_resource type="ShaderMaterial" id="HelmetVisorMaterial"]
 shader = ExtResource("9_visor")
 [ext_resource type="VideoStream" uid="uid://n0dbsf6opxp2" path="res://videos/title.ogv" id="9_title_video"]
+[ext_resource type="Texture2D" uid="uid://bltejex8383tc" path="res://logo/munchtitle.002.png" id="10_logo"]
 
 [sub_resource type="StyleBoxFlat" id="HudBottomConsole"]
 content_margin_left = 14.0
@@ -178,9 +179,9 @@ anchor_top = 0.5
 anchor_right = 0.5
 anchor_bottom = 0.5
 offset_left = -330.0
-offset_top = -305.0
+offset_top = -345.0
 offset_right = 330.0
-offset_bottom = 305.0
+offset_bottom = 345.0
 grow_horizontal = 2
 grow_vertical = 2
 
@@ -188,14 +189,12 @@ grow_vertical = 2
 layout_mode = 2
 theme_override_constants/separation = 10
 
-[node name="Title" type="Label" parent="Root/Menu/Content" unique_id=125092282]
+[node name="Title" type="TextureRect" parent="Root/Menu/Content" unique_id=125092282]
+custom_minimum_size = Vector2(0, 150)
 layout_mode = 2
-theme_override_colors/font_color = Color(0.35, 0.95, 1, 1)
-theme_override_colors/font_outline_color = Color(0, 0.08, 0.16, 0.95)
-theme_override_constants/outline_size = 4
-theme_override_font_sizes/font_size = 44
-text = "COSMIC DETENTION"
-horizontal_alignment = 1
+texture = ExtResource("10_logo")
+expand_mode = 1
+stretch_mode = 5
 
 [node name="Subtitle" type="Label" parent="Root/Menu/Content" unique_id=1180339448]
 layout_mode = 2
