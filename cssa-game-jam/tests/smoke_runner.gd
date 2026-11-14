@@ -54,9 +54,16 @@ func run_host() -> void:
 	Game.world.interact(1, "player:" + str(client))
 	verify(Game.players[client].mode == "carried", "Friend can be carried")
 	Game.world.release_hand(1, 0.5)
+	var thrown_from: Vector3 = Game.players[client].position
 	await wait(0.5)
 	verify(Game.players[client].mode == "ragdoll", "Thrown friend enters ragdoll")
+	for attempt in range(20):
+		if Game.players[client].limbs.size() == 6: break
+		await wait(0.1)
 	verify(Game.players[client].limbs.size() == 6, "Owner transmits six physical ragdoll limb poses")
+	if Game.players[client].limbs.size() == 6:
+		var thrown_torso: Vector3 = Game.players[client].limbs[0].origin
+		verify(Vector2(thrown_torso.x - thrown_from.x, thrown_torso.z - thrown_from.z).length() > 2.0, "Thrown friend actually flies away from the thrower")
 	await wait(Game.config.player.ragdoll_seconds + 0.2)
 	verify(Game.players[client].mode == "walk", "Ragdoll recovers")
 	var ragdoll_id: int = Game.world.player_nodes[client].ragdoll.get_instance_id()
@@ -163,6 +170,7 @@ func run_host() -> void:
 	Game.kill(client, "test clone", Vector3(0, 5, 5))
 	await wait(0.1)
 	verify(Game.phase == "class" and not Game.players[client].alive and Game.world.player_nodes[client].ragdoll.active, "One death spectates with death ragdoll while teammate keeps class alive")
+	verify(Game.players[client].corpse and Game.world.items.values().all(func(item): return not (item.kid and item.dead)), "Player death leaves a ragdoll body and does not spawn a clone")
 	Game.start_break()
 	verify(Game.players[client].position == Game.world.cafe_respawn_position(Game.players[client].spawn_slot)
 		and not Game.world.has_node("Hallway/TransferChute"), "Death respawns in the cafe without the transfer chute")
@@ -202,7 +210,7 @@ func verify_second_vending_machine() -> void:
 	teleport(1, machine.to_global(Vector3(0, 0, -2)))
 	await wait(0.15)
 	var space := world.get_world_3d().direct_space_state
-	var eye := machine.to_global(Vector3(-0.63, 1.55, -2))
+	var eye := machine.to_global(Vector3(-0.63, Game.config.player.eye_height(), -2))
 	var keypad_hit := space.intersect_ray(PhysicsRayQueryParameters3D.create(eye, keypad.global_position, 17))
 	verify(keypad_hit.get("collider") == keypad, "Second keypad can be aimed at from the hallway")
 	var cabinet_hit := space.intersect_ray(PhysicsRayQueryParameters3D.create(
@@ -311,7 +319,7 @@ func verify_rocket_assembly() -> void:
 	teleport(1, target.to_global(Vector3(0, 0.15, 2.8)))
 	await wait(0.15)
 	verify(Game.rocket_parts == 0 and site.stage_models.all(func(stage): return not stage.visible), "Rocket starts unassembled")
-	var ray := PhysicsRayQueryParameters3D.create(player.position + Vector3.UP * 1.55, console.global_position, 17)
+	var ray := PhysicsRayQueryParameters3D.create(player.position + Vector3.UP * Game.config.player.eye_height(), console.global_position, 17)
 	verify(world.get_world_3d().direct_space_state.intersect_ray(ray).get("collider") == console, "Launch console can be aimed at from the platform")
 	world.interact(1, "rocket_console")
 	verify(Game.rocket_launch_started_at < 0.0 and not core.emitting, "Incomplete Falcon cannot launch")
