@@ -8,6 +8,10 @@
 [ext_resource type="PackedScene" path="res://ui/irritation_meter.tscn" id="5_irritation"]
 [ext_resource type="Texture2D" uid="uid://btf5717nm1wrx" path="res://assets/ui/gas.png" id="6"]
 [ext_resource type="Theme" path="res://ui/menu_theme.tres" id="8_theme"]
+[ext_resource type="Shader" path="res://ui/helmet_visor.gdshader" id="9_visor"]
+
+[sub_resource type="ShaderMaterial" id="HelmetVisorMaterial"]
+shader = ExtResource("9_visor")
 
 [sub_resource type="StyleBoxFlat" id="HudBottomConsole"]
 content_margin_left = 14.0
@@ -304,12 +308,23 @@ grow_horizontal = 2
 grow_vertical = 2
 mouse_filter = 2
 
+[node name="HelmetVisor" type="ColorRect" parent="Root/HUD"]
+unique_name_in_owner = true
+material = SubResource("HelmetVisorMaterial")
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 2
+
 [node name="CurrencyBay" type="PanelContainer" parent="Root/HUD" unique_id=2079221591]
 layout_mode = 0
-offset_left = 20.0
-offset_top = 18.0
-offset_right = 136.0
-offset_bottom = 66.0
+offset_left = 33.0
+offset_top = 26.0
+offset_right = 149.0
+offset_bottom = 74.0
 mouse_filter = 2
 theme_override_styles/panel = SubResource("HudBayLeft")
 
@@ -337,12 +352,35 @@ theme_override_constants/outline_size = 4
 theme_override_font_sizes/font_size = 24
 text = "20"
 
+[node name="ClockBay" type="PanelContainer" parent="Root/HUD"]
+layout_mode = 1
+anchors_preset = 1
+anchor_left = 1.0
+anchor_right = 1.0
+offset_left = -149.0
+offset_top = 26.0
+offset_right = -33.0
+offset_bottom = 74.0
+grow_horizontal = 0
+mouse_filter = 2
+theme_override_styles/panel = SubResource("HudBayLeft")
+
+[node name="GameClock" type="Label" parent="Root/HUD/ClockBay"]
+unique_name_in_owner = true
+layout_mode = 2
+theme_override_colors/font_color = Color(0.92, 0.99, 1, 1)
+theme_override_colors/font_outline_color = Color(0, 0.08, 0.16, 0.95)
+theme_override_constants/outline_size = 4
+theme_override_font_sizes/font_size = 24
+text = "00:00"
+horizontal_alignment = 1
+
 [node name="PauseHint" type="Label" parent="Root/HUD" unique_id=1928374651]
 layout_mode = 0
-offset_left = 22.0
-offset_top = 72.0
-offset_right = 180.0
-offset_bottom = 94.0
+offset_left = 35.0
+offset_top = 80.0
+offset_right = 193.0
+offset_bottom = 102.0
 theme_override_colors/font_color = Color(0.45, 0.95, 1, 0.9)
 theme_override_colors/font_outline_color = Color(0, 0.08, 0.16, 0.95)
 theme_override_constants/outline_size = 3
@@ -448,10 +486,10 @@ layout_mode = 1
 anchors_preset = 2
 anchor_top = 1.0
 anchor_bottom = 1.0
-offset_left = 26.0
-offset_top = -224.0
-offset_right = 44.0
-offset_bottom = -52.0
+offset_left = 40.0
+offset_top = -234.0
+offset_right = 58.0
+offset_bottom = -62.0
 grow_vertical = 0
 mouse_filter = 2
 theme_override_styles/background = SubResource("BarBg")
@@ -465,10 +503,10 @@ layout_mode = 1
 anchors_preset = 2
 anchor_top = 1.0
 anchor_bottom = 1.0
-offset_left = 23.0
-offset_top = -44.0
-offset_right = 47.0
-offset_bottom = -20.0
+offset_left = 37.0
+offset_top = -54.0
+offset_right = 61.0
+offset_bottom = -30.0
 grow_vertical = 0
 mouse_filter = 2
 texture = ExtResource("5")
@@ -481,10 +519,10 @@ layout_mode = 1
 anchors_preset = 2
 anchor_top = 1.0
 anchor_bottom = 1.0
-offset_left = 60.0
-offset_top = -224.0
-offset_right = 78.0
-offset_bottom = -52.0
+offset_left = 74.0
+offset_top = -234.0
+offset_right = 92.0
+offset_bottom = -62.0
 grow_vertical = 0
 mouse_filter = 2
 theme_override_styles/background = SubResource("BarBg")
@@ -497,10 +535,10 @@ layout_mode = 1
 anchors_preset = 2
 anchor_top = 1.0
 anchor_bottom = 1.0
-offset_left = 57.0
-offset_top = -44.0
-offset_right = 81.0
-offset_bottom = -20.0
+offset_left = 71.0
+offset_top = -54.0
+offset_right = 95.0
+offset_bottom = -30.0
 grow_vertical = 0
 mouse_filter = 2
 texture = ExtResource("6")
@@ -578,10 +616,10 @@ layout_mode = 1
 anchors_preset = 1
 anchor_left = 1.0
 anchor_right = 1.0
-offset_left = -360.0
-offset_top = 18.0
-offset_right = -20.0
-offset_bottom = 66.0
+offset_left = -373.0
+offset_top = 84.0
+offset_right = -33.0
+offset_bottom = 132.0
 grow_horizontal = 0
 mouse_filter = 2
 theme_override_colors/default_color = Color(0.88, 0.98, 1, 1)
@@ -627,6 +665,10 @@ theme_override_font_sizes/font_size = 15
 [node name="IrritationMeter" parent="Root/HUD" unique_id=2012322611 instance=ExtResource("5_irritation")]
 
 [node name="EventFeed" parent="Root/HUD" unique_id=2025136264 instance=ExtResource("3")]
+offset_left = -323.0
+offset_top = -158.0
+offset_right = -33.0
+offset_bottom = -30.0
 
 [node name="DamageTint" type="ColorRect" parent="Root" unique_id=1046034552]
 unique_name_in_owner = true

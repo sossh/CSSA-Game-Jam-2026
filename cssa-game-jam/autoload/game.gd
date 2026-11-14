@@ -15,6 +15,10 @@ var world: Node3D
 var players: Dictionary = {}
 var phase: String = "menu"
 var remaining: float = 0.0
+var clock_text: String:
+	get:
+		var seconds := ceili(maxf(remaining, 0.0))
+		return "%02d:%02d" % [floori(seconds / 60.0), seconds % 60]
 var grade: int = 1
 var survived: int = 0
 var installed_rocket_parts := PackedStringArray()

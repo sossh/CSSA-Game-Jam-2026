@@ -8,7 +8,9 @@ extends CanvasLayer
 @onready var lan_games: OptionButton = %LANGames
 @onready var join_lan_button: Button = %JoinLAN
 @onready var hud: Control = %HUD
+@onready var helmet_visor: ColorRect = %HelmetVisor
 @onready var stats: Label = %Stats
+@onready var game_clock: Label = %GameClock
 @onready var rocket_stage_1: Node2D = %RocketStage1
 @onready var rocket_stage_2: Node2D = %RocketStage2
 @onready var rocket_stage_3: Node2D = %RocketStage3
@@ -204,6 +206,7 @@ func _process(delta: float) -> void:
 	var id := multiplayer.get_unique_id()
 	var p: Dictionary = Game.players[id]
 	var is_dead: bool = not p.alive or p.mode == "dead"
+	helmet_visor.visible = not is_dead
 	if was_alive and is_dead:
 		trigger_wasted()
 	elif not was_alive and not is_dead:
@@ -216,9 +219,9 @@ func _process(delta: float) -> void:
 	stomach.value = p.stomach
 	var current_gas: float = float(p.get("gas", 0.0))
 	gas_bar.value = current_gas
-	var minutes := int(ceil(Game.remaining) / 60.0)
-	var seconds := int(ceil(Game.remaining)) % 60
-	phase_label.text = "STUDENT: %s\n%s • GRADE %d • %02d:%02d\nJOIN %s • %d classes / %d parts" % [p.name, Game.phase.to_upper(), Game.grade, minutes, seconds, Net.join_code, Game.survived, Game.rocket_parts]
+	var clock_text := Game.clock_text
+	game_clock.text = clock_text
+	phase_label.text = "STUDENT: %s\n%s • GRADE %d • %s\nJOIN %s • %d classes / %d parts" % [p.name, Game.phase.to_upper(), Game.grade, clock_text, Net.join_code, Game.survived, Game.rocket_parts]
 	if Game.phase in ["lobby", "game_over"]:
 		phase_label.text += "\n[ENTER] Host: start new run" if Game.is_host() else "\nWaiting for host"
 	var player = Game.world.player_nodes.get(id)
