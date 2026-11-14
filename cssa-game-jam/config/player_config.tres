@@ -9,6 +9,7 @@ sprint_speed = 6.5
 acceleration = 30.0
 gravity = 15.0
 jump_speed = 5.0
+floor_snap_length = 0.35
 spectate_speed = 8.0
 energy_speed_multiplier = 1.8
 energy_boost_seconds = 12.0

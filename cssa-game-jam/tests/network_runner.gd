@@ -33,7 +33,9 @@ func run_host() -> void:
 		Game.players[id].seat = seat
 		Game.players[id].epoch += 1
 		seat += 1
-	verify(Game.world.walk_path(Vector3(0, 0, -7), Vector3(0, 0, 6)).size() > 5, "Investigation path spans classroom aisles")
+	var board := Game.world.to_global(Vector3(0, 0, -7))
+	var rear_aisle := Game.world.to_global(Vector3(0, 0, 6))
+	verify(Game.world.walk_path(board, rear_aisle).size() > 5, "Investigation path spans classroom aisles")
 	for attempt in range(60):
 		if Game.phase == "class": break
 		await wait(0.1)
@@ -48,15 +50,15 @@ func run_host() -> void:
 		if not Game.players[id].alive: late = id
 	verify(late != 0, "Mid-class arrival spectates until the bell")
 	# Demonstrate real server-side shot collision and no-through-walls sight.
-	Game.world.teacher.global_position = Vector3(0, 0, -7)
-	verify(not Game.world.teacher.clear_sight(Vector3(5, 1, 12)), "Hallway wall blocks teacher vision")
+	Game.world.teacher.global_position = board
+	verify(not Game.world.teacher.clear_sight(Game.world.to_global(Vector3(5, 1, 12))), "Hallway wall blocks teacher vision")
 	Game.players[1].mode = "walk"
 	Game.players[1].seat = -1
-	Game.players[1].position = Vector3(0, 0, -5)
+	Game.players[1].position = Game.world.to_global(Vector3(0, 0, -5))
 	Game.players[1].epoch += 1
 	await wait(0.2)
 	var stomach: float = Game.players[1].stomach
-	Game.world.teacher.aim_point = Vector3(0, 1, -5)
+	Game.world.teacher.aim_point = Game.world.to_global(Vector3(0, 1, -5))
 	Game.world.teacher.fire()
 	verify(Game.players[1].stomach < stomach - 60 and Game.players[1].mode == "ragdoll", "Shotgun ray damages and ragdolls a visible student")
 	# Return host to a desk to avoid a second lethal roll-call shot.

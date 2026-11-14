@@ -1,10 +1,10 @@
-[gd_scene load_steps=8 format=3]
+[gd_scene load_steps=12 format=3]
 
 [ext_resource type="PackedScene" path="res://world/classroom/props/assets/vending_machine.glb" id="1_model"]
 [ext_resource type="PackedScene" path="res://core/interact/interactable.tscn" id="2_interaction"]
 
 [sub_resource type="BoxShape3D" id="CaseShape"]
-size = Vector3(1.83, 2.59, 0.96)
+size = Vector3(1.83, 2.57, 0.99)
 
 [sub_resource type="BoxShape3D" id="InteractionShape"]
 size = Vector3(0.52, 0.68, 0.22)
@@ -15,12 +15,27 @@ roughness = 0.8
 
 [sub_resource type="BoxMesh" id="TrayMesh"]
 material = SubResource("TrayMaterial")
-size = Vector3(0.75, 0.07, 0.66)
+size = Vector3(0.94, 0.07, 0.94)
 
 [sub_resource type="BoxShape3D" id="TrayShape"]
-size = Vector3(0.75, 0.07, 0.66)
+size = Vector3(0.94, 0.07, 0.94)
+
+[sub_resource type="BoxMesh" id="TrayFrontMesh"]
+material = SubResource("TrayMaterial")
+size = Vector3(0.94, 0.08, 0.05)
+
+[sub_resource type="BoxShape3D" id="TrayFrontShape"]
+size = Vector3(0.94, 0.08, 0.05)
+
+[sub_resource type="BoxMesh" id="TraySideMesh"]
+material = SubResource("TrayMaterial")
+size = Vector3(0.05, 0.08, 0.89)
+
+[sub_resource type="BoxShape3D" id="TraySideShape"]
+size = Vector3(0.05, 0.08, 0.89)
 
 [node name="VendingMachine" type="Node3D"]
+editor_description = "Move or rotate this root to place the cabinet, collision, keypad, and pickup tray together. The front faces local -Z."
 
 [node name="Cabinet" parent="." instance=ExtResource("1_model")]
 position = Vector3(0.046, 0.023, 0.04)
@@ -29,17 +44,38 @@ scale = Vector3(0.74, 0.74, 0.74)
 [node name="Case" type="StaticBody3D" parent="."]
 
 [node name="CollisionShape3D" type="CollisionShape3D" parent="Case"]
-position = Vector3(0, 1.295, 0.04)
+position = Vector3(0, 1.285, 0.04)
 shape = SubResource("CaseShape")
 
 [node name="PickupTray" type="StaticBody3D" parent="."]
-position = Vector3(-0.62, 0.87, -0.83)
+position = Vector3(-0.62, 0.87, -0.92)
 
 [node name="Mesh" type="MeshInstance3D" parent="PickupTray"]
 mesh = SubResource("TrayMesh")
 
 [node name="CollisionShape3D" type="CollisionShape3D" parent="PickupTray"]
 shape = SubResource("TrayShape")
+
+[node name="FrontLip" type="CollisionShape3D" parent="PickupTray"]
+position = Vector3(0, 0.075, -0.445)
+shape = SubResource("TrayFrontShape")
+
+[node name="Mesh" type="MeshInstance3D" parent="PickupTray/FrontLip"]
+mesh = SubResource("TrayFrontMesh")
+
+[node name="LeftLip" type="CollisionShape3D" parent="PickupTray"]
+position = Vector3(-0.445, 0.075, 0.025)
+shape = SubResource("TraySideShape")
+
+[node name="Mesh" type="MeshInstance3D" parent="PickupTray/LeftLip"]
+mesh = SubResource("TraySideMesh")
+
+[node name="RightLip" type="CollisionShape3D" parent="PickupTray"]
+position = Vector3(0.445, 0.075, 0.025)
+shape = SubResource("TraySideShape")
+
+[node name="Mesh" type="MeshInstance3D" parent="PickupTray/RightLip"]
+mesh = SubResource("TraySideMesh")
 
 [node name="Keypad" parent="." instance=ExtResource("2_interaction")]
 position = Vector3(-0.63, 1.82, -0.62)
@@ -50,6 +86,6 @@ prompt = "Vending keypad"
 shape = SubResource("InteractionShape")
 
 [node name="DispensePoint" type="Marker3D" parent="."]
-position = Vector3(-0.62, 1.20, -0.85)
+position = Vector3(-0.62, 1.25, -0.925)
 
 [editable path="Keypad"]

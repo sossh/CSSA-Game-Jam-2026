@@ -164,7 +164,7 @@ transform = Transform3D(18, 0, 0, 0, 3, 0, 0, 0, 26, 0, -1.9, 3)
 mesh = SubResource("ObservationWallMesh")
 
 [node name="SurfaceRamp" parent="Room" unique_id=324533511 instance=ExtResource("2")]
-transform = Transform3D(3, 0, 0, 0, 0.23883413, -2.659682, 0, 0.073880054, 8.598028, 3, -1.44, 20.25)
+transform = Transform3D(3, 0, 0, 0, 0.23883413, -4.46826, 0, 0.073880054, 14.44308, 3, -2.344289, 23.172526)
 
 [node name="FrontWall" parent="Room" unique_id=26696336 instance=ExtResource("2")]
 transform = Transform3D(18, 0, 0, 0, 5, 0, 0, 0, 0.3, 0, 2.5, -10)
@@ -670,10 +670,12 @@ transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -6.95, 0, 8.45)
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 6.95, 0, 8.45)
 
 [node name="VendingMachine" parent="Hallway" unique_id=869019490 instance=ExtResource("5")]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -6.5, 0, 13)
+position = Vector3(-8.25, 0, 13.9)
+rotation = Vector3(0, -1.5707963, 0)
 
 [node name="VendingMachine2" parent="Hallway" instance=ExtResource("5")]
-position = Vector3(-3.7, 0, 13)
+position = Vector3(-8.25, 0, 10.3)
+rotation = Vector3(0, -1.5707963, 0)
 
 [node name="Keypad" parent="Hallway/VendingMachine2" index="3"]
 interaction_id = "vending:2"

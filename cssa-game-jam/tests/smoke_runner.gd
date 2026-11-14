@@ -35,14 +35,15 @@ func run_host() -> void:
 		get_tree().quit(1)
 		return
 	var client: int = Game.players.keys().filter(func(id): return id != 1)[0]
+	verify_lunar_collision()
 	Game.start_run()
 	Game.remaining = 60
 	await verify_presentation()
-	teleport(1, Vector3(0, 0.1, 5.7))
-	teleport(client, Vector3(0.6, 0.1, 5.7))
+	teleport(1, Game.world.to_global(Vector3(0, 0.1, 5.7)))
+	teleport(client, Game.world.to_global(Vector3(0.6, 0.1, 5.7)))
 	await wait(0.4)
 	verify(Game.world.items.size() >= 20, "Classroom loot and NPCs spawned")
-	var tomato = Game.world.spawn_item("tomato", Vector3(0, 1.3, 4.8))
+	var tomato = Game.world.spawn_item("tomato", Game.world.to_global(Vector3(0, 1.3, 4.8)))
 	await wait(0.1)
 	Game.world.interact(1, tomato.entity_id)
 	Game.world.interact(client, tomato.entity_id)
@@ -63,22 +64,28 @@ func run_host() -> void:
 	await wait(0.4)
 	verify(Game.world.player_nodes[client].ragdoll.get_instance_id() == ragdoll_id and Game.players[client].limbs.size() == 6, "Existing scene ragdoll resets for another launch")
 	await wait(Game.config.player.ragdoll_seconds + 0.1)
-	teleport(1, Game.world.vending_position + Vector3(0, 0, -2))
+	var first_machine: Node3D = Game.world.get_node("Hallway/VendingMachine")
+	teleport(1, first_machine.to_global(Vector3(0, 0, -2)))
 	Game.players[1].money = 100
 	await wait(0.15)
+	var ui := get_tree().current_scene.get_node("UI")
+	Game.world.interact(1, "vending")
+	verify(ui.vending_panel.visible and ui.vending_machine_id == "vending", "First keypad opens vending from the hallway")
+	ui.close_vending()
 	var count: int = Game.world.items.size()
 	Game.world.buy(1, "chips")
 	verify(Game.players[1].money == 93 and Game.world.items.size() == count + 1, "Vending charges once and spawns a physical purchase")
 	Game.world.buy(1, "gun")
 	verify(Game.players[1].money == 93, "Grade lock rejects gun purchase")
-	teleport(1, Vector3(2, 0, -5.2))
-	var drug = Game.world.spawn_item("drug", Vector3(2, 1.2, -5.2))
+	await verify_second_vending_machine()
+	teleport(1, Game.world.to_global(Vector3(2, 0, -5.2)))
+	var drug = Game.world.spawn_item("drug", Game.world.to_global(Vector3(2, 1.2, -5.2)))
 	await wait(0.1)
 	Game.world.interact(1, drug.entity_id)
 	Game.world.interact(1, "coffee")
 	verify(Game.world.teacher.drugs == 1 and Game.players[1].held == "", "Drug is consumed into coffee")
-	teleport(1, Vector3(0, 0, 5))
-	teleport(client, Vector3(1, 0, 5))
+	teleport(1, Game.world.to_global(Vector3(0, 0, 5)))
+	teleport(client, Game.world.to_global(Vector3(1, 0, 5)))
 	await wait(0.2)
 	Game.start_class()
 	Game.remaining = 60
@@ -97,15 +104,15 @@ func run_host() -> void:
 	verify(Game.players[1].stomach > 70 and Game.players[1].food == 25, "Eating restores stomach and records allowance food")
 	verify(not Game.world.items.has(apple.entity_id) if is_instance_valid(apple) else true, "Eaten item consumed")
 	var teacher = Game.world.teacher
-	teacher.global_position = Vector3(0, 0, -7)
+	teacher.global_position = teacher.board
 	teacher.fsm.force_change_state("LectureState")
 	teacher.suspicion = 0
-	NoiseBus.emit_noise(Vector3(0, 0, 5), 250, str(1), "gunshot")
+	NoiseBus.emit_noise(teacher.global_position + Vector3.BACK * 3.0, 250, str(1), "gunshot")
 	verify(teacher.get_current_state_name() in ["shootstate", "investigatestate"], "Over-threshold noise catches/investigates during lecture")
 	teacher.fsm.force_change_state("LectureState")
 	teacher.suspicion = 0
 	teacher.last_check = Game.elapsed
-	NoiseBus.emit_noise(Vector3(0, 0, 5), 65, str(1), "crunch")
+	NoiseBus.emit_noise(Game.world.to_global(Vector3(0, 0, 5)), 65, str(1), "crunch")
 	verify(teacher.get_current_state_name() == "lecturestate", "Check cooldown blocks repeated low-noise turns")
 	var balance: int = Game.players[client].money
 	Game.kill(client, "test clone")
@@ -122,8 +129,8 @@ func run_host() -> void:
 	Game.start_run()
 	Game.remaining = 60
 	verify(Game.phase == "preparation" and Game.survived == 0 and Game.players[1].alive, "Host can restart a wiped run")
-	teleport(1, Vector3(0, 0, 5))
-	teleport(client, Vector3(1, 0, 5))
+	teleport(1, Game.world.to_global(Vector3(0, 0, 5)))
+	teleport(client, Game.world.to_global(Vector3(1, 0, 5)))
 	await wait(0.5)
 	for arg in OS.get_cmdline_user_args():
 		if arg.begins_with("--smoke-screenshot="):
@@ -133,6 +140,59 @@ func run_host() -> void:
 	print("SMOKE_HOST_", "FAILED" if failed else "PASSED")
 	await wait(1)
 	get_tree().quit(1 if failed else 0)
+
+func verify_second_vending_machine() -> void:
+	var world := Game.world
+	var machine: Node3D = world.get_node("Hallway/VendingMachine2")
+	var keypad: Node3D = machine.get_node("Keypad")
+	var tray: StaticBody3D = machine.get_node("PickupTray")
+	var point: Marker3D = machine.get_node("DispensePoint")
+	teleport(1, machine.to_global(Vector3(0, 0, -2)))
+	await wait(0.15)
+	var space := world.get_world_3d().direct_space_state
+	var eye := machine.to_global(Vector3(-0.63, 1.55, -2))
+	var keypad_hit := space.intersect_ray(PhysicsRayQueryParameters3D.create(eye, keypad.global_position, 17))
+	verify(keypad_hit.get("collider") == keypad, "Second keypad can be aimed at from the hallway")
+	var cabinet_hit := space.intersect_ray(PhysicsRayQueryParameters3D.create(
+		machine.to_global(Vector3(0, 1.4, -2)), machine.to_global(Vector3(0, 1.4, 0)), 1))
+	verify(cabinet_hit.get("collider") == machine.get_node("Case"), "Second cabinet collider faces the hallway")
+	var tray_hit := space.intersect_ray(PhysicsRayQueryParameters3D.create(point.global_position, point.global_position + Vector3.DOWN, 1))
+	verify(tray_hit.get("collider") == tray, "Second machine dispenses above its own tray")
+	var ui := get_tree().current_scene.get_node("UI")
+	Game.world.interact(1, "vending:2")
+	verify(ui.vending_panel.visible and ui.vending_machine_id == "vending:2", "Second keypad opens its own vending")
+	ui.close_vending()
+	var balance: int = Game.players[1].money
+	var existing_items: Array = world.items.keys()
+	world.buy(1, "chips", "vending:2")
+	var purchases: Array = world.items.keys().filter(func(id): return not id in existing_items)
+	verify(Game.players[1].money == balance - ItemDB.get_item("chips").price and purchases.size() == 1,
+		"Second machine charges once and dispenses one item")
+	if purchases.size() != 1: return
+	var item: Node3D = world.items[purchases[0]]
+	verify(item.global_position.is_equal_approx(point.global_position), "Second purchase starts at its dispense marker")
+	await wait(0.6)
+	if is_instance_valid(item):
+		var landing := tray.to_local(item.global_position)
+		verify(absf(landing.x) < 0.4 and absf(landing.z) < 0.4 and landing.y > 0.035 and landing.y < 0.23,
+			"Second purchase lands on the pickup tray")
+		world.remove_item(purchases[0])
+	else:
+		verify(false, "Second purchase survives the drop")
+	Game.players[1].money = balance
+
+func verify_lunar_collision() -> void:
+	var world := Game.world
+	var ground := world.get_node("PlanetSurface/Ground")
+	var space := world.get_world_3d().direct_space_state
+	var crater := Vector3(-3.43, 0, 30.05)
+	var rim := crater + Vector3.RIGHT * 1.72
+	var floor_hit := space.intersect_ray(PhysicsRayQueryParameters3D.create(
+		world.to_global(crater + Vector3.UP * 5), world.to_global(crater + Vector3.DOWN * 12), 1))
+	var rim_hit := space.intersect_ray(PhysicsRayQueryParameters3D.create(
+		world.to_global(rim + Vector3.UP * 5), world.to_global(rim + Vector3.DOWN * 12), 1))
+	verify(floor_hit.get("collider") == ground and rim_hit.get("collider") == ground
+		and rim_hit.position.y - floor_hit.position.y > 0.4, "Lunar collision follows the crater floor and rim")
 
 func verify_scene_nodes() -> void:
 	# Detached scenes have not run _ready: these nodes must be authored in .tscn.

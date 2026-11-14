@@ -19,6 +19,7 @@ var target_id: String = ""
 var interaction_text: String = ""
 
 func _ready() -> void:
+	floor_snap_length = Game.config.player.floor_snap_length
 	local = peer_id == multiplayer.get_unique_id()
 	color = Color.from_hsv(fmod(peer_id * 0.173, 1.0), 0.55, 0.95)
 	visual.set_color(color)

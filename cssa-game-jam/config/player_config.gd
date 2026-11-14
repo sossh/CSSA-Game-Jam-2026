@@ -7,6 +7,7 @@ extends Resource
 @export var acceleration: float = 30.0
 @export var gravity: float = 15.0
 @export var jump_speed: float = 5.0
+@export_range(0.0, 2.0, 0.05, "suffix:m") var floor_snap_length: float = 0.35
 @export var spectate_speed: float = 8.0
 @export var energy_speed_multiplier: float = 1.8
 @export var energy_boost_seconds: float = 12.0
