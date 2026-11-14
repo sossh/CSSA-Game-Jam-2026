@@ -60,11 +60,6 @@ albedo_color = Color(0.3, 0.33, 0.36, 1)
 metallic = 0.35
 roughness = 0.45
 
-[sub_resource type="StandardMaterial3D" id="ObservationGlass"]
-transparency = 1
-shading_mode = 0
-albedo_color = Color(1, 1, 1, 0)
-
 [sub_resource type="StandardMaterial3D" id="DoorMaterial"]
 albedo_color = Color(0.33, 0.36, 0.38, 1)
 metallic = 0.6
@@ -296,33 +291,27 @@ transform = Transform3D(0.3, 0, 0, 0, 5, 0, 0, 0, 26, -9, 2.5, 3)
 visible = false
 
 [node name="ObservationWindow" type="Node3D" parent="Room" unique_id=1482292786]
-editor_description = "LeftWall provides continuous collision behind the window and its frame. Sill, Header and the two jambs frame the 14 m window; School Kit walls (Room/Finish/Walls/Left*) cover the rest of the left wall."
+editor_description = "LeftWall provides continuous collision behind the window and its frame. Sill and header bridge the wall thickness to meet the exterior trim. The jambs project into the opening so their end faces clear the wall module ends; School Kit walls (Room/Finish/Walls/Left*) cover the rest of the left wall."
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -9, 0, 0)
 
 [node name="Sill" type="MeshInstance3D" parent="Room/ObservationWindow" unique_id=1088728733]
-transform = Transform3D(0.34, 0, 0, 0, 1.2, 0, 0, 0, 14.4, 0, 0.6, 0)
+transform = Transform3D(0.52, 0, 0, 0, 1.2, 0, 0, 0, 14.4, -0.07, 0.6, 0)
 material_override = SubResource("ObservationFrameMaterial")
 mesh = SubResource("ObservationWallMesh")
 
 [node name="Header" type="MeshInstance3D" parent="Room/ObservationWindow" unique_id=369304707]
-transform = Transform3D(0.34, 0, 0, 0, 0.6, 0, 0, 0, 14.4, 0, 4.7, 0)
+transform = Transform3D(0.52, 0, 0, 0, 0.6, 0, 0, 0, 14.4, -0.07, 4.7, 0)
 material_override = SubResource("ObservationFrameMaterial")
 mesh = SubResource("ObservationWallMesh")
 
 [node name="FrontPier" type="MeshInstance3D" parent="Room/ObservationWindow" unique_id=1147975498]
-transform = Transform3D(0.34, 0, 0, 0, 3.2, 0, 0, 0, 0.2, 0, 2.8, -7.1)
+transform = Transform3D(0.55, 0, 0, 0, 3.28, 0, 0, 0, 0.31, -0.045, 2.8, -7.095)
 material_override = SubResource("ObservationFrameMaterial")
 mesh = SubResource("ObservationWallMesh")
 
 [node name="RearPier" type="MeshInstance3D" parent="Room/ObservationWindow" unique_id=2114340451]
-transform = Transform3D(0.34, 0, 0, 0, 3.2, 0, 0, 0, 0.2, 0, 2.8, 7.1)
+transform = Transform3D(0.55, 0, 0, 0, 3.28, 0, 0, 0, 0.31, -0.045, 2.8, 7.095)
 material_override = SubResource("ObservationFrameMaterial")
-mesh = SubResource("ObservationWallMesh")
-
-[node name="Glass" type="MeshInstance3D" parent="Room/ObservationWindow" unique_id=990047496]
-transform = Transform3D(0.04, 0, 0, 0, 3.2, 0, 0, 0, 14, 0, 2.8, 0)
-material_override = SubResource("ObservationGlass")
-cast_shadow = 0
 mesh = SubResource("ObservationWallMesh")
 
 [node name="RightWall" parent="Room" unique_id=1706351095 instance=ExtResource("2")]

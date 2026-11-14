@@ -23,7 +23,6 @@ extends CanvasLayer
 @onready var vending_grid_layout: VBoxContainer = %VendingGridLayout
 @onready var vending_grid: GridContainer = %VendingGrid
 @onready var vending_scroll: ScrollContainer = %VendingScroll
-@onready var vending_balance: Label = %VendingBalance
 @onready var tint: ColorRect = %DamageTint
 @onready var death_filter: ColorRect = %DeathFilter
 @onready var wasted_container: CenterContainer = %WastedContainer
@@ -120,12 +119,11 @@ func open_vending(machine_id: String = "vending") -> void:
 		card.configure(data, falcon)
 		card.pressed.connect(purchase_item.bind(data.id))
 	vending_scroll.scroll_vertical = 0
-	update_vending_balance(balance)
+	update_vending_affordability(balance)
 	vending_panel.show()
 	update_mouse()
 
-func update_vending_balance(balance: int) -> void:
-	vending_balance.text = "Balance ₿%d" % balance
+func update_vending_affordability(balance: int) -> void:
 	for card: VendingCard in vending_grid.get_children():
 		card.update_affordability(balance, pending_purchase != 0)
 
@@ -136,7 +134,7 @@ func purchase_item(item_id: String) -> void:
 	if player.money < ItemDB.get_item(item_id).price: return
 	vending_sequence += 1
 	pending_purchase = vending_sequence
-	update_vending_balance(player.money)
+	update_vending_affordability(player.money)
 	Game.request("buy", {"item": item_id, "machine": vending_machine_id, "request_id": pending_purchase})
 
 func connected() -> void:
@@ -238,7 +236,7 @@ func _process(delta: float) -> void:
 		teacher_state_name = Game.world.teacher.fsm.current_state.display_name
 	debug.text = "FPS %d | Teacher %s | Suspicion %.1f | Items %d" % [Engine.get_frames_per_second(), teacher_state_name, Game.world.teacher.suspicion, Game.world.items.size()]
 	if vending_panel.visible:
-		update_vending_balance(p.money)
+		update_vending_affordability(p.money)
 		if not p.alive or Game.phase not in ["lobby", "preparation", "break"]: close_vending()
 
 func trigger_wasted() -> void:
@@ -267,7 +265,7 @@ func on_effect(kind: String, data: Dictionary) -> void:
 			close_vending()
 		else:
 			pending_purchase = 0
-			update_vending_balance(data.balance)
+			update_vending_affordability(data.balance)
 	if kind == "vending" and data.id == multiplayer.get_unique_id(): open_vending(data.get("machine", "vending"))
 	if kind == "killed" and data.id == multiplayer.get_unique_id(): trigger_wasted()
 	if kind in ["hurt", "splat"] and data.id == multiplayer.get_unique_id():
