@@ -1,0 +1,18 @@
+[gd_resource type="ShaderMaterial" load_steps=4 format=3]
+
+[ext_resource type="Shader" path="res://world/lunar/materials/regolith.gdshader" id="1"]
+
+[sub_resource type="FastNoiseLite" id="Noise"]
+seed = 7
+frequency = 0.012
+fractal_octaves = 4
+
+[sub_resource type="NoiseTexture2D" id="Grain"]
+width = 512
+height = 512
+seamless = true
+noise = SubResource("Noise")
+
+[resource]
+shader = ExtResource("1")
+shader_parameter/grain = SubResource("Grain")

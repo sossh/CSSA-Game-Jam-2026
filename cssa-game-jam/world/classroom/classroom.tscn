@@ -23,6 +23,11 @@
 
 [ext_resource type="PackedScene" path="res://world/classroom/props/vending_snack_display.tscn" id="21_vending_snacks"]
 [ext_resource type="PackedScene" path="res://world/classroom/props/vending_drink_display.tscn" id="22_vending_drinks"]
+[ext_resource type="PackedScene" path="res://world/classroom/props/exterior_shell.tscn" id="23_exterior"]
+[ext_resource type="PackedScene" path="res://world/lunar/outpost/lunar_outpost.tscn" id="24_outpost"]
+[ext_resource type="Material" path="res://world/classroom/materials/hull_foundation.tres" id="25_foundation"]
+[ext_resource type="Material" path="res://world/classroom/materials/hull_ramp.tres" id="26_ramp"]
+[ext_resource type="Sky" path="res://world/lunar/materials/space_sky.tres" id="27_sky"]
 
 [sub_resource type="StandardMaterial3D" id="FloorMaterial"]
 albedo_color = Color(0.18, 0.22, 0.3, 1)
@@ -91,9 +96,9 @@ material = SubResource("LobbyFixtureMaterial")
 size = Vector3(0.16, 1.6, 0.16)
 
 [sub_resource type="Environment" id="Environment"]
-background_mode = 1
-background_color = Color(0.004, 0.005, 0.012, 1)
-ambient_light_source = 3
+background_mode = 2
+sky = ExtResource("27_sky")
+ambient_light_source = 2
 ambient_light_color = Color(0.86, 0.84, 0.8, 1)
 ambient_light_energy = 0.55
 tonemap_mode = 3
@@ -107,6 +112,8 @@ transform = Transform3D(1.7169118, 0, 0, 0, 1.7169118, 0, 0, 0, 1.7169118, 0, -1
 
 [node name="LunarLaunchSite" parent="." unique_id=2097573954 instance=ExtResource("11_launch_site")]
 transform = Transform3D(-0.44936123, 0, 0.034460206, 0, 0.4506805, 0, -0.034460206, 0, -0.44936123, -7.443264, -8.662841, 55.50866)
+
+[node name="LunarOutpost" parent="." instance=ExtResource("24_outpost")]
 
 [node name="Room" type="Node3D" parent="." unique_id=1281839070]
 
@@ -165,10 +172,14 @@ material_override = SubResource("FloorMaterial")
 
 [node name="Foundation" type="MeshInstance3D" parent="Room" unique_id=633051787]
 transform = Transform3D(18, 0, 0, 0, 3, 0, 0, 0, 26, 0, -1.9, 3)
+material_override = ExtResource("25_foundation")
 mesh = SubResource("ObservationWallMesh")
 
 [node name="SurfaceRamp" parent="Room" unique_id=324533511 instance=ExtResource("2")]
 transform = Transform3D(3, 0, 0, 0, 0.23883413, -4.46826, 0, 0.073880054, 14.44308, 3, -2.344289, 23.172526)
+
+[node name="Mesh" parent="Room/SurfaceRamp" index="0"]
+material_override = ExtResource("26_ramp")
 
 [node name="FrontWall" parent="Room" unique_id=26696336 instance=ExtResource("2")]
 transform = Transform3D(18, 0, 0, 0, 5, 0, 0, 0, 0.3, 0, 2.5, -10)
@@ -461,6 +472,8 @@ transform = Transform3D(0, 0, 0.72093, 0, 1.66667, 0, -1, 0, 0, -9, 0, 10.15)
 transform = Transform3D(0, 0, 0.72093, 0, 1.66667, 0, -1, 0, 0, -9, 0, 14.15)
 
 [node name="Roof" parent="Room" instance=ExtResource("21_roof")]
+
+[node name="Exterior" parent="Room" instance=ExtResource("23_exterior")]
 
 [node name="Desks" type="Node3D" parent="." unique_id=622476237]
 
@@ -769,6 +782,7 @@ current = true
 [editable path="Hallway/VendingMachine2"]
 [editable path="Hallway/CafeCeiling"]
 [editable path="Room/Floor"]
+[editable path="Room/SurfaceRamp"]
 [editable path="Room/LeftWall"]
 [editable path="Room/Door"]
 [editable path="Room/FrontWall"]

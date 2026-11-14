@@ -1,0 +1,10 @@
+[gd_resource type="Sky" load_steps=3 format=3]
+
+[ext_resource type="Shader" path="res://world/lunar/materials/starfield.gdshader" id="1"]
+
+[sub_resource type="ShaderMaterial" id="Starfield"]
+shader = ExtResource("1")
+
+[resource]
+sky_material = SubResource("Starfield")
+radiance_size = 0

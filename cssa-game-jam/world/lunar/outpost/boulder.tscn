@@ -1,0 +1,13 @@
+[gd_scene format=3]
+
+[ext_resource type="PackedScene" path="res://assets/models/galactic_frontier/Rock.fbx" id="1_model"]
+[ext_resource type="Shape3D" path="res://world/lunar/outpost/collision/boulder.res" id="9_shape"]
+
+[node name="Boulder" type="StaticBody3D"]
+editor_description = "Galactic Frontier prop. Boulder centred on its origin; sink it into the terrain. Origin is centred at ground level; collision baked from the mesh."
+
+[node name="Model" parent="." instance=ExtResource("1_model")]
+position = Vector3(36.874, -3.111, -26.869)
+
+[node name="Collision" type="CollisionShape3D" parent="."]
+shape = ExtResource("9_shape")

@@ -1,0 +1,13 @@
+[gd_scene format=3]
+
+[ext_resource type="PackedScene" path="res://assets/models/galactic_frontier/Hab_Combo.fbx" id="1_model"]
+[ext_resource type="Shape3D" path="res://world/lunar/outpost/collision/hab.res" id="9_shape"]
+
+[node name="OutpostHab" type="StaticBody3D"]
+editor_description = "Galactic Frontier prop. Habitat module with power masts. Origin is centred at ground level; collision baked from the mesh."
+
+[node name="Model" parent="." instance=ExtResource("1_model")]
+position = Vector3(0.227, 0, 0.287)
+
+[node name="Collision" type="CollisionShape3D" parent="."]
+shape = ExtResource("9_shape")

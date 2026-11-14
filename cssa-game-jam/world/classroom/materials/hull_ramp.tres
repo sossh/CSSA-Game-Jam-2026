@@ -1,0 +1,17 @@
+[gd_resource type="ShaderMaterial" load_steps=2 format=3]
+
+[ext_resource type="Shader" path="res://world/classroom/materials/hull_panel.gdshader" id="1"]
+
+[resource]
+shader = ExtResource("1")
+shader_parameter/base_color = Color(0.36, 0.37, 0.39, 1)
+shader_parameter/seam_color = Color(0.13, 0.135, 0.145, 1)
+shader_parameter/dust_color = Color(0.42, 0.41, 0.39, 1)
+shader_parameter/panel_size = Vector2(0.75, 0.75)
+shader_parameter/seam_width = 0.04
+shader_parameter/band_enabled = 0.0
+shader_parameter/dust_bottom = -4.0
+shader_parameter/dust_top = 0.0
+shader_parameter/dust_strength = 0.4
+shader_parameter/variation = 0.04
+shader_parameter/metal = 0.5
