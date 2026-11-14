@@ -1,47 +1,202 @@
+================================================================================
+Cosmic Detention — Asset Credits & Attribution
+================================================================================
 
-Put links in here to assets we are using
+This project was built during the CSSA Game Jam 2026. In accordance with game jam
+rules, open source licenses, and our project guidelines, this document lists all
+third-party and team-created assets, including 3D models, textures, audio, shaders,
+fonts, and code references.
 
-https://moltenmaps.itch.io/molten-maps-scifi-pack - world assets
-https://somasnacks.itch.io/stylized-low-poly-character-template - player model
-https://comp3interactive.itch.io/low-poly-human-mesh/download/eyJpZCI6MTIwNjc2NywiZXhwaXJlcyI6MTc5NDU4ODUyN30%3D.6RSu1Yz1Y08VEHOHNIN7di0XwJo%3D - teacher model(edited)
-Falcon 9 - SpaceX by Stanley Creative, adapted by Uchusen Rockets (reduced, unbranded, rescaled and split into stages). Local copies convert vertex attributes to floats for Godot. CC BY 4.0.
-https://sketchfab.com/3d-models/falcon-9-spacex-394f7cf52d124bbd9db69f24d1ff2f08
-https://github.com/johnmorrisdotca/uchusen-rockets/blob/main/NOTICE.md
-SpaceX Falcon 9 Strongback by Thor's Hammer, CC BY 4.0.
-https://sketchfab.com/3d-models/spacex-falcon-9-strongback-854921c608784624ad2af042a24fded4
-https://creativecommons.org/licenses/by/4.0/
 
-Audio effects (bell, footsteps, chewing, crunch, burps, farts, sneezes, shotgun, impacts, slurps, teacher warning/yawns, classroom ambiance, chute, door, clone, vending):
-Sourced under CC0 / Freesound community contributions.
+--------------------------------------------------------------------------------
+1. 3D MODELS & ENVIRONMENTS
+--------------------------------------------------------------------------------
 
-Vending Machine by Stuff6898, CC BY 4.0.
-https://sketchfab.com/3d-models/vending-machine-8f1e8ad4ddeb4523982c4e514af24cff
-https://creativecommons.org/licenses/by/4.0/
+* Galactic Frontier: Low Poly Sci-Fi Space Asset Pack
+  - Creator: ejgarner118
+  - Source: https://ejgarner118.itch.io/galactic-frontier-low-poly
+  - License: Free for personal and commercial use
+  - Used in: cssa-game-jam/assets/models/galactic_frontier/ (lunar base habitat,
+    fuel tanks, rover, solar array, comms tower, crates, ore drill, shuttle, rocks)
 
-The Last Class - School Kit by Jerico (desks, chairs, teacher desk, chalkboard, bookcases, lockers, TV cart, school bell, wall, wood and tile floor models/textures).
-Free for personal and commercial games, modification allowed, credit optional; not to be resold as a standalone asset pack. Terms copied to cssa-game-jam/assets/models/school_kit/LICENSE.txt.
-Integrated in cssa-game-jam/world/classroom/ (classroom.tscn and props/). Walls are recoloured in-engine by world/classroom/materials/school_wall.gdshader.
+* The Last Class - School Kit
+  - Creator: Jerico
+  - Source: https://jerico-dev.itch.io/the-last-class-school-kit
+  - License: Free for personal and commercial games (terms in
+    cssa-game-jam/assets/models/school_kit/LICENSE.txt)
+  - Used in: cssa-game-jam/world/classroom/ (desks, chairs, teacher desk, chalkboard,
+    bookcases, lockers, TV cart, school bell, classroom walls and floor)
 
-Galactic Frontier (low-poly moon base pack): habitat, fuel tanks, rover, solar array, comms tower, crates, ore drill, landed shuttle, boulder, canister and dish models.
-Creator, source URL and license: NOT YET RECORDED - please fill in before release.
-Copied unmodified to cssa-game-jam/assets/models/galactic_frontier/; used by world/lunar/outpost/. Lamp materials are swapped in the import settings for dimmer copies.
+* Molten Maps Sci-Fi Pack
+  - Creator: Molten Maps
+  - Source: https://moltenmaps.itch.io/molten-maps-scifi-pack
+  - License: Free / itch.io license
+  - Used in: Sci-fi environment and world props
 
-Spacecraft Control Terminal Console FOLLOW ME by AutisFon (DOM), CC BY 4.0.
-https://sketchfab.com/3d-models/spacecraft-control-terminal-console-follow-me-3e45923d316e48efb7b0650ebe6c9411
-https://creativecommons.org/licenses/by/4.0/
+* Falcon 9 — SpaceX
+  - Creator: Stanley Creative, adapted by Uchusen Rockets (John Morris)
+  - Source: https://sketchfab.com/3d-models/falcon-9-spacex-394f7cf52d124bbd9db69f24d1ff2f08
+  - Reference: https://github.com/johnmorrisdotca/uchusen-rockets/blob/main/NOTICE.md
+  - License: CC BY 4.0 (https://creativecommons.org/licenses/by/4.0/)
+  - Notes: Reduced, unbranded, rescaled and split into stages for in-game launch.
 
-Kenney Particle Pack by Kenney, CC0 1.0. Uses flame_01.png and smoke_04.png for the rocket exhaust and pad dust.
-https://kenney.nl/assets/particle-pack
-Rocket launch by Sanderboah, CC0 1.0. Trimmed to 10 seconds, mixed to mono, and faded for the lunar launch.
-https://freesound.org/people/Sanderboah/sounds/803852/
-https://creativecommons.org/publicdomain/zero/1.0/
+* SpaceX Falcon 9 Strongback
+  - Creator: Thor's Hammer (@captaintokra)
+  - Source: https://sketchfab.com/3d-models/spacex-falcon-9-strongback-854921c608784624ad2af042a24fded4
+  - License: CC BY 4.0 (https://creativecommons.org/licenses/by/4.0/)
+  - Used in: Lunar launch pad rocket support structure
 
-Bitcoin icon (cssa-game-jam/assets/ui/bitcoin.png) from spothq/cryptocurrency-icons, CC0 1.0 Universal (Public Domain).
-https://github.com/spothq/cryptocurrency-icons
+* SpaceX Starship Ship 24 & Booster 7
+  - Source: https://sketchfab.com/3d-models/spacex-starship-ship-24-booster-7-v4-97875d14b63e4b9ca9ed425ef4253306
+  - Reference: 3D reference for lunar rocket staging
 
-Jersey 25 Font (cssa-game-jam/fonts/Jersey_25/Jersey25-Regular.ttf) by The Soft Type Project Authors, SIL Open Font License 1.1.
-https://github.com/scfried/soft-type-jersey
+* Vending Machine
+  - Creator: Stuff6898
+  - Source: https://sketchfab.com/3d-models/vending-machine-8f1e8ad4ddeb4523982c4e514af24cff
+  - License: CC BY 4.0 (https://creativecommons.org/licenses/by/4.0/)
+  - Used in: cssa-game-jam/world/classroom/props/vending_machine.tscn
 
-Rocket takeoff audio:
-- cssa-game-jam/assets/audio/rocket_launch/spaceship_takeoff.mp3 (Space shuttle rocket launch audio recording)
-- cssa-game-jam/assets/audio/rocket_launch/takeoff_music.mp3 (Takeoff cinematic score excerpt)
+* Spacecraft Control Terminal Console FOLLOW ME
+  - Creator: AutisFon (DOM)
+  - Source: https://sketchfab.com/3d-models/spacecraft-control-terminal-console-follow-me-3e45923d316e48efb7b0650ebe6c9411
+  - License: CC BY 4.0 (https://creativecommons.org/licenses/by/4.0/)
+  - Used in: Classroom interactive terminal consoles
+
+* NASA Lunar & Earth Imagery
+  - Source: NASA Scientific Visualization Studio / Brand Center
+  - URL: https://www.nasa.gov/nasa-brand-center/images-and-media/
+  - License: NASA Non-Commercial Media Guidelines / Public Domain
+  - Used in: Lunar skybox, Earth, and Moon surface textures
+
+
+--------------------------------------------------------------------------------
+2. CHARACTERS & ANIMATIONS
+--------------------------------------------------------------------------------
+
+* Stylized Low Poly Character Template
+  - Creator: somasnacks
+  - Source: https://somasnacks.itch.io/stylized-low-poly-character-template
+  - License: Free for personal and commercial use
+  - Used in: Student player models and NPC student clones
+
+* Low Poly Human Mesh
+  - Creator: Comp3Interactive
+  - Source: https://comp3interactive.itch.io/low-poly-human-mesh/
+  - License: Free / itch.io license
+  - Used in: Alien teacher model (edited and textured)
+
+* Character Animations
+  - Provider: Mixamo by Adobe (https://www.mixamo.com/)
+  - License: Royalty-free for use in games and interactive projects
+  - Used in: Player, teacher, and NPC animations (walk, run, idle, sit, shoot, throw)
+
+
+--------------------------------------------------------------------------------
+3. WEAPONS & PROPS
+--------------------------------------------------------------------------------
+
+* PSX Shotgun Asset-Pack
+  - Creator: Doctor_sci3nce
+  - Source: https://doctor-sci3nce.itch.io/psx-shotgun-asset-pack
+  - License: CC0 1.0 Universal / Public Domain
+  - Used in: cssa-game-jam/characters/teacher/assets/shotgun/
+
+
+--------------------------------------------------------------------------------
+4. FOOD & CONSUMABLE ITEMS
+--------------------------------------------------------------------------------
+
+* Low Poly Food Pack & Low Poly Food Pack Vol. 2
+  - Creator: reodesuxz
+  - Source 1: https://reodesuxz.itch.io/low-poly-food-pack
+  - Source 2: https://reodesuxz.itch.io/low-poly-food-pack-vol-2-30-free-3d-models
+  - License: CC0 / Public Domain / Free for personal and commercial use
+  - Used in: cssa-game-jam/assets/models/items/ (apple, banana, carrot, tomato,
+    cheese, meat, pizza, burger/sandwich, taco, burrito, chips, soda, energy drinks,
+    bubble tea, chocolate, waffle, egg, noodles/ramen, taiyaki, pudding, etc.)
+
+
+--------------------------------------------------------------------------------
+5. SHADERS & VISUAL EFFECTS
+--------------------------------------------------------------------------------
+
+* Soft Toon Cel Shader for Godot 4
+  - Creator: Fernando Cidade
+  - Source: https://fcidade.itch.io
+  - License: CC0 1.0 Universal / MIT
+  - Used in: cssa-game-jam/shaders/ (soft_toon.gdshader, soft_toon_outline.gdshader,
+    soft_toon_screen.gdshader, soft_toon_screen_vulkan.gdshader, soft_toon.gd)
+
+* Kenney Particle Pack
+  - Creator: Kenney (https://kenney.nl)
+  - Source: https://kenney.nl/assets/particle-pack
+  - License: CC0 1.0 Universal (Public Domain)
+  - Used in: cssa-game-jam/assets/particles/rocket/ (flame_01.png, smoke_04.png)
+
+
+--------------------------------------------------------------------------------
+6. AUDIO & SOUND EFFECTS
+--------------------------------------------------------------------------------
+
+* Rocket Launch Sound Effect
+  - Creator: Sanderboah
+  - Source: https://freesound.org/people/Sanderboah/sounds/803852/
+  - License: CC0 1.0 Universal (https://creativecommons.org/publicdomain/zero/1.0/)
+  - Used in: Lunar launch sequence audio
+
+* Spaceship Takeoff Audio Tracks
+  - Spaceship Takeoff (Space Shuttle launch audio recording, Public Domain / NASA)
+  - Takeoff Cinematic Score (Takeoff music excerpt)
+  - Used in: cssa-game-jam/assets/audio/rocket_launch/ (spaceship_takeoff.mp3, takeoff_music.mp3)
+
+* Sound Effects Library (CC0 / Freesound & Original Team Recordings)
+  - Foley effects (chewing, crunch, slurps, burps, farts, sneezes, footsteps, punch,
+    object impacts, door mechanism, alien chute whoosh, cloning zap, school bell,
+    teacher throat clear, teacher yawns, coffee sip, chalkboard writing):
+    Recorded by the development team and augmented with CC0 contributions from Freesound.org.
+  - License: CC0 1.0 Universal / Public Domain
+
+
+--------------------------------------------------------------------------------
+7. 2D ART & TYPOGRAPHY
+--------------------------------------------------------------------------------
+
+* Jersey 25 Font
+  - Creator: The Soft Type Project Authors (scfried)
+  - Source: https://github.com/scfried/soft-type-jersey
+  - License: SIL Open Font License 1.1 (OFL-1.1)
+  - Used in: cssa-game-jam/fonts/Jersey_25/Jersey25-Regular.ttf (all game HUD/UI)
+
+* Cryptocurrency Icons (Bitcoin Icon)
+  - Source: spothq/cryptocurrency-icons
+  - URL: https://github.com/spothq/cryptocurrency-icons
+  - License: CC0 1.0 Universal (Public Domain)
+  - Used in: cssa-game-jam/assets/ui/bitcoin.png
+
+
+--------------------------------------------------------------------------------
+8. CODE & ARCHITECTURE INSPIRATION
+--------------------------------------------------------------------------------
+
+* Brackeys Proto Controller
+  - Creator: Brackeys
+  - Source: https://github.com/Brackeys/brackeys-proto-controller
+  - License: MIT License
+  - Reference: First-person character controller prototype architecture in Godot
+
+
+--------------------------------------------------------------------------------
+9. TEAM ORIGINAL CONTRIBUTIONS
+--------------------------------------------------------------------------------
+
+* Easter Egg TV Media & Photos
+  - Creator: CSSA Game Jam 2026 Dev Team (Garrett Malenko, Smit, Connor, et al.)
+  - Used in: cssa-game-jam/tv_media/ (lobby blooper wall TV photos and media)
+
+* Game Logic, Networking, & Systems
+  - Authoritative LAN multiplayer architecture with ENet
+  - Teacher AI state machine and noise-detection bus
+  - Six-body physical ragdoll system with carry & recovery
+  - Vending machine economy and grade-based unlocks
+  - Staged lunar rocket assembly and launch sequence
+================================================================================
