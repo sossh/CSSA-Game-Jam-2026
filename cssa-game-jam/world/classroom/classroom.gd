@@ -331,7 +331,7 @@ var _mogging_tween: Tween
 ## out over the last MOGGING_FADE_SECONDS before the next class. Ducks the room ambiance while
 ## it plays; silent without a clip.
 func play_mogging() -> void:
-	if DisplayServer.get_name() == "headless" or $MoggingPlayer.playing: return
+	if Game.launch_cinematic_active or DisplayServer.get_name() == "headless" or $MoggingPlayer.playing: return
 	var stream := Sfx.stream_for_event("mogging")
 	if stream == null: return
 	var player: AudioStreamPlayer = $MoggingPlayer
@@ -349,11 +349,15 @@ func play_mogging() -> void:
 	_mogging_tween.parallel().tween_property(ambiance, "volume_db", base_db, fade)
 	_mogging_tween.tween_callback(player.stop)
 
-## Safety net: quickly fades the sting out if it is somehow still playing when class starts.
-func stop_mogging() -> void:
+## Fade at class start, or cut immediately when launch audio takes over.
+func stop_mogging(immediate: bool = false) -> void:
 	var player: AudioStreamPlayer = $MoggingPlayer
-	if not player.playing: return
+	if not player.playing and not (immediate and _mogging_tween and _mogging_tween.is_valid()): return
 	if _mogging_tween: _mogging_tween.kill()
+	if immediate:
+		player.stop()
+		$AmbiancePlayer.volume_db = Sfx.config.classroom_ambiance_db
+		return
 	_mogging_tween = create_tween()
 	_mogging_tween.tween_property(player, "volume_db", -60.0, 0.5)
 	_mogging_tween.parallel().tween_property($AmbiancePlayer, "volume_db", Sfx.config.classroom_ambiance_db, 0.5)
@@ -361,6 +365,8 @@ func stop_mogging() -> void:
 
 func update_rocket_assembly() -> void:
 	var was_showing_launch: bool = launch_site.launch_camera.current
+	if Game.launch_cinematic_active:
+		stop_mogging(true)
 	launch_site.apply_assembly(Game.installed_rocket_parts, Game.rocket_launch_started_at, Game.elapsed)
 	if was_showing_launch and not Game.launch_cinematic_active:
 		var player: StudentPlayer = player_nodes.get(multiplayer.get_unique_id())
