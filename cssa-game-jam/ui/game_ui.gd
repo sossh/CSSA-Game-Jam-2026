@@ -1,14 +1,14 @@
 extends CanvasLayer
 
 @onready var menu: PanelContainer = %Menu
+@onready var menu_music: AudioStreamPlayer = %MenuMusic
 @onready var menu_status: Label = %MenuStatus
 @onready var name_field: LineEdit = %NameField
 @onready var code_field: LineEdit = %CodeField
-@onready var address_field: LineEdit = %AddressField
-@onready var lan_games: OptionButton = %LANGames
-@onready var join_lan_button: Button = %JoinLAN
 @onready var hud: Control = %HUD
+@onready var helmet_visor: ColorRect = %HelmetVisor
 @onready var stats: Label = %Stats
+@onready var game_clock: Label = %GameClock
 @onready var rocket_stage_1: Node2D = %RocketStage1
 @onready var rocket_stage_2: Node2D = %RocketStage2
 @onready var rocket_stage_3: Node2D = %RocketStage3
@@ -31,7 +31,10 @@ extends CanvasLayer
 @onready var wasted_container: CenterContainer = %WastedContainer
 @onready var wasted_label: Label = %WastedLabel
 @onready var crawl_panel: Control = %Crawl
-@onready var crawl_text: Label = %CrawlText
+@onready var crawl_video: VideoStreamPlayer = %CrawlVideo
+@onready var victory_panel: PanelContainer = %Victory
+@onready var cheat_panel: PanelContainer = %CheatMenu
+@onready var cheat_field: LineEdit = %CheatField
 var banner_left: float = 0
 var debug_visible: bool = false
 var wasted_timer: float = 0.0
@@ -44,42 +47,20 @@ func _ready() -> void:
 	Game.announcement.connect(show_banner)
 	Game.effect.connect(on_effect)
 	Net.status_changed.connect(func(message): menu_status.text = message)
-	Net.lan_games_found.connect(show_lan_games)
 	var lobby_status := "Same LAN • 2–%d students • Host runs the classroom" % Game.config.maximum_players
 	menu_status.text = get_tree().get_meta("disconnect_message", lobby_status)
 	get_tree().remove_meta("disconnect_message")
+	if is_instance_valid(menu_music) and menu_music.stream is AudioStreamOggVorbis:
+		menu_music.stream.loop = true
+		if DisplayServer.get_name() != "headless" and menu.visible:
+			menu_music.play()
 	Input.mouse_mode = Input.MOUSE_MODE_VISIBLE
 
 func host_pressed() -> void:
-	var address := address_field.text.strip_edges()
-	if address != "" and (not address.is_valid_ip_address() or ":" in address):
-		menu_status.text = "Host address must be IPv4."
-		return
-	Net.host(name_field.text, address)
+	Net.host(name_field.text)
 
 func join_pressed(_text: String = "") -> void:
 	Net.join(name_field.text, code_field.text)
-
-func find_lan_pressed() -> void:
-	Net.find_lan_games()
-
-func join_lan_pressed() -> void:
-	if lan_games.selected >= 0:
-		Net.join(name_field.text, lan_games.get_item_metadata(lan_games.selected))
-
-func show_lan_games(games: Dictionary) -> void:
-	lan_games.clear()
-	for address in games:
-		lan_games.add_item("%s (%s)" % [games[address], address])
-		lan_games.set_item_metadata(lan_games.item_count - 1, address)
-	var found := not games.is_empty()
-	lan_games.visible = found
-	join_lan_button.visible = found
-	if found:
-		lan_games.select(0)
-		menu_status.text = "Choose a classroom and select Join LAN Game."
-	else:
-		menu_status.text = "No classrooms found. Check that the host is running, or enter their Wi-Fi IP."
 
 func quit_pressed() -> void:
 	get_tree().quit()
@@ -142,18 +123,39 @@ func purchase_item(item_id: String) -> void:
 
 func connected() -> void:
 	reset_wasted()
+	victory_panel.hide()
+	cheat_panel.hide()
 	menu.hide()
+	if is_instance_valid(menu_music):
+		menu_music.stop()
 	hud.show()
 	if DisplayServer.get_name() != "headless" and not "--skip-intro" in OS.get_cmdline_user_args():
 		crawl_panel.show()
+		crawl_video.play()
 	update_mouse()
 
 func close_crawl() -> void:
+	if is_instance_valid(crawl_video):
+		crawl_video.stop()
 	crawl_panel.hide()
 	update_mouse()
 
+func close_cheat_menu() -> void:
+	cheat_field.text = ""
+	cheat_panel.hide()
+	update_mouse()
+
+func submit_cheat_pressed(_text: String = "") -> void:
+	var code := cheat_field.text.strip_edges().trim_prefix("`").trim_prefix("~").strip_edges().to_lower()
+	if code == "cskgb":
+		var id := multiplayer.get_unique_id()
+		if not Game.is_host() and Game.players.has(id):
+			Game.players[id].money += 1000000
+		Game.request("cheat", {"code": code})
+	close_cheat_menu()
+
 func update_mouse() -> void:
-	Game.ui_open = menu.visible or pause_panel.visible or vending_panel.visible or crawl_panel.visible
+	Game.ui_open = menu.visible or pause_panel.visible or vending_panel.visible or crawl_panel.visible or victory_panel.visible or cheat_panel.visible
 	Input.mouse_mode = Input.MOUSE_MODE_VISIBLE if Game.ui_open else Input.MOUSE_MODE_CAPTURED
 
 func _input(event: InputEvent) -> void:
@@ -162,24 +164,52 @@ func _input(event: InputEvent) -> void:
 		get_viewport().set_input_as_handled()
 		return
 	if not Net.active: return
+	if Game.launch_cinematic_active or victory_panel.visible:
+		if event.is_action_pressed("ui_cancel"):
+			get_viewport().set_input_as_handled()
+		return
+	if event.is_action_pressed("cheat_menu"):
+		if cheat_panel.visible:
+			close_cheat_menu()
+		else:
+			cheat_field.text = ""
+			cheat_panel.show()
+			update_mouse()
+			cheat_field.grab_focus()
+		get_viewport().set_input_as_handled()
+		return
 	if event.is_action_pressed("ui_cancel"):
-		if vending_panel.visible: close_vending()
+		if cheat_panel.visible: close_cheat_menu()
+		elif vending_panel.visible: close_vending()
 		else: pause_panel.visible = not pause_panel.visible
 		update_mouse()
 		get_viewport().set_input_as_handled()
-	if Game.launch_cinematic_active: return
 	if event.is_action_pressed("start_run") and not Game.ui_open: Game.request("start")
 	if event.is_action_pressed("debug_hud"): debug_visible = not debug_visible
 
 func _process(delta: float) -> void:
+	if is_instance_valid(menu_music) and DisplayServer.get_name() != "headless":
+		if menu.visible and not menu_music.playing:
+			menu_music.play()
+		elif not menu.visible and menu_music.playing:
+			menu_music.stop()
 	if Game.launch_cinematic_active:
 		if hud.visible:
 			hud.hide()
+			pause_panel.hide()
+			cheat_panel.hide()
 			close_vending()
 			close_crawl()
 			reset_wasted()
 			tint.color.a = 0.0
+		if not victory_panel.visible:
+			pause_panel.hide()
+			victory_panel.show()
+			update_mouse()
 		return
+	if victory_panel.visible:
+		victory_panel.hide()
+		update_mouse()
 	hud.visible = Net.active and not menu.visible
 	banner_left -= delta
 	banner.visible = banner_left > 0
@@ -193,9 +223,6 @@ func _process(delta: float) -> void:
 			var alpha: float = clampf(wasted_timer / 1.0, 0.0, 1.0)
 			wasted_container.modulate.a = alpha
 			if is_instance_valid(death_filter): death_filter.modulate.a = alpha
-	if crawl_panel.visible:
-		crawl_text.position.y -= delta * 45
-		if crawl_text.position.y < -1100: close_crawl()
 	if not Net.active or not Game.players.has(multiplayer.get_unique_id()):
 		if vending_panel.visible: close_vending()
 		if is_instance_valid(death_filter): death_filter.visible = false
@@ -204,6 +231,7 @@ func _process(delta: float) -> void:
 	var id := multiplayer.get_unique_id()
 	var p: Dictionary = Game.players[id]
 	var is_dead: bool = not p.alive or p.mode == "dead"
+	helmet_visor.visible = not is_dead
 	if was_alive and is_dead:
 		trigger_wasted()
 	elif not was_alive and not is_dead:
@@ -216,9 +244,9 @@ func _process(delta: float) -> void:
 	stomach.value = p.stomach
 	var current_gas: float = float(p.get("gas", 0.0))
 	gas_bar.value = current_gas
-	var minutes := int(ceil(Game.remaining) / 60.0)
-	var seconds := int(ceil(Game.remaining)) % 60
-	phase_label.text = "STUDENT: %s\n%s • GRADE %d • %02d:%02d\nJOIN %s • %d classes / %d parts" % [p.name, Game.phase.to_upper(), Game.grade, minutes, seconds, Net.join_code, Game.survived, Game.rocket_parts]
+	var clock_text := Game.clock_text
+	game_clock.text = clock_text
+	phase_label.text = "STUDENT: %s\n%s • GRADE %d • %s\nJOIN %s • %d classes / %d parts" % [p.name, Game.phase.to_upper(), Game.grade, clock_text, Net.join_code, Game.survived, Game.rocket_parts]
 	if Game.phase in ["lobby", "game_over"]:
 		phase_label.text += "\n[ENTER] Host: start new run" if Game.is_host() else "\nWaiting for host"
 	var player = Game.world.player_nodes.get(id)

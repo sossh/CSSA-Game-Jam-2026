@@ -249,7 +249,7 @@ func verify_rocket_vending_machine() -> void:
 	var ui := get_tree().current_scene.get_node("UI")
 	var player: Dictionary = Game.players[1]
 	var balance: int = player.money
-	player.money = 3
+	player.money = 60
 	teleport(1, machine.to_global(Vector3(0, 0, -2)))
 	await wait(0.15)
 	world.interact(1, ItemDB.ROCKET_VENDING)
@@ -259,16 +259,19 @@ func verify_rocket_vending_machine() -> void:
 		"Falcon grid shows exactly three rocket parts in one row")
 	var item_count: int = world.items.size()
 	world.buy(1, "chips", ItemDB.ROCKET_VENDING)
-	verify(player.money == 3 and world.items.size() == item_count, "Falcon cabinet rejects snack purchases")
-	for item_id in ItemDB.FALCON_STOCK:
+	verify(player.money == 60 and world.items.size() == item_count, "Falcon cabinet rejects snack purchases")
+	var prices := [10, 20, 30]
+	for index in ItemDB.FALCON_STOCK.size():
+		var item_id: String = ItemDB.FALCON_STOCK[index]
+		var price: int = prices[index]
 		var card: VendingCard = ui.vending_grid.get_children().filter(func(entry): return entry.item_id == item_id)[0]
-		verify(not card.disabled and card.price == 1, "Falcon card offers " + item_id + " for one Bitcoin")
+		verify(not card.disabled and card.price == price, "Falcon card offers %s for %d Bitcoin" % [item_id, price])
 		var existing_items: Array = world.items.keys()
 		var money: int = player.money
 		card.pressed.emit()
 		verify(not ui.vending_panel.visible, "Successful card purchase closes the menu")
 		var purchases: Array = world.items.keys().filter(func(id): return not id in existing_items)
-		verify(purchases.size() == 1 and player.money == money - 1,
+		verify(purchases.size() == 1 and player.money == money - price,
 			"Falcon card charges once and dispenses one item for " + item_id)
 		if purchases.size() != 1: continue
 		var item: ClassroomItem = world.items[purchases[0]]
@@ -285,9 +288,9 @@ func verify_rocket_vending_machine() -> void:
 	teleport(1, world.get_node("Hallway/VendingMachine").to_global(Vector3(0, 0, -2)))
 	await wait(0.15)
 	item_count = world.items.size()
-	player.money = 1
+	player.money = 10
 	world.buy(1, "rocket")
-	verify(player.money == 1 and world.items.size() == item_count, "Cosmic Crunch rejects rocket parts even with enough money")
+	verify(player.money == 10 and world.items.size() == item_count, "Cosmic Crunch rejects rocket parts even with enough money")
 	player.money = 0
 	world.interact(1, "vending")
 	var regular_rows: Array = ui.vending_grid.get_children()
