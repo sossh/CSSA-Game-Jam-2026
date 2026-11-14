@@ -124,7 +124,7 @@ func _physics_process(delta: float) -> void:
 		rotation.y = lerp_angle(rotation.y, p.yaw, minf(1, delta * 20))
 		pitch = lerpf(pitch, p.pitch, minf(1, delta * 20))
 	head.rotation.x = pitch
-	head.position.y = 1.15 if mode == "seated" else 1.55
+	head.position.y = 1.40 if mode == "seated" else 1.55
 	if local:
 		if charge >= 0: charge += delta
 		if Game.ui_open: charge = -1
@@ -142,9 +142,14 @@ func find_target() -> void:
 	interaction_text = ""
 	if Game.ui_open or not Game.players.has(peer_id): return
 	var p: Dictionary = Game.players[peer_id]
-	var query := PhysicsRayQueryParameters3D.create(camera.global_position, camera.global_position - camera.global_basis.z * Game.config.player.aim_reach, 31, [get_rid()])
+	var exclude: Array[RID] = [get_rid()]
+	if p.mode == "seated" and is_instance_valid(Game.world) and Game.world.interactions.has("seat:" + str(p.seat)):
+		exclude.append(Game.world.interactions["seat:" + str(p.seat)].get_rid())
+	var query := PhysicsRayQueryParameters3D.create(camera.global_position, camera.global_position - camera.global_basis.z * Game.config.player.aim_reach, 31, exclude)
 	var hit := get_world_3d().direct_space_state.intersect_ray(query)
-	if hit.is_empty(): return
+	if hit.is_empty():
+		if p.mode == "seated": interaction_text = "[E] Stand up"
+		return
 	var object = hit.collider
 	if object is Interactable:
 		target_id = object.interaction_id
@@ -158,6 +163,8 @@ func find_target() -> void:
 	elif object is StudentPlayer and Game.players[object.peer_id].alive:
 		target_id = "player:" + str(object.peer_id)
 		interaction_text = "[E] Grab " + Game.players[object.peer_id].name
+	elif p.mode == "seated":
+		interaction_text = "[E] Stand up"
 
 func carry_position() -> Vector3:
 	return head.global_position - head.global_basis.z * 1.15 - Vector3(0, 0.45, 0)

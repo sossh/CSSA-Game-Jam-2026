@@ -3,7 +3,7 @@ extends Resource
 
 @export_group("Rounds")
 @export var preparation_seconds: float = 20.0
-@export var class_seconds: float = 300.0
+@export var class_seconds: float = 120.0
 @export var break_seconds: float = 90.0
 @export_range(2, 6) var maximum_players: int = 6
 

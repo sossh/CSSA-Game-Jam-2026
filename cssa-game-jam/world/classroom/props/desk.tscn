@@ -5,7 +5,7 @@
 [ext_resource type="PackedScene" path="res://assets/models/school_kit/furniture/Desk.glb" id="4"]
 [ext_resource type="PackedScene" path="res://assets/models/school_kit/furniture/Chair.glb" id="5"]
 [sub_resource type="BoxShape3D" id="InteractionShape"]
-size = Vector3(0.8, 1.1, 0.8)
+size = Vector3(0.7, 0.5, 0.7)
 [node name="Desk" type="Node3D"]
 [node name="DeskModel" parent="." instance=ExtResource("4")]
 editor_description = "School Kit desk at 1.1x scale: 1.28 x 0.84 m, top at 0.86 m."
@@ -30,7 +30,7 @@ scale = Vector3(0.08, 0.76, 0.76)
 [node name="Mesh" parent="RightLeg" index="0"]
 visible = false
 [node name="Seat" parent="." instance=ExtResource("2")]
-position = Vector3(0, 0.55, 0.8)
+position = Vector3(0, 0.45, 0.8)
 prompt = "Sit / evict clone"
 [node name="CollisionShape3D" parent="Seat" index="0"]
 shape = SubResource("InteractionShape")

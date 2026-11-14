@@ -84,9 +84,14 @@ func run_host() -> void:
 	Game.remaining = 60
 	Game.world.teacher.fsm.set_physics_process(false)
 	Game.players[1].stomach = 50.0
-	var apple = Game.world.spawn_item("apple", Vector3(0, 1.3, 4.5))
+	teleport(1, Game.world.seat_positions[0], "seated")
+	Game.players[1].seat = 0
+	verify(Game.players[1].mode == "seated", "Player can sit at desk")
+	var desk_pos: Vector3 = Game.world.seat_positions[0] - Vector3(0, 0, 0.8)
+	var apple = Game.world.spawn_item("apple", desk_pos + Vector3(0, 1.05, 0))
 	await wait(0.1)
 	Game.world.interact(1, apple.entity_id)
+	verify(Game.players[1].held == apple.entity_id, "Seated player can pick up food from their desk")
 	Game.world.use_held(1)
 	await wait(Game.config.interactions.eat_seconds + 0.2)
 	verify(Game.players[1].stomach > 70 and Game.players[1].food == 25, "Eating restores stomach and records allowance food")

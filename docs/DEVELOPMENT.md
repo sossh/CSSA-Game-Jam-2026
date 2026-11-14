@@ -29,7 +29,7 @@ Host codes encode IPv4 only. Normal play uses UDP **7777** for gameplay and UDP 
 
 - Host-authoritative teacher, object physics, NPCs, economy, health, seats, ownership and phases. Player movement and six-body jointed ragdolls are simulated by the owning peer for responsiveness.
 - One held thing, including another player or clone. Charged throws, punches, impact noise, tomato splats, knockback and ragdoll recovery.
-- Preparation **20s**, class **300s**, break **90s**.
+- Preparation **20s**, class **120s**, break **90s**.
 - One **Stomach / health** bar. Time and shotgun hits deplete it; food restores it. Eating is a timed exposed action. Low stomach growls, delayed burps and noisy consumables feed the teacher.
 - Teacher: away → entering → lecture / warning / checking / investigating / coffee / caught-shot → leaving. Warning precedes normal checks; random checks have a minimum cooldown. Investigation raises future check frequency. Coffee reduces hearing sensitivity. Sleeping tablets increase coffee frequency and duration.
 - **Lecturing can catch students:** severe noise or accumulated suspicion can trigger a shot/investigation even with the teacher's back turned. Sound draws attention to its physical origin. A seen violation identifies its actor; otherwise nearby position, suspicious behavior and a small random component choose the culprit. The teacher does not magically know an unseen thrower's identity.
