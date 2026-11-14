@@ -85,8 +85,20 @@ func update_motion(is_on_floor: bool, velocity: Vector3, is_sprinting: bool, mod
 
 	if mode == "seated":
 		_is_seated = true
-		if _is_standing_up or _is_throwing:
-			return
+		if _is_standing_up:
+			if anim_player.is_playing() and anim_player.current_animation == "stand_up":
+				return
+			_is_standing_up = false
+			if _queued_throw:
+				_queued_throw = false
+				_is_throwing = true
+				if anim_player.has_animation("throw"):
+					anim_player.play("throw")
+					return
+		if _is_throwing:
+			if anim_player.is_playing() and anim_player.current_animation == "throw":
+				return
+			_is_throwing = false
 		if anim_player.current_animation != "sit":
 			anim_player.play("sit")
 		return

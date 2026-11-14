@@ -102,6 +102,19 @@ func run_host() -> void:
 	Game.players[1].gas = 0.0
 	Game.handle_action(1, "fart", {})
 	verify(Game.players[1].gas == 0.0, "Player with 0% gas cannot fart")
+	var banana = Game.world.spawn_item("banana", desk_pos + Vector3(0, 1.05, 0))
+	await wait(0.1)
+	Game.world.interact(1, banana.entity_id)
+	verify(Game.players[1].held == banana.entity_id, "Seated player can pick up banana")
+	var host_player = Game.world.player_nodes[1]
+	host_player.charge = 0.5
+	var release_event := InputEventAction.new()
+	release_event.action = "throw_item"
+	release_event.pressed = false
+	host_player._unhandled_input(release_event)
+	await wait(0.1)
+	verify(Game.players[1].mode == "seated" and Game.players[1].seat == 0, "Seated player remains seated after throwing")
+	verify(Game.players[1].held == "", "Thrown item leaves hand while seated")
 	var teacher = Game.world.teacher
 	verify(teacher.get_current_state_name() == "lecturestate" and teacher.global_position.distance_to(teacher.board) < 0.2, "Teacher lectures right away at round start")
 	teacher.suspicion = 0
