@@ -444,6 +444,14 @@ transform = Transform3D(0.98125, 0, 0, 0, 1.66667, 0, 0, 0, 0.69767, 2.9625, 0, 
 [node name="PartitionRight2" parent="Room/Finish/Walls" instance=ExtResource("12_kit_wall")]
 transform = Transform3D(0.98125, 0, 0, 0, 1.66667, 0, 0, 0, 0.69767, 6.8875, 0, 8)
 
+[node name="CornerRightPartition" parent="Room/Finish/Walls" instance=ExtResource("12_kit_wall")]
+editor_description = "Fills the 0.3 m column where the east wall meets the partition so the corner seam cannot crack open. Sits 1 cm proud of both wall faces."
+transform = Transform3D(0.08, 0, 0, 0, 1.66667, 0, 0, 0, 0.744186, 9, 0, 8)
+
+[node name="CornerLeftPartition" parent="Room/Finish/Walls" instance=ExtResource("12_kit_wall")]
+editor_description = "Mirror of CornerRightPartition for the west wall and partition corner."
+transform = Transform3D(0.08, 0, 0, 0, 1.66667, 0, 0, 0, 0.744186, -9, 0, 8)
+
 [node name="DoorLintel" parent="Room/Finish/Walls" instance=ExtResource("12_kit_wall")]
 transform = Transform3D(0.5, 0, 0, 0, 0.5, 0, 0, 0, 0.69767, 0, 3.5, 8)
 
