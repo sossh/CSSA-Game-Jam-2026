@@ -1,27 +1,38 @@
-[gd_scene load_steps=5 format=3]
-[ext_resource type="Script" path="res://characters/player/network_player.gd" id="1"]
-[ext_resource type="PackedScene" path="res://characters/player/player_visual.tscn" id="2"]
+[gd_scene format=3 uid="uid://e6ukdt6yktgb"]
+
+[ext_resource type="Script" uid="uid://dca0w2ppv1vjl" path="res://characters/player/network_player.gd" id="1"]
+[ext_resource type="PackedScene" uid="uid://d2so5464s4ow0" path="res://characters/player/player_visual.tscn" id="2"]
 [ext_resource type="PackedScene" path="res://characters/player/ragdoll.tscn" id="3"]
+
 [sub_resource type="CapsuleShape3D" id="PlayerShape"]
 radius = 0.3
-height = 1.75
-[node name="Player" type="CharacterBody3D"]
+height = 1.2192383
+
+[node name="Player" type="CharacterBody3D" unique_id=161801698]
 collision_layer = 2
-collision_mask = 1
 script = ExtResource("1")
-[node name="CollisionShape3D" type="CollisionShape3D" parent="."]
-position = Vector3(0, 0.88, 0)
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="." unique_id=1990381942]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.61461914, 0)
 shape = SubResource("PlayerShape")
-[node name="Visual" parent="." instance=ExtResource("2")]
-[node name="Head" type="Node3D" parent="."]
-position = Vector3(0, 1.55, 0)
-[node name="Camera" type="Camera3D" parent="Head"]
+
+[node name="Visual" parent="." unique_id=1120957008 instance=ExtResource("2")]
+transform = Transform3D(-120, 0, -1.0490733e-05, 0, 120, 0, 1.0490733e-05, 0, -120, 0, 0, 0)
+
+[node name="Head" type="Node3D" parent="." unique_id=881676137]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.0576386, 0)
+
+[node name="Camera" type="Camera3D" parent="Head" unique_id=2087072529]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.06588602, 0)
 fov = 82.0
-[node name="AudioListener3D" type="AudioListener3D" parent="Head/Camera"]
-[node name="NameLabel" type="Label3D" parent="."]
-position = Vector3(0, 2.05, 0)
+
+[node name="AudioListener3D" type="AudioListener3D" parent="Head/Camera" unique_id=1737556082]
+
+[node name="NameLabel" type="Label3D" parent="." unique_id=969072512]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 2.05, 0)
 billboard = 1
 text = "Transfer student"
 font_size = 26
 outline_size = 5
-[node name="Ragdoll" parent="." instance=ExtResource("3")]
+
+[node name="Ragdoll" parent="." unique_id=1777804562 instance=ExtResource("3")]

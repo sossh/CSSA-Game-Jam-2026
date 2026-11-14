@@ -11,6 +11,7 @@ height = 1.2
 albedo_color = Color(1, 0, 1, 1)
 
 [node name="Player" type="CharacterBody3D" unique_id=1743761909]
+transform = Transform3D(-1, 0, -8.742278e-08, 0, 1, 0, 8.742278e-08, 0, -1, 0, 0, 0)
 script = ExtResource("1_rkbax")
 
 [node name="CollisionShape3D" type="CollisionShape3D" parent="." unique_id=806897035]
