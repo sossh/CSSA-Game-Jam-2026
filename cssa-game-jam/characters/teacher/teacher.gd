@@ -52,6 +52,10 @@ func _ready() -> void:
 	destination = lounge
 	NoiseBus.noise_made.connect(hear)
 
+func _exit_tree() -> void:
+	if chalk_audio and chalk_audio.playing:
+		chalk_audio.stop()
+
 func start_class() -> void:
 	suspicion = 0.0
 	alertness = 0.0

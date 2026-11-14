@@ -7,7 +7,7 @@ func enter() -> void:
 	var cooldown := randf_range(tuning.check_min_seconds, tuning.check_max_seconds)
 	var urgency_modifier := 1.0 + (teacher.alertness * tuning.check_alertness_scale) + ((Game.grade - 1) * tuning.check_grade_scale)
 	teacher.next_check = Game.elapsed + (cooldown / urgency_modifier)
-	if teacher.chalk_audio.stream and not teacher.chalk_audio.playing:
+	if DisplayServer.get_name() != "headless" and teacher.chalk_audio.stream and not teacher.chalk_audio.playing:
 		teacher.chalk_audio.play()
 
 func exit() -> void:
