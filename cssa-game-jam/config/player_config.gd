@@ -24,6 +24,19 @@ extends Resource
 @export var sprint_step_loudness: float = 16.0
 @export_range(0.01, 1.57, 0.01, "radians_as_degrees") var pitch_limit_radians: float = 1.45
 
+@export_group("Camera feel")
+@export var camera_feel_enabled: bool = true
+@export_range(0.0, 3.0, 0.05) var camera_feel_intensity: float = 1.0
+@export_range(0.0, 0.1, 0.001, "suffix:m") var bob_vertical: float = 0.035
+@export_range(0.0, 0.1, 0.001, "suffix:m") var bob_horizontal: float = 0.018
+@export_range(0.0, 5.0, 0.05, "suffix:deg") var bob_roll_degrees: float = 0.6
+@export_range(0.0, 5.0, 0.05, "suffix:deg") var strafe_roll_degrees: float = 1.6
+@export_range(0.0, 3.0, 0.05, "suffix:cycles/m") var bob_cycles_per_meter: float = 0.55
+@export_range(0.0, 20.0, 0.5, "suffix:deg") var sprint_fov_boost: float = 6.0
+@export_range(0.0, 0.5, 0.005, "suffix:m") var landing_dip: float = 0.12
+@export_range(0.0, 3.0, 0.05, "suffix:deg") var jump_kick_degrees: float = 1.2
+@export_range(1.0, 30.0, 0.5) var camera_feel_smoothing: float = 12.0
+
 @export_group("Carrying and recovery")
 @export_range(0.01, 10.0, 0.01, "or_greater", "suffix:s") var throw_charge_seconds: float = 1.0
 @export var ragdoll_seconds: float = 2.5
