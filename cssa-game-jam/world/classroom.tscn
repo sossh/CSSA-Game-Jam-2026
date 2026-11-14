@@ -419,7 +419,13 @@ spot_angle = 52.0
 spot_angle_attenuation = 0.55
 
 [node name="VendingMachine" parent="Hallway" unique_id=869019490 instance=ExtResource("5")]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 5, 0, 13)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -6.5, 0, 13)
+
+[node name="VendingMachine2" parent="Hallway" instance=ExtResource("5")]
+position = Vector3(-3.7, 0, 13)
+
+[node name="Keypad" parent="Hallway/VendingMachine2" index="3"]
+interaction_id = "vending:2"
 
 [node name="TransferChute" parent="Hallway" unique_id=1288543665 instance=ExtResource("7")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 13.8)
@@ -498,8 +504,8 @@ current = true
 [node name="AmbiancePlayer" type="AudioStreamPlayer" parent="." unique_id=1849182041]
 stream = ExtResource("12_ambiance")
 volume_db = -26.0
-autoplay = true
 
+[editable path="Hallway/VendingMachine2"]
 [editable path="Hallway/CafeCeiling"]
 [editable path="Room/Floor"]
 [editable path="Room/LeftWall"]

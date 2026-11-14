@@ -6,6 +6,7 @@ var cache: Dictionary = {}
 const SOUND_SCENE := preload("res://effects/positional_sound.tscn")
 
 func play_at(key: String, position: Vector3, loudness: float = 40.0) -> void:
+	if DisplayServer.get_name() == "headless": return
 	if not cache.has(key):
 		var streams: Array[AudioStream] = []
 		var folder := "res://assets/audio/" + key

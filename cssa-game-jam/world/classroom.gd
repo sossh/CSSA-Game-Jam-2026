@@ -42,6 +42,8 @@ func _enter_tree() -> void:
 	Game.world = self
 
 func _ready() -> void:
+	if DisplayServer.get_name() != "headless":
+		$AmbiancePlayer.play()
 	grid = AStarGrid2D.new()
 	grid.region = Rect2i(-16, -18, 33, 34)
 	grid.cell_size = Vector2(0.5, 0.5)
@@ -242,8 +244,8 @@ func interact(id: int, target: String) -> void:
 	if p.position.distance_to(at) > 4: return
 	if not has_reach(id, at): return
 	if p.eat_until > Game.elapsed: return
-	if target == "vending":
-		if Game.phase in ["lobby", "preparation", "break"]: Game.event.rpc("vending", {"id": id})
+	if target == "vending" or target == "vending:2":
+		if Game.phase in ["lobby", "preparation", "break"]: Game.event.rpc("vending", {"id": id, "machine": target})
 		return
 	if target == "coffee":
 		if Game.phase not in ["lobby", "preparation", "break"]: return
@@ -383,16 +385,18 @@ func hit_body(body: Node, damage: float, impulse: Vector3, reason: String) -> vo
 		body.release(body.global_position, impulse, "")
 	elif body is ClassroomTeacher: body.provoked("", body.global_position)
 
-func buy(id: int, item_id: String) -> void:
+func buy(id: int, item_id: String, machine_id: String = "vending") -> void:
 	if Game.phase not in ["lobby", "preparation", "break"] or not ItemDB.items.has(item_id): return
 	var p: Dictionary = Game.players[id]
 	var data: ItemData = ItemDB.get_item(item_id)
-	if p.position.distance_to(vending_position) > 4.5 or data.minimum_grade > Game.grade or p.money < data.price: return
+	if machine_id != "vending" and machine_id != "vending:2": return
+	var machine: Node3D = interactions[machine_id].get_parent()
+	if p.position.distance_to(machine.global_position) > 4.5 or data.minimum_grade > Game.grade or p.money < data.price: return
 	if items.size() >= Game.config.max_loose_items: return
 	p.money -= data.price
 	Game.log_activity("%s buys %s for ₿%d." % [p.name, data.display_name, data.price])
-	var item := spawn_item(item_id, $Hallway/VendingMachine/DispensePoint.global_position)
-	item.linear_velocity = Vector3(0, 0.5, -2)
+	var dispense_point: Marker3D = machine.get_node("DispensePoint")
+	var item := spawn_item(item_id, $Items.to_local(dispense_point.global_position))
 	NoiseBus.emit_noise(item.global_position, 25, str(id), "vending_dispense")
 
 func spawn_corpse(id: int, impulse: Vector3) -> void:

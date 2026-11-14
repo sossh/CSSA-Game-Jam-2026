@@ -92,11 +92,14 @@ func close_vending() -> void:
 func dispense_pressed() -> void:
 	buy_code(keypad.text)
 
-func open_vending() -> void:
+var vending_machine_id := "vending"
+
+func open_vending(machine_id: String = "vending") -> void:
+	vending_machine_id = machine_id
 	var stock := ItemDB.stock()
 	for entry in vending_rows.get_children():
 		var index := stock.find(ItemDB.get_item(entry.item_id))
-		entry.refresh(index + 1)
+		entry.refresh(index + 1, machine_id)
 		vending_rows.move_child(entry, index)
 	vending_panel.show()
 	update_mouse()
@@ -112,7 +115,7 @@ func buy_code(code: String) -> void:
 	if index < 0 or index >= stock.size():
 		vending_status.text = "Unknown item code."
 		return
-	Game.request("buy", {"item": stock[index].id})
+	Game.request("buy", {"item": stock[index].id, "machine": vending_machine_id})
 	keypad.clear()
 
 func connected() -> void:
@@ -202,6 +205,6 @@ func show_banner(text: String) -> void:
 	banner_left = 5
 
 func on_effect(kind: String, data: Dictionary) -> void:
-	if kind == "vending" and data.id == multiplayer.get_unique_id(): open_vending()
+	if kind == "vending" and data.id == multiplayer.get_unique_id(): open_vending(data.get("machine", "vending"))
 	if kind in ["hurt", "splat"] and data.id == multiplayer.get_unique_id():
 		tint.color.a = 0.65 if kind == "splat" else 0.35
