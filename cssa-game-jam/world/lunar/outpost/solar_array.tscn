@@ -1,0 +1,13 @@
+[gd_scene format=3]
+
+[ext_resource type="PackedScene" path="res://assets/models/galactic_frontier/Solar_3.fbx" id="1_model"]
+[ext_resource type="Shape3D" path="res://world/lunar/outpost/collision/solar_array.res" id="9_shape"]
+
+[node name="SolarArray" type="StaticBody3D"]
+editor_description = "Galactic Frontier prop. Row of three solar panels. Origin is centred at ground level; collision baked from the mesh."
+
+[node name="Model" parent="." instance=ExtResource("1_model")]
+position = Vector3(19.858, 0, 3.159)
+
+[node name="Collision" type="CollisionShape3D" parent="."]
+shape = ExtResource("9_shape")

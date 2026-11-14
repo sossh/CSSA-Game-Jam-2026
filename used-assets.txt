@@ -21,3 +21,7 @@ https://creativecommons.org/licenses/by/4.0/
 The Last Class - School Kit by Jerico (desks, chairs, teacher desk, chalkboard, bookcases, lockers, TV cart, school bell, wall, wood and tile floor models/textures).
 Free for personal and commercial games, modification allowed, credit optional; not to be resold as a standalone asset pack. Terms copied to cssa-game-jam/assets/models/school_kit/LICENSE.txt.
 Integrated in cssa-game-jam/world/classroom/ (classroom.tscn and props/). Walls are recoloured in-engine by world/classroom/materials/school_wall.gdshader.
+
+Galactic Frontier (low-poly moon base pack): habitat, fuel tanks, rover, solar array, comms tower, crates, ore drill, landed shuttle, boulder, canister and dish models.
+Creator, source URL and license: NOT YET RECORDED - please fill in before release.
+Copied unmodified to cssa-game-jam/assets/models/galactic_frontier/; used by world/lunar/outpost/. Lamp materials are swapped in the import settings for dimmer copies.

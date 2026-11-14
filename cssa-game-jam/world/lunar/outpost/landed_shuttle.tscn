@@ -1,0 +1,13 @@
+[gd_scene format=3]
+
+[ext_resource type="PackedScene" path="res://assets/models/galactic_frontier/Shuttle_Landed.fbx" id="1_model"]
+[ext_resource type="Shape3D" path="res://world/lunar/outpost/collision/landed_shuttle.res" id="9_shape"]
+
+[node name="LandedShuttle" type="StaticBody3D"]
+editor_description = "Galactic Frontier prop. Landed shuttle pod. Origin is centred at ground level; collision baked from the mesh."
+
+[node name="Model" parent="." instance=ExtResource("1_model")]
+position = Vector3(-13.78, 0, 5.472)
+
+[node name="Collision" type="CollisionShape3D" parent="."]
+shape = ExtResource("9_shape")

@@ -1,0 +1,9 @@
+[gd_scene format=3]
+
+[ext_resource type="PackedScene" path="res://assets/models/galactic_frontier/Hab_Dish.fbx" id="1_model"]
+
+[node name="RoofDish" type="Node3D"]
+editor_description = "Galactic Frontier dish, visual only. Origin at the base of its mast."
+
+[node name="Model" parent="." instance=ExtResource("1_model")]
+position = Vector3(0.045, -3.55, -0.455)
