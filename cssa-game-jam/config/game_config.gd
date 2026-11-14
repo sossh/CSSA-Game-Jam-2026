@@ -2,7 +2,7 @@ class_name GameConfig
 extends Resource
 
 @export_group("Rounds")
-@export var preparation_seconds: float = 5.0
+@export var preparation_seconds: float = 20.0
 @export var class_seconds: float = 300.0
 @export var break_seconds: float = 90.0
 @export var maximum_players: int = 6
