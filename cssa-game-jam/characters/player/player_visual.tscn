@@ -1,0 +1,111 @@
+[gd_scene format=3 uid="uid://d2so5464s4ow0"]
+
+[ext_resource type="PackedScene" uid="uid://chgkvgyuidkih" path="res://characters/player/assets/player_idle.fbx" id="1_dnpie"]
+[ext_resource type="Script" path="res://characters/player/player_visual.gd" id="1_script"]
+[ext_resource type="Animation" uid="uid://bl8t5gelua3j7" path="res://characters/player/assets/animations/idle.res" id="2_w1cl4"]
+[ext_resource type="Texture2D" uid="uid://5pyns61wehl" path="res://characters/player/assets/texture/texture.png" id="2_wt1md"]
+[ext_resource type="Animation" uid="uid://iqp5tp3sihda" path="res://characters/player/assets/animations/jump.res" id="3_gi08g"]
+[ext_resource type="Texture2D" uid="uid://bxey57qymrkwq" path="res://characters/player/assets/texture/head.png" id="3_lkvg0"]
+[ext_resource type="Animation" uid="uid://p85xof7tpq5c" path="res://characters/player/assets/animations/run.res" id="4_s2q5y"]
+[ext_resource type="Texture2D" uid="uid://bmr0rihswc8g5" path="res://characters/player/assets/texture/crotch.png" id="4_t8cr6"]
+[ext_resource type="Texture2D" uid="uid://bwh8acn6x0htm" path="res://characters/player/assets/texture/legs.png" id="5_7ewxk"]
+[ext_resource type="Animation" uid="uid://dwvfyo12ardsc" path="res://characters/player/assets/animations/sit.res" id="5_d6anh"]
+[ext_resource type="Texture2D" uid="uid://c3yv8dhfktbvw" path="res://characters/player/assets/texture/arm_r.png" id="6_4nkk4"]
+[ext_resource type="Animation" uid="uid://n802b6ou5xh0" path="res://characters/player/assets/animations/stand_up.res" id="6_88pkb"]
+[ext_resource type="Texture2D" uid="uid://ch1yhjm8ox45w" path="res://characters/player/assets/texture/arm_l.png" id="7_gbt71"]
+[ext_resource type="Animation" uid="uid://dac0q4e2f12dy" path="res://characters/player/assets/animations/thow.res" id="7_pq4mr"]
+[ext_resource type="Texture2D" uid="uid://cygn4akifquvd" path="res://characters/player/assets/texture/backpack.png" id="8_mvyxc"]
+[ext_resource type="Animation" uid="uid://cfghmafyfcei0" path="res://characters/player/assets/animations/wak_new.res" id="15_ef1gt"]
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_f8k7n"]
+albedo_texture = ExtResource("2_wt1md")
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_7dvvq"]
+albedo_texture = ExtResource("3_lkvg0")
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_xsypr"]
+albedo_texture = ExtResource("4_t8cr6")
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_ow1gx"]
+albedo_texture = ExtResource("5_7ewxk")
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_hdqe6"]
+albedo_texture = ExtResource("6_4nkk4")
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_alhn2"]
+albedo_texture = ExtResource("7_gbt71")
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_hbn0x"]
+albedo_texture = ExtResource("8_mvyxc")
+
+[sub_resource type="AnimationLibrary" id="AnimationLibrary_wt1md"]
+_data = {
+&"idle": ExtResource("2_w1cl4"),
+&"jump": ExtResource("3_gi08g"),
+&"run": ExtResource("4_s2q5y"),
+&"sit": ExtResource("5_d6anh"),
+&"stand_up": ExtResource("6_88pkb"),
+&"thow": ExtResource("7_pq4mr"),
+&"throw": ExtResource("7_pq4mr"),
+&"wak": ExtResource("15_ef1gt"),
+&"walk": ExtResource("15_ef1gt")
+}
+
+[node name="PlayerVisual" unique_id=1706436324 instance=ExtResource("1_dnpie")]
+script = ExtResource("1_script")
+transform = Transform3D(120, 0, 0, 0, 120, 0, 0, 0, 120, 0, 0, 0)
+
+[node name="GeneralSkeleton" parent="." index="0" unique_id=590756097]
+bones/0/position = Vector3(-0.00022179115, 0.007013142, -0.00026565732)
+bones/0/rotation = Quaternion(-0.17434978, -0.30166832, 0.05399953, 0.9357791)
+bones/1/rotation = Quaternion(0.12829083, 0.0027941174, -0.014361914, 0.9916287)
+bones/2/rotation = Quaternion(0.2515998, 0.00089456554, -0.06049051, 0.96593875)
+bones/3/rotation = Quaternion(0.2515997, 0.00089456607, -0.0604905, 0.9659388)
+bones/4/rotation = Quaternion(0.016087743, 0.039026942, -0.0536535, 0.997667)
+bones/5/rotation = Quaternion(0.01577223, 0.06490328, 0.011057347, 0.9977057)
+bones/7/rotation = Quaternion(0.52005553, 0.5143323, 0.4660647, -0.4977833)
+bones/8/rotation = Quaternion(-0.28593877, 0.9321174, 0.046421383, 0.21735103)
+bones/9/rotation = Quaternion(0.24896224, -0.722036, 0.030520428, 0.6447871)
+bones/10/rotation = Quaternion(-0.10643722, 0.55635816, 0.23110867, 0.79102814)
+bones/11/rotation = Quaternion(-0.015920129, -0.015459035, 0.33002967, 0.9437098)
+bones/12/rotation = Quaternion(0.2673177, 0.01939198, -0.29545492, 0.9169905)
+bones/13/rotation = Quaternion(-0.36540645, -0.10923427, 0.32312483, 0.8661042)
+bones/15/rotation = Quaternion(0.56893104, -0.46753925, -0.4119013, -0.5367139)
+bones/16/rotation = Quaternion(0.2940564, 0.9388965, 0.021284526, -0.17762648)
+bones/17/rotation = Quaternion(0.22758768, 0.70282817, -0.10303612, 0.66604805)
+bones/18/rotation = Quaternion(-0.12215631, -0.62000746, -0.25892332, 0.730498)
+bones/19/rotation = Quaternion(-0.08460352, 0.031651676, 0.15352741, 0.984007)
+bones/20/rotation = Quaternion(0.11839893, -0.09308427, 0.065009944, 0.98645365)
+bones/21/rotation = Quaternion(0.21452631, -0.09026294, -0.29119217, 0.9279215)
+bones/23/rotation = Quaternion(0.11967887, 0.5308143, 0.8377507, -0.045682974)
+bones/24/rotation = Quaternion(-0.012862158, 0.512139, -0.8541386, 0.089418046)
+bones/25/rotation = Quaternion(-0.054280605, 0.6602996, -0.7471009, 0.053836916)
+bones/26/rotation = Quaternion(0.00046992197, 0.99991757, 0.0127889, 0.0010799747)
+bones/28/rotation = Quaternion(-0.16056849, 0.4725717, 0.863325, 0.07459154)
+bones/29/rotation = Quaternion(-0.13451761, 0.39794174, -0.90655255, -0.041351676)
+bones/30/rotation = Quaternion(0.058248885, 0.77061284, -0.631246, -0.06550957)
+bones/31/rotation = Quaternion(-0.00053191505, 0.9997268, -0.023356965, 0.0008440217)
+
+[node name="torso" parent="GeneralSkeleton" index="0" unique_id=1339657719]
+surface_material_override/0 = SubResource("StandardMaterial3D_f8k7n")
+
+[node name="head" parent="GeneralSkeleton" index="1" unique_id=1115963948]
+surface_material_override/0 = SubResource("StandardMaterial3D_7dvvq")
+
+[node name="crotch" parent="GeneralSkeleton" index="2" unique_id=709580575]
+surface_material_override/0 = SubResource("StandardMaterial3D_xsypr")
+
+[node name="legs" parent="GeneralSkeleton" index="3" unique_id=169747654]
+surface_material_override/0 = SubResource("StandardMaterial3D_ow1gx")
+
+[node name="right" parent="GeneralSkeleton" index="4" unique_id=355428803]
+surface_material_override/0 = SubResource("StandardMaterial3D_hdqe6")
+
+[node name="left" parent="GeneralSkeleton" index="5" unique_id=917162699]
+surface_material_override/0 = SubResource("StandardMaterial3D_alhn2")
+
+[node name="backpack" parent="GeneralSkeleton" index="6" unique_id=1848009415]
+surface_material_override/0 = SubResource("StandardMaterial3D_hbn0x")
+
+[node name="AnimationPlayer" parent="." index="1" unique_id=1344139903]
+libraries/ = SubResource("AnimationLibrary_wt1md")

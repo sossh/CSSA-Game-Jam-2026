@@ -1,19 +1,29 @@
 class_name ClassroomItem
 extends RigidBody3D
 
+const KID_VISUAL_SCENES: Array[PackedScene] = [
+	preload("res://characters/kid_visual.tscn"),
+	preload("res://characters/kid_visual_2.tscn"),
+	preload("res://characters/kid_visual_3.tscn"),
+	preload("res://characters/kid_visual_4.tscn")
+]
+
 var entity_id: String
 @export var item_id: String = "apple"
 var data: ItemData
 var holder: int = 0
 var thrower: String = ""
-var uses: int = 1
 @export var kid: bool = false
+@export var skin_variant: int = 0
+@export var kid_seated_y_offset: float = 0.32
+@export var kid_seated_x_offset: float = 0
+@export var kid_seated_z_offset: float = -0.15
+var default_visual_pos := Vector3(0, -0.8, 0)
 var dead: bool = false
 var home_seat: int = -1
 var seated: bool = false
 var noise_at: float = 0
 var return_at: float = 0
-var fuse_at: float = 0
 var last_impact: float = -10
 var old_velocity := Vector3.ZERO
 var destination := Transform3D.IDENTITY
@@ -22,11 +32,18 @@ var destination := Transform3D.IDENTITY
 
 func _ready() -> void:
 	data = ItemDB.get_item(item_id)
-	uses = data.uses
 	mass = Game.config.clone_mass if kid else data.mass
 	freeze = not Game.is_host() or seated
 	if kid:
-		$CloneVisual.set_color(Color(0.62, 0.65, 0.8) if not dead else Color(0.5, 0.3, 0.4))
+		var kv: Node3D = get_node_or_null("KidVisual")
+		if kv:
+			default_visual_pos = kv.position
+		if skin_variant == 0:
+			skin_variant = randi_range(1, 4)
+		set_skin_variant(skin_variant)
+		if has_node("CloneVisual") and $CloneVisual.has_method("set_color"):
+			$CloneVisual.set_color(Color(0.62, 0.65, 0.8) if not dead else Color(0.5, 0.3, 0.4))
+		_update_kid_animation()
 	label.text = display_name()
 	noise_at = Game.elapsed + randf_range(25, 60)
 	destination = global_transform
@@ -36,9 +53,8 @@ func display_name() -> String:
 	return data.display_name if data else item_id
 
 func _physics_process(delta: float) -> void:
-	if Game.is_host() and fuse_at > 0 and Game.elapsed >= fuse_at:
-		detonate()
-		return
+	if kid:
+		_update_kid_animation()
 	if holder != 0:
 		freeze = true
 		collision_layer = 0
@@ -66,16 +82,6 @@ func _physics_process(delta: float) -> void:
 			rotation = Vector3.ZERO
 			seated = true
 			freeze = true
-
-func detonate() -> void:
-	fuse_at = 0
-	var tuning := Game.config.interactions
-	NoiseBus.emit_noise(global_position, tuning.firework_loudness, thrower, "firework")
-	Game.event.rpc("burst", {"position": global_position, "color": Color.ORANGE})
-	for id in Game.players:
-		if Game.players[id].position.distance_to(global_position) < tuning.firework_radius:
-			Game.damage(id, tuning.firework_damage, "failed fireworks safety", Vector3.UP * tuning.firework_lift)
-	Game.world.remove_item(entity_id)
 
 func _impact(body: Node) -> void:
 	if not Game.is_host() or holder != 0 or seated: return
@@ -105,10 +111,9 @@ func resolve_impact(body: Node, speed: float, hit_velocity: Vector3) -> void:
 			Game.event.rpc("splat", {"id": body.peer_id})
 			Game.event.rpc("burst", {"position": global_position, "color": Color.TOMATO})
 			Game.world.remove_item(entity_id)
-		elif not kid and data.effect == "knife": Game.damage(body.peer_id, tuning.thrown_knife_damage, "was introduced to cutlery", impulse)
 		elif speed > tuning.ragdoll_impact_speed: Game.launch_player(body.peer_id, impulse)
 	elif body is ClassroomTeacher:
-		body.provoked(thrower, global_position)
+		body.provoked(thrower, global_position, sound)
 	if not kid and data.effect == "tomato" and is_inside_tree() and speed > tuning.tomato_splat_speed:
 		Game.event.rpc("burst", {"position": global_position, "color": Color.TOMATO})
 		Game.world.remove_item(entity_id)
@@ -137,11 +142,70 @@ func release(at: Vector3, impulse: Vector3, source: String) -> void:
 
 func serialize() -> Dictionary:
 	return {"item": item_id, "transform": global_transform, "holder": holder, "kid": kid,
-		"dead": dead, "seated": seated, "home": home_seat, "uses": uses}
+		"dead": dead, "seated": seated, "home": home_seat, "skin": skin_variant}
 
 func receive(state: Dictionary) -> void:
 	destination = state.transform
 	holder = state.holder
 	dead = state.dead
 	seated = state.seated
-	uses = state.uses
+	if state.has("skin") and state.skin != skin_variant:
+		set_skin_variant(state.skin)
+	if kid:
+		_update_kid_animation()
+
+func set_skin_variant(variant: int) -> void:
+	if not kid:
+		return
+	skin_variant = clampi(variant, 1, 4)
+	var old_kv: Node3D = get_node_or_null("KidVisual")
+	if old_kv and old_kv.get_meta("skin_variant", 1) == skin_variant:
+		return
+	var new_scene: PackedScene = KID_VISUAL_SCENES[skin_variant - 1]
+	var new_kv: Node3D = new_scene.instantiate()
+	new_kv.name = "KidVisual"
+	new_kv.set_meta("skin_variant", skin_variant)
+	if old_kv:
+		new_kv.transform = old_kv.transform
+		old_kv.name = "OldKidVisual"
+		old_kv.queue_free()
+	add_child(new_kv)
+	default_visual_pos = new_kv.position
+	_update_kid_animation()
+
+func _update_kid_animation() -> void:
+	if not kid:
+		return
+	var kv: Node3D = get_node_or_null("KidVisual")
+	if not kv:
+		return
+	var anim_player: AnimationPlayer = kv.get_node_or_null("AnimationPlayer")
+	if not anim_player:
+		return
+
+	var target_anim: String = "idle"
+	if dead:
+		target_anim = "death"
+	elif seated:
+		target_anim = "sit"
+	else:
+		target_anim = "idle"
+
+	if target_anim == "sit":
+		kv.position = default_visual_pos + Vector3(kid_seated_x_offset, kid_seated_y_offset, kid_seated_z_offset)
+	else:
+		kv.position = default_visual_pos
+
+	if target_anim == "death":
+		if anim_player.assigned_animation != "death":
+			anim_player.play("death")
+	elif anim_player.current_animation != target_anim:
+		if target_anim == "sit" and anim_player.has_animation("sit"):
+			var sit_anim: Animation = anim_player.get_animation("sit")
+			if sit_anim and sit_anim.loop_mode != Animation.LOOP_LINEAR:
+				sit_anim.loop_mode = Animation.LOOP_LINEAR
+		elif target_anim == "idle" and anim_player.has_animation("idle"):
+			var idle_anim: Animation = anim_player.get_animation("idle")
+			if idle_anim and idle_anim.loop_mode != Animation.LOOP_LINEAR:
+				idle_anim.loop_mode = Animation.LOOP_LINEAR
+		anim_player.play(target_anim)

@@ -33,6 +33,10 @@ window/size/window_height_override=720
 window/stretch/mode="canvas_items"
 window/stretch/aspect="expand"
 
+[gui]
+
+theme/custom_font="res://fonts/Jersey_25/Jersey25-Regular.ttf"
+
 [input]
 
 move_forward={

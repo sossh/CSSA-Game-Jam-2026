@@ -140,7 +140,7 @@ tracks/0/interp = 1
 tracks/0/loop_wrap = true
 tracks/0/keys = {
 "times": PackedFloat32Array(0, 1.35, 5.15, 12),
-"transitions": PackedFloat32Array(1, 2, 1, 1),
+"transitions": PackedFloat32Array(1, 2, 0.75, 1),
 "update": 0,
 "values": [0.0, 0.0, 1.0, 2.0]
 }
@@ -151,10 +151,10 @@ tracks/1/path = NodePath("Falcon9:visible")
 tracks/1/interp = 1
 tracks/1/loop_wrap = true
 tracks/1/keys = {
-"times": PackedFloat32Array(0, 11.88),
-"transitions": PackedFloat32Array(1, 1),
+"times": PackedFloat32Array(0),
+"transitions": PackedFloat32Array(1),
 "update": 1,
-"values": [true, false]
+"values": [true]
 }
 tracks/2/type = "value"
 tracks/2/imported = false
@@ -367,3 +367,8 @@ light_specular = 0.18
 light_cull_mask = 1
 omni_range = 44.0
 omni_attenuation = 0.65
+
+[node name="LaunchCamera" type="Camera3D" parent="."]
+fov = 63.0
+
+[node name="AudioListener3D" type="AudioListener3D" parent="LaunchCamera"]

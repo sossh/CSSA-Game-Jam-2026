@@ -34,14 +34,14 @@ void fragment() {
 	vec2 p = n.y > max(n.x, n.z) ? world_pos.xz : (n.x > n.z ? world_pos.zy : world_pos.xy);
 	vec2 cell = p / panel_size;
 	vec2 f = fract(cell);
-	vec2 aa = fwidth(cell);
+	vec2 aa = max(fwidth(cell) * 0.5, vec2(0.0001));
 	vec2 sw = seam_width / panel_size;
 	vec2 edge = smoothstep(sw - aa, sw + aa, f) * smoothstep(sw - aa, sw + aa, 1.0 - f);
 	float panel = edge.x * edge.y;
 	float h = hash(floor(cell));
 
 	vec3 col = base_color * (1.0 + (h - 0.5) * variation * 2.0);
-	float ya = fwidth(world_pos.y);
+	float ya = max(fwidth(world_pos.y) * 0.5, 0.0001);
 	float band = band_enabled * smoothstep(band_bottom - ya, band_bottom + ya, world_pos.y)
 			* (1.0 - smoothstep(band_top - ya, band_top + ya, world_pos.y));
 	col = mix(col, band_color, band);

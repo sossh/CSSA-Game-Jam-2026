@@ -1,10 +1,14 @@
 class_name StudentPlayer
 extends CharacterBody3D
 
+const STANDING_EYE_HEIGHT := 1.55
+
 var peer_id: int
+var default_gravity := float(ProjectSettings.get_setting("physics/3d/default_gravity"))
 @onready var head: Node3D = $Head
 @onready var camera: Camera3D = $Head/Camera
-@onready var visual: StudentVisual = $Visual
+@onready var audio_listener: AudioListener3D = $Head/Camera/AudioListener3D
+@onready var visual: PlayerVisual = $Visual
 @onready var name_label: Label3D = $NameLabel
 @onready var ragdoll: StudentRagdoll = $Ragdoll
 var color: Color
@@ -17,6 +21,19 @@ var step_timer: float = 0.0
 var charge: float = -1.0
 var target_id: String = ""
 var interaction_text: String = ""
+var base_fov: float = 82.0
+var bob_phase: float = 0.0
+var bob_amount: float = 0.0
+var strafe_roll: float = 0.0
+var fov_boost: float = 0.0
+var land_offset: float = 0.0
+var land_velocity: float = 0.0
+var kick_pitch: float = 0.0
+var kick_velocity: float = 0.0
+var fall_speed: float = 0.0
+var was_on_floor: bool = true
+var remote_velocity: Vector3 = Vector3.ZERO
+var prev_remote_position: Vector3 = Vector3.ZERO
 
 func _ready() -> void:
 	floor_snap_length = Game.config.player.floor_snap_length
@@ -24,13 +41,22 @@ func _ready() -> void:
 	color = Color.from_hsv(fmod(peer_id * 0.173, 1.0), 0.55, 0.95)
 	visual.set_color(color)
 	visual.visible = not local
-	camera.current = local
+	camera.current = local and not Game.launch_cinematic_active
+	base_fov = camera.fov
+	if camera.current:
+		audio_listener.make_current()
 	name_label.text = str(Game.players[peer_id].name)
 	name_label.visible = not local
-	global_position = Game.players[peer_id].position
+	var p: Dictionary = Game.players[peer_id]
+	global_position = p.position
+	rotation.y = p.yaw
+	pitch = p.pitch
+	head.rotation.x = pitch
+	prev_remote_position = global_position
+	Game.effect.connect(_on_game_effect)
 
 func _unhandled_input(event: InputEvent) -> void:
-	if not local or Game.ui_open or not Game.players.has(peer_id): return
+	if not local or Game.ui_open or Game.launch_cinematic_active or not Game.players.has(peer_id): return
 	var p: Dictionary = Game.players[peer_id]
 	if event is InputEventMouseMotion and Input.mouse_mode == Input.MOUSE_MODE_CAPTURED:
 		rotation.y -= event.relative.x * Game.config.player.mouse_sensitivity
@@ -43,7 +69,9 @@ func _unhandled_input(event: InputEvent) -> void:
 			Game.request("interact", {"target": target_id})
 	if event.is_action_pressed("use_item"): Game.request("use")
 	if event.is_action_pressed("drop_item"): Game.request("drop")
-	if event.is_action_pressed("fart"): Game.request("fart")
+	if event.is_action_pressed("fart"):
+		if float(p.get("gas", 0.0)) > 0.0:
+			Game.request("fart")
 	if event.is_action_pressed("jump"):
 		if p.mode == "seated": Game.request("stand")
 		if p.mode == "carried": Game.request("wiggle")
@@ -51,16 +79,21 @@ func _unhandled_input(event: InputEvent) -> void:
 		if p.held == "": Game.request("punch")
 		else: charge = 0
 	if event.is_action_released("throw_item") and charge >= 0:
+		if p.mode == "seated":
+			Game.request("stand")
 		Game.request("throw", {"charge": minf(charge / Game.config.player.throw_charge_seconds, 1.0)})
 		charge = -1
+		visual.trigger_throw()
 
 func _physics_process(delta: float) -> void:
-	if not Game.players.has(peer_id): return
+	if Game.launch_cinematic_active or not Game.players.has(peer_id): return
 	var p: Dictionary = Game.players[peer_id]
 	var mode: String = p.mode
 	if applied_epoch != p.epoch:
 		applied_epoch = p.epoch
 		global_position = p.position
+		rotation.y = p.yaw
+		pitch = p.pitch
 		velocity = Vector3.ZERO
 		if mode not in ["ragdoll", "dead"]:
 			ragdoll.deactivate()
@@ -69,7 +102,8 @@ func _physics_process(delta: float) -> void:
 	if mode not in ["ragdoll", "dead"] and ragdoll.active:
 		if local:
 			global_position = ragdoll.bodies[0].global_position
-			global_position.y = maxf(0.2, global_position.y)
+			if ragdoll.bodies[0].get_gravity().length() >= default_gravity:
+				global_position.y = maxf(0.2, global_position.y)
 		ragdoll.deactivate()
 	var my_id: int = multiplayer.get_unique_id()
 	var local_is_dead: bool = Game.players.has(my_id) and Game.players[my_id].mode == "dead"
@@ -114,23 +148,50 @@ func _physics_process(delta: float) -> void:
 			if not Game.ui_open: direction.y += float(Input.is_action_pressed("jump")) - float(Input.is_action_pressed("crouch"))
 			global_position += direction * movement.spectate_speed * delta
 		else:
-			velocity.x = move_toward(velocity.x, direction.x * speed, movement.acceleration * delta)
-			velocity.z = move_toward(velocity.z, direction.z * speed, movement.acceleration * delta)
-			if not is_on_floor(): velocity.y -= movement.gravity * delta
-			if not Game.ui_open and Input.is_action_just_pressed("jump") and is_on_floor(): velocity.y = movement.jump_speed
-			move_and_slide()
+			var gravity_ratio := get_gravity().length() / default_gravity
+			var on_moon := gravity_ratio < 1.0
+			var acceleration := movement.acceleration
+			if on_moon:
+				acceleration = movement.lunar_braking if input.is_zero_approx() else movement.lunar_acceleration
+			velocity.x = move_toward(velocity.x, direction.x * speed, acceleration * delta)
+			velocity.z = move_toward(velocity.z, direction.z * speed, acceleration * delta)
+			var grounded := is_on_floor()
+			var has_movement := input.length_squared() > 0.01
 			step_timer -= delta
-			if input.length() > 0.1 and is_on_floor() and step_timer <= 0:
+			var hop := false
+			if not grounded:
+				velocity.y -= movement.gravity * gravity_ratio * delta
+			elif not Game.ui_open and Input.is_action_just_pressed("jump"):
+				velocity.y = movement.lunar_jump_speed if on_moon else movement.jump_speed
+			elif on_moon and has_movement and step_timer <= 0:
+				velocity.y = movement.lunar_step_hop_speed
+				hop = true
+			move_and_slide()
+			if has_movement and (hop or is_on_floor()) and step_timer <= 0:
 				step_timer = movement.sprint_step_seconds if speed > movement.walk_speed else movement.walk_step_seconds
 				Game.request("step", {"sprint": speed > movement.walk_speed, "position": global_position})
 	else:
 		visual.rotation = Vector3.ZERO
+		var pos_delta: Vector3 = p.position - prev_remote_position
+		if delta > 0.0001:
+			remote_velocity = remote_velocity.lerp(pos_delta / delta, minf(1.0, delta * 15.0))
+		prev_remote_position = p.position
 		global_position = global_position.lerp(p.position, minf(1, delta * 18))
 	if not local:
 		rotation.y = lerp_angle(rotation.y, p.yaw, minf(1, delta * 20))
 		pitch = lerpf(pitch, p.pitch, minf(1, delta * 20))
 	head.rotation.x = pitch
-	head.position.y = 1.40 if mode == "seated" else 1.55
+	head.position.y = 1.40 if mode == "seated" else STANDING_EYE_HEIGHT
+	if local:
+		var is_sprinting: bool = Input.is_action_pressed("sprint")
+		visual.update_motion(is_on_floor(), velocity, is_sprinting, mode, delta)
+	else:
+		var remote_on_floor: bool = absf(remote_velocity.y) < 0.2 and p.position.y <= 0.25
+		var remote_speed: float = Vector2(remote_velocity.x, remote_velocity.z).length()
+		var remote_sprinting: bool = remote_speed > (Game.config.player.walk_speed + Game.config.player.sprint_speed) * 0.5
+		visual.update_motion(remote_on_floor, remote_velocity, remote_sprinting, mode, delta)
+	if last_mode == "seated" and mode != "seated":
+		visual.trigger_stand_up()
 	if local:
 		if charge >= 0: charge += delta
 		if Game.ui_open: charge = -1
@@ -142,6 +203,48 @@ func _physics_process(delta: float) -> void:
 			if Game.is_host(): Game.accept_pose(peer_id, global_position, rotation.y, pitch, limbs, applied_epoch)
 			else: Game.pose.rpc_id(1, global_position, rotation.y, pitch, limbs, applied_epoch)
 	last_mode = mode
+
+func update_camera_feel(delta: float, mode: String) -> void:
+	# Purely cosmetic offsets on the Camera node (child of Head). Head, pitch and
+	# replicated poses are untouched, so aim and networking are unaffected.
+	var cfg := Game.config.player
+	var walking: bool = cfg.camera_feel_enabled and mode not in ["ragdoll", "dead", "seated", "carried"]
+	var on_floor := is_on_floor()
+	var horizontal := Vector2(velocity.x, velocity.z).length()
+	var intensity: float = cfg.camera_feel_intensity
+	var smooth := 1.0 - exp(-cfg.camera_feel_smoothing * delta)
+	var moving: bool = walking and on_floor and horizontal > 0.3
+	# 0..1 for walk, up to ~1.6 at sprint speed
+	var speed_ratio: float = clampf(horizontal / cfg.walk_speed, 0.0, 1.8) if moving else 0.0
+	bob_amount = lerpf(bob_amount, speed_ratio, smooth)
+	if moving:
+		bob_phase = fmod(bob_phase + horizontal * cfg.bob_cycles_per_meter * TAU * delta, TAU * 1000.0)
+	# Landing impact and jump kick via light damped springs
+	if walking:
+		if on_floor and not was_on_floor and fall_speed > 2.0:
+			land_velocity -= clampf(fall_speed, 0.0, 14.0) * cfg.landing_dip * 4.0
+			kick_velocity += clampf(fall_speed, 0.0, 14.0) * 3.0
+		if was_on_floor and not on_floor and velocity.y > 1.0:
+			kick_velocity -= cfg.jump_kick_degrees * 14.0
+	fall_speed = maxf(0.0, -velocity.y) if not on_floor else 0.0
+	was_on_floor = on_floor
+	land_velocity += (-170.0 * land_offset - 18.0 * land_velocity) * delta
+	land_offset += land_velocity * delta
+	kick_velocity += (-170.0 * kick_pitch - 18.0 * kick_velocity) * delta
+	kick_pitch += kick_velocity * delta
+	var strafe_input := 0.0
+	if walking and not Game.ui_open:
+		strafe_input = Input.get_axis("move_left", "move_right")
+	strafe_roll = lerpf(strafe_roll, strafe_input * clampf(bob_amount, 0.0, 1.5), smooth)
+	var sprinting: bool = walking and on_floor and horizontal > cfg.walk_speed * 1.2
+	fov_boost = lerpf(fov_boost, cfg.sprint_fov_boost if sprinting else 0.0, 1.0 - exp(-6.0 * delta))
+	# Two bob cycles per step pair: vertical at 2x lateral frequency
+	var vertical := -absf(sin(bob_phase * 0.5)) * cfg.bob_vertical * bob_amount
+	var sway := sin(bob_phase * 0.5) * cfg.bob_horizontal * bob_amount
+	var roll := sin(bob_phase * 0.5) * deg_to_rad(cfg.bob_roll_degrees) * bob_amount - strafe_roll * deg_to_rad(cfg.strafe_roll_degrees)
+	camera.position = Vector3(sway, vertical + land_offset, 0.0) * intensity
+	camera.rotation = Vector3(deg_to_rad(kick_pitch), 0.0, roll * intensity)
+	camera.fov = base_fov + fov_boost
 
 func find_target() -> void:
 	target_id = ""
@@ -215,3 +318,8 @@ func held_transform(big: bool = false) -> Transform3D:
 
 	transform_out.origin += head.global_basis * Vector3(0.35, -0.3, -0.85)
 	return transform_out
+
+func _on_game_effect(kind: String, data: Dictionary) -> void:
+	if kind == "sound" and data.get("key") == "throw" and str(data.get("source", "")) == str(peer_id):
+		if not local:
+			visual.trigger_throw()

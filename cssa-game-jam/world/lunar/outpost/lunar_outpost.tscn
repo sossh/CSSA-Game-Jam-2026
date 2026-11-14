@@ -1,4 +1,4 @@
-[gd_scene format=3]
+[gd_scene format=3 uid="uid://urbl64ij52j2"]
 
 [ext_resource type="PackedScene" path="res://world/lunar/outpost/outpost_hab.tscn" id="1_hab"]
 [ext_resource type="PackedScene" path="res://world/lunar/outpost/fuel_tanks.tscn" id="2_tanks"]
@@ -12,84 +12,85 @@
 [ext_resource type="PackedScene" path="res://world/lunar/outpost/fuel_canister.tscn" id="10_canister"]
 [ext_resource type="PackedScene" path="res://world/lunar/outpost/roof_dish.tscn" id="11_dish"]
 
-[node name="LunarOutpost" type="Node3D"]
+[node name="LunarOutpost" type="Node3D" unique_id=148672613]
 editor_description = "Moon-base dressing around the classroom, in classroom coordinates. The west group is sized and placed to read through the observation window. Heights follow the baked terrain; re-check them if the surface moves."
 
-[node name="WestCompound" type="Node3D" parent="."]
+[node name="WestCompound" type="Node3D" parent="." unique_id=1896428364]
 
-[node name="Habitat" parent="WestCompound" instance=ExtResource("1_hab")]
-transform = Transform3D(0.36235, 0, 1.3523, 0, 1.4, 0, -1.3523, 0, 0.36235, -19, -3.6, 3)
+[node name="Habitat" parent="WestCompound" unique_id=1107565999 instance=ExtResource("1_hab")]
+transform = Transform3D(0.2051456, 0, 0.76560897, 0, 0.7926144, 0, -0.76560897, 0, 0.2051456, -22.767218, -3.6, 39.32756)
 
-[node name="FuelTanks" parent="WestCompound" instance=ExtResource("2_tanks")]
+[node name="FuelTanks" parent="WestCompound" unique_id=211409102 instance=ExtResource("2_tanks")]
 transform = Transform3D(0, 0, 1, 0, 1, 0, -1, 0, 0, -21, -4.9, -12)
 
-[node name="CommsTower" parent="WestCompound" instance=ExtResource("5_tower")]
-transform = Transform3D(1.2, 0, 0, 0, 1.2, 0, -0, 0, 1.2, -15, -3.9, 17)
+[node name="CommsTower" parent="WestCompound" unique_id=119577056 instance=ExtResource("5_tower")]
+transform = Transform3D(1.2, 0, 0, 0, 1.2, 0, 0, 0, 1.2, -15, -3.9, 17)
 
-[node name="LandedShuttle" parent="WestCompound" instance=ExtResource("8_shuttle")]
+[node name="LandedShuttle" parent="WestCompound" unique_id=1059810785 instance=ExtResource("8_shuttle")]
 transform = Transform3D(1.12583, 0, 0.65, 0, 1.3, 0, -0.65, 0, 1.12583, -36, -6.9, -6)
 
-[node name="EastYard" type="Node3D" parent="."]
+[node name="EastYard" type="Node3D" parent="." unique_id=1678055935]
+transform = Transform3D(-0.99913925, 0, -0.04148255, 0, 1, 0, 0.04148255, 0, -0.99913925, 38.09651, 0, 0)
 
-[node name="SolarArray1" parent="EastYard" instance=ExtResource("4_solar")]
-transform = Transform3D(1, 0, 0, 0, 1, 0, -0, 0, 1, 18, -3.7, -7)
+[node name="SolarArray1" parent="EastYard" unique_id=662029561 instance=ExtResource("4_solar")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 18, -3.7, -7)
 
-[node name="SolarArray2" parent="EastYard" instance=ExtResource("4_solar")]
-transform = Transform3D(1, 0, 0, 0, 1, 0, -0, 0, 1, 18, -3.35, -3)
+[node name="SolarArray2" parent="EastYard" unique_id=1995735380 instance=ExtResource("4_solar")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 18, -3.35, -3)
 
-[node name="SolarArray3" parent="EastYard" instance=ExtResource("4_solar")]
-transform = Transform3D(1, 0, 0, 0, 1, 0, -0, 0, 1, 18, -3.4, 1)
+[node name="SolarArray3" parent="EastYard" unique_id=1431682788 instance=ExtResource("4_solar")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 18, -3.4, 1)
 
-[node name="MiningDrill" parent="EastYard" instance=ExtResource("7_drill")]
+[node name="MiningDrill" parent="EastYard" unique_id=1839211053 instance=ExtResource("7_drill")]
 transform = Transform3D(0.93969, 0, 0.34202, 0, 1, 0, -0.34202, 0, 0.93969, 16, -5.6, -24)
 
-[node name="FuelCanister" parent="EastYard" instance=ExtResource("10_canister")]
+[node name="FuelCanister" parent="EastYard" unique_id=1893825727 instance=ExtResource("10_canister")]
 transform = Transform3D(0, 0, 1, 0, 1, 0, -1, 0, 0, 12, -2.75, 12)
 
-[node name="ExitApron" type="Node3D" parent="."]
+[node name="ExitApron" type="Node3D" parent="." unique_id=1939728663]
 
-[node name="SupplyCrates1" parent="ExitApron" instance=ExtResource("6_crates")]
+[node name="SupplyCrates1" parent="ExitApron" unique_id=1107677951 instance=ExtResource("6_crates")]
 transform = Transform3D(0.98481, 0, 0.17365, 0, 1, 0, -0.17365, 0, 0.98481, -1.5, -3.25, 24)
 
-[node name="SupplyCrates2" parent="ExitApron" instance=ExtResource("6_crates")]
+[node name="SupplyCrates2" parent="ExitApron" unique_id=1915670301 instance=ExtResource("6_crates")]
 transform = Transform3D(0.90631, 0, -0.42262, 0, 1, 0, 0.42262, 0, 0.90631, 8, -3, 21)
 
-[node name="Rover" parent="ExitApron" instance=ExtResource("3_rover")]
+[node name="Rover" parent="ExitApron" unique_id=1158461020 instance=ExtResource("3_rover")]
 transform = Transform3D(-0.93969, 0, -0.34202, 0, 1, 0, 0.34202, 0, -0.93969, 10, -4.1, 29)
 
-[node name="Rooftop" type="Node3D" parent="."]
+[node name="Rooftop" type="Node3D" parent="." unique_id=1124945934]
 
-[node name="Dish" parent="Rooftop" instance=ExtResource("11_dish")]
+[node name="Dish" parent="Rooftop" unique_id=1597714290 instance=ExtResource("11_dish")]
 transform = Transform3D(-1.12583, 0, -0.65, 0, 1.3, 0, 0.65, 0, -1.12583, -5.5, 6.8, 12.5)
 
-[node name="Boulders" type="Node3D" parent="."]
+[node name="Boulders" type="Node3D" parent="." unique_id=838457553]
 
-[node name="Boulder1" parent="Boulders" instance=ExtResource("9_boulder")]
+[node name="Boulder1" parent="Boulders" unique_id=609948200 instance=ExtResource("9_boulder")]
 transform = Transform3D(0.43467, 0, 0.11647, 0, 0.45, 0, -0.11647, 0, 0.43467, -13, -4.16, -17)
 
-[node name="Boulder2" parent="Boulders" instance=ExtResource("9_boulder")]
+[node name="Boulder2" parent="Boulders" unique_id=489898839 instance=ExtResource("9_boulder")]
 transform = Transform3D(0.12155, 0, 0.68937, 0, 0.7, 0, -0.68937, 0, 0.12155, 24, -5.18, -16)
 
-[node name="Boulder3" parent="Boulders" instance=ExtResource("9_boulder")]
+[node name="Boulder3" parent="Boulders" unique_id=935287101 instance=ExtResource("9_boulder")]
 transform = Transform3D(-0.68944, 0, 0.57851, 0, 0.9, 0, -0.57851, 0, -0.68944, -29, -5.63, 24)
 
-[node name="Boulder4" parent="Boulders" instance=ExtResource("9_boulder")]
-transform = Transform3D(-0.56382, 0, -0.20521, 0, 0.6, 0, 0.20521, 0, -0.56382, 27, -6.02, 30)
+[node name="Boulder4" parent="Boulders" unique_id=481784924 instance=ExtResource("9_boulder")]
+transform = Transform3D(-0.56382, 0, -0.20521, 0, 0.6, 0, 0.20521, 0, -0.56382, 32.35167, -7.5399117, 33.80096)
 
-[node name="Boulder5" parent="Boulders" instance=ExtResource("9_boulder")]
+[node name="Boulder5" parent="Boulders" unique_id=1718366054 instance=ExtResource("9_boulder")]
 transform = Transform3D(-0.20838, 0, -1.18177, 0, 1.2, 0, 1.18177, 0, -0.20838, -42, -9.78, -22)
 
-[node name="Boulder6" parent="Boulders" instance=ExtResource("9_boulder")]
+[node name="Boulder6" parent="Boulders" unique_id=14396538 instance=ExtResource("9_boulder")]
 transform = Transform3D(0.35353, 0, -0.42132, 0, 0.55, 0, 0.42132, 0, 0.35353, 36, -5.73, 6)
 
-[node name="Boulder7" parent="Boulders" instance=ExtResource("9_boulder")]
+[node name="Boulder7" parent="Boulders" unique_id=1126308228 instance=ExtResource("9_boulder")]
 transform = Transform3D(0.35355, 0, 0.35355, 0, 0.5, 0, -0.35355, 0, 0.35355, -10, -5.74, 40)
 
-[node name="Boulder8" parent="Boulders" instance=ExtResource("9_boulder")]
+[node name="Boulder8" parent="Boulders" unique_id=216897751 instance=ExtResource("9_boulder")]
 transform = Transform3D(-0.4, 0, 0.69282, 0, 0.8, 0, -0.69282, 0, -0.4, 16, -8.48, 46)
 
-[node name="Boulder9" parent="Boulders" instance=ExtResource("9_boulder")]
+[node name="Boulder9" parent="Boulders" unique_id=2051094090 instance=ExtResource("9_boulder")]
 transform = Transform3D(-0.98481, 0, 0.17365, 0, 1, 0, -0.17365, 0, -0.98481, -44, -7.84, 10)
 
-[node name="Boulder10" parent="Boulders" instance=ExtResource("9_boulder")]
+[node name="Boulder10" parent="Boulders" unique_id=474221125 instance=ExtResource("9_boulder")]
 transform = Transform3D(-0.57851, 0, -0.68944, 0, 0.9, 0, 0.68944, 0, -0.57851, 5, -6.73, -34)

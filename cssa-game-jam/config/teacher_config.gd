@@ -53,13 +53,9 @@ extends Resource
 @export var first_coffee_delay: Vector2 = Vector2(20, 35)
 @export var coffee_delay: Vector2 = Vector2(30, 50)
 @export var coffee_seconds: float = 5.0
-@export var coffee_extra_seconds_per_tablet: float = 3.0
-@export var first_coffee_tablet_scale: float = 0.5
-@export var coffee_tablet_scale: float = 0.7
 @export var coffee_travel_timeout: float = 3.5
 @export var coffee_blocked_timeout: float = 1.0
 @export var coffee_turn_speed: float = 3.0
-@export var maximum_tablets: int = 3
 
 @export_group("Movement")
 @export var walk_speed: float = 2.5
@@ -85,3 +81,31 @@ extends Resource
 @export var shotgun_recovery_seconds: float = 3.7
 @export var shotgun_volume: float = 150.0
 @export var shotgun_pump_volume: float = 85.0
+
+@export_group("Irritation meter")
+## Presentation-only mood meter. It never feeds suspicion or the AI state machine.
+@export var irritation_maximum: float = 100.0
+@export var irritation_decay_per_second: float = 2.5
+@export var irritation_coffee_decay_scale: float = 3.0
+## Noise within this many metres of the teacher counts fully; farther noise counts at the minimum.
+@export var irritation_hearing_radius: float = 9.0
+@export var irritation_min_proximity: float = 0.2
+@export var irritation_noise_scale: float = 0.2
+@export var irritation_noise_cap: float = 14.0
+@export var irritation_default_weight: float = 0.7
+@export var irritation_kind_weights: Dictionary[String, float] = {
+	"burp": 1.4, "fart": 1.8, "sneeze": 1.2, "crunch": 1.0, "chew": 0.8, "splat": 1.3,
+	"impact": 1.0, "punch": 1.0, "crush_can": 1.5, "vending_dispense": 0.8,
+	"stomach_growl": 0.6, "pickup": 0.3, "footstep": 0.15,
+}
+@export var irritation_throw_radius: float = 4.5
+@export var irritation_throw_gain: float = 9.0
+@export var irritation_hit_gain: float = 30.0
+@export var irritation_punch_gain: float = 40.0
+## Collective din: noise energy that lingers and keeps pressing on the meter.
+@export var irritation_din_decay_seconds: float = 6.0
+@export var irritation_din_threshold: float = 90.0
+@export var irritation_din_gain: float = 0.06
+@export var irritation_din_cap: float = 400.0
+@export var irritation_notable_gain: float = 6.0
+@export var irritation_after_shot: float = 30.0

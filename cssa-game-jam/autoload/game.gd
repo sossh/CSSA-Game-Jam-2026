@@ -21,6 +21,8 @@ var installed_rocket_parts := PackedStringArray()
 var rocket_parts: int:
 	get: return installed_rocket_parts.size()
 var rocket_launch_started_at := -1.0
+var launch_cinematic_active: bool:
+	get: return rocket_launch_started_at >= 0.0
 var ui_open: bool = true
 var elapsed: float = 0.0
 var sync_time: float = 0.0
@@ -56,6 +58,14 @@ func reset() -> void:
 func _physics_process(delta: float) -> void:
 	if not is_host() or not is_instance_valid(world): return
 	elapsed += delta
+	if not launch_cinematic_active:
+		update_round(delta)
+	sync_time += delta
+	if sync_time >= SNAPSHOT_INTERVAL:
+		sync_time = 0
+		broadcast_snapshot()
+
+func update_round(delta: float) -> void:
 	if phase in ["preparation", "class", "break"]:
 		remaining = maxf(0.0, remaining - delta)
 		var phase_dur: float = config.break_seconds if phase == "break" else config.preparation_seconds
@@ -89,17 +99,11 @@ func _physics_process(delta: float) -> void:
 		if p.burp_at > 0 and elapsed >= p.burp_at:
 			p.burp_at = 0.0
 			NoiseBus.emit_noise(p.position, config.burp_loudness, str(id), "burp")
-		if p.pop_until > elapsed and allowed(id, "pop", config.interactions.pop_rocks_interval):
-			NoiseBus.emit_noise(p.position, config.interactions.pop_rocks_loudness, str(id), "pop_rocks")
 		if p.position.y < config.fall_out_height:
 			kill(id, "fell out of the curriculum")
 	if is_host() and phase == "class" and next_npc_noise_at > 0.0 and elapsed >= next_npc_noise_at:
 		next_npc_noise_at = elapsed + randf_range(config.npc_noise_interval.x, config.npc_noise_interval.y)
 		trigger_npc_noise()
-	sync_time += delta
-	if sync_time >= SNAPSHOT_INTERVAL:
-		sync_time = 0
-		broadcast_snapshot()
 
 func make_snapshot() -> Dictionary:
 	return {"epoch": epoch, "players": players, "phase": phase, "remaining": remaining,
@@ -158,20 +162,25 @@ func register(display_name: String) -> void:
 	if players.has(id) or players.size() >= config.maximum_players: return
 	if phase == "menu": phase = "lobby"
 	var alive := phase != "class"
+	var occupied_slots := players.values().map(func(player): return player.spawn_slot)
+	var slot := 0
+	while slot in occupied_slots:
+		slot += 1
+	var position: Vector3 = world.lunar_arrival_position(slot)
+	var look: Vector2 = world.earth_look_angles(position)
 	players[id] = {"name": Net.clean_name(display_name), "stomach": config.stomach_max,
 		"money": config.starting_bitcoin, "food": 0.0, "alive": alive,
-		"position": world.chute_position(players.size()), "yaw": 0.0, "pitch": 0.0,
+		"spawn_slot": slot, "position": position, "yaw": look.x, "pitch": look.y,
 		"mode": "walk" if alive else "dead", "seat": -1, "held": "", "carrier": 0,
 		"eat_until": 0.0, "violation_until": 0.0, "speed_until": 0.0, "recover_at": 0.0,
-		"burp_at": 0.0, "growl_at": elapsed + 15, "pop_until": 0.0, "gas": 0.0,
+		"burp_at": 0.0, "growl_at": elapsed + 15, "gas": 0.0,
 		"epoch": 0, "limbs": [], "launch": Vector3.ZERO}
 	world.ensure_players()
 	if id != 1:
 		var initial := make_snapshot()
 		initial["activity"] = activity_history
 		initial_state.rpc_id(id, initial)
-	event.rpc("banner", {"text": "%s fell down the transfer chute." % players[id].name})
-	event.rpc("sound", {"position": players[id].position, "key": "chute", "loudness": 60.0})
+	event.rpc("banner", {"text": "%s arrived on the Moon." % players[id].name})
 	print("PLAYER_JOINED ", id, " ", players[id].name)
 
 func remove_player(id: int) -> void:
@@ -197,11 +206,19 @@ func action(action_name: String, data: Dictionary) -> void:
 	if is_host(): handle_action(multiplayer.get_remote_sender_id(), action_name, data)
 
 func handle_action(id: int, action_name: String, data: Dictionary) -> void:
-	if not players.has(id): return
+	if launch_cinematic_active or not players.has(id): return
 	if action_name == "start" and id == 1 and phase in ["lobby", "game_over"]:
 		start_run()
 		return
 	var p: Dictionary = players[id]
+	if action_name == "buy":
+		var purchased := false
+		if p.alive and p.mode not in ["carried", "ragdoll"] and allowed(id, "buy", config.interactions.buy_cooldown):
+			purchased = world.buy(id, str(data.get("item", "")), str(data.get("machine", "vending")))
+		var request_id := int(data.get("request_id", 0))
+		if request_id > 0:
+			event.rpc_id(id, "vending_result", {"id": id, "request_id": request_id, "purchased": purchased, "balance": p.money})
+		return
 	if not p.alive or phase == "game_over": return
 	if action_name == "wiggle" and p.mode == "carried" and allowed(id, "wiggle", config.player.struggle_interval_seconds):
 		p.recover_at += 1
@@ -227,13 +244,11 @@ func handle_action(id: int, action_name: String, data: Dictionary) -> void:
 				p.seat = -1
 				p.epoch += 1
 		"fart":
-			if allowed(id, "fart", config.interactions.fart_cooldown): relieve_gas(id)
+			if float(p.get("gas", 0.0)) > 0.0 and allowed(id, "fart", config.interactions.fart_cooldown): relieve_gas(id)
 		"step":
 			if p.mode == "walk" and allowed(id, "step", config.interactions.step_cooldown):
 				var step_pos: Vector3 = data.get("position", p.position)
 				NoiseBus.emit_noise(step_pos, config.player.sprint_step_loudness if data.get("sprint", false) else config.player.walk_step_loudness, str(id), "footstep")
-		"buy":
-			if allowed(id, "buy", config.interactions.buy_cooldown): world.buy(id, str(data.get("item", "")), str(data.get("machine", "vending")))
 
 func allowed(id: int, key: String, interval: float) -> bool:
 	var token := str(id) + ":" + key
@@ -263,10 +278,9 @@ func start_run() -> void:
 	rocket_launch_started_at = -1.0
 	if is_instance_valid(world): world.update_rocket_assembly()
 	world.clear_items()
-	world.teacher.drugs = 0
 	for id in players:
 		players[id].money = config.starting_bitcoin
-		respawn(id)
+		respawn(id, phase != "lobby" or not players[id].alive)
 	start_preparation()
 
 func start_preparation() -> void:
@@ -275,7 +289,7 @@ func start_preparation() -> void:
 	warning_bell_fired = false
 	world.prepare_class()
 	for id in players: players[id].food = 0.0
-	event.rpc("banner", {"text": "GRADE %d • Drug the coffee. Find food. Take a seat." % grade})
+	event.rpc("banner", {"text": "GRADE %d • Find food. Take a seat." % grade})
 	print("PHASE preparation grade=", grade)
 
 func start_class() -> void:
@@ -299,7 +313,6 @@ func start_break() -> void:
 	warning_bell_fired = false
 	next_npc_noise_at = 0.0
 	world.teacher.leave()
-	world.teacher.drugs = 0
 	world.prepare_class()
 	for id in players:
 		var p: Dictionary = players[id]
@@ -310,30 +323,35 @@ func start_break() -> void:
 			respawn(id)
 	grade += 1
 	event.rpc("sound", {"position": world.bell_origin.global_position, "key": "bell", "loudness": config.bell_volume})
+	event.rpc("mogging", {})
 	event.rpc("banner", {"text": "RECESS • Allowances paid. Clones cost ₿%d. Vending is open!" % config.cloning_fee})
 	print("PHASE break survived=", survived)
 
-func respawn(id: int) -> void:
+func respawn(id: int, relocate_to_cafe: bool = true) -> void:
 	world.release_hand(id)
 	var p: Dictionary = players[id]
 	p.alive = true
 	p.stomach = config.stomach_max
 	p.mode = "walk"
-	p.position = world.chute_position(players.keys().find(id))
+	if relocate_to_cafe:
+		p.position = world.cafe_respawn_position(p.spawn_slot)
+		p.yaw = 0.0
+		p.pitch = 0.0
 	p.seat = -1
 	p.carrier = 0
 	p.eat_until = 0.0
 	p.burp_at = 0.0
-	p.pop_until = 0.0
 	p.speed_until = 0.0
 	p.violation_until = 0.0
 	p.gas = 0.0
 	p.limbs = []
+	p.launch = Vector3.ZERO
 	p.epoch += 1
-	event.rpc("sound", {"position": p.position, "key": "clone", "loudness": config.clone_volume})
+	if relocate_to_cafe:
+		event.rpc("sound", {"position": p.position, "key": "clone", "loudness": config.clone_volume})
 
 func damage(id: int, amount: float, reason: String, impulse: Vector3 = Vector3.ZERO) -> void:
-	if not players.has(id) or not players[id].alive: return
+	if launch_cinematic_active or not players.has(id) or not players[id].alive: return
 	players[id].stomach = maxf(0, players[id].stomach - amount)
 	event.rpc("hurt", {"id": id})
 	if players[id].stomach <= 0: kill(id, reason, impulse)
@@ -357,7 +375,7 @@ func kill(id: int, reason: String, impulse: Vector3 = Vector3.ZERO) -> void:
 	check_wipe()
 
 func check_wipe() -> void:
-	if not phase in ["class", "preparation"]: return
+	if launch_cinematic_active or not phase in ["class", "preparation"]: return
 	for p in players.values():
 		if p.alive: return
 	phase = "game_over"
@@ -388,7 +406,6 @@ func finish_eating(id: int) -> void:
 	p.stomach = minf(config.stomach_max, p.stomach + data.food)
 	if phase == "class": p.food += data.food
 	if data.effect == "speed": p.speed_until = elapsed + config.player.energy_boost_seconds
-	if data.effect == "pop_rocks": p.pop_until = elapsed + config.interactions.pop_rocks_seconds
 	if data.sound == "can_open" or data.effect == "speed":
 		NoiseBus.emit_noise(p.position, config.interactions.can_crush_loudness, str(id), "crush_can")
 	p.gas = clampf(float(p.get("gas", 0.0)) + data.food, 0.0, config.gas_capacity)
@@ -399,7 +416,7 @@ func finish_eating(id: int) -> void:
 func relieve_gas(id: int) -> void:
 	if not players.has(id): return
 	var p: Dictionary = players[id]
-	if not p.alive: return
+	if not p.alive or float(p.get("gas", 0.0)) <= 0.0: return
 	var kind: String = "fart" if randf() < 0.5 else "burp"
 	var loudness: float = config.burp_loudness if kind == "burp" else config.fart_loudness
 	p.gas = maxf(0.0, float(p.get("gas", 0.0)) - randf_range(config.gas_relief.x, config.gas_relief.y))
@@ -439,5 +456,7 @@ func event(kind: String, data: Dictionary) -> void:
 		"rocket_console":
 			if int(data.id) == multiplayer.get_unique_id(): announcement.emit(str(data.text))
 		"activity": append_activity(str(data.text), float(data.get("time", elapsed)))
+		"mogging":
+			if is_instance_valid(world): world.play_mogging()
 		"sound": Sfx.play_at(str(data.key), data.position, float(data.get("loudness", Sfx.config.default_playback_loudness)))
 	effect.emit(kind, data)

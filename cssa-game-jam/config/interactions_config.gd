@@ -3,9 +3,6 @@ extends Resource
 
 @export_group("Eating")
 @export var eat_seconds: float = 1.5
-@export var pop_rocks_seconds: float = 8.0
-@export var pop_rocks_interval: float = 0.7
-@export var pop_rocks_loudness: float = 20.0
 @export var can_crush_loudness: float = 35.0
 
 @export_group("Action cooldowns")
@@ -40,15 +37,6 @@ extends Resource
 @export var punch_loudness: float = 35.0
 @export var punch_impulse: float = 7.0
 @export var punch_lift: float = 3.0
-@export var weapon_damage: float = 30.0
-@export var nerf_damage: float = 0.0
-@export var knife_reach: float = 2.2
-@export var gun_range: float = 35.0
-@export var gun_loudness: float = 150.0
-@export var weapon_other_loudness: float = 25.0
-@export var weapon_impulse: float = 5.0
-@export var weapon_lift: float = 2.0
-@export var thrown_knife_damage: float = 25.0
 @export var clone_lethal_damage: float = 20.0
 
 @export_group("Impacts and props")
@@ -63,14 +51,6 @@ extends Resource
 @export var impact_impulse_scale: float = 0.7
 @export var impact_lift: float = 3.0
 @export var tomato_splat_speed: float = 4.0
-@export var cushion_use_loudness: float = 80.0
-@export var cushion_seat_loudness: float = 90.0
-@export var cushion_seat_radius: float = 1.2
-@export var firework_fuse: float = 3.0
-@export var firework_loudness: float = 190.0
-@export var firework_radius: float = 3.0
-@export var firework_damage: float = 15.0
-@export var firework_lift: float = 8.0
 
 @export_group("Vending")
 @export var vending_reach: float = 4.5

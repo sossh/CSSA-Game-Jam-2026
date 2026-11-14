@@ -1,0 +1,70 @@
+[gd_scene load_steps=6 format=3]
+
+[ext_resource type="Texture2D" path="res://world/classroom/props/assets/space_travel_earth.png" id="1"]
+
+[sub_resource type="StandardMaterial3D" id="FrameMaterial"]
+albedo_color = Color(0.13, 0.17, 0.23, 1)
+roughness = 0.86
+
+[sub_resource type="BoxMesh" id="Frame"]
+material = SubResource("FrameMaterial")
+size = Vector3(6.85, 3.12, 0.055)
+
+[sub_resource type="StandardMaterial3D" id="PaintingMaterial"]
+shading_mode = 0
+albedo_texture = ExtResource("1")
+
+[sub_resource type="QuadMesh" id="Painting"]
+material = SubResource("PaintingMaterial")
+size = Vector2(6.48, 2.16)
+
+[node name="SpaceTravelPainting" type="Node3D"]
+
+[node name="Frame" type="MeshInstance3D" parent="."]
+mesh = SubResource("Frame")
+cast_shadow = 0
+
+[node name="Models" type="MeshInstance3D" parent="."]
+position = Vector3(0, -0.025, 0.029)
+mesh = SubResource("Painting")
+cast_shadow = 0
+
+[node name="Title" type="Label3D" parent="."]
+position = Vector3(0, 1.295, 0.04)
+pixel_size = 0.01
+font_size = 49
+outline_size = 0
+modulate = Color(0.93, 0.91, 0.84, 1)
+text = "SPACE TRAVEL TO EARTH"
+
+[node name="Caption1" type="Label3D" parent="."]
+position = Vector3(-2.43, -1.305, 0.04)
+pixel_size = 0.008
+font_size = 30
+outline_size = 0
+modulate = Color(0.80, 0.87, 0.96, 1)
+text = "STAGE 1"
+
+[node name="Caption2" type="Label3D" parent="."]
+position = Vector3(-0.81, -1.305, 0.04)
+pixel_size = 0.008
+font_size = 30
+outline_size = 0
+modulate = Color(0.80, 0.87, 0.96, 1)
+text = "STAGE 2"
+
+[node name="Caption3" type="Label3D" parent="."]
+position = Vector3(0.81, -1.305, 0.04)
+pixel_size = 0.008
+font_size = 30
+outline_size = 0
+modulate = Color(0.80, 0.87, 0.96, 1)
+text = "STAGE 3"
+
+[node name="Caption4" type="Label3D" parent="."]
+position = Vector3(2.43, -1.305, 0.04)
+pixel_size = 0.008
+font_size = 30
+outline_size = 0
+modulate = Color(0.80, 0.87, 0.96, 1)
+text = "TO EARTH"

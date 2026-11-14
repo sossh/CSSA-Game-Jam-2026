@@ -35,3 +35,9 @@ https://kenney.nl/assets/particle-pack
 Rocket launch by Sanderboah, CC0 1.0. Trimmed to 10 seconds, mixed to mono, and faded for the lunar launch.
 https://freesound.org/people/Sanderboah/sounds/803852/
 https://creativecommons.org/publicdomain/zero/1.0/
+
+Bitcoin icon (cssa-game-jam/assets/ui/bitcoin.png) from spothq/cryptocurrency-icons, CC0 1.0 Universal (Public Domain).
+https://github.com/spothq/cryptocurrency-icons
+
+Jersey 25 Font (cssa-game-jam/fonts/Jersey_25/Jersey25-Regular.ttf) by The Soft Type Project Authors, SIL Open Font License 1.1.
+https://github.com/scfried/soft-type-jersey

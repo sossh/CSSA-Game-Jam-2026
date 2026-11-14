@@ -45,7 +45,7 @@ are core, not optional polish.
   and friends can be carried/thrown. Keep physical ragdolls and recovery.
 - Single **Stomach / health** bar: time and damage deplete it, food refills it.
   Eating is loud; hunger, burps, impacts, footsteps and punches create noise.
-- Configurable phases, currently **20s preparation / 120s class / 90s break**.
+- Configurable phases, currently **20s preparation / 120s class / 60s break**.
   Round, economy and spawn tuning lives in `config/game_config.tres`. That
   resource links the player, teacher and interaction settings. Audio paths
   and mixing live in `config/audio_config.tres`, and LAN ports and discovery
@@ -56,7 +56,7 @@ are core, not optional polish.
   a readable warning before the slow turn. Investigations increase alertness.
 - **Lecture is not immunity:** over-threshold noise can get a student caught
   while the teacher's back is turned. Checks are more sensitive; coffee is
-  less sensitive, not deaf. Sleeping tablets increase coffee opportunities.
+  less sensitive, not deaf.
 - Mixed blame: sound location draws suspicion; visible violations identify
   actors, otherwise proximity, behaviour and limited randomness can frame a
   nearby student. Do not make the teacher omniscient about unseen throwers.

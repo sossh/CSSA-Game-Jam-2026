@@ -1,0 +1,92 @@
+[gd_scene format=3 uid="uid://d03ye1faug6ta"]
+
+[ext_resource type="PackedScene" uid="uid://c6ar427hv5y7l" path="res://characters/npc/kid-idle.fbx" id="1_emtgj"]
+[ext_resource type="Texture2D" uid="uid://q7wjk6xpyu31" path="res://characters/npc/assets/textures/kid1/torso.png" id="2_egm77"]
+[ext_resource type="Animation" uid="uid://bu4gv5l2giydv" path="res://characters/npc/assets/animations/death.res" id="2_xi3uv"]
+[ext_resource type="Texture2D" uid="uid://t3plm6d2bxv3" path="res://characters/npc/assets/textures/kid1/head.png" id="3_j17dn"]
+[ext_resource type="Animation" path="res://characters/npc/assets/animations/idle-animation.res" id="3_oadqd"]
+[ext_resource type="Animation" path="res://characters/npc/assets/animations/sit.res" id="4_8lcvf"]
+[ext_resource type="Texture2D" uid="uid://cflr8vkbj66qi" path="res://characters/npc/assets/textures/kid1/crotch.png" id="4_pr2il"]
+[ext_resource type="Texture2D" uid="uid://cqu2dowycvray" path="res://characters/npc/assets/textures/kid1/legs.png" id="5_w4a0m"]
+[ext_resource type="Texture2D" uid="uid://cs3fo42llgv8g" path="res://characters/npc/assets/textures/kid1/arm_r.png" id="6_81cft"]
+[ext_resource type="Texture2D" uid="uid://c7xspnjjw2vwx" path="res://characters/npc/assets/textures/kid1/arm_l.png" id="7_chtnc"]
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_vfeeh"]
+albedo_texture = ExtResource("2_egm77")
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_qdvjr"]
+albedo_texture = ExtResource("3_j17dn")
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_kxlqg"]
+albedo_texture = ExtResource("4_pr2il")
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_r076o"]
+albedo_texture = ExtResource("5_w4a0m")
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_ybi4v"]
+albedo_texture = ExtResource("6_81cft")
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_1qm6t"]
+albedo_texture = ExtResource("7_chtnc")
+
+[sub_resource type="AnimationLibrary" id="AnimationLibrary_levb3"]
+_data = {
+&"death": ExtResource("2_xi3uv"),
+&"idle": ExtResource("3_oadqd"),
+&"sit": ExtResource("4_8lcvf")
+}
+
+[node name="kid-idle" unique_id=1451443662 instance=ExtResource("1_emtgj")]
+transform = Transform3D(100, 0, 0, 0, 100, 0, 0, 0, 100, 0, 0, 0)
+
+[node name="GeneralSkeleton" parent="." index="0" unique_id=952772688]
+bones/0/position = Vector3(1.52176e-05, 0.0026363172, -0.0010419093)
+bones/0/rotation = Quaternion(-0.2588615, -0.0037939323, -0.024103086, 0.9656062)
+bones/1/rotation = Quaternion(0.2542289, -0.007389051, 0.025313718, 0.96678454)
+bones/2/rotation = Quaternion(0.019884042, -0.0014650632, -0.00054183736, 0.9998011)
+bones/3/rotation = Quaternion(0.019781133, -0.0015703485, -0.00048958784, 0.99980295)
+bones/4/rotation = Quaternion(0.12938339, 0.00015852183, -0.0043353806, 0.9915852)
+bones/5/rotation = Quaternion(-0.15145068, -0.0076948362, 0.010118166, 0.9883832)
+bones/7/rotation = Quaternion(0.54656357, 0.4534725, 0.49718502, -0.49843565)
+bones/8/rotation = Quaternion(0.1185022, 0.80833197, -0.47548115, -0.32630432)
+bones/9/rotation = Quaternion(0.374906, -0.5812663, 0.40883, 0.5953429)
+bones/10/rotation = Quaternion(-0.10347292, 0.7554216, 0.18762873, 0.6192149)
+bones/11/rotation = Quaternion(-0.08438939, 0.016052246, 0.31314176, 0.9458134)
+bones/12/rotation = Quaternion(0.18214549, -0.083711214, -0.04569942, 0.9786353)
+bones/13/rotation = Quaternion(-0.41576418, 0.19250888, 0.11500017, 0.88139415)
+bones/15/rotation = Quaternion(0.5207183, -0.46698022, -0.5374886, -0.47105008)
+bones/16/rotation = Quaternion(0.017315477, 0.8152335, -0.52516824, 0.24350105)
+bones/17/rotation = Quaternion(0.41062272, 0.5555143, -0.4424994, 0.57182807)
+bones/18/rotation = Quaternion(-0.0027440786, -0.8238253, -0.17727523, 0.5384031)
+bones/19/rotation = Quaternion(-0.12652661, 0.046211805, 0.33598632, 0.9321849)
+bones/20/rotation = Quaternion(-0.042614326, 0.2853905, -0.6218493, 0.7280383)
+bones/21/rotation = Quaternion(0.43207765, 0.13278489, 0.48484135, 0.7487363)
+bones/23/rotation = Quaternion(0.03473588, 0.4689129, 0.88223314, 0.024058884)
+bones/24/rotation = Quaternion(-0.027680531, 0.7090919, -0.702497, 0.05404044)
+bones/25/rotation = Quaternion(0.06335499, 0.7053177, -0.70300967, -0.06550337)
+bones/26/rotation = Quaternion(-0.00022801434, 0.99964297, 0.023896102, 0.011959085)
+bones/28/rotation = Quaternion(-0.09989858, 0.45376942, 0.88517654, -0.024007138)
+bones/29/rotation = Quaternion(0.011706051, 0.69768846, -0.71268475, -0.071932666)
+bones/30/rotation = Quaternion(-0.09147971, 0.66040766, -0.7382451, 0.10240812)
+bones/31/rotation = Quaternion(0.00010228252, 0.9997091, 0.014021549, -0.019626772)
+
+[node name="torso" parent="GeneralSkeleton" index="0" unique_id=2046705442]
+surface_material_override/0 = SubResource("StandardMaterial3D_vfeeh")
+
+[node name="head" parent="GeneralSkeleton" index="1" unique_id=2104488822]
+surface_material_override/0 = SubResource("StandardMaterial3D_qdvjr")
+
+[node name="crotch" parent="GeneralSkeleton" index="2" unique_id=919869341]
+surface_material_override/0 = SubResource("StandardMaterial3D_kxlqg")
+
+[node name="legs" parent="GeneralSkeleton" index="3" unique_id=1607548262]
+surface_material_override/0 = SubResource("StandardMaterial3D_r076o")
+
+[node name="right" parent="GeneralSkeleton" index="4" unique_id=758890937]
+surface_material_override/0 = SubResource("StandardMaterial3D_ybi4v")
+
+[node name="left" parent="GeneralSkeleton" index="5" unique_id=855292635]
+surface_material_override/0 = SubResource("StandardMaterial3D_1qm6t")
+
+[node name="AnimationPlayer" parent="." index="1" unique_id=1042780191]
+libraries/ = SubResource("AnimationLibrary_levb3")

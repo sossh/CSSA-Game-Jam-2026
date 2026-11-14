@@ -16,7 +16,7 @@ func get_item(id: String) -> ItemData:
 	return items.get(id, items.get("apple"))
 
 func sells(item_id: String, machine_id: String) -> bool:
-	return machine_id in VENDING_MACHINES and items.has(item_id) and (item_id in FALCON_STOCK) == (machine_id == ROCKET_VENDING)
+	return machine_id in VENDING_MACHINES and items.has(item_id) and ((item_id in FALCON_STOCK) == (machine_id == ROCKET_VENDING))
 
 func stock(machine_id: String = "vending") -> Array:
 	if machine_id == ROCKET_VENDING:
