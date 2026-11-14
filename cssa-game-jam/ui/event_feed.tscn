@@ -1,6 +1,7 @@
-[gd_scene load_steps=3 format=3]
+[gd_scene load_steps=4 format=3]
 
 [ext_resource type="Script" path="res://ui/event_feed.gd" id="1"]
+[ext_resource type="FontFile" uid="uid://bddrcfhrb4gvj" path="res://fonts/Jersey_25/Jersey25-Regular.ttf" id="2"]
 [sub_resource type="StyleBoxFlat" id="Background"]
 content_margin_left = 10.0
 content_margin_top = 8.0
@@ -47,6 +48,7 @@ mouse_filter = 2
 theme_override_colors/font_color = Color(0.35, 0.95, 1, 1)
 theme_override_colors/font_outline_color = Color(0, 0.1, 0.2, 0.9)
 theme_override_constants/outline_size = 3
+theme_override_fonts/font = ExtResource("2")
 theme_override_font_sizes/font_size = 12
 text = "INCIDENT FEED"
 
@@ -55,6 +57,7 @@ layout_mode = 2
 size_flags_vertical = 3
 mouse_filter = 2
 theme_override_colors/default_color = Color(0.82, 0.96, 1, 0.95)
+theme_override_fonts/normal_font = ExtResource("2")
 theme_override_font_sizes/normal_font_size = 13
 bbcode_enabled = false
 scroll_following = true
@@ -68,5 +71,6 @@ mouse_filter = 2
 theme_override_colors/font_color = Color(0.4, 0.95, 1, 0.9)
 theme_override_colors/font_outline_color = Color(0, 0.08, 0.16, 0.95)
 theme_override_constants/outline_size = 3
+theme_override_fonts/font = ExtResource("2")
 theme_override_font_sizes/font_size = 11
 text = "[H] Hide"

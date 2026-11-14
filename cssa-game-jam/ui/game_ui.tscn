@@ -7,6 +7,7 @@
 [ext_resource type="Texture2D" uid="uid://btf5717nm1wrx" path="res://assets/ui/gas.png" id="6"]
 [ext_resource type="Shader" path="res://ui/death_filter.gdshader" id="4_death_shader"]
 [ext_resource type="PackedScene" path="res://ui/irritation_meter.tscn" id="5_irritation"]
+[ext_resource type="FontFile" uid="uid://bddrcfhrb4gvj" path="res://fonts/Jersey_25/Jersey25-Regular.ttf" id="7_font"]
 
 [sub_resource type="ShaderMaterial" id="DeathFilterMat"]
 shader = ExtResource("4_death_shader")
@@ -27,6 +28,7 @@ border_width_bottom = 2
 border_color = Color(0.3, 0.7, 0.8, 1)
 
 [sub_resource type="Theme" id="UITheme"]
+default_font = ExtResource("7_font")
 default_font_size = 20
 PanelContainer/styles/panel = SubResource("PanelStyle")
 

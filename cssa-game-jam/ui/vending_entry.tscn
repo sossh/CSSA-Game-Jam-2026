@@ -1,6 +1,7 @@
-[gd_scene load_steps=7 format=3]
+[gd_scene load_steps=8 format=3]
 
 [ext_resource type="Script" path="res://ui/vending_entry.gd" id="1"]
+[ext_resource type="FontFile" uid="uid://bddrcfhrb4gvj" path="res://fonts/Jersey_25/Jersey25-Regular.ttf" id="2"]
 
 [sub_resource type="StyleBoxFlat" id="Normal"]
 bg_color = Color(0.052, 0.1, 0.18, 1)
@@ -56,6 +57,7 @@ custom_minimum_size = Vector2(160, 166)
 size_flags_horizontal = 3
 theme_override_colors/font_color = Color(0.92, 0.97, 1, 1)
 theme_override_colors/font_disabled_color = Color(0.62, 0.65, 0.7, 1)
+theme_override_fonts/font = ExtResource("2")
 theme_override_font_sizes/font_size = 16
 theme_override_styles/normal = SubResource("Normal")
 theme_override_styles/hover = SubResource("Hover")
