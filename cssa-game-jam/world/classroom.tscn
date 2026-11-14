@@ -333,7 +333,6 @@ light_energy = 1.9
 light_specular = 0.15
 omni_range = 6.5
 omni_attenuation = 0.8
-shadow_enabled = true
 
 [node name="Diffuser" type="MeshInstance3D" parent="Hallway/CafeLighting/WestFixture"]
 position = Vector3(0, -0.085, 0)
@@ -368,7 +367,6 @@ light_energy = 1.9
 light_specular = 0.15
 omni_range = 6.5
 omni_attenuation = 0.8
-shadow_enabled = true
 
 [node name="Diffuser" type="MeshInstance3D" parent="Hallway/CafeLighting/CenterFixture"]
 position = Vector3(0, -0.085, 0)
@@ -403,7 +401,6 @@ light_energy = 1.9
 light_specular = 0.15
 omni_range = 6.5
 omni_attenuation = 0.8
-shadow_enabled = true
 
 [node name="Diffuser" type="MeshInstance3D" parent="Hallway/CafeLighting/EastFixture"]
 position = Vector3(0, -0.085, 0)
