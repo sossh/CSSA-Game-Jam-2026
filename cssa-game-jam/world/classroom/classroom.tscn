@@ -112,8 +112,36 @@ ambient_light_color = Color(0.83, 0.87, 0.94, 1)
 ambient_light_energy = 0.48
 tonemap_mode = 3
 
+[sub_resource type="BoxShape3D" id="LunarGravityBounds"]
+size = Vector3(512, 512, 512)
+
+[sub_resource type="BoxShape3D" id="StationGravityBounds"]
+size = Vector3(18.3, 8.6, 26.3)
+
 [node name="Classroom" type="Node3D" unique_id=1350988650]
 script = ExtResource("1")
+
+[node name="LunarGravity" type="Area3D" parent="."]
+collision_layer = 0
+collision_mask = 46
+monitorable = false
+gravity_space_override = 3
+gravity = 2.5
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="LunarGravity"]
+shape = SubResource("LunarGravityBounds")
+
+[node name="StationGravity" type="Area3D" parent="."]
+editor_description = "Overrides lunar gravity within the station, ending at the lunar exit."
+collision_layer = 0
+collision_mask = 46
+monitorable = false
+priority = 1
+gravity_space_override = 3
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="StationGravity"]
+position = Vector3(0, 3.3, 3)
+shape = SubResource("StationGravityBounds")
 
 [node name="PlanetSurface" parent="." unique_id=806728454 instance=ExtResource("10")]
 transform = Transform3D(1.7169118, 0, 0, 0, 1.7169118, 0, 0, 0, 1.7169118, 0, -1.1192179, 0)

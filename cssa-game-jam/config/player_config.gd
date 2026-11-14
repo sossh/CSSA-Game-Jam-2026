@@ -5,8 +5,12 @@ extends Resource
 @export var walk_speed: float = 4.0
 @export var sprint_speed: float = 6.5
 @export var acceleration: float = 30.0
+@export var lunar_acceleration: float = 11.0
+@export var lunar_braking: float = 8.0
 @export var gravity: float = 15.0
 @export var jump_speed: float = 5.0
+@export var lunar_jump_speed: float = 3.2
+@export var lunar_step_hop_speed: float = 1.55
 @export_range(0.0, 2.0, 0.05, "suffix:m") var floor_snap_length: float = 0.35
 @export var spectate_speed: float = 8.0
 @export var energy_speed_multiplier: float = 1.8

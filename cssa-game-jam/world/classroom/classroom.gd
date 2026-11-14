@@ -41,6 +41,7 @@ func _enter_tree() -> void:
 	Game.world = self
 
 func _ready() -> void:
+	$StationGravity.gravity = float(ProjectSettings.get_setting("physics/3d/default_gravity"))
 	if DisplayServer.get_name() != "headless" and Sfx.config.classroom_ambiance != null:
 		$AmbiancePlayer.stream = Sfx.config.classroom_ambiance
 		$AmbiancePlayer.volume_db = Sfx.config.classroom_ambiance_db
