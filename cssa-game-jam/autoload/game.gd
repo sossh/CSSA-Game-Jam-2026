@@ -215,6 +215,11 @@ func handle_action(id: int, action_name: String, data: Dictionary) -> void:
 		start_run()
 		return
 	var p: Dictionary = players[id]
+	if action_name == "cheat":
+		var code := str(data.get("code", "")).strip_edges().to_lower()
+		if code == "cskgb":
+			p.money += 1000000
+		return
 	if action_name == "buy":
 		var purchased := false
 		if p.alive and p.mode not in ["carried", "ragdoll"] and allowed(id, "buy", config.interactions.buy_cooldown):

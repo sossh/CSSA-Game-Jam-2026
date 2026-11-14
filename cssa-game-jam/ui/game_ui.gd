@@ -33,6 +33,8 @@ extends CanvasLayer
 @onready var crawl_panel: Control = %Crawl
 @onready var crawl_video: VideoStreamPlayer = %CrawlVideo
 @onready var victory_panel: PanelContainer = %Victory
+@onready var cheat_panel: PanelContainer = %CheatMenu
+@onready var cheat_field: LineEdit = %CheatField
 var banner_left: float = 0
 var debug_visible: bool = false
 var wasted_timer: float = 0.0
@@ -122,6 +124,7 @@ func purchase_item(item_id: String) -> void:
 func connected() -> void:
 	reset_wasted()
 	victory_panel.hide()
+	cheat_panel.hide()
 	menu.hide()
 	if is_instance_valid(menu_music):
 		menu_music.stop()
@@ -137,8 +140,22 @@ func close_crawl() -> void:
 	crawl_panel.hide()
 	update_mouse()
 
+func close_cheat_menu() -> void:
+	cheat_field.text = ""
+	cheat_panel.hide()
+	update_mouse()
+
+func submit_cheat_pressed(_text: String = "") -> void:
+	var code := cheat_field.text.strip_edges().trim_prefix("`").trim_prefix("~").strip_edges().to_lower()
+	if code == "cskgb":
+		var id := multiplayer.get_unique_id()
+		if not Game.is_host() and Game.players.has(id):
+			Game.players[id].money += 1000000
+		Game.request("cheat", {"code": code})
+	close_cheat_menu()
+
 func update_mouse() -> void:
-	Game.ui_open = menu.visible or pause_panel.visible or vending_panel.visible or crawl_panel.visible or victory_panel.visible
+	Game.ui_open = menu.visible or pause_panel.visible or vending_panel.visible or crawl_panel.visible or victory_panel.visible or cheat_panel.visible
 	Input.mouse_mode = Input.MOUSE_MODE_VISIBLE if Game.ui_open else Input.MOUSE_MODE_CAPTURED
 
 func _input(event: InputEvent) -> void:
@@ -151,8 +168,19 @@ func _input(event: InputEvent) -> void:
 		if event.is_action_pressed("ui_cancel"):
 			get_viewport().set_input_as_handled()
 		return
+	if event.is_action_pressed("cheat_menu"):
+		if cheat_panel.visible:
+			close_cheat_menu()
+		else:
+			cheat_field.text = ""
+			cheat_panel.show()
+			update_mouse()
+			cheat_field.grab_focus()
+		get_viewport().set_input_as_handled()
+		return
 	if event.is_action_pressed("ui_cancel"):
-		if vending_panel.visible: close_vending()
+		if cheat_panel.visible: close_cheat_menu()
+		elif vending_panel.visible: close_vending()
 		else: pause_panel.visible = not pause_panel.visible
 		update_mouse()
 		get_viewport().set_input_as_handled()
@@ -169,6 +197,7 @@ func _process(delta: float) -> void:
 		if hud.visible:
 			hud.hide()
 			pause_panel.hide()
+			cheat_panel.hide()
 			close_vending()
 			close_crawl()
 			reset_wasted()

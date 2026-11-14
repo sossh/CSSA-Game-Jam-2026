@@ -1093,6 +1093,59 @@ theme_override_styles/hover = SubResource("VictoryBtnHover")
 theme_override_styles/focus = SubResource("VictoryBtnHover")
 text = "QUIT TO MAIN MENU"
 
+[node name="CheatMenu" type="PanelContainer" parent="Root" unique_id=1492837500]
+unique_name_in_owner = true
+visible = false
+layout_mode = 1
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -210.0
+offset_top = -95.0
+offset_right = 210.0
+offset_bottom = 95.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="Content" type="VBoxContainer" parent="Root/CheatMenu" unique_id=1492837501]
+layout_mode = 2
+theme_override_constants/separation = 12
+alignment = 1
+
+[node name="Title" type="Label" parent="Root/CheatMenu/Content" unique_id=1492837502]
+layout_mode = 2
+theme_override_colors/font_color = Color(0.35, 0.95, 1, 1)
+theme_override_colors/font_outline_color = Color(0, 0.08, 0.16, 0.95)
+theme_override_constants/outline_size = 4
+theme_override_font_sizes/font_size = 24
+text = "DEV CHEAT CONSOLE"
+horizontal_alignment = 1
+
+[node name="CheatField" type="LineEdit" parent="Root/CheatMenu/Content" unique_id=1492837503]
+unique_name_in_owner = true
+layout_mode = 2
+placeholder_text = "Enter cheat code..."
+alignment = 1
+
+[node name="ButtonRow" type="HBoxContainer" parent="Root/CheatMenu/Content" unique_id=1492837504]
+layout_mode = 2
+theme_override_constants/separation = 10
+alignment = 1
+
+[node name="Submit" type="Button" parent="Root/CheatMenu/Content/ButtonRow" unique_id=1492837505]
+custom_minimum_size = Vector2(0, 38)
+layout_mode = 2
+size_flags_horizontal = 3
+text = "SUBMIT"
+
+[node name="Close" type="Button" parent="Root/CheatMenu/Content/ButtonRow" unique_id=1492837506]
+custom_minimum_size = Vector2(0, 38)
+layout_mode = 2
+size_flags_horizontal = 3
+text = "CLOSE"
+
 [connection signal="pressed" from="Root/Menu/Content/Host" to="." method="host_pressed"]
 [connection signal="text_submitted" from="Root/Menu/Content/JoinRow/CodeField" to="." method="join_pressed"]
 [connection signal="pressed" from="Root/Menu/Content/JoinRow/Join" to="." method="join_pressed"]
@@ -1104,3 +1157,6 @@ text = "QUIT TO MAIN MENU"
 [connection signal="finished" from="Root/Crawl/CrawlVideo" to="." method="close_crawl"]
 [connection signal="pressed" from="Root/Crawl/Skip" to="." method="close_crawl"]
 [connection signal="pressed" from="Root/Victory/InnerFrame/Content/QuitToMenu" to="." method="quit_to_menu_pressed"]
+[connection signal="text_submitted" from="Root/CheatMenu/Content/CheatField" to="." method="submit_cheat_pressed"]
+[connection signal="pressed" from="Root/CheatMenu/Content/ButtonRow/Submit" to="." method="submit_cheat_pressed"]
+[connection signal="pressed" from="Root/CheatMenu/Content/ButtonRow/Close" to="." method="close_cheat_menu"]
