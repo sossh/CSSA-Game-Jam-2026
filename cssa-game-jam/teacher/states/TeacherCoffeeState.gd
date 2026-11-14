@@ -2,9 +2,10 @@ extends TeacherState
 
 func enter() -> void:
 	super()
-	Game.event.rpc("banner", {"text": "Professor X-PEL takes a very loud sip. SNACK WINDOW!"})
-	Game.event.rpc("sound", {"position": teacher.global_position, "key": "coffee"})
-	Game.event.rpc("sound", {"position": teacher.global_position, "key": "teacher_yawn"})
+	if Game.is_host():
+		Game.event.rpc("banner", {"text": "Professor X-PEL takes a very loud sip. SNACK WINDOW!"})
+		Game.event.rpc("sound", {"position": teacher.global_position, "key": "coffee"})
+		Game.event.rpc("sound", {"position": teacher.global_position, "key": "teacher_yawn"})
 
 func physics_update(delta: float) -> void:
 	super(delta)

@@ -207,9 +207,12 @@ func scan(delta: float) -> void:
 func catch_target(id: String) -> void:
 	target = id
 	fsm.force_change_state("ShootState")
-	Game.event.rpc("sound", {"position": global_position, "key": "shotgun_pump", "loudness": 85.0})
+	if Game.is_host():
+		Game.event.rpc("sound", {"position": global_position, "key": "shotgun_pump", "loudness": 85.0})
 
 func fire() -> void:
+	if not Game.is_host():
+		return
 	var origin := global_position + Vector3(0, 1.55, 0)
 	var direction := (aim_point - origin).normalized()
 	
