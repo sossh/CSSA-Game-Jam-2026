@@ -52,9 +52,11 @@ Assigned to `Root` in `ui/game_ui.tscn` so all menu panels (`Root/Menu`, `Root/P
 - **`PanelContainer/styles/panel` (`MenuBoxStyle`)**:
   - `2px` cyan border (`Color(0.18, 0.92, 1, 0.9)`), `4px` corner radius on all corners, `24px` horizontal / `20px` vertical content margins, dark translucent navy background (`alpha = 0.88`), and `shadow_size = 18` glowing cyan shadow.
 - **`Button` states (`normal`, `hover`, `pressed`, `disabled`, `focus`)**:
-  - `2px` cyan border, `3px` corner radius, glowing cyan shadow (`shadow_size = 8–12`), and progressive background illumination on hover/press.
+  - Raised cyan fill (`Color(0.03, 0.12, 0.22, 0.85)`), full 4-sided `2px` bright cyan border (`Color(0.28, 0.96, 1, 0.95)`), `3px` corner radius, glowing cyan shadow (`shadow_size = 8–12`), and progressive background illumination on hover/press.
 - **`LineEdit` states (`normal`, `focus`)**:
-  - Framed dark navy input boxes (`2px` cyan border, `3px` corner radius) that brighten on focus.
+  - Recessed dark input well (`Color(0.002, 0.008, 0.018, 0.94)`), `1px` muted border on top/sides (`Color(0.14, 0.52, 0.65, 0.55)`) with a `2px` bottom underline, `1px` corner radius, and no outer glow so text fields are visually distinct from clickable buttons.
+- **Read-Only Key Help / Status Callout Boxes (`HudBottomConsole`)**:
+  - Recessed dark backing (`Color(0.004, 0.014, 0.03, 0.55)`), `3px` left accent bar only (`border_width_left = 3`, no top/right/bottom border), no outer glow (`shadow_size = 0`), and softer ice-blue text (`Color(0.68, 0.88, 0.95, 0.9)`) so help boxes (`Controls`, `BottomConsoleBay`) never look like interactive buttons.
 
 ---
 
