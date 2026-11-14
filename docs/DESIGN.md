@@ -62,8 +62,7 @@ Assigned to `Root` in `ui/game_ui.tscn` so all menu panels (`Root/Menu`, `Root/P
 
 ### Currency Icon (`res://assets/ui/bitcoin.png`)
 - **Rule**: Never display the Unicode Bitcoin text character (`₿`) directly to the user in any UI label, button, banner, scoreboard, event feed, or 3D sign. Always render `res://assets/ui/bitcoin.png` instead:
-  - **HUD Top-Left (`CurrencyBay`)**: `TextureRect` (`28x28`, `expand_mode = 1`, `stretch_mode = 5`) next to `%Stats`.
-  - **Vending Header (`Root/Vending/Content/Header`)**: `BitcoinIcon` (`TextureRect`, `26x26`) + `%VendingBalance` (`"%d" % balance`).
+  - **HUD Top-Left (`CurrencyBay`)**: `TextureRect` (`28x28`, `expand_mode = 1`, `stretch_mode = 5`) next to `%Stats` (no duplicate balance readout in the vending menu header).
   - **Vending Item Cards (`ui/vending_entry.tscn`)**: Scene-authored `Footer` (`VBoxContainer`) containing `NameLabel` and `PriceRow` (`BitcoinIcon` `TextureRect` + `PriceLabel`).
   - **RichTextLabel Readouts (`%Scoreboard`, `%Banner`, `EventFeed/Content/Entries`)**: Render inline icons via BBCode `[img=WxH]res://assets/ui/bitcoin.png[/img]`. Always escape `[` as `[lb]` on dynamic/player strings before substituting `₿` with the `[img]` tag so player names cannot inject BBCode.
   - **3D Transfer Chute Sign (`world/classroom/props/transfer_chute.tscn`)**: Uses a child `Sprite3D` (`BitcoinIcon`) with `res://assets/ui/bitcoin.png` positioned in front of the cloning fee number on the `Label3D` sign.
