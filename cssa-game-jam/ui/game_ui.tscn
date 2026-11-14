@@ -9,7 +9,7 @@
 [ext_resource type="Texture2D" uid="uid://btf5717nm1wrx" path="res://assets/ui/gas.png" id="6"]
 [ext_resource type="Theme" path="res://ui/menu_theme.tres" id="8_theme"]
 [ext_resource type="Shader" path="res://ui/helmet_visor.gdshader" id="9_visor"]
-[ext_resource type="VideoStream" uid="uid://n0dbsf6opxp2" path="res://videos/title.ogv" id="9_title_video"]
+[ext_resource type="VideoStream" uid="uid://cb2iwhy2arfvu" path="res://videos/title2.ogv" id="9_title_video"]
 [ext_resource type="Texture2D" uid="uid://bltejex8383tc" path="res://logo/munchtitle.002.png" id="10_logo"]
 [ext_resource type="AudioStream" uid="uid://daotf6ojmnxte" path="res://music/sprach.ogg" id="11_menu_music"]
 [ext_resource type="PackedScene" path="res://ui/controls_reference.tscn" id="12_controls"]
