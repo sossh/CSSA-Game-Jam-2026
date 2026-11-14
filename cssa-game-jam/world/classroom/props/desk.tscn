@@ -1,46 +1,34 @@
-[gd_scene load_steps=10 format=3]
+[gd_scene load_steps=7 format=3]
 [ext_resource type="PackedScene" path="res://world/classroom/props/static_box.tscn" id="1"]
 [ext_resource type="PackedScene" path="res://core/interact/interactable.tscn" id="2"]
 [ext_resource type="Script" path="res://world/classroom/navigation_obstacle.gd" id="3"]
-[sub_resource type="StandardMaterial3D" id="Wood"]
-albedo_color = Color(0.5, 0.39, 0.28, 1)
-roughness = 0.85
-[sub_resource type="StandardMaterial3D" id="Metal"]
-albedo_color = Color(0.23, 0.27, 0.3, 1)
-roughness = 0.85
-[sub_resource type="StandardMaterial3D" id="Chair"]
-albedo_color = Color(0.26, 0.4, 0.55, 1)
-roughness = 0.85
-[sub_resource type="BoxMesh" id="SeatMesh"]
-size = Vector3(0.65, 0.12, 0.65)
-[sub_resource type="BoxMesh" id="BackMesh"]
-size = Vector3(0.65, 0.65, 0.1)
+[ext_resource type="PackedScene" path="res://assets/models/school_kit/furniture/Desk.glb" id="4"]
+[ext_resource type="PackedScene" path="res://assets/models/school_kit/furniture/Chair.glb" id="5"]
 [sub_resource type="BoxShape3D" id="InteractionShape"]
 size = Vector3(0.8, 1.1, 0.8)
 [node name="Desk" type="Node3D"]
+[node name="DeskModel" parent="." instance=ExtResource("4")]
+editor_description = "School Kit desk at 1.1x scale: 1.28 x 0.84 m, top at 0.86 m."
+transform = Transform3D(1.1, 0, 0, 0, 1.1, 0, 0, 0, 1.1, 0, 0, 0)
+[node name="ChairModel" parent="." instance=ExtResource("5")]
+editor_description = "Visual only; faces the desk (-Z). No collider so seating and movement are unchanged."
+transform = Transform3D(-1.1, 0, 0, 0, 1.1, 0, 0, 0, -1.1, 0, 0, 0.8)
 [node name="Desktop" parent="." instance=ExtResource("1")]
-position = Vector3(0, 0.87, 0)
-scale = Vector3(1.6, 0.16, 0.8)
+editor_description = "Collider matching DeskModel's top surface."
+position = Vector3(0, 0.81, 0)
+scale = Vector3(1.28, 0.1, 0.84)
 [node name="Mesh" parent="Desktop" index="0"]
-material_override = SubResource("Wood")
+visible = false
 [node name="LeftLeg" parent="." instance=ExtResource("1")]
-position = Vector3(-0.65, 0.42, 0)
-scale = Vector3(0.1, 0.84, 0.6)
+position = Vector3(-0.57, 0.38, 0)
+scale = Vector3(0.08, 0.76, 0.76)
 [node name="Mesh" parent="LeftLeg" index="0"]
-material_override = SubResource("Metal")
+visible = false
 [node name="RightLeg" parent="." instance=ExtResource("1")]
-position = Vector3(0.65, 0.42, 0)
-scale = Vector3(0.1, 0.84, 0.6)
+position = Vector3(0.57, 0.38, 0)
+scale = Vector3(0.08, 0.76, 0.76)
 [node name="Mesh" parent="RightLeg" index="0"]
-material_override = SubResource("Metal")
-[node name="ChairSeat" type="MeshInstance3D" parent="."]
-position = Vector3(0, 0.45, 0.8)
-mesh = SubResource("SeatMesh")
-material_override = SubResource("Chair")
-[node name="ChairBack" type="MeshInstance3D" parent="."]
-position = Vector3(0, 0.8, 1.08)
-mesh = SubResource("BackMesh")
-material_override = SubResource("Chair")
+visible = false
 [node name="Seat" parent="." instance=ExtResource("2")]
 position = Vector3(0, 0.55, 0.8)
 prompt = "Sit / evict clone"

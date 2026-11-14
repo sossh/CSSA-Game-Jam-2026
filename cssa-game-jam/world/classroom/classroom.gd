@@ -62,6 +62,8 @@ func _ready() -> void:
 		mark_obstacle(to_local(obstacle.global_position), obstacle.half_extents)
 	var obstacle = $TeacherDesk/NavigationObstacle
 	mark_obstacle(to_local(obstacle.global_position), obstacle.half_extents)
+	for decor_obstacle in $Decor.find_children("NavigationObstacle", "Marker3D", true, false):
+		mark_obstacle(to_local(decor_obstacle.global_position), decor_obstacle.half_extents)
 	spawn_positions.append($TeacherDesk/LootSpawn.global_position)
 	for node in find_children("*", "StaticBody3D", true, false):
 		if node is Interactable: interactions[node.interaction_id] = node

@@ -1,26 +1,55 @@
-[gd_scene load_steps=8 format=3]
+[gd_scene load_steps=12 format=3]
 [ext_resource type="PackedScene" path="res://world/classroom/props/static_box.tscn" id="1"]
 [ext_resource type="PackedScene" path="res://core/interact/interactable.tscn" id="2"]
 [ext_resource type="Script" path="res://world/classroom/navigation_obstacle.gd" id="3"]
-[sub_resource type="StandardMaterial3D" id="Wood"]
-albedo_color = Color(0.45, 0.3, 0.23, 1)
-roughness = 0.85
+[ext_resource type="PackedScene" path="res://assets/models/school_kit/furniture/Teacher_Desk.glb" id="4"]
 [sub_resource type="StandardMaterial3D" id="CoffeeMaterial"]
 albedo_color = Color(0.647, 0.165, 0.165, 1)
-roughness = 0.85
-[sub_resource type="BoxMesh" id="MugMesh"]
-size = Vector3(0.22, 0.28, 0.22)
+roughness = 0.35
+[sub_resource type="StandardMaterial3D" id="CoffeeLiquid"]
+albedo_color = Color(0.16, 0.08, 0.04, 1)
+roughness = 0.15
+[sub_resource type="CylinderMesh" id="MugMesh"]
+top_radius = 0.1
+bottom_radius = 0.09
+height = 0.22
+radial_segments = 20
+rings = 1
+[sub_resource type="CylinderMesh" id="LiquidMesh"]
+top_radius = 0.085
+bottom_radius = 0.085
+height = 0.01
+radial_segments = 20
+rings = 1
+[sub_resource type="TorusMesh" id="HandleMesh"]
+inner_radius = 0.04
+outer_radius = 0.065
+rings = 12
+ring_segments = 8
 [sub_resource type="BoxShape3D" id="InteractionShape"]
 size = Vector3(0.5, 0.5, 0.5)
 [node name="TeacherDesk" type="Node3D"]
+[node name="DeskModel" parent="." instance=ExtResource("4")]
+editor_description = "School Kit teacher desk at 1.35x scale (2.16 x 1.03 m, top at 1.08 m). Drawers face the board (-Z); modesty panel faces the students."
+transform = Transform3D(-1.35, 0, 0, 0, 1.35, 0, 0, 0, -1.35, 0, 0, 0)
 [node name="Desk" parent="." instance=ExtResource("1")]
-position = Vector3(0, 0.55, 0)
-scale = Vector3(2.5, 1.1, 1)
+editor_description = "Collider matching DeskModel."
+position = Vector3(0, 0.54, 0)
+scale = Vector3(2.16, 1.08, 1.03)
 [node name="Mesh" parent="Desk" index="0"]
-material_override = SubResource("Wood")
+visible = false
 [node name="CoffeeMug" type="MeshInstance3D" parent="."]
-position = Vector3(0, 1.2, 0)
+position = Vector3(0, 1.19, 0)
 mesh = SubResource("MugMesh")
+material_override = SubResource("CoffeeMaterial")
+[node name="Liquid" type="MeshInstance3D" parent="CoffeeMug"]
+position = Vector3(0, 0.106, 0)
+mesh = SubResource("LiquidMesh")
+material_override = SubResource("CoffeeLiquid")
+cast_shadow = 0
+[node name="Handle" type="MeshInstance3D" parent="CoffeeMug"]
+transform = Transform3D(1, 0, 0, 0, -4.371139e-08, -1, 0, 1, -4.371139e-08, 0.1, 0.01, 0)
+mesh = SubResource("HandleMesh")
 material_override = SubResource("CoffeeMaterial")
 [node name="Coffee" parent="." instance=ExtResource("2")]
 position = Vector3(0, 1.2, 0)

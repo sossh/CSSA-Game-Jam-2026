@@ -1,0 +1,22 @@
+[gd_scene load_steps=4 format=3]
+[ext_resource type="PackedScene" path="res://assets/models/school_kit/furniture/Locker.glb" id="1"]
+[ext_resource type="Script" path="res://world/classroom/navigation_obstacle.gd" id="2"]
+[sub_resource type="BoxShape3D" id="Shape"]
+size = Vector3(3.1, 1.9, 0.55)
+[node name="LockerBank" type="StaticBody3D"]
+editor_description = "Five School Kit lockers sharing one collider. Origin at floor centre; doors face +Z."
+[node name="Locker1" parent="." instance=ExtResource("1")]
+position = Vector3(-1.24, 0, 0)
+[node name="Locker2" parent="." instance=ExtResource("1")]
+position = Vector3(-0.62, 0, 0)
+[node name="Locker3" parent="." instance=ExtResource("1")]
+[node name="Locker4" parent="." instance=ExtResource("1")]
+position = Vector3(0.62, 0, 0)
+[node name="Locker5" parent="." instance=ExtResource("1")]
+position = Vector3(1.24, 0, 0)
+[node name="CollisionShape3D" type="CollisionShape3D" parent="."]
+position = Vector3(0, 0.95, 0)
+shape = SubResource("Shape")
+[node name="NavigationObstacle" type="Marker3D" parent="."]
+script = ExtResource("2")
+half_extents = Vector2(1.8, 0.5)
