@@ -33,7 +33,7 @@ extends CanvasLayer
 @onready var wasted_container: CenterContainer = %WastedContainer
 @onready var wasted_label: Label = %WastedLabel
 @onready var crawl_panel: Control = %Crawl
-@onready var crawl_text: Label = %CrawlText
+@onready var crawl_video: VideoStreamPlayer = %CrawlVideo
 var banner_left: float = 0
 var debug_visible: bool = false
 var wasted_timer: float = 0.0
@@ -148,9 +148,12 @@ func connected() -> void:
 	hud.show()
 	if DisplayServer.get_name() != "headless" and not "--skip-intro" in OS.get_cmdline_user_args():
 		crawl_panel.show()
+		crawl_video.play()
 	update_mouse()
 
 func close_crawl() -> void:
+	if is_instance_valid(crawl_video):
+		crawl_video.stop()
 	crawl_panel.hide()
 	update_mouse()
 
@@ -195,9 +198,6 @@ func _process(delta: float) -> void:
 			var alpha: float = clampf(wasted_timer / 1.0, 0.0, 1.0)
 			wasted_container.modulate.a = alpha
 			if is_instance_valid(death_filter): death_filter.modulate.a = alpha
-	if crawl_panel.visible:
-		crawl_text.position.y -= delta * 45
-		if crawl_text.position.y < -1100: close_crawl()
 	if not Net.active or not Game.players.has(multiplayer.get_unique_id()):
 		if vending_panel.visible: close_vending()
 		if is_instance_valid(death_filter): death_filter.visible = false
