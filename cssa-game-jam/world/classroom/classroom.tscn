@@ -821,6 +821,9 @@ current = true
 
 [node name="AmbiancePlayer" type="AudioStreamPlayer" parent="." unique_id=1849182041]
 
+[node name="MoggingPlayer" type="AudioStreamPlayer" parent="." unique_id=1849182042]
+volume_db = -4.0
+
 [editable path="Hallway/VendingMachine2"]
 [editable path="Hallway/CafeCeiling"]
 [editable path="Room/Floor"]
