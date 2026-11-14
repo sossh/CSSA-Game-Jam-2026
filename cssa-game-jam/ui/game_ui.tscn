@@ -3,12 +3,29 @@
 [ext_resource type="Script" uid="uid://cwsrc05ernper" path="res://ui/game_ui.gd" id="1"]
 [ext_resource type="PackedScene" path="res://ui/event_feed.tscn" id="3"]
 [ext_resource type="Texture2D" uid="uid://bqyalv1uxmwcp" path="res://assets/ui/bitcoin.png" id="4"]
+[ext_resource type="Shader" uid="uid://rawi8w6siebf" path="res://ui/death_filter.gdshader" id="4_death_shader"]
 [ext_resource type="Texture2D" uid="uid://dc4b1imbf6oee" path="res://assets/ui/chicken.png" id="5"]
-[ext_resource type="Texture2D" uid="uid://btf5717nm1wrx" path="res://assets/ui/gas.png" id="6"]
-[ext_resource type="Shader" path="res://ui/death_filter.gdshader" id="4_death_shader"]
 [ext_resource type="PackedScene" path="res://ui/irritation_meter.tscn" id="5_irritation"]
-[ext_resource type="FontFile" uid="uid://bddrcfhrb4gvj" path="res://fonts/Jersey_25/Jersey25-Regular.ttf" id="7_font"]
+[ext_resource type="Texture2D" uid="uid://btf5717nm1wrx" path="res://assets/ui/gas.png" id="6"]
 [ext_resource type="Theme" path="res://ui/menu_theme.tres" id="8_theme"]
+
+[sub_resource type="StyleBoxFlat" id="HudBottomConsole"]
+content_margin_left = 14.0
+content_margin_top = 10.0
+content_margin_right = 14.0
+content_margin_bottom = 10.0
+bg_color = Color(0.007843138, 0.02745098, 0.05882353, 0.45)
+border_width_left = 2
+border_width_top = 2
+border_width_right = 2
+border_width_bottom = 2
+border_color = Color(0.18, 0.92, 1, 0.9)
+corner_radius_top_left = 3
+corner_radius_top_right = 3
+corner_radius_bottom_right = 3
+corner_radius_bottom_left = 3
+shadow_color = Color(0, 0.8, 1, 0.16)
+shadow_size = 10
 
 [sub_resource type="ShaderMaterial" id="DeathFilterMat"]
 shader = ExtResource("4_death_shader")
@@ -141,24 +158,6 @@ corner_radius_bottom_right = 10
 shadow_color = Color(0, 0.8, 1, 0.2)
 shadow_size = 12
 
-[sub_resource type="StyleBoxFlat" id="HudBottomConsole"]
-content_margin_left = 14.0
-content_margin_top = 10.0
-content_margin_right = 14.0
-content_margin_bottom = 10.0
-bg_color = Color(0.007843138, 0.02745098, 0.05882353, 0.45)
-border_width_left = 2
-border_width_top = 2
-border_width_right = 2
-border_width_bottom = 2
-border_color = Color(0.18, 0.92, 1, 0.9)
-corner_radius_top_left = 3
-corner_radius_top_right = 3
-corner_radius_bottom_right = 3
-corner_radius_bottom_left = 3
-shadow_color = Color(0, 0.8, 1, 0.16)
-shadow_size = 10
-
 [node name="UI" type="CanvasLayer" unique_id=1907831806]
 script = ExtResource("1")
 
@@ -289,7 +288,7 @@ custom_minimum_size = Vector2(0, 42)
 layout_mode = 2
 text = "QUIT"
 
-[node name="DeathFilter" type="ColorRect" parent="Root"]
+[node name="DeathFilter" type="ColorRect" parent="Root" unique_id=426231322]
 unique_name_in_owner = true
 visible = false
 material = SubResource("DeathFilterMat")
@@ -351,7 +350,6 @@ offset_left = 22.0
 offset_top = 72.0
 offset_right = 180.0
 offset_bottom = 94.0
-mouse_filter = 2
 theme_override_colors/font_color = Color(0.45, 0.95, 1, 0.9)
 theme_override_colors/font_outline_color = Color(0, 0.08, 0.16, 0.95)
 theme_override_constants/outline_size = 3
@@ -379,7 +377,6 @@ alignment = 1
 
 [node name="Title" type="Label" parent="Root/HUD/RocketTracker/Content" unique_id=1492837477]
 layout_mode = 2
-mouse_filter = 2
 theme_override_colors/font_color = Color(0.35, 0.95, 1, 1)
 theme_override_colors/font_outline_color = Color(0, 0.08, 0.16, 0.95)
 theme_override_constants/outline_size = 3
@@ -634,7 +631,7 @@ offset_bottom = 204.0
 theme_override_colors/font_color = Color(0.45, 1, 0.8, 0.9)
 theme_override_font_sizes/font_size = 15
 
-[node name="IrritationMeter" parent="Root/HUD" instance=ExtResource("5_irritation")]
+[node name="IrritationMeter" parent="Root/HUD" unique_id=2012322611 instance=ExtResource("5_irritation")]
 
 [node name="EventFeed" parent="Root/HUD" unique_id=2025136264 instance=ExtResource("3")]
 
@@ -649,7 +646,7 @@ grow_vertical = 2
 mouse_filter = 2
 color = Color(1, 0.05, 0, 0)
 
-[node name="WastedContainer" type="CenterContainer" parent="Root"]
+[node name="WastedContainer" type="CenterContainer" parent="Root" unique_id=1316325947]
 unique_name_in_owner = true
 visible = false
 layout_mode = 1
@@ -660,12 +657,12 @@ grow_horizontal = 2
 grow_vertical = 2
 mouse_filter = 2
 
-[node name="WastedVBox" type="VBoxContainer" parent="Root/WastedContainer"]
+[node name="WastedVBox" type="VBoxContainer" parent="Root/WastedContainer" unique_id=1406691326]
 layout_mode = 2
 mouse_filter = 2
 theme_override_constants/separation = 12
 
-[node name="WastedLabel" type="Label" parent="Root/WastedContainer/WastedVBox"]
+[node name="WastedLabel" type="Label" parent="Root/WastedContainer/WastedVBox" unique_id=252946705]
 unique_name_in_owner = true
 layout_mode = 2
 theme_override_colors/font_color = Color(0.92, 0.12, 0.12, 1)
@@ -677,7 +674,7 @@ theme_override_font_sizes/font_size = 88
 text = "WASTED"
 horizontal_alignment = 1
 
-[node name="WastedSubtitle" type="Label" parent="Root/WastedContainer/WastedVBox"]
+[node name="WastedSubtitle" type="Label" parent="Root/WastedContainer/WastedVBox" unique_id=1804387485]
 unique_name_in_owner = true
 layout_mode = 2
 theme_override_colors/font_color = Color(0.85, 0.88, 0.95, 0.9)
@@ -738,13 +735,6 @@ theme_override_styles/panel = SubResource("HudBottomConsole")
 layout_mode = 2
 theme_override_constants/separation = 4
 
-[node name="BayHeader" type="Label" parent="Root/Pause/Content/BottomConsoleBay/ConsoleContent" unique_id=242449355]
-layout_mode = 2
-theme_override_colors/font_color = Color(0.35, 0.9, 1, 0.78)
-theme_override_font_sizes/font_size = 13
-text = "◈ MANIPULATOR BAY // KINETIC ACTUATOR ◈"
-horizontal_alignment = 1
-
 [node name="HeldLabel" type="Label" parent="Root/Pause/Content/BottomConsoleBay/ConsoleContent" unique_id=269296443]
 unique_name_in_owner = true
 layout_mode = 2
@@ -789,32 +779,32 @@ grow_vertical = 2
 [node name="Content" type="VBoxContainer" parent="Root/Vending" unique_id=347941449]
 layout_mode = 2
 
-[node name="Header" type="HBoxContainer" parent="Root/Vending/Content"]
+[node name="Header" type="HBoxContainer" parent="Root/Vending/Content" unique_id=1596775627]
 layout_mode = 2
 alignment = 2
 
-[node name="Exit" type="Button" parent="Root/Vending/Content/Header"]
+[node name="Exit" type="Button" parent="Root/Vending/Content/Header" unique_id=1342739726]
 custom_minimum_size = Vector2(96, 40)
 layout_mode = 2
 text = "Exit"
 
-[node name="Divider" type="HSeparator" parent="Root/Vending/Content"]
+[node name="Divider" type="HSeparator" parent="Root/Vending/Content" unique_id=1766919803]
 layout_mode = 2
 
-[node name="VendingScroll" type="ScrollContainer" parent="Root/Vending/Content"]
+[node name="VendingScroll" type="ScrollContainer" parent="Root/Vending/Content" unique_id=1270536104]
 unique_name_in_owner = true
 layout_mode = 2
 size_flags_vertical = 3
 horizontal_scroll_mode = 0
 vertical_scroll_mode = 4
 
-[node name="VendingGridLayout" type="VBoxContainer" parent="Root/Vending/Content/VendingScroll"]
+[node name="VendingGridLayout" type="VBoxContainer" parent="Root/Vending/Content/VendingScroll" unique_id=1721549842]
 unique_name_in_owner = true
 layout_mode = 2
 size_flags_horizontal = 3
 size_flags_vertical = 3
 
-[node name="VendingGrid" type="GridContainer" parent="Root/Vending/Content/VendingScroll/VendingGridLayout"]
+[node name="VendingGrid" type="GridContainer" parent="Root/Vending/Content/VendingScroll/VendingGridLayout" unique_id=725718986]
 unique_name_in_owner = true
 layout_mode = 2
 size_flags_horizontal = 3
@@ -892,5 +882,5 @@ text = "SKIP INTRO [Space / Esc]"
 [connection signal="pressed" from="Root/Pause/Content/Resume" to="." method="resume_pressed"]
 [connection signal="pressed" from="Root/Pause/Content/CopyCode" to="." method="copy_code_pressed"]
 [connection signal="pressed" from="Root/Pause/Content/QuitToMenu" to="." method="quit_to_menu_pressed"]
-[connection signal="pressed" from="Root/Crawl/Skip" to="." method="close_crawl"]
 [connection signal="pressed" from="Root/Vending/Content/Header/Exit" to="." method="close_vending"]
+[connection signal="pressed" from="Root/Crawl/Skip" to="." method="close_crawl"]
