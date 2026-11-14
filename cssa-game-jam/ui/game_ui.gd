@@ -208,7 +208,7 @@ func _process(delta: float) -> void:
 		gas_label.text = "GAS [F]"
 	var minutes := int(ceil(Game.remaining) / 60.0)
 	var seconds := int(ceil(Game.remaining)) % 60
-	phase_label.text = "%s • GRADE %d • %02d:%02d\nJOIN %s • %d classes / %d parts" % [Game.phase.to_upper(), Game.grade, minutes, seconds, Net.join_code, Game.survived, Game.rocket_parts]
+	phase_label.text = "STUDENT: %s\n%s • GRADE %d • %02d:%02d\nJOIN %s • %d classes / %d parts" % [p.name, Game.phase.to_upper(), Game.grade, minutes, seconds, Net.join_code, Game.survived, Game.rocket_parts]
 	if Game.phase in ["lobby", "game_over"]:
 		phase_label.text += "\n[ENTER] Host: start new run" if Game.is_host() else "\nWaiting for host"
 	var player = Game.world.player_nodes.get(id)
