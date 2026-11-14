@@ -156,9 +156,15 @@ func register(display_name: String) -> void:
 	if players.has(id) or players.size() >= config.maximum_players: return
 	if phase == "menu": phase = "lobby"
 	var alive := phase != "class"
+	var occupied_slots := players.values().map(func(player): return player.spawn_slot)
+	var slot := 0
+	while slot in occupied_slots:
+		slot += 1
+	var position: Vector3 = world.lunar_arrival_position(slot)
+	var look: Vector2 = world.earth_look_angles(position)
 	players[id] = {"name": Net.clean_name(display_name), "stomach": config.stomach_max,
 		"money": config.starting_bitcoin, "food": 0.0, "alive": alive,
-		"position": world.chute_position(players.size()), "yaw": 0.0, "pitch": 0.0,
+		"spawn_slot": slot, "position": position, "yaw": look.x, "pitch": look.y,
 		"mode": "walk" if alive else "dead", "seat": -1, "held": "", "carrier": 0,
 		"eat_until": 0.0, "violation_until": 0.0, "speed_until": 0.0, "recover_at": 0.0,
 		"burp_at": 0.0, "growl_at": elapsed + 15, "gas": 0.0,
@@ -168,8 +174,7 @@ func register(display_name: String) -> void:
 		var initial := make_snapshot()
 		initial["activity"] = activity_history
 		initial_state.rpc_id(id, initial)
-	event.rpc("banner", {"text": "%s fell down the transfer chute." % players[id].name})
-	event.rpc("sound", {"position": players[id].position, "key": "chute", "loudness": 60.0})
+	event.rpc("banner", {"text": "%s arrived on the Moon." % players[id].name})
 	print("PLAYER_JOINED ", id, " ", players[id].name)
 
 func remove_player(id: int) -> void:
@@ -269,7 +274,7 @@ func start_run() -> void:
 	world.clear_items()
 	for id in players:
 		players[id].money = config.starting_bitcoin
-		respawn(id)
+		respawn(id, phase != "lobby" or not players[id].alive)
 	start_preparation()
 
 func start_preparation() -> void:
@@ -316,13 +321,16 @@ func start_break() -> void:
 	event.rpc("banner", {"text": "RECESS • Allowances paid. Clones cost ₿%d. Vending is open!" % config.cloning_fee})
 	print("PHASE break survived=", survived)
 
-func respawn(id: int) -> void:
+func respawn(id: int, relocate_to_cafe: bool = true) -> void:
 	world.release_hand(id)
 	var p: Dictionary = players[id]
 	p.alive = true
 	p.stomach = config.stomach_max
 	p.mode = "walk"
-	p.position = world.chute_position(players.keys().find(id))
+	if relocate_to_cafe:
+		p.position = world.cafe_respawn_position(p.spawn_slot)
+		p.yaw = 0.0
+		p.pitch = 0.0
 	p.seat = -1
 	p.carrier = 0
 	p.eat_until = 0.0
@@ -331,8 +339,10 @@ func respawn(id: int) -> void:
 	p.violation_until = 0.0
 	p.gas = 0.0
 	p.limbs = []
+	p.launch = Vector3.ZERO
 	p.epoch += 1
-	event.rpc("sound", {"position": p.position, "key": "clone", "loudness": config.clone_volume})
+	if relocate_to_cafe:
+		event.rpc("sound", {"position": p.position, "key": "clone", "loudness": config.clone_volume})
 
 func damage(id: int, amount: float, reason: String, impulse: Vector3 = Vector3.ZERO) -> void:
 	if not players.has(id) or not players[id].alive: return

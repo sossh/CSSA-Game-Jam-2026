@@ -1,6 +1,8 @@
 class_name StudentPlayer
 extends CharacterBody3D
 
+const STANDING_EYE_HEIGHT := 1.55
+
 var peer_id: int
 var default_gravity := float(ProjectSettings.get_setting("physics/3d/default_gravity"))
 @onready var head: Node3D = $Head
@@ -45,7 +47,11 @@ func _ready() -> void:
 		audio_listener.make_current()
 	name_label.text = str(Game.players[peer_id].name)
 	name_label.visible = not local
-	global_position = Game.players[peer_id].position
+	var p: Dictionary = Game.players[peer_id]
+	global_position = p.position
+	rotation.y = p.yaw
+	pitch = p.pitch
+	head.rotation.x = pitch
 
 func _unhandled_input(event: InputEvent) -> void:
 	if not local or Game.ui_open or not Game.players.has(peer_id): return
@@ -81,6 +87,8 @@ func _physics_process(delta: float) -> void:
 	if applied_epoch != p.epoch:
 		applied_epoch = p.epoch
 		global_position = p.position
+		rotation.y = p.yaw
+		pitch = p.pitch
 		velocity = Vector3.ZERO
 		if mode not in ["ragdoll", "dead"]:
 			ragdoll.deactivate()
@@ -164,7 +172,7 @@ func _physics_process(delta: float) -> void:
 		rotation.y = lerp_angle(rotation.y, p.yaw, minf(1, delta * 20))
 		pitch = lerpf(pitch, p.pitch, minf(1, delta * 20))
 	head.rotation.x = pitch
-	head.position.y = 1.40 if mode == "seated" else 1.55
+	head.position.y = 1.40 if mode == "seated" else STANDING_EYE_HEIGHT
 	if local:
 		if charge >= 0: charge += delta
 		if Game.ui_open: charge = -1

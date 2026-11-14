@@ -5,7 +5,6 @@
 [ext_resource type="PackedScene" path="res://world/classroom/props/desk.tscn" id="3"]
 [ext_resource type="PackedScene" path="res://world/classroom/props/teacher_desk.tscn" id="4"]
 [ext_resource type="PackedScene" path="res://world/classroom/props/vending_machine.tscn" id="5"]
-[ext_resource type="PackedScene" path="res://world/classroom/props/transfer_chute.tscn" id="7"]
 [ext_resource type="PackedScene" uid="uid://df0mru1uqre67" path="res://characters/teacher/teacher.tscn" id="8"]
 [ext_resource type="PackedScene" path="res://world/lunar/space_backdrop.tscn" id="9"]
 [ext_resource type="PackedScene" path="res://world/lunar/planet_surface.tscn" id="10"]
@@ -224,6 +223,26 @@ transform = Transform3D(-0.93969, 0, -0.34202, 0, 1, 0, 0.34202, 0, -0.93969, 10
 
 [node name="Boulder3" parent="LunarOutpost/Boulders" parent_id_path=PackedInt32Array(705771223, 838457553) index="2" unique_id=935287101]
 transform = Transform3D(-0.68944, 0, 0.57851, 0, 0.9, 0, -0.57851, 0, -0.68944, -29, -4.962122, 24)
+
+[node name="LunarArrivalSpawns" type="Node3D" parent="."]
+
+[node name="Slot1" type="Marker3D" parent="LunarArrivalSpawns"]
+position = Vector3(3, -3.85, 31.6)
+
+[node name="Slot2" type="Marker3D" parent="LunarArrivalSpawns"]
+position = Vector3(1.2, -3.75, 31.6)
+
+[node name="Slot3" type="Marker3D" parent="LunarArrivalSpawns"]
+position = Vector3(4.8, -4.0, 31.6)
+
+[node name="Slot4" type="Marker3D" parent="LunarArrivalSpawns"]
+position = Vector3(3, -3.97, 33.6)
+
+[node name="Slot5" type="Marker3D" parent="LunarArrivalSpawns"]
+position = Vector3(1.2, -4.29, 33.6)
+
+[node name="Slot6" type="Marker3D" parent="LunarArrivalSpawns"]
+position = Vector3(4.8, -4.23, 33.6)
 
 [node name="Room" type="Node3D" parent="." unique_id=1281839070]
 
@@ -836,8 +855,25 @@ transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.62, 1.25, -0.925)
 [node name="RocketVendingMachine" parent="Hallway" unique_id=1480728923 instance=ExtResource("23_rocket_vending")]
 transform = Transform3D(7.54979e-08, 0, 1, 0, 1, 0, -1, 0, 7.54979e-08, 8.25, 0, 12.1)
 
-[node name="TransferChute" parent="Hallway" unique_id=1288543665 instance=ExtResource("7")]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 13.8)
+[node name="CafeRespawns" type="Node3D" parent="Hallway"]
+
+[node name="Slot1" type="Marker3D" parent="Hallway/CafeRespawns"]
+position = Vector3(0, 0.1, 12.2)
+
+[node name="Slot2" type="Marker3D" parent="Hallway/CafeRespawns"]
+position = Vector3(-1.7, 0.1, 12.2)
+
+[node name="Slot3" type="Marker3D" parent="Hallway/CafeRespawns"]
+position = Vector3(1.7, 0.1, 12.2)
+
+[node name="Slot4" type="Marker3D" parent="Hallway/CafeRespawns"]
+position = Vector3(0, 0.1, 14.2)
+
+[node name="Slot5" type="Marker3D" parent="Hallway/CafeRespawns"]
+position = Vector3(-1.7, 0.1, 14.2)
+
+[node name="Slot6" type="Marker3D" parent="Hallway/CafeRespawns"]
+position = Vector3(1.7, 0.1, 14.2)
 
 [node name="StarterSpawns" type="Node3D" parent="Hallway" unique_id=1590607564]
 

@@ -151,6 +151,8 @@ func run_host() -> void:
 	await wait(0.1)
 	verify(Game.phase == "class" and not Game.players[client].alive and Game.world.player_nodes[client].ragdoll.active, "One death spectates with death ragdoll while teammate keeps class alive")
 	Game.start_break()
+	verify(Game.players[client].position == Game.world.cafe_respawn_position(Game.players[client].spawn_slot)
+		and not Game.world.has_node("Hallway/TransferChute"), "Death respawns in the cafe without the transfer chute")
 	verify(Game.players[client].alive and Game.players[client].money == balance + Game.config.attendance_allowance - Game.config.cloning_fee, "Bell re-clones with fee")
 	verify(Game.survived == 1 and Game.grade == 2, "Class increments endless score and grade")
 	verify(Game.players[1].money == host_balance + 5 + 12, "Allowance includes eaten food")

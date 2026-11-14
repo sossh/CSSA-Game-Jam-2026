@@ -25,7 +25,13 @@ func run_host() -> void:
 		if Game.players.size() >= 5: break
 		await wait(0.1)
 	verify(Game.players.size() == 5, "Initial five peers registered")
+	var arrival_positions: Array[Vector3] = []
+	for id in Game.players:
+		var position: Vector3 = Game.players[id].position
+		verify(position.z > 30.0 and position.y < 0.0 and not arrival_positions.has(position), "Peer starts at a distinct lunar arrival spot")
+		arrival_positions.append(position)
 	Game.start_run()
+	verify(Game.players.values().all(func(player): return player.position in arrival_positions), "Starting the first round keeps the lunar arrivals in place")
 	var seat := 0
 	for id in Game.players:
 		Game.players[id].position = Game.world.seat_positions[seat]
@@ -96,11 +102,19 @@ func run_client() -> void:
 	var id := multiplayer.get_unique_id()
 	if "--late" in OS.get_cmdline_user_args():
 		verify(not Game.players[id].alive, "Late client starts in spectator mode")
+		var camera: Camera3D = Game.world.player_nodes[id].camera
+		var earth: Node3D = Game.world.get_node("SpaceBackdrop/Earth")
+		verify(camera.global_position.z > 30.0
+			and -camera.global_basis.z.dot(camera.global_position.direction_to(earth.global_position)) > 0.99,
+			"Late client sees Earth from the lunar ramp")
 	for attempt in range(120):
 		if Game.phase == "break": break
 		await wait(0.1)
 	verify(Game.phase == "break" and Game.survived == 1, "Client receives phase and score changes")
 	verify(Game.players[id].alive, "Client is alive after cloning")
+	if "--late" in OS.get_cmdline_user_args():
+		var cafe_position: Vector3 = Game.world.cafe_respawn_position(Game.players[id].spawn_slot)
+		verify(Game.world.player_nodes[id].global_position.distance_to(cafe_position) < 0.2, "Late client materializes in the cafe")
 	print("NETWORK_CLIENT_", "FAILED" if failed else "PASSED")
 	if "--late" in OS.get_cmdline_user_args():
 		await wait(0.3)

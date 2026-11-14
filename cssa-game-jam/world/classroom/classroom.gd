@@ -99,9 +99,15 @@ func nearest_walkable(point: Vector3) -> Vector2i:
 				if grid.is_in_boundsv(test) and not grid.is_point_solid(test): return test
 	return Vector2i.ZERO
 
-func chute_position(index: int) -> Vector3:
-	var points := $Hallway/TransferChute/SpawnPoints.get_children()
-	return points[posmod(index, points.size())].global_position
+func lunar_arrival_position(slot: int) -> Vector3:
+	return $LunarArrivalSpawns.get_child(slot).global_position
+
+func cafe_respawn_position(slot: int) -> Vector3:
+	return $Hallway/CafeRespawns.get_child(slot).global_position
+
+func earth_look_angles(position: Vector3) -> Vector2:
+	var toward: Vector3 = $SpaceBackdrop/Earth.global_position - (position + Vector3.UP * StudentPlayer.STANDING_EYE_HEIGHT)
+	return Vector2(atan2(-toward.x, -toward.z), atan2(toward.y, Vector2(toward.x, toward.z).length()))
 
 func _physics_process(_delta: float) -> void:
 	if Net.active: ensure_players()
