@@ -5,6 +5,23 @@ extends CharacterBody3D
 var suspicion: float = 0.0
 var alertness: float = 0.0
 
+# --- Irritation meter (presentation only; never feeds suspicion or the FSM) ---
+enum Irr { NONE, NOISE, BURP, FART, SNEEZE, CHEWING, GROWL, CAN, VENDING, SPLAT_NEAR, FLYING_SNACK, HIT, TOMATO, PUNCH, DIN, SHOT, RELIEF }
+const IRRITATION_REASONS: PackedStringArray = [
+	"", "NOISY CLASSROOM", "BURP IN THE FRONT ROW", "FORBIDDEN GAS CLOUD", "SNEEZE AMBUSH",
+	"LOUD CHEWING", "TUMMY OPERA", "CAN CRUSHING", "VENDING MACHINE CLATTER", "SPLAT NEAR THE BOARD",
+	"SNACK FLYING PAST HEAD", "PROJECTILE TO THE FACE", "TOMATO TO THE FACE", "PUNCHED THE TEACHER",
+	"THE ROOM IS A DIN", "SHOTGUN SOLVES EVERYTHING", "AHHH, MUCH BETTER",
+]
+var irritation: float = 0.0
+var irritation_reason: int = 0
+var irritation_gain: int = 0
+var irritation_seq: int = 0
+var classroom_din: float = 0.0
+var din_view: float = 0.0
+## Clients wait for the first teacher snapshot before trusting irritation fields.
+var snapshot_seen: bool = false
+
 # --- Timers & Cooldowns ---
 var next_check: float = 0.0
 var last_check: float = -100.0
@@ -51,6 +68,7 @@ func _ready() -> void:
 	global_position = lounge
 	destination = lounge
 	NoiseBus.noise_made.connect(hear)
+	NoiseBus.noise_made.connect(_irritate_from_noise)
 
 func _exit_tree() -> void:
 	if chalk_audio and chalk_audio.playing:
@@ -59,6 +77,7 @@ func _exit_tree() -> void:
 func start_class() -> void:
 	suspicion = 0.0
 	alertness = 0.0
+	reset_irritation()
 	target = ""
 	student_shot_grace.clear()
 	global_position = board
@@ -72,6 +91,7 @@ func start_class() -> void:
 	fsm.force_change_state("LectureState")
 
 func leave() -> void:
+	reset_irritation()
 	student_shot_grace.clear()
 	sound_grace_until = 0.0
 	fsm.force_change_state("LeavingState")
@@ -81,6 +101,7 @@ func _physics_process(delta: float) -> void:
 		# Global stat decay
 		suspicion = maxf(0.0, suspicion - delta * Game.config.teacher.suspicion_decay_per_second)
 		alertness = maxf(0.0, alertness - delta * Game.config.teacher.alertness_decay_per_second)
+		_update_irritation(delta)
 		
 		# Host explicitly sets the animation based on its AI intent
 		var state_name = get_current_state_name()
@@ -253,6 +274,77 @@ func hear(at: Vector3, loudness: float, source: String, kind: String) -> void:
 	elif suspicion >= tuning.warning_suspicion and current in ["lecturestate", "coffeestate"] and check_cooldown_met:
 		fsm.force_change_state("WarningState")
 
+func irritation_active() -> bool:
+	if not Game.is_host() or Game.phase != "class": return false
+	return not get_current_state_name() in ["awaystate", "enteringstate", "leavingstate"]
+
+func irritate(amount: float, reason: int, notable: bool = false) -> void:
+	if amount <= 0.0 or not irritation_active(): return
+	var tuning := Game.config.teacher
+	irritation = minf(tuning.irritation_maximum, irritation + amount)
+	if notable or amount >= tuning.irritation_notable_gain:
+		irritation_reason = reason
+		irritation_gain = int(round(amount))
+		irritation_seq += 1
+
+func relieve_irritation() -> void:
+	if not Game.is_host(): return
+	var level: float = Game.config.teacher.irritation_after_shot
+	if irritation > level:
+		irritation = level
+		irritation_reason = Irr.RELIEF
+		irritation_gain = 0
+		irritation_seq += 1
+
+## Collective classroom noise as 0..1. The host measures it; clients show the replicated value.
+func din_fraction() -> float:
+	if Game.is_host(): return clampf(classroom_din / Game.config.teacher.irritation_din_cap, 0.0, 1.0)
+	return din_view
+
+func reset_irritation() -> void:
+	irritation = 0.0
+	din_view = 0.0
+	classroom_din = 0.0
+	irritation_reason = Irr.NONE
+	irritation_gain = 0
+
+func _irritation_reason_for(kind: String) -> int:
+	match kind:
+		"burp": return Irr.BURP
+		"fart": return Irr.FART
+		"sneeze": return Irr.SNEEZE
+		"crunch", "chew": return Irr.CHEWING
+		"stomach_growl": return Irr.GROWL
+		"crush_can": return Irr.CAN
+		"vending_dispense": return Irr.VENDING
+		"splat": return Irr.SPLAT_NEAR
+		_: return Irr.NOISE
+
+func _irritate_from_noise(at: Vector3, loudness: float, _source: String, kind: String) -> void:
+	if not irritation_active(): return
+	var tuning := Game.config.teacher
+	var distance := global_position.distance_to(at)
+	if kind == "throw":
+		if distance <= tuning.irritation_throw_radius:
+			irritate(tuning.irritation_throw_gain * (1.0 - distance / tuning.irritation_throw_radius * 0.6), Irr.FLYING_SNACK, true)
+		return
+	var closeness := clampf(1.0 - distance / tuning.irritation_hearing_radius, 0.0, 1.0)
+	var proximity := lerpf(tuning.irritation_min_proximity, 1.0, closeness)
+	var pressure := loudness * float(tuning.irritation_kind_weights.get(kind, tuning.irritation_default_weight)) * proximity
+	classroom_din = minf(tuning.irritation_din_cap, classroom_din + pressure)
+	irritate(minf(pressure * tuning.irritation_noise_scale, tuning.irritation_noise_cap), _irritation_reason_for(kind))
+
+func _update_irritation(delta: float) -> void:
+	if irritation <= 0.0 and classroom_din <= 0.0: return
+	var tuning := Game.config.teacher
+	classroom_din *= exp(-delta / tuning.irritation_din_decay_seconds)
+	if classroom_din < 0.5: classroom_din = 0.0
+	if not irritation_active(): return
+	var decay := tuning.irritation_decay_per_second
+	if get_current_state_name() == "coffeestate": decay *= tuning.irritation_coffee_decay_scale
+	irritation += maxf(0.0, classroom_din - tuning.irritation_din_threshold) * tuning.irritation_din_gain * delta
+	irritation = clampf(irritation - decay * delta, 0.0, tuning.irritation_maximum)
+
 func choose_blame(at: Vector3, source: String) -> String:
 	if source != "":
 		if student_shot_grace.get(source, 0.0) <= Game.elapsed:
@@ -283,7 +375,13 @@ func choose_blame(at: Vector3, source: String) -> String:
 			
 	return choice
 
-func provoked(source: String, at: Vector3) -> void:
+func provoked(source: String, at: Vector3, how: String = "impact") -> void:
+	# Hitting the teacher is funniest mid-shot, so irritation is counted before the early return.
+	var tuning := Game.config.teacher
+	match how:
+		"punch": irritate(tuning.irritation_punch_gain, Irr.PUNCH, true)
+		"splat": irritate(tuning.irritation_hit_gain, Irr.TOMATO, true)
+		_: irritate(tuning.irritation_hit_gain, Irr.HIT, true)
 	if get_current_state_name() == "shootstate":
 		interrupt_shot()
 		return
@@ -316,6 +414,7 @@ func catch_target(id: String) -> void:
 	current_anim = "shoot-animation"
 	fsm.force_change_state("ShootState")
 	if Game.is_host():
+		irritate(Game.config.teacher.irritation_maximum, Irr.SHOT, true)
 		Game.event.rpc("sound", {"position": global_position, "key": "shotgun_pump", "loudness": Game.config.teacher.shotgun_pump_volume})
 
 func fire() -> void:
@@ -408,10 +507,16 @@ func serialize() -> Dictionary:
 		"suspicion": suspicion, 
 		"aim": aim_point, 
 		"anim": current_anim,
-		"shot_fired": actual_shot_fired
+		"shot_fired": actual_shot_fired,
+		"irritation": snappedf(irritation, 0.1),
+		"irr_reason": irritation_reason,
+		"irr_gain": irritation_gain,
+		"irr_seq": irritation_seq,
+		"irr_din": snappedf(din_fraction(), 0.01),
 	}
 
 func receive(data: Dictionary) -> void:
+	snapshot_seen = true
 	destination = data.position
 	desired_yaw = data.yaw
 	suspicion = data.suspicion
@@ -420,6 +525,11 @@ func receive(data: Dictionary) -> void:
 		current_anim = data.anim
 	if data.has("shot_fired"):
 		actual_shot_fired = data.shot_fired
+	irritation = data.get("irritation", irritation)
+	irritation_reason = data.get("irr_reason", irritation_reason)
+	irritation_gain = data.get("irr_gain", irritation_gain)
+	irritation_seq = data.get("irr_seq", irritation_seq)
+	din_view = data.get("irr_din", din_view)
 	
 	# Force the client FSM to mirror the host's state so visuals render!
 	if not Game.is_host() and fsm and data.has("state_name") and data.state_name != "":
