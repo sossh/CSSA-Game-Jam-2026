@@ -104,19 +104,31 @@ func run_host() -> void:
 	verify(Game.players[1].stomach > 70 and Game.players[1].food == 25, "Eating restores stomach and records allowance food")
 	verify(not Game.world.items.has(apple.entity_id) if is_instance_valid(apple) else true, "Eaten item consumed")
 	var teacher = Game.world.teacher
-	teacher.global_position = teacher.board
-	teacher.fsm.force_change_state("LectureState")
+	verify(teacher.get_current_state_name() == "lecturestate" and teacher.global_position.distance_to(teacher.board) < 0.2, "Teacher lectures right away at round start")
 	teacher.suspicion = 0
+	NoiseBus.emit_noise(teacher.global_position + Vector3.BACK * 3.0, 70, str(client), "burp")
+	verify(teacher.suspicion == 0 and teacher.get_current_state_name() == "lecturestate", "Round start sound grace period ignores student noise")
 	NoiseBus.emit_noise(teacher.global_position + Vector3.BACK * 3.0, 250, str(1), "gunshot")
 	verify(teacher.get_current_state_name() in ["shootstate", "investigatestate"], "Over-threshold noise catches/investigates during lecture")
+	teacher.fsm.force_change_state("ShootState")
+	teacher.target = str(1)
+	NoiseBus.emit_noise(Vector3(2, 0, 5), 100, str(client), "crunch")
+	verify(teacher.target == str(1) and teacher.get_current_state_name() == "shootstate", "Player can make noise when teacher actively attacks another student")
 	teacher.fsm.force_change_state("LectureState")
 	teacher.suspicion = 0
+	teacher.sound_grace_until = 0.0
 	teacher.last_check = Game.elapsed
 	NoiseBus.emit_noise(Game.world.to_global(Vector3(0, 0, 5)), 65, str(1), "crunch")
 	verify(teacher.get_current_state_name() == "lecturestate", "Check cooldown blocks repeated low-noise turns")
+	var before_stomach: float = Game.players[client].stomach
+	Game.damage(client, 30, "was expelled by shotgun", Vector3(0, 5, 5))
+	verify(Game.players[client].stomach < before_stomach and Game.players[client].mode != "ragdoll", "Non-lethal shot does not ragdoll immediately")
+	teacher.student_shot_grace[str(client)] = Game.elapsed + 6.0
+	verify(teacher.student_shot_grace.get(str(client), 0.0) > Game.elapsed, "Teacher respects shot grace period before shooting again")
 	var balance: int = Game.players[client].money
-	Game.kill(client, "test clone")
-	verify(Game.phase == "class" and not Game.players[client].alive, "One death spectates while teammate keeps class alive")
+	Game.kill(client, "test clone", Vector3(0, 5, 5))
+	await wait(0.1)
+	verify(Game.phase == "class" and not Game.players[client].alive and Game.world.player_nodes[client].ragdoll.active, "One death spectates with death ragdoll while teammate keeps class alive")
 	Game.start_break()
 	verify(Game.players[client].alive and Game.players[client].money == balance + Game.config.attendance_allowance - Game.config.cloning_fee, "Bell re-clones with fee")
 	verify(Game.survived == 1 and Game.grade == 2, "Class increments endless score and grade")

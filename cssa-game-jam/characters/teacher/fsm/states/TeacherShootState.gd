@@ -36,9 +36,12 @@ func physics_update(delta: float) -> void:
 		var recoil_speed: float = tuning.shotgun_recoil_anim_speed if "shotgun_recoil_anim_speed" in tuning else 0.5
 		var recovery_after_shot: float = (TOTAL_ANIM_LENGTH - AIM_PEAK_TIME) / maxf(0.1, recoil_speed)
 		if state_time >= fire_delay + recovery_after_shot:
+			teacher.suspicion = 0.0
+			teacher.last_check = Game.elapsed
 			state_transition.emit(self, "LectureState")
 	elif teacher.shot_fired:
 		# Did not shoot: do not play rest of animation, return to LectureState
+		state_transition.emit(self, "LectureState")
 		state_transition.emit(self, "LectureState")
 
 func exit() -> void:

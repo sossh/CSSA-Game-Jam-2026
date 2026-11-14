@@ -240,7 +240,7 @@ func accept_pose(id: int, position: Vector3, yaw: float, pitch: float, limbs: Ar
 	p.yaw = yaw
 	var pitch_limit := config.player.pitch_limit_radians + 0.05
 	p.pitch = clampf(pitch, -pitch_limit, pitch_limit)
-	if p.mode == "ragdoll" and limbs.size() == 6: p.limbs = limbs
+	if p.mode in ["ragdoll", "dead"] and limbs.size() == 6: p.limbs = limbs
 
 func start_run() -> void:
 	epoch += 1
@@ -317,7 +317,7 @@ func damage(id: int, amount: float, reason: String, impulse: Vector3 = Vector3.Z
 	players[id].stomach = maxf(0, players[id].stomach - amount)
 	event.rpc("hurt", {"id": id})
 	if players[id].stomach <= 0: kill(id, reason, impulse)
-	elif impulse.length() > 0: launch_player(id, impulse)
+	elif impulse.length() > 0 and reason != "was expelled by shotgun": launch_player(id, impulse)
 
 func kill(id: int, reason: String, impulse: Vector3 = Vector3.ZERO) -> void:
 	if not players[id].alive: return
@@ -329,6 +329,7 @@ func kill(id: int, reason: String, impulse: Vector3 = Vector3.ZERO) -> void:
 	p.seat = -1
 	p.carrier = 0
 	p.eat_until = 0.0
+	p.launch = impulse
 	p.epoch += 1
 	world.spawn_corpse(id, impulse)
 	event.rpc("banner", {"text": "%s %s." % [p.name, reason]})

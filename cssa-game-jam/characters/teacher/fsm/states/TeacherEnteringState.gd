@@ -15,4 +15,4 @@ func physics_update(delta: float) -> void:
 			Game.event.rpc("sound", {"position": teacher.global_position, "key": "teacher_step", "loudness": Game.config.teacher.footstep_volume})
 	
 	if teacher.global_position.distance_to(teacher.board) < 0.1: 
-		state_transition.emit(self, "WarningState")
+		state_transition.emit(self, "LectureState")

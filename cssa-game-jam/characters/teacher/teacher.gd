@@ -12,6 +12,8 @@ var last_check: float = -100.0
 var next_coffee: float = 0.0
 var scan_time: float = 0.0
 var lecture_sound_at: float = 0.0
+var sound_grace_until: float = 0.0
+var student_shot_grace: Dictionary = {}
 
 # --- Targeting & Navigation ---
 var target: String = ""
@@ -54,13 +56,20 @@ func start_class() -> void:
 	suspicion = 0.0
 	alertness = 0.0
 	target = ""
-	global_position = lounge
+	student_shot_grace.clear()
+	global_position = board
+	destination = board
+	rotation.y = 0.0
 	var tuning := Game.config.teacher
 	var delay := randf_range(tuning.first_coffee_delay.x, tuning.first_coffee_delay.y)
 	next_coffee = Game.elapsed + delay / (1.0 + drugs * tuning.first_coffee_tablet_scale)
-	fsm.force_change_state("EnteringState")
+	last_check = Game.elapsed
+	sound_grace_until = Game.elapsed + tuning.round_start_sound_grace_seconds
+	fsm.force_change_state("LectureState")
 
 func leave() -> void:
+	student_shot_grace.clear()
+	sound_grace_until = 0.0
 	fsm.force_change_state("LeavingState")
 
 func _physics_process(delta: float) -> void:
@@ -148,8 +157,11 @@ func get_current_state_name() -> String:
 		return fsm.current_state.name.to_lower()
 	return ""
 
+func is_actively_attacking() -> bool:
+	return get_current_state_name() == "shootstate"
+
 func interrupt_shot() -> void:
-	if get_current_state_name() != "shootstate":
+	if not is_actively_attacking():
 		return
 	shot_fired = true
 	actual_shot_fired = false
@@ -171,8 +183,15 @@ func hear(at: Vector3, loudness: float, source: String, kind: String) -> void:
 	
 	if Game.phase != "class" or current in ignore_states: 
 		return
-		
+
+	if is_actively_attacking():
+		return
+
 	var tuning := Game.config.teacher
+	if Game.elapsed < sound_grace_until:
+		if not (kind in ["gunshot", "firework"] or loudness >= tuning.lecture_extreme_loudness):
+			return
+
 	var multiplier := 1.0
 	if current == "coffeestate":
 		multiplier = tuning.coffee_hearing_scale
@@ -212,15 +231,18 @@ func hear(at: Vector3, loudness: float, source: String, kind: String) -> void:
 
 func choose_blame(at: Vector3, source: String) -> String:
 	if source != "":
-		var source_pos = Game.world.target_position(source)
-		if source_pos != null and can_see(source) and Game.world.is_violating(source): 
-			return source
-			
+		if student_shot_grace.get(source, 0.0) <= Game.elapsed:
+			var source_pos = Game.world.target_position(source)
+			if source_pos != null and can_see(source) and Game.world.is_violating(source):
+				return source
+
 	var tuning := Game.config.teacher
 	var best_score := -INF
 	var choice := ""
 	
 	for candidate: String in Game.world.targets():
+		if student_shot_grace.get(candidate, 0.0) > Game.elapsed:
+			continue
 		var point: Vector3 = Game.world.target_position(candidate)
 		var distance := at.distance_to(point)
 		
@@ -247,6 +269,8 @@ func provoked(source: String, at: Vector3) -> void:
 func scan(delta: float) -> void:
 	var visible_culprit := ""
 	for candidate: String in Game.world.targets():
+		if student_shot_grace.get(candidate, 0.0) > Game.elapsed:
+			continue
 		if Game.world.is_violating(candidate) and can_see(candidate):
 			visible_culprit = candidate
 			break
@@ -259,6 +283,8 @@ func scan(delta: float) -> void:
 			catch_target(visible_culprit)
 
 func catch_target(id: String) -> void:
+	if student_shot_grace.get(id, 0.0) > Game.elapsed:
+		return
 	target = id
 	shot_fired = false
 	actual_shot_fired = false
@@ -286,6 +312,10 @@ func fire() -> void:
 	
 	if not hit.is_empty():
 		var knockback := direction * tuning.shotgun_horizontal_impulse + Vector3.UP * tuning.shotgun_upward_impulse
+		if hit.collider is StudentPlayer:
+			student_shot_grace[str(hit.collider.peer_id)] = Game.elapsed + tuning.shot_grace_seconds
+		elif target != "":
+			student_shot_grace[target] = Game.elapsed + tuning.shot_grace_seconds
 		Game.world.hit_body(hit.collider, tuning.shotgun_damage, knockback, "was expelled by shotgun")
 
 func can_see(id: String) -> bool:

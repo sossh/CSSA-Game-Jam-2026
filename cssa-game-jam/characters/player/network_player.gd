@@ -62,10 +62,11 @@ func _physics_process(delta: float) -> void:
 		applied_epoch = p.epoch
 		global_position = p.position
 		velocity = Vector3.ZERO
-		ragdoll.deactivate()
-	if mode == "ragdoll" and not ragdoll.active:
+		if mode not in ["ragdoll", "dead"]:
+			ragdoll.deactivate()
+	if (mode == "ragdoll" or (mode == "dead" and p.launch.length() > 0)) and not ragdoll.active:
 		ragdoll.activate(color, p.position, p.yaw, local, p.launch)
-	if mode != "ragdoll" and ragdoll.active:
+	if mode not in ["ragdoll", "dead"] and ragdoll.active:
 		if local:
 			global_position = ragdoll.bodies[0].global_position
 			global_position.y = maxf(0.2, global_position.y)
@@ -92,9 +93,10 @@ func _physics_process(delta: float) -> void:
 	elif mode == "seated":
 		global_position = p.position
 		visual.rotation = Vector3.ZERO
-	elif mode == "ragdoll":
-		if local: global_position = ragdoll.bodies[0].global_position - Vector3(0, 0.9, 0)
-		else:
+	elif mode in ["ragdoll", "dead"] and ragdoll.active:
+		if local and mode == "ragdoll":
+			global_position = ragdoll.bodies[0].global_position - Vector3(0, 0.9, 0)
+		elif not local:
 			ragdoll.follow(p.limbs, delta)
 			global_position = p.position
 	elif local:

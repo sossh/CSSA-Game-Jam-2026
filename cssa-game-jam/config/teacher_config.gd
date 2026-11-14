@@ -73,6 +73,8 @@ extends Resource
 @export var door_volume: float = 60.0
 
 @export_group("Shotgun")
+@export var shot_grace_seconds: float = 6.0
+@export var round_start_sound_grace_seconds: float = 12.0
 @export var shotgun_damage: float = 65.0
 @export var shotgun_range: float = 40.0
 @export var shotgun_horizontal_impulse: float = 11.0
