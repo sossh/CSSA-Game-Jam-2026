@@ -269,6 +269,7 @@ shape = SubResource("ConsoleInteractionShape")
 
 [node name="Status" type="Label3D" parent="LaunchConsole"]
 position = Vector3(0, 3.65, 0.3)
+render_priority = 1
 pixel_size = 0.01
 text = "FALCON 9 ASSEMBLY
 0 / 3 INSTALLED"

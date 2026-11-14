@@ -109,6 +109,8 @@ func _physics_process(_delta: float) -> void:
 	var closed := Game.phase == "class"
 	door.global_position = $Room/DoorClosedPoint.global_position if closed else $Room/DoorOpenPoint.global_position
 	clock.text = "%02d:%02d" % [int(Game.remaining / 60.0), int(Game.remaining) % 60]
+	if has_node("MenuCamera/ToonScreenPass"):
+		$MenuCamera/ToonScreenPass.visible = menu_camera.current
 
 func update_food_drops() -> void:
 	if Game.phase not in ["preparation", "class"]:

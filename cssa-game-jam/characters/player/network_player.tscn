@@ -1,7 +1,8 @@
-[gd_scene load_steps=5 format=3]
+[gd_scene load_steps=6 format=3]
 [ext_resource type="Script" path="res://characters/player/network_player.gd" id="1"]
 [ext_resource type="PackedScene" path="res://characters/shared/student_visual.tscn" id="2"]
 [ext_resource type="PackedScene" path="res://characters/player/ragdoll.tscn" id="3"]
+[ext_resource type="PackedScene" path="res://effects/toon_screen_pass.tscn" id="4"]
 [sub_resource type="CapsuleShape3D" id="PlayerShape"]
 radius = 0.3
 height = 1.75
@@ -18,8 +19,11 @@ position = Vector3(0, 1.55, 0)
 [node name="Camera" type="Camera3D" parent="Head"]
 fov = 82.0
 [node name="AudioListener3D" type="AudioListener3D" parent="Head/Camera"]
+[node name="ToonScreenPass" parent="Head/Camera" instance=ExtResource("4")]
+visible = false
 [node name="NameLabel" type="Label3D" parent="."]
 position = Vector3(0, 2.05, 0)
+render_priority = 1
 billboard = 1
 text = "Transfer student"
 font_size = 26

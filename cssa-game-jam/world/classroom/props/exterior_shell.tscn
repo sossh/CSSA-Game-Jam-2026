@@ -293,6 +293,7 @@ cast_shadow = 0
 
 [node name="WingSign" type="Label3D" parent="Airlock"]
 position = Vector3(3, 4.55, 16.31)
+render_priority = 1
 text = "LUNAR ACADEMY  WING C
 VISITORS MUST BE ABDUCTED"
 font_size = 34
@@ -301,6 +302,7 @@ modulate = Color(0.95, 0.93, 0.86, 1)
 
 [node name="RoomNumber" type="Label3D" parent="Airlock"]
 position = Vector3(-6.9, 4.0, 16.31)
+render_priority = 1
 text = "0xC05"
 font_size = 160
 outline_size = 10

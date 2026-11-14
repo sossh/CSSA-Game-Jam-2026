@@ -21,6 +21,7 @@ position = Vector3(0, 3.8, 1.9)
 rotation = Vector3(0, 3.141593, 0)
 text = "TRANSFER CHUTE\nCloning fee:    10"
 font = ExtResource("3")
+render_priority = 1
 font_size = 32
 outline_size = 5
 [node name="BitcoinIcon" type="Sprite3D" parent="Sign"]

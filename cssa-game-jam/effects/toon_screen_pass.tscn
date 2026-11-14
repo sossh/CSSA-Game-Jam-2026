@@ -1,0 +1,31 @@
+[gd_scene load_steps=4 format=3]
+
+[ext_resource type="Shader" path="res://shaders/soft_toon_screen.gdshader" id="1"]
+
+[sub_resource type="ShaderMaterial" id="ScreenPassMaterial"]
+render_priority = -1
+shader = ExtResource("1")
+shader_parameter/line_color = Color(0.1, 0.07, 0.12, 1)
+shader_parameter/line_width = 2.2
+shader_parameter/depth_threshold = 0.04
+shader_parameter/crease_threshold = 0.5
+shader_parameter/creases = 0.0
+shader_parameter/fade_start = 0.0
+shader_parameter/fade_end = 0.0
+shader_parameter/saturation = 1.0
+shader_parameter/contrast = 1.0
+shader_parameter/tint = Color(1, 1, 1, 1)
+shader_parameter/tint_amount = 0.0
+shader_parameter/tilt_blur = 0.0
+shader_parameter/tilt_focus = 0.55
+shader_parameter/tilt_width = 0.15
+shader_parameter/tilt_radius = 9.0
+
+[sub_resource type="QuadMesh" id="ScreenQuadMesh"]
+size = Vector2(2, 2)
+
+[node name="ToonScreenPass" type="MeshInstance3D"]
+cast_shadow = 0
+extra_cull_margin = 16384.0
+mesh = SubResource("ScreenQuadMesh")
+material_override = SubResource("ScreenPassMaterial")
